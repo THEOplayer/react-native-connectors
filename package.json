@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
     "release": "release-it",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
@@ -74,7 +74,8 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-theoplayer": "../react-native-theoplayer/react-native-theoplayer-1.8.0.tgz"
   },
   "commitlint": {
     "extends": [
@@ -115,5 +116,9 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "@convivainc/conviva-js-coresdk": "^4.5.13",
+    "@theoplayer/conviva-connector-web": "^1.0.0"
   }
 }
