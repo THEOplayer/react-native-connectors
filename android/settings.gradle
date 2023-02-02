@@ -1,0 +1,5 @@
+def reactNativeTHEOplayerPath = new File(rootProject.projectDir, '../node_modules/react-native-theoplayer/android')
+if (reactNativeTHEOplayerPath.exists()) {
+  include ':reactnativetheoplayer'
+  project(':reactnativetheoplayer').projectDir = reactNativeTHEOplayerPath
+}
