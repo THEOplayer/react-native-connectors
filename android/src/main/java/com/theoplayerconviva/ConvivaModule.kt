@@ -1,5 +1,6 @@
 package com.theoplayerconviva
 
+import android.util.Log
 import com.conviva.api.SystemSettings
 import com.conviva.sdk.ConvivaSdkConstants
 import com.facebook.react.bridge.*
@@ -7,7 +8,8 @@ import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConnector
 import com.theoplayer.util.ViewResolver
 
-private const val NAME = "ConvivaModule"
+private const val TAG = "ConvivaModule"
+private const val PROP_CUSTOMER_KEY = "customerKey"
 
 class ConvivaModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
 
@@ -20,11 +22,9 @@ class ConvivaModule(context: ReactApplicationContext) : ReactContextBaseJavaModu
   }
 
   override fun getName(): String {
-    return NAME
+    return TAG
   }
 
-  // Example method
-  // See https://reactnative.dev/docs/native-modules-android
   @ReactMethod
   fun initialize(tag: Int, convivaMetadata: ReadableMap, convivaConfig: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
@@ -45,5 +45,25 @@ class ConvivaModule(context: ReactApplicationContext) : ReactContextBaseJavaModu
         convivaConnector?.setViewerId("viewer ID")
       }
     }
+  }
+
+  @ReactMethod
+  fun destroy() {
+    convivaConnector?.destroy()
+  }
+
+  @ReactMethod
+  fun initialize(view: ReactTHEOplayerView, convivaMetadata: ReadableMap, convivaConfig: ReadableMap) {
+    val settings = convivaConfig.toHashMap()
+    val customerKey: String? = settings[PROP_CUSTOMER_KEY] as String?
+    if (customerKey == null) {
+      Log.e(TAG, "Invalid or missing property 'customerKey'")
+      return
+    }
+
+    convivaConnector =
+      ConvivaConnector(reactApplicationContext, view.player!!, customerKey, settings)
+    val metadata = convivaMetadata.toHashMap()
+    convivaConnector?.setContentInfo(metadata)
   }
 }
