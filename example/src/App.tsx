@@ -1,25 +1,29 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { ConvivaConnector } from 'react-native-theoplayer-conviva';
+import { PlayButton } from './res/images';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
-  license: undefined
+  license: undefined,
+  libraryLocation: 'theoplayer'
 };
 
 const source = {
   sources: [
     {
-      src: 'https://contentserver.prudentgiraffe.com/videos/dash/webvtt-embedded-in-isobmff/Manifest.mpd',
-      type: 'application/dash+xml',
+      "src": "https://cdn.theoplayer.com/video/dash/tos-dash-widevine/tos_h264_main.mpd",
+      "type": "application/dash+xml",
     },
   ],
 };
 
 const App = () => {
-  const [active, setActive] = useState<boolean>(true);
   const convivaConnector = useRef<ConvivaConnector | null>();
+  const theoPlayer = useRef<THEOplayer | null>();
+  const [error, setError] = useState<PlayerError | null>();
+  const [paused, setPaused] = useState<boolean>(true);
 
   const convivaMetadata = {
     ['Conviva.assetName']: 'Demo source',
@@ -30,30 +34,83 @@ const App = () => {
   };
 
   const convivaConfig = {
-    debug: false,
     gatewayUrl: 'CUSTOMER_GATEWAY_GOES_HERE',
     customerKey: 'CUSTOMER_KEY_GOES_HERE' // Can be a test or production key.
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
+    // Create Conviva connector
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
-    player.autoplay = true;
+    player.autoplay = !paused;
     player.source = source;
+    player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
+
+    // Update theoPlayer reference.
+    theoPlayer.current = player;
 
     // Destroy connector when unmounting
     return () => { convivaConnector.current?.destroy() }
   }, []);
 
-  const onToggleActive = useCallback(() => {
-    setActive((active) => !active);
-  }, [])
+  const onTogglePlayPause = useCallback(() => {
+    const player = theoPlayer.current;
+    if (player) {
+      player.paused? player.play() : player.pause();
+      setPaused((paused) => !paused);
+    }
+  }, [theoPlayer])
 
   return (
     <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
-      {active && <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>}
-      <TouchableOpacity style={{position: 'absolute', top: 50, left: 50}} onPress={onToggleActive}><Text style={{backgroundColor: 'yellow'}}>MOUNT/UNMOUNT</Text></TouchableOpacity>
+
+      <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
+
+      {/*Play/pause button*/}
+      {!error && (
+        <TouchableOpacity
+          style={styles.fullscreen}
+          onPress={onTogglePlayPause}
+        >
+          <Image style={styles.image} source={paused ? PlayButton : null} />
+        </TouchableOpacity>
+      )}
+
+      {/*Error message*/}
+      {error && <View style={styles.fullscreen}><Text style={styles.message}>{error.errorMessage}</Text></View>}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  fullscreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  message: {
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    paddingLeft: 50,
+    paddingRight: 50,
+    color: 'white',
+    backgroundColor: 'black',
+  },
+  image: {
+    resizeMode: 'contain',
+    width: 75,
+    height: 75,
+    tintColor: '#ffc50f',
+  },
+  playButton: {
+    width: 90,
+    height: 90,
+    tintColor: '#ffc50f',
+  }
+});
 
 export default App;
