@@ -11,11 +11,11 @@ export class ConvivaConnectorAdapter {
   }
 
   setContentInfo(metadata: ConvivaMetadata): void {
-    // TODO pass properly
+    NativeModules.ConvivaModule.setContentInfo(this.player.nativeHandle, metadata);
   }
 
   setAdInfo(metadata: ConvivaMetadata): void {
-    // TODO pass properly
+    NativeModules.ConvivaModule.setAdInfo(this.player.nativeHandle, metadata);
   }
 
   destroy(): void {
