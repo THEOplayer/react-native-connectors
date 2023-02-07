@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { View } from 'react-native';
 import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { ConvivaConnector } from 'react-native-theoplayer-conviva';
@@ -17,14 +17,17 @@ const source = {
   ],
 };
 
-const onPlayerReady = (player: THEOplayer) => {
-
-  const connector = new ConvivaConnector(player, {}, {});
-  player.autoplay = true;
-  player.source = source;
-}
-
 const App = () => {
+  const convivaConnector = useRef<ConvivaConnector | null>();
+  const onPlayerReady = useCallback((player: THEOplayer) => {
+    convivaConnector.current = new ConvivaConnector(player, {}, {});
+    player.autoplay = true;
+    player.source = source;
+
+    // Destroy connector when unmounting
+    return () => { convivaConnector.current?.destroy() }
+  }, []);
+
   return (
     <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
       <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
