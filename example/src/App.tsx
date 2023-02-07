@@ -20,7 +20,7 @@ const source = {
 const App = () => {
   const convivaConnector = useRef<ConvivaConnector | null>();
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    convivaConnector.current = new ConvivaConnector(player, {}, {});
+    convivaConnector.current = new ConvivaConnector(player, {}, { customerKey: 'TODO'});
     player.autoplay = true;
     player.source = source;
 
