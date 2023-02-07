@@ -1,2 +1,2 @@
-import type { ConvivaConnector } from './ConvivaConnector';
+import { ConvivaConnector } from './ConvivaConnector';
 export { ConvivaConnector };
