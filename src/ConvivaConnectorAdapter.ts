@@ -10,6 +10,14 @@ export class ConvivaConnectorAdapter {
     NativeModules.ConvivaModule.initialize(this.player.nativeHandle, convivaMetadata, convivaConfig);
   }
 
+  setContentInfo(metadata: ConvivaMetadata): void {
+    // TODO pass properly
+  }
+
+  setAdInfo(metadata: ConvivaMetadata): void {
+    // TODO pass properly
+  }
+
   destroy(): void {
     // @ts-ignore
     NativeModules.ConvivaModule.destroy(this.player.nativeHandle);

@@ -18,6 +18,16 @@ export class ConvivaConnectorAdapter {
     );
   }
 
+  setContentInfo(metadata: ConvivaMetadata): void {
+    // TODO uncomment once conviva version has been updated
+    // this.integration.setContentInfo(metadata);
+  }
+
+  setAdInfo(metadata: ConvivaMetadata): void {
+    // TODO uncomment once conviva version has been updated
+    // this.integration.setAdInfo(metadata);
+  }
+
   destroy() {
     this.integration.destroy();
   }

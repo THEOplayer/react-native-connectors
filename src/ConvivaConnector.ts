@@ -11,6 +11,23 @@ export class ConvivaConnector {
     this.connectorAdapter = new ConvivaConnectorAdapter(player, convivaMetadata, convivaConfig);
   }
 
+
+  /**
+   * Sets Conviva metadata on the Conviva video analytics.
+   * @param metadata object of key value pairs
+   */
+  setContentInfo(metadata: ConvivaMetadata): void {
+    this.connectorAdapter.setContentInfo(metadata);
+  }
+
+  /**
+   * Sets Conviva metadata on the Conviva ad analytics.
+   * @param metadata object of key value pairs
+   */
+  setAdInfo(metadata: ConvivaMetadata): void {
+    this.connectorAdapter.setAdInfo(metadata);
+  }
+
   /**
    * Stops video and ad analytics and closes all sessions.
    */
