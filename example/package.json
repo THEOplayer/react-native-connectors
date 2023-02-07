@@ -1,5 +1,5 @@
 {
-  "name": "TheoplayerConvivaExample",
+  "name": "react-native-theoplayer-conviva-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,9 +10,10 @@
     "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "react": "17.0.2",
-    "react-dom": "^17.0.2",
-    "react-native": "0.70.7"
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "react-native": "0.70.7",
+    "react-native-web": "^0.18.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
