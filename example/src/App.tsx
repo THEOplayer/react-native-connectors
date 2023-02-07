@@ -20,8 +20,23 @@ const source = {
 const App = () => {
   const [active, setActive] = useState<boolean>(true);
   const convivaConnector = useRef<ConvivaConnector | null>();
+
+  const convivaMetadata = {
+    ['Conviva.assetName']: 'Demo source',
+    ['Conviva.streamUrl']: source.sources[0].src,
+    ['Conviva.streamType']: 'VOD',
+    ['Conviva.applicationName']: 'THEOplayer',
+    ['Conviva.viewerId']: 'your_viewer_id'
+  };
+
+  const convivaConfig = {
+    debug: false,
+    gatewayUrl: 'CUSTOMER_GATEWAY_GOES_HERE',
+    customerKey: 'CUSTOMER_KEY_GOES_HERE' // Can be a test or production key.
+  };
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    convivaConnector.current = new ConvivaConnector(player, {}, { customerKey: 'TODO'});
+    convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = true;
     player.source = source;
 
