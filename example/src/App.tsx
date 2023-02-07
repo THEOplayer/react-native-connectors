@@ -13,9 +13,9 @@ const playerConfig: PlayerConfiguration = {
 const source = {
   sources: [
     {
-      "src": "https://cdn.theoplayer.com/video/dash/tos-dash-widevine/tos_h264_main.mpd",
-      "type": "application/dash+xml",
-    },
+      "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
+      "type": "application/dash+xml"
+    }
   ],
 };
 
@@ -67,10 +67,7 @@ const App = () => {
 
       {/*Play/pause button*/}
       {!error && (
-        <TouchableOpacity
-          style={styles.fullscreen}
-          onPress={onTogglePlayPause}
-        >
+        <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
           <Image style={styles.image} source={paused ? PlayButton : null} />
         </TouchableOpacity>
       )}
