@@ -52,11 +52,13 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun setAdInfo(tag: Int, convivaMetadata: ReadableMap) {
+    // TODO: setAdInfo
     convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
   }
 
   @ReactMethod
   fun destroy(tag: Int) {
     convivaConnectors[tag]?.destroy()
+    convivaConnectors.remove(tag)
   }
 }
