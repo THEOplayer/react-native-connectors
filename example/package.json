@@ -13,12 +13,15 @@
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.7",
-    "react-native-web": "^0.18.12"
+    "react-native-web": "^0.18.12",
+    "react-native-theoplayer": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/react-native-theoplayer-2.0.0-pre1.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@types/react-dom": "^18.0.10",
+    "@types/react-native": "^0.71.2",
     "babel-loader": "^8.2.3",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-react-native-web": "^0.17.5",
