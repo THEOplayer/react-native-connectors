@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import { ConvivaConnector } from 'react-native-theoplayer-conviva';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -17,6 +18,8 @@ const source = {
 };
 
 const onPlayerReady = (player: THEOplayer) => {
+
+  const connector = new ConvivaConnector(player, {}, {});
   player.autoplay = true;
   player.source = source;
 }
