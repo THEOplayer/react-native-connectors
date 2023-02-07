@@ -1,6 +1,7 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : project.properties["TheoplayerConviva_kotlinVersion"]
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") :
+    project.properties["THEOplayerConviva_kotlinVersion"]
 
   repositories {
     google()
@@ -17,20 +18,16 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-def getExtOrDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties["TheoplayerConviva_" + name]
-}
-
-def getExtOrIntegerDefault(name) {
-  return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["TheoplayerConviva_" + name]).toInteger()
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 android {
-  compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+  compileSdkVersion safeExtGet("THEOplayerConviva_compileSdkVersion", 31)
 
   defaultConfig {
-    minSdkVersion getExtOrIntegerDefault("minSdkVersion")
-    targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    minSdkVersion safeExtGet("THEOplayerConviva_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerConviva_targetSdkVersion", 31)
     versionCode 1
     versionName "1.0"
   }
@@ -49,7 +46,6 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
   }
-
 }
 
 repositories {
@@ -63,9 +59,9 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-def kotlin_version = getExtOrDefault("kotlinVersion")
-def theoplayer_version = "4.7.0"
-def conviva_version = "4.0.23"
+def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
+def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "1.7.10")
+def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.23')
 
 dependencies {
   //noinspection GradleDynamicVersion
