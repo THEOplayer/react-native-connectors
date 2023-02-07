@@ -7,11 +7,11 @@ export class ConvivaConnectorAdapter {
 
   constructor (private player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
     // @ts-ignore
-    NativeModules.ConvivaModule.initialize(this.player.nativeHandle(), convivaMetadata, convivaConfig);
+    NativeModules.ConvivaModule.initialize(this.player.nativeHandle, convivaMetadata, convivaConfig);
   }
 
   destroy(): void {
     // @ts-ignore
-    NativeModules.ConvivaModule.destroy(this.player.nativeHandle());
+    NativeModules.ConvivaModule.destroy(this.player.nativeHandle);
   }
 }
