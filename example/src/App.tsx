@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { View } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { PlayerConfiguration, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { ConvivaConnector } from 'react-native-theoplayer-conviva';
 
@@ -18,6 +18,7 @@ const source = {
 };
 
 const App = () => {
+  const [active, setActive] = useState<boolean>(true);
   const convivaConnector = useRef<ConvivaConnector | null>();
   const onPlayerReady = useCallback((player: THEOplayer) => {
     convivaConnector.current = new ConvivaConnector(player, {}, { customerKey: 'TODO'});
@@ -28,9 +29,14 @@ const App = () => {
     return () => { convivaConnector.current?.destroy() }
   }, []);
 
+  const onToggleActive = useCallback(() => {
+    setActive((active) => !active);
+  }, [])
+
   return (
     <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
-      <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
+      {active && <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>}
+      <TouchableOpacity style={{position: 'absolute', top: 50, left: 50}} onPress={onToggleActive}><Text style={{backgroundColor: 'yellow'}}>MOUNT/UNMOUNT</Text></TouchableOpacity>
     </View>
   );
 };
