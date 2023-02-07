@@ -17,6 +17,7 @@ const source = {
 };
 
 const onPlayerReady = (player: THEOplayer) => {
+  player.autoplay = true;
   player.source = source;
 }
 
