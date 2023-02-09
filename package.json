@@ -1,5 +1,5 @@
 {
-  "name": "react-native-theoplayer-conviva",
+  "name": "@theoplayer/react-native-conviva",
   "version": "0.1.0",
   "description": "test",
   "main": "lib/commonjs/index",
