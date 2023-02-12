@@ -1,8 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
-import { ConvivaConnector } from 'react-native-theoplayer-conviva';
+import { ConvivaConnector } from '@theoplayer/react-native-conviva';
 import { PlayButton } from './res/images';
+import type { ConvivaMetadata } from "@convivainc/conviva-js-coresdk";
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -25,7 +26,7 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const convivaMetadata = {
+  const convivaMetadata: ConvivaMetadata = {
     ['Conviva.assetName']: 'Demo source',
     ['Conviva.streamUrl']: source.sources[0].src,
     ['Conviva.streamType']: 'VOD',
