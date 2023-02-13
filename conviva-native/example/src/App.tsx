@@ -3,7 +3,10 @@ import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { ConvivaConnector } from '@theoplayer/react-native-conviva';
 import { PlayButton } from './res/images';
-import type { ConvivaMetadata } from "@convivainc/conviva-js-coresdk";
+import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
+
+const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
+const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -29,14 +32,15 @@ const App = () => {
   const convivaMetadata: ConvivaMetadata = {
     ['Conviva.assetName']: 'Demo source',
     ['Conviva.streamUrl']: source.sources[0].src,
-    ['Conviva.streamType']: 'VOD',
+    ['Conviva.streamType']: "VOD",
     ['Conviva.applicationName']: 'THEOplayer',
     ['Conviva.viewerId']: 'your_viewer_id'
   };
 
-  const convivaConfig = {
-    gatewayUrl: 'CUSTOMER_GATEWAY_GOES_HERE',
-    customerKey: 'CUSTOMER_KEY_GOES_HERE' // Can be a test or production key.
+  const convivaConfig: ConvivaConfiguration = {
+    customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
+    debug: true,
+    gatewayUrl: TOUCHSTONE_SERVICE_URL
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
