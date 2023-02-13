@@ -7,7 +7,7 @@ import {
 } from '@convivainc/conviva-js-coresdk';
 import type { Ad, AdBreak, GoogleImaAd, SourceDescription } from 'react-native-theoplayer';
 import type { THEOplayer } from "react-native-theoplayer";
-import type { ConvivaConfiguration } from "../ConvivaHandler";
+import type { ConvivaConfiguration } from "@theoplayer/react-native-conviva";
 
 export function collectDeviceMetadata(): ConvivaDeviceMetadata {
   return {
