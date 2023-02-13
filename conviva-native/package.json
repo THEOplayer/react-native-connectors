@@ -42,7 +42,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:THEOplayer/react-native-theoplayer-conviva.git"
+    "url": "git@github.com:THEOplayer/react-native-theoplayer-analytics.git"
   },
   "author": "THEO Technologies",
   "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
