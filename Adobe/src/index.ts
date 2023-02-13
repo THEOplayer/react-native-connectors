@@ -1,0 +1,1 @@
+export { AdobeConnector } from './AdobeConnector';
