@@ -1,5 +1,5 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { ConvivaConnectorAdapter } from './ConvivaConnectorAdapter';
+import { ConvivaConnectorAdapter } from '../internal/ConvivaConnectorAdapter';
 import type { ConvivaConfiguration } from './ConvivaConfiguration';
 import type { ConvivaMetadata } from './ConvivaMetadata';
 

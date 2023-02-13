@@ -1,6 +1,6 @@
 import type { Ad, AdBreak, AdEvent, GoogleImaAd, THEOplayer } from 'react-native-theoplayer';
 import { AdAnalytics, Constants, ConvivaMetadata, VideoAnalytics } from '@convivainc/conviva-js-coresdk';
-import { calculateCurrentAdBreakInfo, collectAdMetadata } from '../../utils/Utils';
+import { calculateCurrentAdBreakInfo, collectAdMetadata } from '../utils/Utils';
 import { PlayerEventType } from "react-native-theoplayer";
 
 export class CsaiAdReporter {

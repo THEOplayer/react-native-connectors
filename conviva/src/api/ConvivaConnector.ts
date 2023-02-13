@@ -1,6 +1,7 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import type { ConvivaMetadata } from '@convivainc/conviva-js-coresdk';
-import { ConvivaHandler, ConvivaConfiguration } from "./ConvivaHandler";
+import { ConvivaHandler } from "../internal/ConvivaHandler";
+import type { ConvivaMetadata } from "./ConvivaMetadata";
+import type { ConvivaConfiguration } from "./ConvivaConfiguration";
 
 export class ConvivaConnector {
 

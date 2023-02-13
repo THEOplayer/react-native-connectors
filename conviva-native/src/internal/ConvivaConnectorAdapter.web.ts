@@ -1,8 +1,8 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import * as THEOplayerConvivaConnector from '@theoplayer/conviva-connector-web';
 import type { ConvivaMetadata as NativeConvivaMetadata } from '@convivainc/conviva-js-coresdk';
-import type { ConvivaConfiguration } from './ConvivaConfiguration';
-import type { ConvivaMetadata } from './ConvivaMetadata';
+import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
+import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import type { ChromelessPlayer } from 'theoplayer';
 
 export class ConvivaConnectorAdapter {

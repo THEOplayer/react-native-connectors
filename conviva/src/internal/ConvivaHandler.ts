@@ -5,17 +5,12 @@ import {
   collectContentMetadata,
   collectDeviceMetadata,
   collectPlayerInfo
-} from '../utils/Utils';
+} from './utils/Utils';
 import { CsaiAdReporter } from './ads/CsaiAdReporter';
 import type { SourceDescription, THEOplayer, VideoQuality } from "react-native-theoplayer";
 import { findQualityByUid, PlayerEventType } from "react-native-theoplayer";
 import { CONVIVA_CALLBACK_FUNCTIONS } from "./ConvivaCallbackFunctions";
-
-export interface ConvivaConfiguration {
-  customerKey: string;
-  debug?: boolean;
-  gatewayUrl?: string;
-}
+import type { ConvivaConfiguration } from "../api/ConvivaConfiguration";
 
 export class ConvivaHandler {
   private readonly player: THEOplayer;
