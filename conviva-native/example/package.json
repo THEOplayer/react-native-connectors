@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "webpack-dev-server --config ./web/webpack.config.js --mode development",
-    "pods": "pod-install --quiet"
+    "pods": "pod-install --quiet",
+    "postinstall": "npm update react-native-theoplayer"
   },
   "dependencies": {
     "react": "18.1.0",

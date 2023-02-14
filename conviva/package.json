@@ -31,6 +31,7 @@
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
     "release": "release-it",
+    "postinstall": "npm update react-native-theoplayer",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
