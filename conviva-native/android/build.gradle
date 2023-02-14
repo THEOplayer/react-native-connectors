@@ -50,6 +50,14 @@ android {
   }
 }
 
+
+rootProject.allprojects {
+  repositories {
+    // Any project depending on this module through npm should be able to find the local Maven repo.
+    maven { url("$rootDir/../node_modules/@theoplayer/react-native-conviva/android/local") }
+  }
+}
+
 repositories {
   mavenLocal()
   maven {
@@ -58,6 +66,8 @@ repositories {
   }
   google()
   mavenCentral()
+  // Local Maven repo
+  maven { url("local") }
   maven { url 'https://jitpack.io' }
 }
 
@@ -70,7 +80,8 @@ dependencies {
   implementation "com.facebook.react:react-native:+"  // From node_modules
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
-  implementation "com.theoplayer.android-connector:conviva:$theoplayer_version"
+//  implementation "com.theoplayer.android-connector:conviva:$theoplayer_version"
+  implementation "com.theoplayer.android-connector:conviva:4.9.0-debug"
 
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
