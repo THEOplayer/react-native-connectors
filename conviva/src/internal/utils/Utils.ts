@@ -8,6 +8,8 @@ import {
 import type { Ad, AdBreak, GoogleImaAd, SourceDescription } from 'react-native-theoplayer';
 import type { THEOplayer } from "react-native-theoplayer";
 import type { ConvivaConfiguration } from "@theoplayer/react-native-conviva";
+import * as ReactNativeTHEOplayerPackage from "react-native-theoplayer/package.json";
+import { Platform } from "react-native";
 
 export function collectDeviceMetadata(): ConvivaDeviceMetadata {
   return {
@@ -51,9 +53,8 @@ export function calculateConvivaOptions(config: ConvivaConfiguration): ConvivaOp
 
 export function collectPlayerInfo(): ConvivaPlayerInfo {
   return {
-    [Constants.FRAMEWORK_NAME]: 'THEOplayer HTML5',
-    // Not applicable for HTML5
-    [Constants.FRAMEWORK_VERSION]: 'NaForHTML5'
+    [Constants.FRAMEWORK_NAME]: `THEOplayer ReactNative ${Platform.OS}`,
+    [Constants.FRAMEWORK_VERSION]: ReactNativeTHEOplayerPackage.version
   };
 }
 
