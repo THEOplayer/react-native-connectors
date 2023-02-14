@@ -108,24 +108,13 @@ export class ConvivaHandler {
       Constants.Playback.BUFFER_LENGTH,
       calculateBufferLength(this.player)
     );
-    this.convivaVideoAnalytics.reportPlaybackMetric(
-      Constants.Playback.RESOLUTION,
-      // TODO,
-      0,
-      // this.player.videoWidth,
-      // TODO
-      0,
-      // this.player.videoHeight
-    );
 
     if (this.player.selectedVideoTrack !== undefined) {
-      const activeQuality = findMediaTrackByUid(this.player.videoTracks, this.player.selectedVideoTrack)?.activeQuality;
+      const activeQuality = findMediaTrackByUid(this.player.videoTracks, this.player.selectedVideoTrack)?.activeQuality as VideoQuality;
       if (activeQuality) {
         this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.BITRATE, activeQuality.bandwidth / 1000);
-        const frameRate = (activeQuality as VideoQuality).frameRate;
-        if (frameRate) {
-          this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.RENDERED_FRAMERATE, frameRate);
-        }
+        this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.RENDERED_FRAMERATE, activeQuality.frameRate);
+        this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.RESOLUTION, activeQuality.width, activeQuality.height);
       }
     }
   };
