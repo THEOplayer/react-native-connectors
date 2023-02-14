@@ -13,7 +13,11 @@ import { Platform } from "react-native";
 
 export function collectDeviceMetadata(): ConvivaDeviceMetadata {
   return {
-    [Constants.DeviceMetadata.CATEGORY]: Constants.DeviceCategory.WEB
+    [Constants.DeviceMetadata.CATEGORY]: Platform.select({
+      ios: Constants.DeviceCategory.APPLE_DEVICE,
+      web: Constants.DeviceCategory.WEB,
+      android: Constants.DeviceCategory.ANDROID_DEVICE,
+    })
   };
 }
 
