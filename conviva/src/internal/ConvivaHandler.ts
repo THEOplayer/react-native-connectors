@@ -8,7 +8,7 @@ import {
 } from './utils/Utils';
 import { CsaiAdReporter } from './ads/CsaiAdReporter';
 import type { SourceDescription, THEOplayer, VideoQuality } from "react-native-theoplayer";
-import { findQualityByUid, PlayerEventType } from "react-native-theoplayer";
+import { findMediaTrackByUid, PlayerEventType } from "react-native-theoplayer";
 import { CONVIVA_CALLBACK_FUNCTIONS } from "./ConvivaCallbackFunctions";
 import type { ConvivaConfiguration } from "../api/ConvivaConfiguration";
 
@@ -117,13 +117,15 @@ export class ConvivaHandler {
       0,
       // this.player.videoHeight
     );
-    const activeVideoTrack = this.player.videoTracks[0];
-    const activeQuality = findQualityByUid(activeVideoTrack, activeVideoTrack?.activeQuality);
-    if (activeQuality) {
-      this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.BITRATE, activeQuality.bandwidth / 1000);
-      const frameRate = (activeQuality as VideoQuality).frameRate;
-      if (frameRate) {
-        this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.RENDERED_FRAMERATE, frameRate);
+
+    if (this.player.selectedVideoTrack !== undefined) {
+      const activeQuality = findMediaTrackByUid(this.player.videoTracks, this.player.selectedVideoTrack)?.activeQuality;
+      if (activeQuality) {
+        this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.BITRATE, activeQuality.bandwidth / 1000);
+        const frameRate = (activeQuality as VideoQuality).frameRate;
+        if (frameRate) {
+          this.convivaVideoAnalytics.reportPlaybackMetric(Constants.Playback.RENDERED_FRAMERATE, frameRate);
+        }
       }
     }
   };
