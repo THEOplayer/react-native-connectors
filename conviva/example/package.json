@@ -8,16 +8,15 @@
     "start": "react-native start",
     "web": "webpack-dev-server --config ./web/webpack.config.js --mode development",
     "pods": "pod-install --quiet",
-    "postinstall": "npm update react-native-theoplayer"
+    "postinstall": "npm update react-native-theoplayer",
+    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0"
   },
   "dependencies": {
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.7",
+    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0",
     "react-native-web": "^0.18.12"
-  },
-  "peerDependencies": {
-    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
