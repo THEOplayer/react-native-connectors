@@ -52,8 +52,7 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun setAdInfo(tag: Int, convivaMetadata: ReadableMap) {
-    // TODO: setAdInfo
-    convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+    convivaConnectors[tag]?.setAdInfo(convivaMetadata.toHashMap())
   }
 
   @ReactMethod
