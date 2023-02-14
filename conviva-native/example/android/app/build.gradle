@@ -155,7 +155,7 @@ android {
       }
       if (!enableSeparateBuildPerCPUArchitecture) {
         ndk {
-          abiFilters(*reactNativeArchitectures())
+          abiFilters (*reactNativeArchitectures())
         }
       }
     }
@@ -207,7 +207,7 @@ android {
       reset()
       enable enableSeparateBuildPerCPUArchitecture
       universalApk false  // If true, also generate a universal APK
-      include(*reactNativeArchitectures())
+      include (*reactNativeArchitectures())
     }
   }
   signingConfigs {
@@ -257,22 +257,22 @@ dependencies {
   implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
   debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-    exclude group: 'com.facebook.fbjni'
+    exclude group:'com.facebook.fbjni'
   }
 
   debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-    exclude group: 'com.facebook.flipper'
-    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    exclude group:'com.facebook.flipper'
+    exclude group:'com.squareup.okhttp3', module:'okhttp'
   }
 
   debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
-    exclude group: 'com.facebook.flipper'
+    exclude group:'com.facebook.flipper'
   }
 
   if (enableHermes) {
     //noinspection GradleDynamicVersion
     implementation("com.facebook.react:hermes-engine:+") { // From node_modules
-      exclude group: 'com.facebook.fbjni'
+      exclude group:'com.facebook.fbjni'
     }
   } else {
     implementation jscFlavor
