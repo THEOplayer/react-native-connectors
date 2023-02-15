@@ -12,11 +12,12 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "11.0" }
-  s.source       = { :git => "https://github.com:THEOplayer/react-native-theoplayer.git.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/theoplayer/react-native-theoplayer.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.dependency "React-Core"
+  s.dependency "react-native-theoplayer"
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
