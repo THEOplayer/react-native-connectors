@@ -33,7 +33,7 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
 // errors. To fix this webpack can be configured to compile to the necessary
 // `node_module`.
 const babelLoaderConfiguration = {
-  test: /\.tsx?$/,
+  test: /\.(js|ts|tsx)$/,
   exclude: ['/**/*.d.ts', '/**/node_modules/'],
   use: {
     loader: 'babel-loader',
