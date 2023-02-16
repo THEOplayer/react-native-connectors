@@ -1,1 +1,1 @@
-export { AdobeConnector } from './AdobeConnector';
+export { AdobeConnector } from './api/AdobeConnector';

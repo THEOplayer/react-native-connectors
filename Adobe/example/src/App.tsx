@@ -2,10 +2,11 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { PlayButton } from './res/images';
+import { AdobeConnector } from "@theoplayer/react-native-adobe";
 
 const playerConfig: PlayerConfiguration = {
   license:
-    'sZP7IYe6T6fL3LUe0KPKTOzo0S4eFSxe0QC-CKI63Oz_3D41IS0ZIQIe3QB6FOPlUY3zWokgbgjNIOf9fl5kCoP10LXlFDhtIuh-3uCLCmzrIKxeFSxe0Lbi3LCLISP60ZfVfK4_bQgZCYxNWoryIQXzImf90SCt3SBkTSfi0u5i0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lbc3l5_0S0L3uftFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikfgzVfG3gWKxydDkibK4LbogqW6f9UwPkImi6IK41Uw4ZIY06TgV6WY4VUQgodD4tfgkj',
+    'sZP7IYe6T6P6CSRo0uUe36zLIleLFSx63lR-TSaiC6zrISbr3Sfc3QX60l06FOPlUY3zWokgbgjNIOf9flhcTSCZ3QxlFDaoIQh-3uCo36zr3LerFS0_Iu1eIuhi3LBc36fVfK4_bQgZCYxNWoryIQXzImf90SCoTu0LTS0_0lBt0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lCk3lCiTSRZ0SbZFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikf6i6CDrebKjNIOfVfKXpIwPqdDxzU6fVfKINbK4zU6fVfKgqbZfVfGxNsK4pf6i6UwIqbZfVfGUgCKjLfgzVfG3gWKxydDkibK4LbogqW6f9UwPkIYz',
   libraryLocation: 'theoplayer',
 };
 
@@ -19,12 +20,14 @@ const source = {
 };
 
 const App = () => {
+  const adobeConnector = useRef<AdobeConnector | null>();
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Create Conviva connector
+    // Create Adobe connector
+    adobeConnector.current = new AdobeConnector(player);
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
