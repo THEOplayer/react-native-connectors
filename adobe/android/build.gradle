@@ -82,5 +82,7 @@ dependencies {
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
+  implementation 'com.adobe.marketing.mobile:userprofile:1.+'
+  implementation 'com.adobe.marketing.mobile:sdk-core:1.+'
   implementation project(':react-native-theoplayer')
 }
