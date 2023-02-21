@@ -72,7 +72,7 @@ const App = () => {
       {/*Play/pause button*/}
       {!error && (
         <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
-          <Image style={styles.image} source={paused ? PlayButton : null} />
+          {paused && <Image style={styles.image} source={PlayButton} />}
         </TouchableOpacity>
       )}
 
