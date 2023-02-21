@@ -1,0 +1,77 @@
+buildscript {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") :
+    project.properties["THEOplayerNielsen_kotlinVersion"]
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:7.2.2"
+    classpath("com.facebook.react:react-native-gradle-plugin")
+    classpath("de.undercouch:gradle-download-task:5.0.1")
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+  compileSdkVersion safeExtGet("THEOplayerNielsen_compileSdkVersion", 31)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("THEOplayerNielsen_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerNielsen_targetSdkVersion", 31)
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+println("TOM")
+println("$rootDir")
+
+repositories {
+  mavenLocal()
+  google()
+  mavenCentral()
+  // Local Maven repo
+  maven { url("local") }
+  maven { url 'https://jitpack.io' }
+}
+
+def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
+def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.7.10")
+
+dependencies {
+  //noinspection GradleDynamicVersion
+  implementation("com.facebook.react:react-native:+")
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
+  implementation project(':react-native-theoplayer')
+}
