@@ -1,4 +1,4 @@
-package com.rntheodemo;
+package com.theoplayer.conviva.example;
 
 import android.app.Application;
 import android.content.Context;
@@ -9,7 +9,9 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
-import com.rntheodemo.newarchitecture.MainApplicationReactNativeHost;
+import com.theoplayer.conviva.example.newarchitecture.MainApplicationReactNativeHost;
+import com.theoplayerconviva.BuildConfig;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 

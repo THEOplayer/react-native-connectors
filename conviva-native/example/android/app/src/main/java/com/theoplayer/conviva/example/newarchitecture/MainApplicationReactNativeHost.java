@@ -1,4 +1,4 @@
-package com.rntheodemo.newarchitecture;
+package com.theoplayer.conviva.example.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,10 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.rntheodemo.BuildConfig;
-import com.rntheodemo.newarchitecture.components.MainComponentsRegistry;
-import com.rntheodemo.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.theoplayer.conviva.example.newarchitecture.components.MainComponentsRegistry;
+import com.theoplayer.conviva.example.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.theoplayerconviva.BuildConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 

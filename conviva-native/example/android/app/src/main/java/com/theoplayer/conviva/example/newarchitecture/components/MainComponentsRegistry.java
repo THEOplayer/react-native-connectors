@@ -1,4 +1,4 @@
-package com.rntheodemo.newarchitecture.components;
+package com.theoplayer.conviva.example.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

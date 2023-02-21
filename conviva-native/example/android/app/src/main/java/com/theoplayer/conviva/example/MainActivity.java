@@ -1,8 +1,9 @@
-package com.rntheodemo;
+package com.theoplayer.conviva.example;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import com.theoplayerconviva.BuildConfig;
 
 public class MainActivity extends ReactActivity {
 
