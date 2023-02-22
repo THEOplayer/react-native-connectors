@@ -44,9 +44,11 @@ const App = () => {
   };
 
   const onSourceChange = () => {
+    const now = new Date();
+
     const streamUrl = extractSource(theoPlayer.current?.source);
     const metadata: ConvivaMetadata = {
-      ['Conviva.assetName']: 'Demo source 2',
+      ['Conviva.assetName']: `Demo source ${now.toLocaleString()}`,
       ['Conviva.streamUrl']: streamUrl || '',
       ['Conviva.streamType']: "VOD",
     };
