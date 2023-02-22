@@ -9,7 +9,7 @@ import {
   THEOplayerView
 } from 'react-native-theoplayer';
 import { ConvivaConnector } from '@theoplayer/react-native-conviva';
-import { ForwardButton, PauseButton, PipButton, PlayButton, RewindButton } from './res/images';
+import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
 import SOURCES from "./res/sources.json";
 
@@ -27,9 +27,9 @@ const dashSource = SOURCES[1] as SourceDescription;
 const sourceWithPreRoll = SOURCES[2] as SourceDescription;
 
 const App = () => {
-  const convivaConnector = useRef<ConvivaConnector | null>();
-  const theoPlayer = useRef<THEOplayer | null>();
-  const [error, setError] = useState<PlayerError | null>();
+  const convivaConnector = useRef<ConvivaConnector | undefined>();
+  const theoPlayer = useRef<THEOplayer | undefined>();
+  const [error, setError] = useState<PlayerError | undefined>();
   const [paused, setPaused] = useState<boolean>(true);
 
   const convivaMetadata: ConvivaMetadata = {
@@ -96,6 +96,10 @@ const App = () => {
 
   const onPip = useCallback(() => {
     // TODO: first merge PiP feature
+    const player = theoPlayer.current;
+    if (player) {
+      player.currentTime = player.duration - 5000;
+    }
   }, [theoPlayer])
 
   return (
@@ -120,12 +124,13 @@ const App = () => {
               </TouchableOpacity>
             </View>
 
-            {/*Play/pause & trick-play buttons*/}
-            <View style={styles.controlsRow}>
-              <TouchableOpacity style={styles.button} onPress={onPip}>
-                <Image style={styles.image} source={PipButton}/>
-              </TouchableOpacity>
-            </View>
+            {/* PiP */}
+            <TouchableOpacity style={styles.button} onPress={() => seekToBeforeEnd(theoPlayer.current)}>
+              <Text style={styles.buttonText}>{"Seek to end -5sec"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => toPip(theoPlayer.current)}>
+              <Text style={styles.buttonText}>{"Picture-in-Picture"}</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -135,6 +140,19 @@ const App = () => {
     </View>
   );
 };
+
+function seekToBeforeEnd(player: THEOplayer | undefined) {
+  if (player && !isNaN(player.duration)) {
+    player.currentTime = player.duration - 5000;
+  }
+}
+
+function toPip(player: THEOplayer| undefined) {
+  if (player) {
+    // TODO: once PiP feature is merged.
+    // player.presentationMode = 'picture-in-picture';
+  }
+}
 
 function extractSource(source?: SourceDescription): string | undefined {
   if (!source || !source.sources) {
@@ -169,6 +187,14 @@ const styles = StyleSheet.create({
   },
   button: {
     marginHorizontal: 5,
+  },
+  buttonText: {
+    fontSize: 20,
+    marginVertical: 2,
+    color: 'black',
+    borderRadius: 4,
+    padding: 3,
+    backgroundColor: '#ffc50f',
   },
   message: {
     textAlignVertical: 'center',
