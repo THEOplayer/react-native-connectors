@@ -18,7 +18,7 @@ const SOURCES = Platform.select({
   "ios": SOURCES_IOS,
   "android": SOURCES_ANDROID,
   "web": SOURCES_WEB
-})
+}) || SOURCES_WEB;
 
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
