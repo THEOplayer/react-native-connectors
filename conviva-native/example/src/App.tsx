@@ -1,8 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import {
+  PlayerConfiguration,
+  PlayerError,
+  PlayerEventType,
+  SourceDescription,
+  THEOplayer,
+  THEOplayerView
+} from 'react-native-theoplayer';
 import { ConvivaConnector } from '@theoplayer/react-native-conviva';
-import { PlayButton } from './res/images';
+import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
 
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
@@ -34,9 +41,6 @@ const App = () => {
   const [paused, setPaused] = useState<boolean>(true);
 
   const convivaMetadata: ConvivaMetadata = {
-    ['Conviva.assetName']: 'Demo source',
-    ['Conviva.streamUrl']: source.sources[0].src,
-    ['Conviva.streamType']: "VOD",
     ['Conviva.applicationName']: 'THEOplayer',
     ['Conviva.viewerId']: 'your_viewer_id'
   };
@@ -47,12 +51,23 @@ const App = () => {
     gatewayUrl: TOUCHSTONE_SERVICE_URL
   };
 
+  const onSourceChange = () => {
+    const streamUrl = extractSource(theoPlayer.current?.source);
+    const metadata: ConvivaMetadata = {
+      ['Conviva.assetName']: 'Demo source',
+      ['Conviva.streamUrl']: streamUrl || '',
+      ['Conviva.streamType']: "VOD",
+    };
+    convivaConnector.current?.setContentInfo(metadata);
+  };
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Conviva connector
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = !paused;
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
+    player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
 
     // Update theoPlayer reference.
     theoPlayer.current = player;
@@ -69,6 +84,20 @@ const App = () => {
     }
   }, [theoPlayer])
 
+  const onSkipBackward = useCallback(() => {
+    const player = theoPlayer.current;
+    if (player) {
+      player.currentTime -= 15000;
+    }
+  }, [theoPlayer])
+
+  const onSkipForward = useCallback(() => {
+    const player = theoPlayer.current;
+    if (player) {
+      player.currentTime += 15000;
+    }
+  }, [theoPlayer])
+
   return (
     <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
 
@@ -76,9 +105,20 @@ const App = () => {
 
       {/*Play/pause button*/}
       {!error && (
-        <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
-          {paused && <Image style={styles.image} source={PlayButton} />}
-        </TouchableOpacity>
+        <View style={styles.fullscreen}>
+          <View style={styles.controlsContainer}>
+            <TouchableOpacity style={styles.button} onPress={onSkipBackward}>
+              <Image style={styles.image} source={RewindButton} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
+              {paused && <Image style={styles.image} source={PlayButton} />}
+              {!paused && <Image style={styles.image} source={PauseButton} />}
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onSkipForward}>
+              <Image style={styles.image} source={ForwardButton} />
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
 
       {/*Error message*/}
@@ -87,6 +127,17 @@ const App = () => {
   );
 };
 
+function extractSource(source?: SourceDescription): string | undefined {
+  if (!source || !source.sources) {
+    return undefined;
+  }
+  if (Array.isArray(source.sources)) {
+    return source.sources.length > 0 ? source.sources[0].src : undefined;
+  } else {
+    return source.sources.src;
+  }
+}
+
 const styles = StyleSheet.create({
   fullscreen: {
     position: 'absolute',
@@ -94,8 +145,15 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  controlsContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  button: {
+    marginHorizontal: 5
   },
   message: {
     textAlignVertical: 'center',
