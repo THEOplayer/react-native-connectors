@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import {
-  AdIntegrationKind,
   PlayerConfiguration,
   PlayerError,
   PlayerEventType,
@@ -10,8 +9,9 @@ import {
   THEOplayerView
 } from 'react-native-theoplayer';
 import { ConvivaConnector } from '@theoplayer/react-native-conviva';
-import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
+import { ForwardButton, PauseButton, PipButton, PlayButton, RewindButton } from './res/images';
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
+import SOURCES from "./res/sources.json";
 
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
@@ -22,33 +22,9 @@ const playerConfig: PlayerConfiguration = {
   libraryLocation: 'theoplayer'
 };
 
-const source = {
-  sources: [
-    {
-      "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
-      "type": "application/dash+xml"
-    },
-    {
-      type: "application/x-mpegurl",
-      src: "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
-    }
-  ],
-};
-
-const sourceWithPreRoll = {
-  "sources": [
-    {
-      "src": "https://cdn.theoplayer.com/video/elephants-dream/playlistCorrectionENG.m3u8",
-      "type": "application/x-mpegurl"
-    }
-  ],
-  "ads": [
-    {
-      "integration": 'google-ima' as AdIntegrationKind,
-      "sources": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
-    }
-  ]
-}
+const hlsSource = SOURCES[0] as SourceDescription;
+const dashSource = SOURCES[1] as SourceDescription;
+const sourceWithPreRoll = SOURCES[2] as SourceDescription;
 
 const App = () => {
   const convivaConnector = useRef<ConvivaConnector | null>();
@@ -70,7 +46,7 @@ const App = () => {
   const onSourceChange = () => {
     const streamUrl = extractSource(theoPlayer.current?.source);
     const metadata: ConvivaMetadata = {
-      ['Conviva.assetName']: 'Demo source',
+      ['Conviva.assetName']: 'Demo source 2',
       ['Conviva.streamUrl']: streamUrl || '',
       ['Conviva.streamType']: "VOD",
     };
@@ -81,7 +57,7 @@ const App = () => {
     // Create Conviva connector
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = !paused;
-    player.source = sourceWithPreRoll;
+    player.source = dashSource;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
 
@@ -116,25 +92,38 @@ const App = () => {
     }
   }, [theoPlayer])
 
+  const onPip = useCallback(() => {
+    // TODO: first merge PiP feature
+  }, [theoPlayer])
+
   return (
     <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
 
       <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>
 
-      {/*Play/pause button*/}
       {!error && (
-        <View style={styles.fullscreen}>
+        <View style={styles.fullscreenCenter}>
           <View style={styles.controlsContainer}>
-            <TouchableOpacity style={styles.button} onPress={onSkipBackward}>
-              <Image style={styles.image} source={RewindButton}/>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
-              {paused && <Image style={styles.image} source={PlayButton}/>}
-              {!paused && <Image style={styles.image} source={PauseButton}/>}
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onSkipForward}>
-              <Image style={styles.image} source={ForwardButton}/>
-            </TouchableOpacity>
+            {/*Play/pause & trick-play buttons*/}
+            <View style={styles.controlsRow}>
+              <TouchableOpacity style={styles.button} onPress={onSkipBackward}>
+                <Image style={styles.image} source={RewindButton}/>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
+                {paused && <Image style={styles.image} source={PlayButton}/>}
+                {!paused && <Image style={styles.image} source={PauseButton}/>}
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button} onPress={onSkipForward}>
+                <Image style={styles.image} source={ForwardButton}/>
+              </TouchableOpacity>
+            </View>
+
+            {/*Play/pause & trick-play buttons*/}
+            <View style={styles.controlsRow}>
+              <TouchableOpacity style={styles.button} onPress={onPip}>
+                <Image style={styles.image} source={PipButton}/>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       )}
@@ -157,13 +146,6 @@ function extractSource(source?: SourceDescription): string | undefined {
 }
 
 const styles = StyleSheet.create({
-  fullscreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-  },
   fullscreenCenter: {
     position: 'absolute',
     top: 0,
@@ -174,13 +156,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   controlsContainer: {
-    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'column'
+  },
+  controlsRow: {
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
   },
   button: {
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   message: {
     textAlignVertical: 'center',
