@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import {
+  AdIntegrationKind,
   PlayerConfiguration,
   PlayerError,
   PlayerEventType,
@@ -34,6 +35,21 @@ const source = {
   ],
 };
 
+const sourceWithPreRoll = {
+  "sources": [
+    {
+      "src": "https://cdn.theoplayer.com/video/elephants-dream/playlistCorrectionENG.m3u8",
+      "type": "application/x-mpegurl"
+    }
+  ],
+  "ads": [
+    {
+      "integration": 'google-ima' as AdIntegrationKind,
+      "sources": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+    }
+  ]
+}
+
 const App = () => {
   const convivaConnector = useRef<ConvivaConnector | null>();
   const theoPlayer = useRef<THEOplayer | null>();
@@ -65,7 +81,7 @@ const App = () => {
     // Create Conviva connector
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = !paused;
-    player.source = source;
+    player.source = sourceWithPreRoll;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
 
@@ -73,13 +89,15 @@ const App = () => {
     theoPlayer.current = player;
 
     // Destroy connector when unmounting
-    return () => { convivaConnector.current?.destroy() }
+    return () => {
+      convivaConnector.current?.destroy()
+    }
   }, []);
 
   const onTogglePlayPause = useCallback(() => {
     const player = theoPlayer.current;
     if (player) {
-      player.paused? player.play() : player.pause();
+      player.paused ? player.play() : player.pause();
       setPaused((paused) => !paused);
     }
   }, [theoPlayer])
@@ -99,30 +117,30 @@ const App = () => {
   }, [theoPlayer])
 
   return (
-    <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
+    <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
 
-      <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>
 
       {/*Play/pause button*/}
       {!error && (
         <View style={styles.fullscreen}>
           <View style={styles.controlsContainer}>
             <TouchableOpacity style={styles.button} onPress={onSkipBackward}>
-              <Image style={styles.image} source={RewindButton} />
+              <Image style={styles.image} source={RewindButton}/>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
-              {paused && <Image style={styles.image} source={PlayButton} />}
-              {!paused && <Image style={styles.image} source={PauseButton} />}
+              {paused && <Image style={styles.image} source={PlayButton}/>}
+              {!paused && <Image style={styles.image} source={PauseButton}/>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onSkipForward}>
-              <Image style={styles.image} source={ForwardButton} />
+              <Image style={styles.image} source={ForwardButton}/>
             </TouchableOpacity>
           </View>
         </View>
       )}
 
       {/*Error message*/}
-      {error && <View style={styles.fullscreen}><Text style={styles.message}>{error.errorMessage}</Text></View>}
+      {error && <View style={styles.fullscreenCenter}><Text style={styles.message}>{error.errorMessage}</Text></View>}
     </View>
   );
 };
@@ -145,6 +163,15 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  fullscreenCenter: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   controlsContainer: {
     flex: 1,
