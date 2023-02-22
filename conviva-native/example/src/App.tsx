@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import {
   PlayerConfiguration,
   PlayerError,
@@ -11,7 +11,14 @@ import {
 import { ConvivaConnector } from '@theoplayer/react-native-conviva';
 import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
-import SOURCES from "./res/sources.json";
+import SOURCES_ANDROID from "./res/sources_android.json"
+import SOURCES_IOS from "./res/sources_ios.json"
+import SOURCES_WEB from "./res/sources_web.json"
+const SOURCES = Platform.select({
+  "ios": SOURCES_IOS,
+  "android": SOURCES_ANDROID,
+  "web": SOURCES_WEB
+})
 
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
@@ -22,13 +29,10 @@ const playerConfig: PlayerConfiguration = {
   libraryLocation: 'theoplayer'
 };
 
-const hlsSource = SOURCES[0] as SourceDescription;
-const dashSource = SOURCES[1] as SourceDescription;
-const sourceWithPreRoll = SOURCES[2] as SourceDescription;
-
 const App = () => {
   const convivaConnector = useRef<ConvivaConnector | undefined>();
   const theoPlayer = useRef<THEOplayer | undefined>();
+  const [sourceIndex, setSourceIndex] = useState<number>(0);
   const [error, setError] = useState<PlayerError | undefined>();
   const [paused, setPaused] = useState<boolean>(true);
 
@@ -44,13 +48,13 @@ const App = () => {
   };
 
   const onSourceChange = () => {
-    const now = new Date();
-
     const streamUrl = extractSource(theoPlayer.current?.source);
     const metadata: ConvivaMetadata = {
-      ['Conviva.assetName']: `Demo source ${now.toLocaleString()}`,
+      ['Conviva.assetName']: `Demo source ${(new Date()).toLocaleString()}`,
       ['Conviva.streamUrl']: streamUrl || '',
       ['Conviva.streamType']: "VOD",
+      ['customTag1']: "customValue1",
+      ['customTag2']: "customValue2",
     };
     convivaConnector.current?.setContentInfo(metadata);
   };
@@ -59,9 +63,10 @@ const App = () => {
     // Create Conviva connector
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = !paused;
-    player.source = dashSource;
+    player.source = SOURCES[sourceIndex].source as SourceDescription;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
+    player.addEventListener(PlayerEventType.PAUSE, () => setPaused(true));
 
     // Update theoPlayer reference.
     theoPlayer.current = player;
@@ -80,28 +85,6 @@ const App = () => {
     }
   }, [theoPlayer])
 
-  const onSkipBackward = useCallback(() => {
-    const player = theoPlayer.current;
-    if (player) {
-      player.currentTime -= 15000;
-    }
-  }, [theoPlayer])
-
-  const onSkipForward = useCallback(() => {
-    const player = theoPlayer.current;
-    if (player) {
-      player.currentTime += 15000;
-    }
-  }, [theoPlayer])
-
-  const onPip = useCallback(() => {
-    // TODO: first merge PiP feature
-    const player = theoPlayer.current;
-    if (player) {
-      player.currentTime = player.duration - 5000;
-    }
-  }, [theoPlayer])
-
   return (
     <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
 
@@ -112,24 +95,30 @@ const App = () => {
           <View style={styles.controlsContainer}>
             {/*Play/pause & trick-play buttons*/}
             <View style={styles.controlsRow}>
-              <TouchableOpacity style={styles.button} onPress={onSkipBackward}>
+              <TouchableOpacity style={styles.button} onPress={() => skip(theoPlayer.current, -15000)}>
                 <Image style={styles.image} source={RewindButton}/>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
                 {paused && <Image style={styles.image} source={PlayButton}/>}
                 {!paused && <Image style={styles.image} source={PauseButton}/>}
               </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={onSkipForward}>
+              <TouchableOpacity style={styles.button} onPress={() => skip(theoPlayer.current, 15000)}>
                 <Image style={styles.image} source={ForwardButton}/>
               </TouchableOpacity>
             </View>
 
-            {/* PiP */}
+            <Text style={styles.infoText}>{`Source: ${SOURCES[sourceIndex].name}`}</Text>
             <TouchableOpacity style={styles.button} onPress={() => seekToBeforeEnd(theoPlayer.current)}>
               <Text style={styles.buttonText}>{"Seek to end -5sec"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => toPip(theoPlayer.current)}>
               <Text style={styles.buttonText}>{"Picture-in-Picture"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => {
+              setSourceIndex((sourceIndex + 1) % SOURCES.length);
+              setSource(theoPlayer.current, SOURCES[sourceIndex].source as SourceDescription);
+            }}>
+              <Text style={styles.buttonText}>{"Next source"}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -141,13 +130,25 @@ const App = () => {
   );
 };
 
+function setSource(player: THEOplayer | undefined, source: SourceDescription) {
+  if (player) {
+    player.source = source;
+  }
+}
+
+function skip(player: THEOplayer | undefined, skipTime: number) {
+  if (player) {
+    player.currentTime = player.currentTime + skipTime;
+  }
+}
+
 function seekToBeforeEnd(player: THEOplayer | undefined) {
   if (player && !isNaN(player.duration)) {
     player.currentTime = player.duration - 5000;
   }
 }
 
-function toPip(player: THEOplayer| undefined) {
+function toPip(player: THEOplayer | undefined) {
   if (player) {
     // TODO: once PiP feature is merged.
     // player.presentationMode = 'picture-in-picture';
@@ -187,6 +188,13 @@ const styles = StyleSheet.create({
   },
   button: {
     marginHorizontal: 5,
+  },
+  infoText: {
+    fontSize: 18,
+    marginVertical: 2,
+    color: '#ffc50f',
+    padding: 3,
+    backgroundColor: 'black',
   },
   buttonText: {
     fontSize: 20,
