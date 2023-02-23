@@ -8,9 +8,9 @@ import {
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
-import { ConvivaConnector } from '@theoplayer/react-native-conviva';
+import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
 import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
-import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
+import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
 import SOURCES_ANDROID from "./res/sources_android.json"
 import SOURCES_IOS from "./res/sources_ios.json"
 import SOURCES_WEB from "./res/sources_web.json"

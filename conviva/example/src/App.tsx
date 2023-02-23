@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
-import { ConvivaConnector } from '@theoplayer/react-native-conviva';
+import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
 import { PlayButton } from './res/images';
-import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-conviva';
+import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
 
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';

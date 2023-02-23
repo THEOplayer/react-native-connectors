@@ -44,7 +44,7 @@ allprojects {
       }
     }
     maven {
-      // Custom path to @theoplayer/react-native-nielsen local Maven folder
+      // Custom path to @theoplayer/react-native-analytics-nielsen local Maven folder
       url("$rootDir/../../android/local")
     }
     google()

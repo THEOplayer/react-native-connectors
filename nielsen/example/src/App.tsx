@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
-import { NielsenConnector } from '@theoplayer/react-native-nielsen';
+import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
 import { PlayButton } from './res/images';
-import type { NielsenConfiguration, NielsenMetadata } from '@theoplayer/react-native-nielsen';
+import type { NielsenConfiguration, NielsenMetadata } from '@theoplayer/react-native-analytics-nielsen';
 
 const TEST_CUSTOMER_KEY = 'TODO';
 

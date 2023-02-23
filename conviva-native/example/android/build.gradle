@@ -44,7 +44,7 @@ allprojects {
       }
     }
     maven {
-      // Custom path to @theoplayer/react-native-conviva local Maven folder
+      // Custom path to @theoplayer/react-native-analytics-conviva local Maven folder
       url("$rootDir/../../android/local")
     }
     google()

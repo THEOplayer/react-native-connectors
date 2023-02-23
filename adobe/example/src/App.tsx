@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { PlayButton } from './res/images';
-import { AdobeConnector } from "@theoplayer/react-native-adobe";
+import { AdobeConnector } from "@theoplayer/react-native-analytics-adobe";
 
 const playerConfig: PlayerConfiguration = {
   license:

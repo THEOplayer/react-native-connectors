@@ -5,7 +5,7 @@ Analytics connectors for react-native-theoplayer.
 ## Installation
 
 ```sh
-npm install @theoplayer/react-native-conviva
+npm install @theoplayer/react-native-analytics-conviva
 ```
 
 ## Usage

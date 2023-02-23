@@ -7,7 +7,7 @@ import {
 } from '@convivainc/conviva-js-coresdk';
 import type { Ad, AdBreak, GoogleImaAd, SourceDescription } from 'react-native-theoplayer';
 import type { THEOplayer } from "react-native-theoplayer";
-import type { ConvivaConfiguration } from "@theoplayer/react-native-conviva";
+import type { ConvivaConfiguration } from "@theoplayer/react-native-analytics-conviva";
 import * as ReactNativeTHEOplayerPackage from "react-native-theoplayer/package.json";
 import { Platform } from "react-native";
 

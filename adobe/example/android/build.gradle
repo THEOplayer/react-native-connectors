@@ -47,7 +47,7 @@ allprojects {
       }
     }
     maven {
-      // Custom path to @theoplayer/react-native-adobe local Maven folder
+      // Custom path to @theoplayer/react-native-analytics-adobe local Maven folder
       url("$rootDir/../../android/local")
     }
     google()
