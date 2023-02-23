@@ -88,6 +88,14 @@ def reactNativeArchitectures() {
   return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+task NielsenSdkReleaseCheck {
+  def p = ['curl', "https://raw.githubusercontent.com/NielsenDigitalSDK/" +
+    "nielsenappsdk-android/master/com/nielsenappsdk/global/" +
+    "NielsenAppSdk-ReadMe.md"].execute().text
+  project.logger.log(LogLevel.ERROR, p)
+}
+preBuild.dependsOn('NielsenSdkReleaseCheck')
+
 android {
   ndkVersion rootProject.ext.ndkVersion
 
@@ -107,7 +115,7 @@ android {
       reset()
       enable enableSeparateBuildPerCPUArchitecture
       universalApk false  // If true, also generate a universal APK
-      include (*reactNativeArchitectures())
+      include(*reactNativeArchitectures())
     }
   }
   signingConfigs {
@@ -156,7 +164,7 @@ dependencies {
 
   debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
   debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-    exclude group:'com.squareup.okhttp3', module:'okhttp'
+    exclude group: 'com.squareup.okhttp3', module: 'okhttp'
   }
 
   debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")

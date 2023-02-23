@@ -80,4 +80,6 @@ dependencies {
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
   implementation project(':react-native-theoplayer')
+
+  implementation "com.nielsenappsdk.global:ad:9.0.0.0"
 }
