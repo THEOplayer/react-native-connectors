@@ -32,8 +32,7 @@
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
     "release": "release-it",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
-    "postinstall": "npm update react-native-theoplayer"
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",
@@ -77,7 +76,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0"
+    "react-native-theoplayer": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/react-native-theoplayer-2.0.0-pre4.tgz"
   },
   "commitlint": {
     "extends": [
@@ -121,7 +120,7 @@
   },
   "dependencies": {
     "@convivainc/conviva-js-coresdk": "^4.5.13",
-    "@theoplayer/conviva-connector-web": "./theoplayer-conviva-connector-web-1.0.0.tgz"
+    "@theoplayer/conviva-connector-web": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-conviva-connector-web-1.0.0.tgz"
   },
   "overrides": {
     "theoplayer": "^4.7.0"
