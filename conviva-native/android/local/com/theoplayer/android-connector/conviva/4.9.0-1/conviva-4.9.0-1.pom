@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.theoplayer.android-connector</groupId>
   <artifactId>conviva</artifactId>
-  <version>4.9.0-debug</version>
+  <version>4.9.0-1</version>
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
