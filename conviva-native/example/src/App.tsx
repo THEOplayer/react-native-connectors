@@ -48,11 +48,8 @@ const App = () => {
   };
 
   const onSourceChange = () => {
-    const streamUrl = extractSource(theoPlayer.current?.source);
     const metadata: ConvivaMetadata = {
       ['Conviva.assetName']: `Demo source ${(new Date()).toLocaleString()}`,
-      ['Conviva.streamUrl']: streamUrl || '',
-      ['Conviva.streamType']: "VOD",
       ['customTag1']: "customValue1",
       ['customTag2']: "customValue2",
     };
@@ -152,17 +149,6 @@ function toPip(player: THEOplayer | undefined) {
   if (player) {
     // TODO: once PiP feature is merged.
     // player.presentationMode = 'picture-in-picture';
-  }
-}
-
-function extractSource(source?: SourceDescription): string | undefined {
-  if (!source || !source.sources) {
-    return undefined;
-  }
-  if (Array.isArray(source.sources)) {
-    return source.sources.length > 0 ? source.sources[0].src : undefined;
-  } else {
-    return source.sources.src;
   }
 }
 
