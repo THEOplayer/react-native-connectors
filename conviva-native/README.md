@@ -32,17 +32,21 @@ const convivaConfig: ConvivaConfiguration = {
 };
 
 const App = () => {
-    const onPlayerReady = useCallback((player: THEOplayer) => {
-        // Create Conviva connector
-        convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
+  const convivaConnector = useRef<ConvivaConnector | null>();
 
-        // Destroy connector when unmounting
-        return () => {
-            convivaConnector.current?.destroy()
-        }
-    }, []);
+  useEffect(() => {
+    return () => {
+      // Destroy connector when unmounting
+      convivaConnector.current?.destroy()
+    }
+  }, []);
 
-    return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
+  const onPlayerReady = (player: THEOplayer) => {
+    // Create Conviva connector
+    convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
+  }
+
+  return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
 }
 ```
 

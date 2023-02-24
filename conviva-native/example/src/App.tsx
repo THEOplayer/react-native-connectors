@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import {
   PlayerConfiguration,
@@ -36,6 +36,13 @@ const App = () => {
   const [error, setError] = useState<PlayerError | undefined>();
   const [paused, setPaused] = useState<boolean>(true);
 
+  useEffect(() => {
+    // Destroy connector when unmounting
+    return () => {
+      convivaConnector.current?.destroy()
+    }
+  }, []);
+
   const convivaMetadata: ConvivaMetadata = {
     ['Conviva.applicationName']: 'THEOplayer',
     ['Conviva.viewerId']: 'your_viewer_id'
@@ -67,11 +74,6 @@ const App = () => {
 
     // Update theoPlayer reference.
     theoPlayer.current = player;
-
-    // Destroy connector when unmounting
-    return () => {
-      convivaConnector.current?.destroy()
-    }
   }, []);
 
   const onTogglePlayPause = useCallback(() => {
