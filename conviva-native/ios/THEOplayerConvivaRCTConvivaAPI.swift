@@ -38,7 +38,16 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                 ) {
                     self.connectors[node] = connector
                     print("[ConvivaModule] added connector to view", node)
+                    if let contentInfo = convivaMetadata as? [String: Any] {
+                        connector.videoAnalytics.setContentInfo(contentInfo)
+                    } else {
+                        print("[ConvivaModule] Received metada in wrong format. Received \(convivaMetadata), expected [String: Any]")
+                    }
+                } else {
+                    print("[ConvivaModule] Cannot create Conviva connector for node", node)
                 }
+            } else {
+                print("[ConvivaModule] Cannot find THEOPlayer for node", node)
             }
         }
     }
