@@ -1,0 +1,71 @@
+# THEOplayer React-Native Conviva Connector
+
+A Conviva analytics connector for `@theoplayer/react-native`.
+
+## Installation
+
+```sh
+npm install https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-react-native-analytics-conviva-0.1.0.tgz
+```
+
+[//]: # (npm install @theoplayer/react-native-analytics-conviva)
+
+## Usage
+
+### Configuring the connector
+
+Create the connector by providing the `THEOplayer` instance, some initial metadata and a config
+object:
+
+```jsx
+import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
+
+const convivaMetadata: ConvivaMetadata = {
+  ['Conviva.applicationName']: 'THEOplayer',
+  ['Conviva.viewerId']: 'your_viewer_id'
+};
+
+const convivaConfig: ConvivaConfiguration = {
+  customerKey: 'your_customer_key',
+  debug: true,
+  gatewayUrl: 'https://[account]-test.testonly.conviva.com'
+};
+
+const App = () => {
+    const onPlayerReady = useCallback((player: THEOplayer) => {
+        // Create Conviva connector
+        convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
+
+        // Destroy connector when unmounting
+        return () => {
+            convivaConnector.current?.destroy()
+        }
+    }, []);
+
+    return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
+}
+```
+
+The `convivaMetada` object contains key-value pairs that are passed directly to the Conviva SDK.
+Most media related properties, such as its streamURL, duration or whether it is a live or vod
+stream, are passed by the connector itself.
+Any metadata related properties can be passed through the open key-value map:
+
+| Key                   | Value                           |
+|-----------------------|---------------------------------|
+| `'Conviva.assetName'` | Asset name of the next program. |
+| `'customTag'`         | Any custom value.               |
+
+### Passing metadata dynamically
+
+The connector allows passing or updating the current asset's metadata at any time:
+
+```typescript
+const onUpdateMetadata = () => {
+  const metadata: ConvivaMetadata = {
+    ['customTag1']: "customValue1",
+    ['customTag2']: "customValue2",
+  };
+  convivaConnector.current?.setContentInfo(metadata);
+};
+```
