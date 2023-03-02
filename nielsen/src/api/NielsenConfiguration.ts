@@ -1,5 +1,5 @@
 export interface NielsenConfiguration {
-  customerKey: string;
+  appId: string;
   debug?: boolean;
   gatewayUrl?: string;
 }

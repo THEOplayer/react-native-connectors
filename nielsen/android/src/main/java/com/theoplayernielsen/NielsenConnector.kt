@@ -18,36 +18,52 @@ internal enum class NielsenState {
   NEW_STREAM, PLAYING, STOPPED
 }
 
-class THEONielsenAdapter(
+private const val PROP_APPID = "appid"
+private const val PROP_APPNAME = "appname"
+private const val PROP_SFCODE = "sfcode"
+private const val PROP_DEVDEBUG = "nol_devDebug"
+
+class NielsenConnector(
   private val player: Player,
   context: Context,
-  private var metadata: JSONObject?,
+  config: Map<String, Any>,
+  private var metadata: Map<String, Any>?,
   private var channelName: JSONObject?
 ) {
   private var analytics: AppSdk? = null
-  private var adMetadata: JSONObject? = null
+  private var adMetadata: Map<String, Any>? = null
   private var currentTime: Long = 0
   private var adOffset = 0
   private var adStart = false
   private var isBuffering = false
   private var state = NielsenState.NEW_STREAM
+  private var reportedPlaying = false
 
   init {
     attachEventListeners()
-    initNielsen(context)
-    analytics?.loadMetadata(metadata)
+    initialize(context, config)
+    if (metadata != null) {
+      analytics?.loadMetadata(JSONObject(metadata as Map))
+    }
   }
 
-  private fun initNielsen(context: Context) {
+  private fun initialize(
+    context: Context,
+    settings: Map<String, Any>
+  ) {
     try {
       // Prepare AppSdk configuration object (JSONObject)
-      val appSdkConfig: JSONObject = JSONObject()
-        .put("appid", "P17BF4B3C-F873-44BB-83B3-DDC6A699CE0B")
-        .put("appname", "Sample App Name")
-        .put("sfcode", "it")
-        .put("nol_devDebug", "DEBUG") // only for debug builds
+      val appSdkConfig = JSONObject()
+        .put(PROP_APPID, settings[PROP_APPID])
+        .put(PROP_APPNAME, settings[PROP_APPNAME])
+      if (settings.containsKey(PROP_SFCODE)) {
+        appSdkConfig.put(PROP_SFCODE, settings[PROP_SFCODE])
+      }
+      if (settings.containsKey(PROP_DEVDEBUG)) {
+        appSdkConfig.put(PROP_DEVDEBUG, settings[PROP_DEVDEBUG])
+      }
       // Pass appSdkConfig to the AppSdk constructor
-      analytics = AppSdk(context, appSdkConfig, THEONielsenAppNotifier())
+      analytics = AppSdk(context, appSdkConfig, NielsenAppNotifier())
     } catch (e: JSONException) {
       Log.e("Nielsen_Error", "Couldn’t prepare JSONObject for appSdkConfig", e)
     }
@@ -59,11 +75,10 @@ class THEONielsenAdapter(
   }
 
   // Needs to be called before the source is changed
-  fun update(channelName: JSONObject?, metadata: JSONObject?) {
+  fun update(channelName: JSONObject?, metadata: Map<String, Any>) {
     this.channelName = channelName
     this.metadata = metadata
-    //        Log.i("THEOEvent", "loadMetadata: on update");
-    analytics?.loadMetadata(metadata)
+    analytics?.loadMetadata(JSONObject(metadata))
   }
 
   private fun stop() {
@@ -82,23 +97,22 @@ class THEONielsenAdapter(
     } else {
       "midroll"
     }
-    try {
-      adMetadata = JSONObject()
-        .put("type", type)
-        .put("assetid", ad?.id)
-    } catch (e: JSONException) {
-      e.printStackTrace()
-    }
+    adMetadata = mapOf(
+      "type" to type,
+      "assetid" to (ad?.id ?: "")
+    )
   }
 
   private fun attachEventListeners() {
     player.addEventListener(PlayerEventTypes.PLAY, onPlay)
-    player.addEventListener(PlayerEventTypes.PLAYING, onFirstPlaying)
+    player.addEventListener(PlayerEventTypes.WAITING, onWaiting)
+    player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.addEventListener(PlayerEventTypes.SEEKING, onSeeking)
     player.addEventListener(PlayerEventTypes.PAUSE, onPaused)
     player.addEventListener(PlayerEventTypes.ENDED, onEnded)
     player.addEventListener(PlayerEventTypes.ERROR, onError)
     player.addEventListener(PlayerEventTypes.DESTROY, onDestroy)
+    player.addEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
     player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.ads.addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
     player.ads.addEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -107,7 +121,7 @@ class THEONielsenAdapter(
 
   private fun removeEventListeners() {
     player.removeEventListener(PlayerEventTypes.PLAY, onPlay)
-    player.removeEventListener(PlayerEventTypes.PLAYING, onOtherPlaying)
+    player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.removeEventListener(PlayerEventTypes.WAITING, onWaiting)
     player.removeEventListener(PlayerEventTypes.SEEKING, onSeeking)
     player.removeEventListener(PlayerEventTypes.PAUSE, onPaused)
@@ -122,72 +136,44 @@ class THEONielsenAdapter(
   }
 
   private fun setPlayheadPosition(time: Double) {
-//        Log.i("THEOEvent", "in set playhead position and currentTime is " + this.currentTime + " while time in event is " + time);
     if (currentTime.toInt() != time.toInt()) {
-//            Log.i("THEOEvent", "A SECOND PASSED");
       currentTime = time.toLong()
-      //            Log.i("THEOEvent", "Player is paused: "+ this.player.isPaused() + " and is buffering: " + this.isBuffering);
       if (!player.isPaused && !isBuffering) {
-//                Log.i("THEOEvent", "SET NEW PLAYHEAD");
         analytics?.setPlayheadPosition(currentTime)
       }
     }
   }
 
-  private val onPlay: EventListener<PlayEvent> = EventListener<PlayEvent> { e ->
-//        Log.i("THEOEvent", "Event: play");
+  private val onPlay: EventListener<PlayEvent> = EventListener<PlayEvent> {
     if (state === NielsenState.NEW_STREAM) {
       state = NielsenState.PLAYING
       analytics?.play(channelName)
-//            this.analytics.loadMetadata(metadata);
     }
-  }
-
-  private val onOtherPlaying: EventListener<PlayingEvent> = EventListener<PlayingEvent> { e ->
-//        Log.i("THEOEvent", "Event: other playing");
-    if (!adStart) {
-//            Log.i("THEOEvent", "loadMetadata: main");
-      analytics?.loadMetadata(metadata)
-    } else {
-//            Log.i("THEOEvent", "loadMetadata: ad");
-      analytics?.loadMetadata(adMetadata)
-    }
-
-//        setPlayheadPosition();
-    isBuffering = false
-    state = NielsenState.PLAYING
   }
 
   private val onTimeUpdate: EventListener<TimeUpdateEvent> = EventListener<TimeUpdateEvent> { e ->
-//        Log.i("THEOEvent", "Event: timeupdate" + e.getCurrentTime());
-    setPlayheadPosition(e.currentTime)
+    if (reportedPlaying) {
+      setPlayheadPosition(e.currentTime)
+    }
   }
 
   private val onWaiting: EventListener<WaitingEvent> = EventListener<WaitingEvent> {
-//        Log.i("THEOEvent", "Event: waiting");
-    if (!adStart) {
-      isBuffering = true
-      stop()
+    if (reportedPlaying) {
+      if (!adStart) {
+        isBuffering = true
+        stop()
+      }
     }
   }
 
-  private val onFirstPlaying: EventListener<PlayingEvent> = EventListener<PlayingEvent> {
-    Log.i("THEOEvent", "Event: first playing")
+  private val onPlaying: EventListener<PlayingEvent> = EventListener<PlayingEvent> {
     if (!adStart) {
-//            Log.i("THEOEvent", "loadMetadata: main");
-      analytics?.loadMetadata(metadata)
+      analytics?.loadMetadata(JSONObject(metadata as Map))
     } else {
-//            Log.i("THEOEvent", "loadMetadata: ad");
-      analytics?.loadMetadata(adMetadata)
+      analytics?.loadMetadata(JSONObject(adMetadata as Map))
     }
     isBuffering = false
     state = NielsenState.PLAYING
-    player.addEventListener(PlayerEventTypes.PLAYING, onOtherPlaying)
-    player.addEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
-    player.addEventListener(PlayerEventTypes.WAITING, onWaiting)
-
-    // TODO: needs to be initialized first
-//    player.removeEventListener(PlayerEventTypes.PLAYING, onFirstPlaying)
   }
 
   private val onSeeking: EventListener<SeekingEvent> = EventListener<SeekingEvent> {
@@ -212,25 +198,23 @@ class THEONielsenAdapter(
     state = NielsenState.NEW_STREAM
   }
 
-  private val onAdBreakBegin: EventListener<AdBreakBeginEvent> = EventListener<AdBreakBeginEvent> { e ->
-    adStart = true
-    adOffset = e.adBreak.timeOffset
-  }
+  private val onAdBreakBegin: EventListener<AdBreakBeginEvent> =
+    EventListener<AdBreakBeginEvent> { e ->
+      adStart = true
+      adOffset = e.adBreak.timeOffset
+    }
 
   private val onAdBegin: EventListener<AdBeginEvent> = EventListener<AdBeginEvent> { e ->
-      getAdMetadata(e.ad)
+    getAdMetadata(e.ad)
 //      analytics?.loadMetadata(adMetadata);
 //      setPlayheadPosition()
   }
 
-  val onAdBreakEnd: EventListener<AdBreakEndEvent> = EventListener<AdBreakEndEvent> {
-//            Log.i("THEOEvent", "Event: adbreakend");
-      adStart = false
-      //            analytics.stop(); // Don't update the state as playback isn't stopped
+  private val onAdBreakEnd: EventListener<AdBreakEndEvent> = EventListener<AdBreakEndEvent> {
+    adStart = false
+    //            analytics.stop(); // Don't update the state as playback isn't stopped
 //            analytics.loadMetadata(metadata);
 //            setPlayheadPosition();
-      player.removeEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
-      player.removeEventListener(PlayerEventTypes.PLAYING, onOtherPlaying)
-      player.addEventListener(PlayerEventTypes.PLAYING, onFirstPlaying)
+    reportedPlaying = false
   }
 }

@@ -13,7 +13,7 @@ class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
 
   private val viewResolver: ViewResolver
 
-//  private var nielsenConnectors: HashMap<Int, NielsenConnector> = HashMap()
+  private var nielsenConnectors: HashMap<Int, NielsenConnector> = HashMap()
 
   init {
     viewResolver = ViewResolver(context)
@@ -31,7 +31,6 @@ class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
         if (customerKey.isEmpty()) {
           Log.e(TAG, "Invalid $PROP_CUSTOMER_KEY")
         } else {
-          // TODO: create connector
 //          nielsenConnectors[tag] =
 //          nielsenConnectors[tag]?.setContentInfo(nielsenMetadata.toHashMap())
         }

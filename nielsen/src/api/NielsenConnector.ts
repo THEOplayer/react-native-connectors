@@ -11,7 +11,6 @@ export class NielsenConnector {
     this.connectorAdapter = new NielsenConnectorAdapter(player, NielsenMetadata, NielsenConfig);
   }
 
-
   /**
    * Sets Nielsen metadata on the Nielsen video analytics.
    * @param metadata object of key value pairs
