@@ -1,7 +1,7 @@
 
 import Foundation
 import UIKit
-@testable import react_native_theoplayer
+import react_native_theoplayer
 import THEOplayerConnectorConviva
 import THEOplayerSDK
 
