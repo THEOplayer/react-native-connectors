@@ -1,17 +1,35 @@
 [
   {
+    "name": "Big Buck Bunny - HLS - VOD - ADS",
+    "source": {
+      "sources": [
+        {
+          "src": "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8",
+          "type": "application/x-mpegurl"
+        }
+      ],
+      "ads": [
+        {
+          "integration": "google-ima",
+          "sources": {
+            "src": "https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dskippablelinear&correlator="
+          }
+        }
+      ]
+    }
+  },
+  {
     "name": "Big Buck Bunny - DASH - VOD",
     "source": {
       "sources": [
         {
           "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
           "type": "application/dash+xml"
-        },
-        {
-          "type": "application/x-mpegurl",
-          "src": "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "Big Buck Bunny - DASH - VOD"
+      }
     }
   },
   {
@@ -21,12 +39,11 @@
         {
           "type": "application/x-mpegurl",
           "src": "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
-        },
-        {
-          "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
-          "type": "application/dash+xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "Big Buck Bunny - HLS - VOD"
+      }
     }
   },
   {
@@ -43,7 +60,10 @@
           "integration": "google-ima",
           "sources": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "HLS - CSAI - Google IMA mid-roll VAST"
+      }
     }
   }
 ]

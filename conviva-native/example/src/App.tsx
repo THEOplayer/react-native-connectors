@@ -26,7 +26,10 @@ const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
-  libraryLocation: 'theoplayer'
+  libraryLocation: 'theoplayer',
+  pip: {
+    canStartPictureInPictureAutomaticallyFromInline: true,
+  }
 };
 
 const App = () => {
@@ -50,14 +53,13 @@ const App = () => {
 
   const convivaConfig: ConvivaConfiguration = {
     customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
-    debug: true,
+    debug: false,
     gatewayUrl: TOUCHSTONE_SERVICE_URL
   };
 
-  const onSourceChange = () => {
+  const onCustomMetadata = () => {
     const metadata: ConvivaMetadata = {
-      ['Conviva.assetName']: `Demo source ${(new Date()).toLocaleString()}`,
-      ['customTag1']: "customValue1",
+      ['customTag1']: `custom ${(new Date()).toLocaleString()}`,
       ['customTag2']: "customValue2",
     };
     convivaConnector.current?.setContentInfo(metadata);
@@ -69,7 +71,6 @@ const App = () => {
     player.autoplay = !paused;
     player.source = SOURCES[sourceIndex].source as SourceDescription;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
-    player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
     player.addEventListener(PlayerEventType.PAUSE, () => setPaused(true));
 
     // Update theoPlayer reference.
@@ -114,10 +115,15 @@ const App = () => {
               <Text style={styles.buttonText}>{"Picture-in-Picture"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => {
-              setSourceIndex((sourceIndex + 1) % SOURCES.length);
-              setSource(theoPlayer.current, SOURCES[sourceIndex].source as SourceDescription);
+              const nextSourceIndex = (sourceIndex + 1) % SOURCES.length;
+              setSourceIndex(nextSourceIndex);
+              setSource(theoPlayer.current, SOURCES[nextSourceIndex].source as SourceDescription);
+              setPaused(true);
             }}>
               <Text style={styles.buttonText}>{"Next source"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onCustomMetadata}>
+              <Text style={styles.buttonText}>{"Set custom metadata"}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -149,8 +155,7 @@ function seekToBeforeEnd(player: THEOplayer | undefined) {
 
 function toPip(player: THEOplayer | undefined) {
   if (player) {
-    // TODO: once PiP feature is merged.
-    // player.presentationMode = 'picture-in-picture';
+    player.presentationMode = 'picture-in-picture';
   }
 }
 
