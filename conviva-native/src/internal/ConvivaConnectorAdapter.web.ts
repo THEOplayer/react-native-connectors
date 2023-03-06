@@ -11,7 +11,6 @@ export class ConvivaConnectorAdapter {
 
   constructor (player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
     this.integration = new THEOplayerConvivaConnector.ConvivaConnector(
-      // @ts-ignore
       player.nativeHandle as ChromelessPlayer,
       convivaMetadata as NativeConvivaMetadata,
       convivaConfig
