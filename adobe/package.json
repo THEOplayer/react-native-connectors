@@ -51,10 +51,6 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "dependencies": {
-    "@adobe/react-native-acpcore": "^2.0.2",
-    "@adobe/react-native-acpmedia": "^3.0.1"
-  },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
     "@react-native-community/eslint-config": "^3.0.2",
