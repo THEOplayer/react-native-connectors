@@ -53,7 +53,7 @@ const App = () => {
 
   const convivaConfig: ConvivaConfiguration = {
     customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
-    debug: false,
+    debug: true,
     gatewayUrl: TOUCHSTONE_SERVICE_URL
   };
 
