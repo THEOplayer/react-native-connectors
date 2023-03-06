@@ -11,7 +11,10 @@
           "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
           "type": "application/dash+xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "Big Buck Bunny - HLS - VOD"
+      }
     }
   },
   {
@@ -28,7 +31,10 @@
           "integration": "google-ima",
           "sources": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "HLS - CSAI - Google IMA pre-roll VAST"
+      }
     }
   },
   {
@@ -45,7 +51,10 @@
           "integration": "google-ima",
           "sources": "https://cdn.theoplayer.com/demos/ads/vmap/single-midroll-no-skip.xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "HLS - CSAI - Google IMA mid-roll VAST"
+      }
     }
   },
   {
@@ -62,7 +71,10 @@
           "integration": "google-ima",
           "sources": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
         }
-      ]
+      ],
+      "metadata": {
+        "title": "HLS - 403"
+      }
     }
   }
 ]
