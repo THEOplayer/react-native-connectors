@@ -10,14 +10,6 @@ export class ComscoreConnectorAdapter {
     NativeModules.ComscoreModule.initialize(this.player.nativeHandle, comscoreMetadata, comscoreConfig);
   }
 
-  setContentInfo(metadata: ComscoreMetadata): void {
-    NativeModules.ComscoreModule.setContentInfo(this.player.nativeHandle, metadata);
-  }
-
-  setAdInfo(metadata: ComscoreMetadata): void {
-    NativeModules.ComscoreModule.setAdInfo(this.player.nativeHandle, metadata);
-  }
-
   destroy(): void {
     // @ts-ignore
     NativeModules.ComscoreModule.destroy(this.player.nativeHandle);
