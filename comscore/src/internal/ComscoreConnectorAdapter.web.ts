@@ -1,26 +1,49 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import type { ComscoreConfiguration } from '../api/ComscoreConfiguration';
-
 import type { ComscoreMetadata } from '../api/ComscoreMetadata';
-import { AdMetadata } from "./web/comscore/AdMetadata";
-import { ContentMetadata } from "./web/comscore/ContentMetadata";
-import { ComscoreTheo } from "./web/integration/ComscoreTheo";
+
+
+// @ts-ignore
+import type { ChromelessPlayer } from 'theoplayer';
+import { ComscoreTheo } from './ComscoreTheo';
+import { AdMetadata } from './ComscoreAdMetadata';
+import { ContentMetadata } from './ComscoreContentMetadata';
+import type { IContentMetadata } from './IContentMetadata';
 
 export class ComscoreConnectorAdapter {
 
-  // @ts-ignore
   private integration: ComscoreTheo;
 
-  // @ts-ignore
-  constructor (player: THEOplayer, comscoreMetadata: ComscoreMetadata, comscoreConfig: ComscoreConfiguration) {
+  // // @ts-ignore
+  // constructor (player: THEOplayer, ComscoreMetadata: ComscoreMetadata, ComscoreConfig: ComscoreConfiguration) {
+  //   this.integration = new ComscoreTheo(
+  //     // @ts-ignore
+  //     player.nativeHandle as ChromelessPlayer,
+  //     ComscoreMetadata as NativeComscoreMetadata, // TODO uitleg vragen
+  //     ComscoreConfig
+  //   );
+  // }
 
-    // @ts-ignore
-    const contentMetadata = new ContentMetadata(comscoreMetadata);
-    const adMetadata = new AdMetadata();
-    this.integration = new ComscoreTheo('123', player.nativeHandle as THEOplayer.ChromelessPlayer, contentMetadata, adMetadata);
+  constructor (player: THEOplayer, ComscoreMetadata: ComscoreMetadata, ComscoreConfig: ComscoreConfiguration) {
+    this.integration = new ComscoreTheo(
+      ComscoreConfig.customerKey,
+      player,
+      new ContentMetadata(ComscoreMetadata),
+      new AdMetadata(),
+    );
+  }
+
+  setContentInfo(metadata: ComscoreMetadata): void {
+    // TODO uncomment once Comscore version has been updated
+    this.integration.setContentMetadata(new ContentMetadata(metadata));
+  }
+
+  setAdInfo(metadata: ComscoreMetadata): void {
+    // TODO uncomment once Comscore version has been updated
+    this.integration.setAdMetadata(new AdMetadata(metadata));
   }
 
   destroy() {
-    // this.integration.destroy();
+    this.integration.destroy();
   }
 }

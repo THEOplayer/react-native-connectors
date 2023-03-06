@@ -5,6 +5,9 @@ import { ComscoreConnector } from '@theoplayer/react-native-analytics-comscore';
 import { PlayButton } from './res/images';
 import type { ComscoreConfiguration, ComscoreMetadata } from '@theoplayer/react-native-analytics-comscore';
 
+const TEST_CUSTOMER_KEY = '01234567'; // TODO: Test with customer key
+
+
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
@@ -13,6 +16,7 @@ const playerConfig: PlayerConfiguration = {
 
 const source = {
   sources: [
+    
     {
       "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
       "type": "application/dash+xml"
@@ -22,6 +26,14 @@ const source = {
       src: "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
     }
   ],
+  // "ads": [
+  //   {
+  //     "integration": "google-ima",
+  //     "sources": {
+  //       "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+  //     }
+  //   }
+  // ]
 };
 
 const App = () => {
@@ -30,7 +42,7 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const comscoreMetadata: ComscoreMetadata =  {
+  const comscoreMetadata: ComscoreMetadata = {
     c1: "2",
     c2: "15866303",
     ns_type: "hidden",
@@ -50,7 +62,7 @@ const App = () => {
     ns_st_cn: "1",
     ns_st_ev: "play",
     ns_st_po: "53526",
-    ns_st_cl: 653750,
+    ns_st_cl: "653750",
     ns_st_mp: "js_api",
     ns_st_mv: "6.3.1.181004",
     ns_st_pn: "1",
@@ -131,10 +143,12 @@ const App = () => {
     oce_bpf: "raiplay",
     fp_offset: "*null",
     cv: "3.5"
-  };
+};
 
   const comscoreConfig: ComscoreConfiguration = {
-
+    customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
+    debug: true,
+    gatewayUrl: 'TODO'
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
