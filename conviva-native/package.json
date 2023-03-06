@@ -76,7 +76,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/react-native-theoplayer-2.0.0-pre4.tgz"
+    "react-native-theoplayer": "*"
   },
   "commitlint": {
     "extends": [
