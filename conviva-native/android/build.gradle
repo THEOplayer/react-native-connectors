@@ -87,7 +87,7 @@ dependencies {
 
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
 //  implementation "com.theoplayer.android-connector:conviva:$theoplayer_version"
-  implementation "com.theoplayer.android-connector:conviva:4.9.0-1"
+  implementation "com.theoplayer.android-connector:conviva:4.9.0-2"
 
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"

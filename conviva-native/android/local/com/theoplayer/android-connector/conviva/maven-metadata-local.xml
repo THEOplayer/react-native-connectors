@@ -3,11 +3,11 @@
   <groupId>com.theoplayer.android-connector</groupId>
   <artifactId>conviva</artifactId>
   <versioning>
-    <latest>4.9.0-1</latest>
-    <release>4.9.0-1</release>
+    <latest>4.9.0-2</latest>
+    <release>4.9.0-2</release>
     <versions>
-      <version>4.9.0-1</version>
+      <version>4.9.0-2</version>
     </versions>
-    <lastUpdated>20230224130347</lastUpdated>
+    <lastUpdated>20230302120347</lastUpdated>
   </versioning>
 </metadata>
