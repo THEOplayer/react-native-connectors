@@ -26,18 +26,18 @@ const source = {
       src: "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
     }
   ],
-  // "ads": [
-  //   {
-  //     "integration": "google-ima",
-  //     "sources": {
-  //       "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
-  //     }
-  //   }
-  // ]
+  "ads": [
+    {
+      "integration": "google-ima",
+      "sources": {
+        "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+      }
+    }
+  ]
 };
 
 const App = () => {
-  const comscoreConnector = useRef<ComscoreConnector | null>();
+  const comscoreConnector = useRef<ComscoreConnxxector | null>();
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
