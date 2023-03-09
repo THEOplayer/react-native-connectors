@@ -247,8 +247,15 @@ export class AdobeConnector {
     const url = `${this.uri}/${this.sessionId}/events`;
     const response = await this.sendRequest(url, body);
 
-    if (response.status !== 204) {
-      console.log('ERROR SENDEVENTREQUEST', response, body);
+    if (response.status === 404 || response.status === 410) {
+      // Faulty session id, store in queue and remake session
+      this.eventQueue.push(body);
+      if (this.sessionId !== '' && this.sessionInProgress) {
+        // avoid calling multiple startSessions close together
+        this.sessionId = '';
+        this.sessionInProgress = false;
+        await this.startSession();
+      }
     }
   }
 
