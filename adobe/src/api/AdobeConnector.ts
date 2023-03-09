@@ -39,6 +39,8 @@ export class AdobeConnector {
 
   private isPlayingAd = false;
 
+  private customMetadata: AdobeEventRequestBody = {}
+
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string) {
     this.player = player
     this.uri = `https://${uri}/api/v1/sessions`;
@@ -47,6 +49,10 @@ export class AdobeConnector {
     this.trackingUrl = trackingUrl;
 
     this.addEventListeners();
+  }
+
+  addCustomMetadata(metadata: AdobeEventRequestBody): void {
+    this.customMetadata = {...this.customMetadata, ...metadata};
   }
 
   private addEventListeners(): void {
@@ -237,7 +243,7 @@ export class AdobeConnector {
 
   // TODO probably other way to pass metadata or other type, All optional data should come from our side, check with NFL which ones they want? Leave all non required out for now
   private async sendEventRequest(eventType: string, metadata?: AdobeEventRequestBody): Promise<void> {
-    const body: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata};
+    const body: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata, ...this.customMetadata};
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
