@@ -3,6 +3,9 @@ import { AdEventType, MediaTrackEventType, PlayerEventType } from "react-native-
 import type { AdobeEventRequestBody, ContentType } from "../internal/Types";
 import { AdobeEventTypes } from "../internal/Types";
 
+const CONTENT_PING_INTERVAL = 10_000;
+const AD_PING_INTERVAL = 1_000;
+
 export class AdobeConnector {
   private player: THEOplayer;
 
@@ -30,7 +33,11 @@ export class AdobeConnector {
   /** Whether we are in a current session or not */
   private sessionInProgress = false;
 
-  private adPodIndex = 0; // TODO check if can do it like this? What if we play same adbreak again?
+  private adBreakPodIndex = 0; // TODO check if can do it like this? What if we play same adbreak again?
+
+  private adPodPosition = 0;
+
+  private isPlayingAd = false;
 
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string) {
     this.player = player
@@ -56,7 +63,7 @@ export class AdobeConnector {
 
     window.addEventListener('beforeunload', this.onBeforeUnload);
 
-    // chapter something we can do?
+    // something we can do for chapters?
   }
 
   private removeEventListeners(): void {
@@ -75,11 +82,7 @@ export class AdobeConnector {
   }
 
   private onDurationChange = () => {
-    // Have to make sure the duration is known before starting the session!
-    // Sometimes a small durationChange can be thrown near the end of the stream, don't start a new session for this!
-    if (!this.sessionInProgress) {
-      void this.startSession();
-    }
+    void this.startSession();
   }
 
   private onPlaying = () => {
@@ -126,22 +129,23 @@ export class AdobeConnector {
   private onAdEvent = (event: AdEvent) => {
     switch (event.subType) {
       case AdEventType.AD_BREAK_BEGIN: {
-        clearInterval(this.pingInterval);
-        this.startPinger(1000); // Ping interval for ad is 1 second!
+        this.isPlayingAd = true;
+        this.startPinger(AD_PING_INTERVAL);
         const adBreak = event.ad as AdBreak;
         const metadata: AdobeEventRequestBody = {
           params: {
-            'media.ad.podIndex': this.adPodIndex,
+            'media.ad.podIndex': this.adBreakPodIndex,
             'media.ad.podSecond': adBreak.maxDuration
           }
         }
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        this.adPodIndex++;
+        this.adBreakPodIndex++;
         break;
       }
       case AdEventType.AD_BREAK_END: {
-        clearInterval(this.pingInterval);
-        this.startPinger(10000); // Ping interval for content is 10 seconds!
+        this.isPlayingAd = false;
+        this.adPodPosition = 0;
+        this.startPinger(CONTENT_PING_INTERVAL);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_COMPLETE);
         break;
       }
@@ -150,13 +154,14 @@ export class AdobeConnector {
         console.log('AD BEGIN', ad);
         const metadata: AdobeEventRequestBody = {
           params: {
-            'media.ad.podPosition': ad.id, // TODO check if it is a number and make it a number!
+            'media.ad.podPosition': this.adPodPosition, // TODO check if it is a number and make it a number!
             'media.ad.id': ad.id,
             'media.ad.length': ad.duration,
             'media.ad.playerName': 'THEOplayer' // Or do they want the ad integration? We as a player render it :shrug:
           }
         }
         void this.sendEventRequest(AdobeEventTypes.AD_START, metadata);
+        this.adPodPosition++;
         break;
       }
       case AdEventType.AD_END: {
@@ -218,25 +223,24 @@ export class AdobeConnector {
     }
     this.sessionId = splitResponseUrl[splitResponseUrl.length-1];
 
-    console.log('WE GOT A RESPONSE', response, this.sessionId, body);
-
     if (this.eventQueue.length !== 0) {
       const url = `${this.uri}/${this.sessionId}/events`;
       for (const body of this.eventQueue) {
-        console.log('backup request', body);
         await this.sendRequest(url, body); // TODO another fallback necessary on top?
       }
       this.eventQueue = [];
     }
 
-    this.startPinger(10000);
+    if (!this.isPlayingAd) {
+      this.startPinger(CONTENT_PING_INTERVAL);
+    }
   }
 
   // TODO probably other way to pass metadata or other type, All optional data should come from our side, check with NFL which ones they want? Leave all non required out for now
   private async sendEventRequest(eventType: string, metadata?: AdobeEventRequestBody): Promise<void> {
     const body: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata};
     if (this.sessionId === '') {
-      // Session hasn't started yet but no session id --> queue
+      // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
       return;
     }
@@ -249,13 +253,16 @@ export class AdobeConnector {
   }
 
   private startPinger(interval: number): void {
+    if (this.pingInterval !== undefined) {
+      clearInterval(this.pingInterval);
+    }
     this.pingInterval = setInterval(() => {
-      console.log('ping!');
       void this.sendEventRequest(AdobeEventTypes.PING);
     }, interval);
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
+    console.log('sending request', body.eventType);
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
@@ -263,7 +270,6 @@ export class AdobeConnector {
         'Content-Type': 'application/json'
       }
     })
-
   }
 
   private getContentLength(): number {
@@ -275,15 +281,16 @@ export class AdobeConnector {
   }
 
   reset(): void {
-    this.adPodIndex = 0;
+    this.adBreakPodIndex = 0;
+    this.adPodPosition = 0;
     this.sessionId = '';
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
+    this.pingInterval = undefined;
   }
 
   destroy(): void {
     this.reset();
     this.removeEventListeners();
   }
-
 }
