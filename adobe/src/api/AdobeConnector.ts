@@ -87,7 +87,6 @@ export class AdobeConnector {
 
   private onPlaying = () => {
     if (!this.sessionInProgress) {
-      console.log('MAKE A NEW SESSION');
       void this.startSession();
     }
     void this.sendEventRequest(AdobeEventTypes.PLAY);
@@ -184,7 +183,7 @@ export class AdobeConnector {
   private createBaseRequest(eventType: string): AdobeEventRequestBody {
     return {
       "playerTime": {
-        "playhead": this.player.currentTime,
+        "playhead": this.player.currentTime/1000,
         "ts": Date.now() // TODO use currentPDT? no alternatives?
       },
       "eventType": eventType,
