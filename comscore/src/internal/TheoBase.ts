@@ -14,7 +14,7 @@ export abstract class TheoBase {
    * @type {*}
    * @memberof TheoBase
    */
-  protected player: THEOplayer;
+  protected player: any;
   /**
    * array of subscribed listeners
    * @private
@@ -315,6 +315,7 @@ export abstract class TheoBase {
    */
   protected onAdBegin() {
     this.addListener(this.player._player.ads, THEO_EVENTS.AD_BEGIN, (event: any) => {
+      console.log('[THEO AD EVENT] AD BEGIN')
       this.adPlayheadPosition = 0;
       this._adsPlaying = true;
 
@@ -339,6 +340,7 @@ export abstract class TheoBase {
    */
   protected onAdEnds() {
     this.addListener(this.player._player.ads, THEO_EVENTS.AD_END, () => {
+      console.log('[THEO AD EVENT] AD END')
       this._adsPlaying = false;
       const adType = this.getAdType();
 

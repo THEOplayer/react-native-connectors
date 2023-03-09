@@ -1,4 +1,4 @@
-import type { IContentMetadata } from './IContentMetadata';
+import type { IContentMetadata } from './IComscoreContentMetadata';
 import * as analytics  from '../comscore/comscore';
 
 class CustomLabels {
