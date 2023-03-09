@@ -27,7 +27,7 @@ const App = () => {
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Adobe connector
-    adobeConnector.current = new AdobeConnector(player);
+    adobeConnector.current = new AdobeConnector(player, "smetrics.nfl.com/va", "F75C3025512D2C1D0A490D44@AdobeOrg", "nfldev", "smetrics.nfl.com");
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
