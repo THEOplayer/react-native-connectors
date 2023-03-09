@@ -8,7 +8,7 @@ import type { ChromelessPlayer } from 'theoplayer';
 import { ComscoreTheo } from './ComscoreTheo';
 import { AdMetadata } from './ComscoreAdMetadata';
 import { ContentMetadata } from './ComscoreContentMetadata';
-import type { IContentMetadata } from './IContentMetadata';
+import type { IContentMetadata } from './IComscoreContentMetadata';
 
 export class ComscoreConnectorAdapter {
 
@@ -44,6 +44,6 @@ export class ComscoreConnectorAdapter {
   }
 
   destroy() {
-    this.integration.destroy();
+    this.integration.destroy(); // TODO
   }
 }
