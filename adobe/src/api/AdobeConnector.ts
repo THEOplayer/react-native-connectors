@@ -1,5 +1,5 @@
-import type { Ad, AdBreak, AdEvent, MediaTrackEvent, THEOplayer } from "react-native-theoplayer";
-import { AdEventType, MediaTrackEventType, PlayerEventType } from "react-native-theoplayer";
+import type { AdBreak, AdEvent, GoogleImaAd, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
+import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
 import type { AdobeEventRequestBody, ContentType } from "../internal/Types";
 import { AdobeEventTypes } from "../internal/Types";
 
@@ -41,6 +41,8 @@ export class AdobeConnector {
 
   private customMetadata: AdobeEventRequestBody = {}
 
+  private currentChapter: TextTrackCue | undefined;
+
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string) {
     this.player = player
     this.uri = `https://${uri}/api/v1/sessions`;
@@ -61,6 +63,7 @@ export class AdobeConnector {
     this.player.addEventListener(PlayerEventType.ENDED, this.onEnded);
     this.player.addEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
+    this.player.addEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
     this.player.addEventListener(PlayerEventType.DURATION_CHANGE, this.onDurationChange);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
@@ -69,7 +72,6 @@ export class AdobeConnector {
 
     window.addEventListener('beforeunload', this.onBeforeUnload);
 
-    // something we can do for chapters?
   }
 
   private removeEventListeners(): void {
@@ -78,6 +80,7 @@ export class AdobeConnector {
     this.player.removeEventListener(PlayerEventType.ENDED, this.onEnded);
     this.player.removeEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
+    this.player.removeEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
     this.player.removeEventListener(PlayerEventType.DURATION_CHANGE, this.onDurationChange);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
@@ -124,6 +127,28 @@ export class AdobeConnector {
     // TODO check if for both audio and video! I suppose it should?
     if (event.subType === MediaTrackEventType.ACTIVE_QUALITY_CHANGED) {
       void this.sendEventRequest(AdobeEventTypes.BITRATE_CHANGE);
+    }
+  }
+
+  private onTextTrackEvent = (event: TextTrackEvent) => {
+    const track = this.player.textTracks.find((track) => track.uid === event.trackUid);
+    if (track === undefined || track.kind !== 'chapters') {
+      return;
+    }
+    switch (event.subType) {
+      case TextTrackEventType.ENTER_CUE: {
+        const chapterCue = event.cue;
+        if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP); // TODO check if this is the correct use case for Chapter Skip
+        }
+        void this.sendEventRequest(AdobeEventTypes.CHAPTER_START);
+        this.currentChapter = chapterCue;
+        break;
+      }
+      case TextTrackEventType.EXIT_CUE: {
+        void this.sendEventRequest(AdobeEventTypes.CHAPTER_COMPLETE);
+        break;
+      }
     }
   }
 
@@ -299,6 +324,7 @@ export class AdobeConnector {
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
     this.pingInterval = undefined;
+    this.currentChapter = undefined;
   }
 
   destroy(): void {
