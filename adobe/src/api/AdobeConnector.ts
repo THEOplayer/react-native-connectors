@@ -1,7 +1,8 @@
-import type { AdBreak, AdEvent, GoogleImaAd, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
+import type { Ad, AdBreak, AdEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
 import type { AdobeEventRequestBody, ContentType } from "../internal/Types";
 import { AdobeEventTypes } from "../internal/Types";
+import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata } from "../utils/Utils";
 
 const CONTENT_PING_INTERVAL = 10_000;
 const AD_PING_INTERVAL = 1_000;
@@ -33,9 +34,9 @@ export class AdobeConnector {
   /** Whether we are in a current session or not */
   private sessionInProgress = false;
 
-  private adBreakPodIndex = 0; // TODO check if can do it like this? What if we play same adbreak again?
+  private adBreakPodIndex = 0;
 
-  private adPodPosition = 0;
+  private adPodPosition = 1;
 
   private isPlayingAd = false;
 
@@ -161,34 +162,23 @@ export class AdobeConnector {
         this.isPlayingAd = true;
         this.startPinger(AD_PING_INTERVAL);
         const adBreak = event.ad as AdBreak;
-        const metadata: AdobeEventRequestBody = {
-          params: {
-            'media.ad.podIndex': this.adBreakPodIndex,
-            'media.ad.podSecond': adBreak.maxDuration
-          }
-        }
+        const metadata: AdobeEventRequestBody = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        this.adBreakPodIndex++;
+        if ((metadata.params as any)?.["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
+          this.adBreakPodIndex++;
+        }
         break;
       }
       case AdEventType.AD_BREAK_END: {
         this.isPlayingAd = false;
-        this.adPodPosition = 0;
+        this.adPodPosition = 1;
         this.startPinger(CONTENT_PING_INTERVAL);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_COMPLETE);
         break;
       }
       case AdEventType.AD_BEGIN: {
         const ad = event.ad as Ad;
-        console.log('AD BEGIN', ad);
-        const metadata: AdobeEventRequestBody = {
-          params: {
-            'media.ad.podPosition': this.adPodPosition, // TODO check if it is a number and make it a number!
-            'media.ad.id': ad.id,
-            'media.ad.length': ad.duration,
-            'media.ad.playerName': 'THEOplayer' // Or do they want the ad integration? We as a player render it :shrug:
-          }
-        }
+        const metadata: AdobeEventRequestBody = calculateAdBeginMetadata(ad, this.adPodPosition);
         void this.sendEventRequest(AdobeEventTypes.AD_START, metadata);
         this.adPodPosition++;
         break;
@@ -318,7 +308,7 @@ export class AdobeConnector {
 
   reset(): void {
     this.adBreakPodIndex = 0;
-    this.adPodPosition = 0;
+    this.adPodPosition = 1;
     this.sessionId = '';
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
