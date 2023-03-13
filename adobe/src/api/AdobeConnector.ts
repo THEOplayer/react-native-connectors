@@ -132,22 +132,21 @@ export class AdobeConnector {
 
   private onTextTrackEvent = (event: TextTrackEvent) => {
     const track = this.player.textTracks.find((track) => track.uid === event.trackUid);
-    if (track === undefined || track.kind !== 'chapters') {
-      return;
-    }
-    switch (event.subType) {
-      case TextTrackEventType.ENTER_CUE: {
-        const chapterCue = event.cue;
-        if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
-          void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP); // TODO check if this is the correct use case for Chapter Skip
+    if (track !== undefined && track.kind === 'chapters') {
+      switch (event.subType) {
+        case TextTrackEventType.ENTER_CUE: {
+          const chapterCue = event.cue;
+          if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
+            void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP); // TODO check if this is the correct use case for Chapter Skip
+          }
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_START);
+          this.currentChapter = chapterCue;
+          break;
         }
-        void this.sendEventRequest(AdobeEventTypes.CHAPTER_START);
-        this.currentChapter = chapterCue;
-        break;
-      }
-      case TextTrackEventType.EXIT_CUE: {
-        void this.sendEventRequest(AdobeEventTypes.CHAPTER_COMPLETE);
-        break;
+        case TextTrackEventType.EXIT_CUE: {
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_COMPLETE);
+          break;
+        }
       }
     }
   }
