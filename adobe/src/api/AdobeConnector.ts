@@ -72,7 +72,6 @@ export class AdobeConnector {
     this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
 
     window.addEventListener('beforeunload', this.onBeforeUnload);
-
   }
 
   private removeEventListeners(): void {
@@ -125,7 +124,6 @@ export class AdobeConnector {
   }
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
-    // TODO check if for both audio and video! I suppose it should?
     if (event.subType === MediaTrackEventType.ACTIVE_QUALITY_CHANGED) {
       void this.sendEventRequest(AdobeEventTypes.BITRATE_CHANGE);
     }
@@ -138,7 +136,7 @@ export class AdobeConnector {
         case TextTrackEventType.ENTER_CUE: {
           const chapterCue = event.cue;
           if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
-            void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP); // TODO check if this is the correct use case for Chapter Skip
+            void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP);
           }
           void this.sendEventRequest(AdobeEventTypes.CHAPTER_START);
           this.currentChapter = chapterCue;
@@ -164,7 +162,7 @@ export class AdobeConnector {
         const adBreak = event.ad as AdBreak;
         const metadata: AdobeEventRequestBody = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        if ((metadata.params as any)?.["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
+        if ((metadata.params as any)["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
           this.adBreakPodIndex++;
         }
         break;
@@ -204,7 +202,7 @@ export class AdobeConnector {
     return {
       "playerTime": {
         "playhead": this.player.currentTime/1000,
-        "ts": Date.now() // TODO use currentPDT? no alternatives?
+        "ts": Date.now()
       },
       "eventType": eventType,
       "qoeData": {},
@@ -217,14 +215,15 @@ export class AdobeConnector {
     }
     this.sessionInProgress = true;
     const body = this.createBaseRequest(AdobeEventTypes.SESSION_START);
+    const mediaChannel = this.customMetadata.params ? (this.customMetadata.params as any)["media.channel"] : "N/A";
     body.params = {
       "analytics.reportSuite": this.sid,
       "analytics.trackingServer": this.trackingUrl,
-      "media.channel": "sample-test-channel", // TODO allow generic metadata to be passed with some required fields like this one? and query them with a default as fallback?
+      "media.channel": mediaChannel,
       "media.contentType": this.getContentType(),
-      "media.id": "sample-test-id",
+      "media.id": "N/A",
       "media.length": this.getContentLength(),
-      "media.playerName": "THEOplayer",
+      "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid
     }
 
@@ -255,7 +254,6 @@ export class AdobeConnector {
     }
   }
 
-  // TODO probably other way to pass metadata or other type, All optional data should come from our side, check with NFL which ones they want? Leave all non required out for now
   private async sendEventRequest(eventType: string, metadata?: AdobeEventRequestBody): Promise<void> {
     const body: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata, ...this.customMetadata};
     if (this.sessionId === '') {
@@ -288,7 +286,6 @@ export class AdobeConnector {
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
-    console.log('sending request', body.eventType);
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
