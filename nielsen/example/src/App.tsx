@@ -1,11 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
 import { PlayButton } from './res/images';
-import type { NielsenConfiguration, NielsenMetadata } from '@theoplayer/react-native-analytics-nielsen';
+import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 
-const TEST_CUSTOMER_KEY = 'TODO';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -32,19 +31,15 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const nielsenMetadata: NielsenMetadata = {
-    // TODO
-  };
-
-  const nielsenConfig: NielsenConfiguration = {
-    customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
-    debug: true,
-    gatewayUrl: 'TODO'
+  const appId = 'P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5';
+  const nielsenOptions: NielsenOptions = {
+    // containerId: 'THEOplayer',
+    nol_sdkDebug: 'debug'
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Nielsen connector
-    nielsenConnector.current = new NielsenConnector(player, nielsenMetadata, nielsenConfig);
+    nielsenConnector.current = new NielsenConnector(player, appId, 'channelName', nielsenOptions);
     player.autoplay = !paused;
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));

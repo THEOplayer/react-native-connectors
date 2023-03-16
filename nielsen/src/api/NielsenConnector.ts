@@ -1,30 +1,21 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NielsenConnectorAdapter } from '../internal/NielsenConnectorAdapter';
-import type { NielsenConfiguration } from './NielsenConfiguration';
-import type { NielsenMetadata } from './NielsenMetadata';
+import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 
 export class NielsenConnector {
 
   private connectorAdapter: NielsenConnectorAdapter
 
-  constructor(player: THEOplayer, NielsenMetadata: NielsenMetadata, NielsenConfig: NielsenConfiguration) {
-    this.connectorAdapter = new NielsenConnectorAdapter(player, NielsenMetadata, NielsenConfig);
+  constructor(player: THEOplayer, appId: string, channelName: string, NielsenConfig: NielsenOptions) {
+    this.connectorAdapter = new NielsenConnectorAdapter(player, appId, channelName, NielsenConfig);
   }
 
   /**
-   * Sets Nielsen metadata on the Nielsen video analytics.
-   * @param metadata object of key value pairs
+   * Adds metadata which will be sent on Nielsen requests.
+   * @param metadata contains the key value pairs with data.
    */
-  setContentInfo(metadata: NielsenMetadata): void {
-    this.connectorAdapter.setContentInfo(metadata);
-  }
-
-  /**
-   * Sets Nielsen metadata on the Nielsen ad analytics.
-   * @param metadata object of key value pairs
-   */
-  setAdInfo(metadata: NielsenMetadata): void {
-    this.connectorAdapter.setAdInfo(metadata);
+  updateMetadata(metadata: {[key: string]: string}): void {
+    this.connectorAdapter.updateMetadata(metadata);
   }
 
   /**
