@@ -17,7 +17,7 @@ const playerConfig: PlayerConfiguration = {
   libraryLocation: 'theoplayer',
 };
 
-const source: SourceDescription = {
+const source_dash: SourceDescription = {
   sources: [
     {
       src: 'https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd',
@@ -26,8 +26,23 @@ const source: SourceDescription = {
   ],
   ads: [
     {
-      'sources': 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=',
-      'integration': 'google-ima',
+      sources: 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=',
+      integration: 'google-ima',
+    }
+  ]
+};
+
+const source_hls: SourceDescription = {
+  sources: [
+    {
+      src: 'https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8',
+      type: 'application/x-mpegurl',
+    },
+  ],
+  ads: [
+    {
+      sources: 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=',
+      integration: 'google-ima',
     }
   ]
 };
@@ -53,7 +68,7 @@ const App = () => {
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Adobe connector
     adobeConnector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl);
-    player.source = source;
+    player.source = (Platform.OS == 'ios') ? source_hls : source_dash;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
     // Update theoPlayer reference.
