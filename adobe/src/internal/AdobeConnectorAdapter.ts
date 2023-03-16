@@ -121,11 +121,7 @@ export class AdobeConnectorAdapter {
   }
 
   private onSourceChange = () => {
-    if (this.sessionId !== '') {
-      this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
-        this.reset();
-      });
-    }
+    this.maybeEndSession();
   }
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
@@ -199,9 +195,15 @@ export class AdobeConnectorAdapter {
   }
 
   private onBeforeUnload = () => {
-    void this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
-      this.reset();
-    });
+    this.maybeEndSession();
+  }
+
+  private maybeEndSession(): void {
+    if (this.sessionId !== '') {
+      void this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
+        this.reset();
+      });
+    }
   }
 
   private createBaseRequest(eventType: string): AdobeEventRequestBody {
@@ -322,6 +324,7 @@ export class AdobeConnectorAdapter {
   }
 
   destroy(): void {
+    this.maybeEndSession();
     this.reset();
     this.removeEventListeners();
   }
