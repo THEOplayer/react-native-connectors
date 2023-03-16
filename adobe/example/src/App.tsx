@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import {
   PlayerConfiguration,
   PlayerError,
