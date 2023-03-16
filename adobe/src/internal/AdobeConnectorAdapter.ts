@@ -1,6 +1,6 @@
 import type { Ad, AdBreak, AdEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
-import type { AdobeEventRequestBody, ContentType } from "./Types";
+import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata } from "../utils/Utils";
 
@@ -40,7 +40,7 @@ export class AdobeConnectorAdapter {
 
   private isPlayingAd = false;
 
-  private customMetadata: AdobeEventRequestBody = {}
+  private customMetadata: AdobeMetaData = {}
 
   private currentChapter: TextTrackCue | undefined;
 
@@ -54,7 +54,7 @@ export class AdobeConnectorAdapter {
     this.addEventListeners();
   }
 
-  updateMetadata(metadata: AdobeEventRequestBody): void {
+  updateMetadata(metadata: AdobeMetaData): void {
     this.customMetadata = { ...this.customMetadata, ...metadata };
   }
 

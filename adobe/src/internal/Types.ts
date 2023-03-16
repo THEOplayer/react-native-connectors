@@ -3,6 +3,9 @@ export type ContentType = 'VOD' | 'Live' | 'Linear';
 export type AdobeEventRequestBody = {
   "playerTime"?: object,
   "eventType"?: string,
+} & AdobeMetaData
+
+export type AdobeMetaData = {
   "params"?: object,
   "qoeData"?: object,
   "customMetadata"?: object

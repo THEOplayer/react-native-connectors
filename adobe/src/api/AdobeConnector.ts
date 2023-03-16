@@ -1,5 +1,5 @@
 import type { THEOplayer } from "react-native-theoplayer";
-import type { AdobeEventRequestBody } from "../internal/Types";
+import type { AdobeMetaData } from "../internal/Types";
 import { AdobeConnectorAdapter } from "../internal/AdobeConnectorAdapter";
 
 export class AdobeConnector {
@@ -13,7 +13,7 @@ export class AdobeConnector {
   /**
    * Sets metadata which will be passed for every event request.
    */
-  updateMetadata(metadata: AdobeEventRequestBody): void {
+  updateMetadata(metadata: AdobeMetaData): void {
     this.connectorAdapter.updateMetadata(metadata);
   }
 
