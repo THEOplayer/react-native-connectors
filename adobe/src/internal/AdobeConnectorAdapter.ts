@@ -136,6 +136,7 @@ export class AdobeConnectorAdapter {
 
   private onTextTrackEvent = (event: TextTrackEvent) => {
     const track = this.player.textTracks.find((track) => track.uid === event.trackUid);
+    // @ts-ignore
     if (track !== undefined && track.kind === 'chapters') {
       switch (event.subType) {
         case TextTrackEventType.ENTER_CUE: {
