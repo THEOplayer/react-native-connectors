@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { PlayerConfiguration, PlayerError, PlayerEventType, SourceDescription, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import {
+  PlayerConfiguration,
+  PlayerError,
+  PlayerEventType,
+  SourceDescription,
+  THEOplayer,
+  THEOplayerView
+} from 'react-native-theoplayer';
 import { PlayButton } from './res/images';
 import { AdobeConnector } from "@theoplayer/react-native-analytics-adobe";
 
@@ -62,13 +69,13 @@ const App = () => {
   }, [theoPlayer]);
 
   return (
-    <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 }}>
-      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady} />
+    <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>
 
       {/*Play/pause button*/}
       {!error && (
         <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
-          <Image style={styles.image} source={paused ? PlayButton : null} />
+          {paused && <Image style={styles.image} source={PlayButton}/>}
         </TouchableOpacity>
       )}
 
