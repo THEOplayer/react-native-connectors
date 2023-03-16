@@ -1,4 +1,4 @@
-package com.rntheodemo;
+package com.theoplayer.adobe.example;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

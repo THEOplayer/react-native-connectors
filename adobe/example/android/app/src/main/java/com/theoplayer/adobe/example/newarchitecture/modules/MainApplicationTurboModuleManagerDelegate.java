@@ -1,4 +1,4 @@
-package com.rntheodemo.newarchitecture.modules;
+package com.theoplayer.adobe.example.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
