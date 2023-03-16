@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { PlayerConfiguration, PlayerError, PlayerEventType, SourceDescription, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
 import { PlayButton } from './res/images';
@@ -17,7 +17,7 @@ const source: SourceDescription = {
       type: 'application/dash+xml',
     },
   ],
-  'ads': [
+  ads: [
     {
       'sources': 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=',
       'integration': 'google-ima',
@@ -31,9 +31,21 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
+  useEffect(() => {
+    // Destroy connector when unmounting
+    return () => {
+      adobeConnector.current?.destroy()
+    }
+  }, []);
+
+  const uri = "smetrics.nfl.com/va" // "<Media Collection API's end point>";
+  const ecid = "F75C3025512D2C1D0A490D44@AdobeOrg" // "<Visitor Experience Cloud Org ID>";
+  const sid = "nfldev" // "<Report Suite ID>";
+  const trackingUrl = "smetrics.nfl.com" // "<Tracking Server URL>";
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Adobe connector
-    adobeConnector.current = new AdobeConnector(player, "smetrics.nfl.com/va", "F75C3025512D2C1D0A490D44@AdobeOrg", "nfldev", "smetrics.nfl.com");
+    adobeConnector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl);
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
