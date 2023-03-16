@@ -1,7 +1,7 @@
 import type { Ad, AdBreak, AdEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
-import type { AdobeEventRequestBody, ContentType } from "../internal/Types";
-import { AdobeEventTypes } from "../internal/Types";
+import type { AdobeEventRequestBody, ContentType } from "./Types";
+import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata } from "../utils/Utils";
 
 const CONTENT_PING_INTERVAL = 10_000;
@@ -46,7 +46,7 @@ export class AdobeConnectorAdapter {
 
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string) {
     this.player = player
-    this.uri = `https://${uri}/api/v1/sessions`;
+    this.uri = `https://${ uri }/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
     this.trackingUrl = trackingUrl;
@@ -55,7 +55,7 @@ export class AdobeConnectorAdapter {
   }
 
   updateMetadata(metadata: AdobeEventRequestBody): void {
-    this.customMetadata = {...this.customMetadata, ...metadata};
+    this.customMetadata = { ...this.customMetadata, ...metadata };
   }
 
   private addEventListeners(): void {
@@ -162,7 +162,7 @@ export class AdobeConnectorAdapter {
         const adBreak = event.ad as AdBreak;
         const metadata: AdobeEventRequestBody = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        if ((metadata.params as any)["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
+        if (( metadata.params as any )[ "media.ad.podIndex" ] > this.adBreakPodIndex) { // TODO fix!
           this.adBreakPodIndex++;
         }
         break;
@@ -201,7 +201,7 @@ export class AdobeConnectorAdapter {
   private createBaseRequest(eventType: string): AdobeEventRequestBody {
     return {
       "playerTime": {
-        "playhead": this.player.currentTime/1000,
+        "playhead": this.player.currentTime / 1000,
         "ts": Date.now()
       },
       "eventType": eventType,
@@ -215,8 +215,8 @@ export class AdobeConnectorAdapter {
     }
     this.sessionInProgress = true;
     const body = this.createBaseRequest(AdobeEventTypes.SESSION_START);
-    const mediaChannel = this.customMetadata.params ? (this.customMetadata.params as any)["media.channel"] : "N/A";
-    const mediaId = this.customMetadata.params ? (this.customMetadata.params as any)["media.id"] : "N/A";
+    const mediaChannel = this.customMetadata.params ? ( this.customMetadata.params as any )[ "media.channel" ] : "N/A";
+    const mediaId = this.customMetadata.params ? ( this.customMetadata.params as any )[ "media.id" ] : "N/A";
     body.params = {
       "analytics.reportSuite": this.sid,
       "analytics.trackingServer": this.trackingUrl,
@@ -235,15 +235,15 @@ export class AdobeConnectorAdapter {
       return;
     }
 
-    const splitResponseUrl =  response.headers.get('location')?.split('/sessions/');
+    const splitResponseUrl = response.headers.get('location')?.split('/sessions/');
     if (splitResponseUrl === undefined) {
       console.error('NO LOCATION HEADER PRESENT');
       return;
     }
-    this.sessionId = splitResponseUrl[splitResponseUrl.length-1];
+    this.sessionId = splitResponseUrl[ splitResponseUrl.length - 1 ];
 
     if (this.eventQueue.length !== 0) {
-      const url = `${this.uri}/${this.sessionId}/events`;
+      const url = `${ this.uri }/${ this.sessionId }/events`;
       for (const body of this.eventQueue) {
         await this.sendRequest(url, body); // TODO another fallback necessary on top?
       }
@@ -256,13 +256,13 @@ export class AdobeConnectorAdapter {
   }
 
   private async sendEventRequest(eventType: string, metadata?: AdobeEventRequestBody): Promise<void> {
-    const body: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata, ...this.customMetadata};
+    const body: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata, ...this.customMetadata };
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
       return;
     }
-    const url = `${this.uri}/${this.sessionId}/events`;
+    const url = `${ this.uri }/${ this.sessionId }/events`;
     const response = await this.sendRequest(url, body);
 
     if (response.status === 404 || response.status === 410) {
@@ -298,7 +298,7 @@ export class AdobeConnectorAdapter {
   }
 
   private getContentLength(): number {
-    return this.player.duration === Infinity ? 86400 : this.player.duration/1000; // In case of a live stream, set it to 24h
+    return this.player.duration === Infinity ? 86400 : this.player.duration / 1000; // In case of a live stream, set it to 24h
   }
 
   private getContentType(): ContentType {
