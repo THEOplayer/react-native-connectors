@@ -3,14 +3,14 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 prepare_react_native_project!
 
-target 'TheoplayerConvivaExample' do
+target 'TheoplayerAdobeExample' do
   platform :ios, min_ios_version_supported
   config = use_native_modules!
   use_react_native!(:path => config[:reactNativePath])
   pod 'THEOplayerSDK-basic', :path => './TheoSDK'
 end
 
-# target 'TheoplayerConvivaExample-tvOS' do
+# target 'TheoplayerAdobeExample-tvOS' do
 #   platform :tvos, min_tvos_version_supported
 #   config = use_native_modules!
 #   use_react_native!(:path => config[:reactNativePath])
