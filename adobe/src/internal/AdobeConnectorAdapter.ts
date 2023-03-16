@@ -3,6 +3,7 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata } from "../utils/Utils";
+import { Platform } from "react-native";
 
 const CONTENT_PING_INTERVAL = 10_000;
 const AD_PING_INTERVAL = 1_000;
@@ -71,7 +72,9 @@ export class AdobeConnectorAdapter {
 
     this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
 
-    window.addEventListener('beforeunload', this.onBeforeUnload);
+    if (Platform.OS === 'web') {
+      window.addEventListener('beforeunload', this.onBeforeUnload);
+    }
   }
 
   private removeEventListeners(): void {
@@ -87,7 +90,9 @@ export class AdobeConnectorAdapter {
 
     this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
 
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
+    if (Platform.OS === 'web') {
+      window.removeEventListener('beforeunload', this.onBeforeUnload);
+    }
   }
 
   private onDurationChange = () => {
