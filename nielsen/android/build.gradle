@@ -66,6 +66,12 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
+rootProject.allprojects {
+  repositories {
+    maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-nielsen/android/local") }
+  }
+}
+
 def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.8.10")
 
