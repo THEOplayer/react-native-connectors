@@ -5,7 +5,6 @@ import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
 import { PlayButton } from './res/images';
 import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 
-
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
@@ -39,7 +38,7 @@ const App = () => {
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Nielsen connector
-    nielsenConnector.current = new NielsenConnector(player, appId, 'channelName', nielsenOptions);
+    nielsenConnector.current = new NielsenConnector(player, appId, 'THEOplayer demo', nielsenOptions);
     player.autoplay = !paused;
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));

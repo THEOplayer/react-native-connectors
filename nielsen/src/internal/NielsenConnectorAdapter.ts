@@ -5,7 +5,6 @@ import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 export class NielsenConnectorAdapter {
 
   constructor (private player: THEOplayer, appId: string, instanceName: string, nielsenOptions: NielsenOptions) {
-    // @ts-ignore
     NativeModules.NielsenModule.initialize(this.player.nativeHandle, appId, instanceName, nielsenOptions);
   }
 
@@ -14,7 +13,6 @@ export class NielsenConnectorAdapter {
   }
 
   destroy(): void {
-    // @ts-ignore
     NativeModules.NielsenModule.destroy(this.player.nativeHandle);
   }
 }
