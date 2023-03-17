@@ -56,6 +56,7 @@ class NielsenHandler(
   private val onEnded: EventListener<EndedEvent>
   private val onSourceChange: EventListener<SourceChangeEvent>
   private val onTimeUpdate: EventListener<TimeUpdateEvent>
+  private val onDurationChange: EventListener<DurationChangeEvent>
   private val onLoadedMetadata: EventListener<LoadedMetadataEvent>
   private val onAddTrack: EventListener<AddTrackEvent>
   private val onAdBegin: EventListener<GoogleImaAdEvent>
@@ -82,7 +83,7 @@ class NielsenHandler(
         put(PROP_DEBUG, "DEBUG")
       }
     }
-    val appSdk = AppSdk(appContext, appInfo) { _, _, _ -> }
+    appSdk = AppSdk(appContext, appInfo) { _, _, _ -> }
 
     onPlay = EventListener<PlayEvent> {
       maybeSendPlayEvent()
@@ -94,10 +95,13 @@ class NielsenHandler(
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "onPause")
       }
-      appSdk.stop()
+      appSdk?.stop()
     }
     onTimeUpdate = EventListener<TimeUpdateEvent> {
       reportPlayheadPosition()
+    }
+    onDurationChange = EventListener<DurationChangeEvent> {
+      maybeSendPlayEvent()
     }
     onEnded = EventListener<EndedEvent> {
       if (BuildConfig.DEBUG) {
@@ -117,7 +121,7 @@ class NielsenHandler(
       }
 
       // contentMetadataObject contains the JSON metadata for the content being played
-      appSdk.loadMetadata(JSONObject().apply {
+      appSdk?.loadMetadata(JSONObject().apply {
         put(PROP_TYPE, "content")
         put(PROP_ADMODEL, "1")
 
@@ -132,7 +136,7 @@ class NielsenHandler(
       event.cue.content?.optJSONObject("content")?.let { cueContent ->
         cueContent.optString("ownerIdentifier").let {
           if (it.contains("www.nielsen.com")) {
-            appSdk.sendID3(it)
+            appSdk?.sendID3(it)
           }
         }
       }
@@ -155,8 +159,8 @@ class NielsenHandler(
       }
       if (ad?.type == "linear") {
         val timeOffset = ad.adBreak?.timeOffset ?: 0
-        appSdk.stop()
-        appSdk.loadMetadata(JSONObject().apply {
+        appSdk?.stop()
+        appSdk?.loadMetadata(JSONObject().apply {
           put(
             PROP_TYPE, when {
               timeOffset == 0 -> PROP_PREROLL
@@ -174,7 +178,7 @@ class NielsenHandler(
         Log.d(TAG, "onAdEnd - type: ${ad?.type}")
       }
       if (ad?.type == "linear") {
-        appSdk.stop()
+        appSdk?.stop()
       }
     }
 
@@ -224,6 +228,7 @@ class NielsenHandler(
     player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.addEventListener(PlayerEventTypes.PAUSE, onPause)
     player.addEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
+    player.addEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
     player.addEventListener(PlayerEventTypes.ENDED, onEnded)
     player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
@@ -243,6 +248,7 @@ class NielsenHandler(
     player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
     player.removeEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
+    player.removeEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
     player.removeEventListener(PlayerEventTypes.ENDED, onEnded)
     player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
