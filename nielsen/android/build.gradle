@@ -31,11 +31,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerNielsen_compileSdkVersion", 31)
+  compileSdkVersion safeExtGet("THEOplayerNielsen_compileSdkVersion", 33)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerNielsen_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerNielsen_targetSdkVersion", 31)
+    targetSdkVersion safeExtGet("THEOplayerNielsen_targetSdkVersion", 33)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -67,7 +67,7 @@ repositories {
 }
 
 def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
-def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.7.10")
+def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.8.10")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -75,6 +75,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation 'androidx.lifecycle:lifecycle-process:2.6.0'
 
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
