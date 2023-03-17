@@ -14,12 +14,8 @@ const playerConfig: PlayerConfiguration = {
 const source = {
   sources: [
     {
-      "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
-      "type": "application/dash+xml"
-    },
-    {
       type: "application/x-mpegurl",
-      src: "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
+      src: "https://www.nielseninternet.com/DTVR/RTVOD_%28PC-FD%29_C3/prog_index.m3u8"
     }
   ],
 };
