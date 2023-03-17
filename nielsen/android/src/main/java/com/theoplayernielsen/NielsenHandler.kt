@@ -62,6 +62,8 @@ class NielsenHandler(
   private val onAdEnd: EventListener<GoogleImaAdEvent>
   private val onCueEnter: EventListener<EnterCueEvent>
 
+  private var lastPosition: Long = -1
+
   private var appSdk: AppSdk? = null
 
   private var sessionInProgress: Boolean = false
@@ -111,7 +113,7 @@ class NielsenHandler(
     }
     onLoadedMetadata = EventListener<LoadedMetadataEvent> {
       if (BuildConfig.DEBUG) {
-        Log.d(TAG, "onLoadedMetadata")
+        Log.d(TAG, "onLoadedMetadata - duration ${player.duration.toInt()}")
       }
 
       // contentMetadataObject contains the JSON metadata for the content being played
@@ -120,7 +122,7 @@ class NielsenHandler(
         put(PROP_ADMODEL, "1")
 
         // Length in seconds (int or float)
-        put(PROP_LENGTH, player.duration.toString())
+        put(PROP_LENGTH, player.duration.toInt())
       })
     }
     onCueEnter = EventListener<EnterCueEvent> { event ->
@@ -251,10 +253,14 @@ class NielsenHandler(
   }
 
   private fun reportPlayheadPosition() {
-    if (BuildConfig.DEBUG) {
-      Log.d(TAG, "setPlayheadPosition ${player.currentTime.toLong()}")
+    val newPosition = player.currentTime.toLong()
+    if (newPosition != lastPosition) {
+      if (BuildConfig.DEBUG) {
+        Log.d(TAG, "setPlayheadPosition ${newPosition}")
+      }
+      appSdk?.setPlayheadPosition(newPosition)
+      lastPosition = newPosition
     }
-    appSdk?.setPlayheadPosition(player.currentTime.toLong())
   }
 
   private fun maybeSendPlayEvent() {
@@ -268,7 +274,7 @@ class NielsenHandler(
       // stream starts
       appSdk?.play(JSONObject().apply {
         put(PROP_CHANNEL_NAME, player.src)
-        put(PROP_LENGTH, player.duration.toString())
+        put(PROP_LENGTH, player.duration.toInt())
       })
     }
   }
@@ -278,6 +284,7 @@ class NielsenHandler(
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "end")
       }
+      lastPosition = -1
       sessionInProgress = false
       appSdk?.end()
     }

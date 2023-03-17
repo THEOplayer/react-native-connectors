@@ -83,4 +83,7 @@ dependencies {
   implementation project(':react-native-theoplayer')
 
   implementation "com.nielsenappsdk.global:ad:9.0.0.0"
+
+  // Align the Kotlin SDK libraries with the same version.
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 }

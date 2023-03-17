@@ -30,7 +30,7 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const appId = 'P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5';
+  const appId = 'PE8381632-E66B-4AF5-8C10-D3303C005D9E';
   const nielsenOptions: NielsenOptions = {
     // containerId: 'THEOplayer',
     nol_sdkDebug: 'debug'
