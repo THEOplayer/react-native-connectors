@@ -64,7 +64,6 @@ class NielsenHandler(
   private val onCueEnter: EventListener<EnterCueEvent>
 
   private var lastPosition: Long = -1
-
   private var appSdk: AppSdk? = null
 
   private var sessionInProgress: Boolean = false
@@ -121,10 +120,7 @@ class NielsenHandler(
       }
 
       // contentMetadataObject contains the JSON metadata for the content being played
-      appSdk?.loadMetadata(JSONObject().apply {
-        put(PROP_TYPE, "content")
-        put(PROP_ADMODEL, "1")
-
+      appSdk?.loadMetadata(buildMetadata().apply {
         // Length in seconds (int or float)
         put(PROP_LENGTH, player.duration.toInt())
       })
@@ -160,7 +156,7 @@ class NielsenHandler(
       if (ad?.type == "linear") {
         val timeOffset = ad.adBreak?.timeOffset ?: 0
         appSdk?.stop()
-        appSdk?.loadMetadata(JSONObject().apply {
+        appSdk?.loadMetadata(buildMetadata().apply {
           put(
             PROP_TYPE, when {
               timeOffset == 0 -> PROP_PREROLL
@@ -209,7 +205,7 @@ class NielsenHandler(
     if (BuildConfig.DEBUG) {
       Log.d(TAG, "updateMetadata $metadata")
     }
-    appSdk?.loadMetadata(JSONObject(metadata))
+    appSdk?.loadMetadata(buildMetadata(metadata))
   }
 
   fun destroy() {
@@ -295,6 +291,13 @@ class NielsenHandler(
       lastPosition = -1
       sessionInProgress = false
       appSdk?.end()
+    }
+  }
+
+  private fun buildMetadata(metadata: Map<String, Any> = mapOf()): JSONObject {
+    return JSONObject(metadata).apply {
+      put(PROP_TYPE, "content")
+      put(PROP_ADMODEL, "1")
     }
   }
 }
