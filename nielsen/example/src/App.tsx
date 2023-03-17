@@ -45,6 +45,11 @@ const App = () => {
     nol_sdkDebug: 'debug'
   };
 
+  useEffect(() => {
+    // Destroy connector when unmounting
+    return () => { nielsenConnector.current?.destroy() }
+  },[]);
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Nielsen connector
     nielsenConnector.current = new NielsenConnector(player, appId, 'THEOplayer demo', nielsenOptions);
@@ -54,10 +59,15 @@ const App = () => {
 
     // Update theoPlayer reference.
     theoPlayer.current = player;
+  }, [theoPlayer]);
 
-    // Destroy connector when unmounting
-    return () => { nielsenConnector.current?.destroy() }
-  }, []);
+  const onCustomMetadata = () => {
+    const metadata = {
+      'assetid': 'C77664',
+      'program': 'testprogram'
+    };
+    nielsenConnector.current?.updateMetadata(metadata);
+  };
 
   const onTogglePlayPause = useCallback(() => {
     const player = theoPlayer.current;
@@ -78,6 +88,10 @@ const App = () => {
           {paused && <Image style={styles.image} source={PlayButton} />}
         </TouchableOpacity>
       )}
+
+      <TouchableOpacity style={styles.button} onPress={onCustomMetadata}>
+        <Text style={styles.buttonText}>{"Set custom metadata"}</Text>
+      </TouchableOpacity>
 
       {/*Error message*/}
       {error && <View style={styles.fullscreen}><Text style={styles.message}>{error.errorMessage}</Text></View>}
@@ -114,7 +128,18 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     tintColor: '#ffc50f',
-  }
+  },
+  buttonText: {
+    fontSize: 20,
+    marginVertical: 2,
+    color: 'black',
+    borderRadius: 4,
+    padding: 3,
+    backgroundColor: '#ffc50f',
+  },
+  button: {
+    marginHorizontal: 5,
+  },
 });
 
 export default App;

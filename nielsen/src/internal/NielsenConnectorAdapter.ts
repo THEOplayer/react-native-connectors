@@ -9,7 +9,7 @@ export class NielsenConnectorAdapter {
   }
 
   updateMetadata(metadata: {[key: string]: string}): void {
-    NativeModules.NielsenModule.updateMetadata(metadata);
+    NativeModules.NielsenModule.updateMetadata(this.player.nativeHandle, metadata);
   }
 
   destroy(): void {
