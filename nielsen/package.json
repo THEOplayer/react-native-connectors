@@ -119,6 +119,6 @@
     ]
   },
   "dependencies": {
-    "@theoplayer/nielsen-connector-web": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-nielsen-connector-web-1.0.1.tgz"
+    "@theoplayer/nielsen-connector-web": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-nielsen-connector-web-1.0.2.tgz"
   }
 }

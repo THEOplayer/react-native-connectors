@@ -6,8 +6,16 @@ export class NielsenConnector {
 
   private connectorAdapter: NielsenConnectorAdapter
 
-  constructor(player: THEOplayer, appId: string, channelName: string, NielsenConfig: NielsenOptions) {
-    this.connectorAdapter = new NielsenConnectorAdapter(player, appId, channelName, NielsenConfig);
+  /**
+   * Create NielsenConnector
+   *
+   * @param player        THEOplayer instance.
+   * @param appId         UniqueID assigned to player/site.
+   * @param instanceName  User-defined string value for describing the player/site.
+   * @param options       Additional options.
+   */
+  constructor(player: THEOplayer, appId: string, instanceName: string, options: NielsenOptions) {
+    this.connectorAdapter = new NielsenConnectorAdapter(player, appId, instanceName, options);
   }
 
   /**
