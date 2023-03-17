@@ -39,7 +39,14 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const appId = Platform.OS == "web" ? "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5" : "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
+  let appId: String
+  if (Platform.OS === "web") {
+    appId = "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5";
+  } else if (Platform.OS === "android") {
+    appId = "P4B35DFE9-0EB1-41F9-8E66-7ED2FF4746DB";
+  } else if (Platform.OS === "ios") {
+    appId = "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
+  }
 
   const nielsenOptions: NielsenOptions = {
     // containerId: 'THEOplayer',

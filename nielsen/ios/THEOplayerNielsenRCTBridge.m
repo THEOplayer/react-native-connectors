@@ -7,9 +7,11 @@
 // ----------------------------------------------------------------------------
 @interface RCT_EXTERN_REMAP_MODULE(NielsenModule, THEOplayerNielsenRCTNielsenAPI, NSObject)
 
+//func initialize(_ node: NSNumber, appId: String, instanceName: String, nielsenOptions: NSDictionary) -> Void {
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
-                  NielsenMetadata:(NSDictionary)NielsenMetadata
-                  NielsenConfig:(NSDictionary)NielsenConfig)
+                  appId:(NSString)appId
+                  instanceName:(NSString)instanceName
+                  nielsenOptions:(NSDictionary)nielsenOptions)
 
 RCT_EXTERN_METHOD(setContentInfo:(nonnull NSNumber *)node
                   metadata:(NSDictionary)metadata)
