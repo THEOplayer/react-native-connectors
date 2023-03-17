@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   PlayerConfiguration,
   PlayerError,
@@ -39,7 +39,8 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const appId = 'PE8381632-E66B-4AF5-8C10-D3303C005D9E';
+  const appId = Platform.OS == "web" ? "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5" : "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
+
   const nielsenOptions: NielsenOptions = {
     // containerId: 'THEOplayer',
     nol_sdkDebug: 'debug'
