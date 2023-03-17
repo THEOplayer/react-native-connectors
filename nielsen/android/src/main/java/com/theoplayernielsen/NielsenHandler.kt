@@ -129,9 +129,11 @@ class NielsenHandler(
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "onCueEnter content: ${event.cue.content}")
       }
-      event.cue.content?.optString("ownerIdentifier")?.let {
-        if (it.contains("www.nielsen.com")) {
-          appSdk.sendID3(it)
+      event.cue.content?.optJSONObject("content")?.let { cueContent ->
+        cueContent.optString("ownerIdentifier").let {
+          if (it.contains("www.nielsen.com")) {
+            appSdk.sendID3(it)
+          }
         }
       }
     }
@@ -256,7 +258,7 @@ class NielsenHandler(
     val newPosition = player.currentTime.toLong()
     if (newPosition != lastPosition) {
       if (BuildConfig.DEBUG) {
-        Log.d(TAG, "setPlayheadPosition ${newPosition}")
+        Log.d(TAG, "setPlayheadPosition $newPosition")
       }
       appSdk?.setPlayheadPosition(newPosition)
       lastPosition = newPosition
