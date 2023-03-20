@@ -37,7 +37,7 @@ const source = {
 };
 
 const App = () => {
-  const comscoreConnector = useRef<ComscoreConnxxector | null>();
+  const comscoreConnector = useRef<ComscoreConnector | null>();
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
@@ -146,9 +146,10 @@ const App = () => {
 };
 
   const comscoreConfig: ComscoreConfiguration = {
-    customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
+    publisherId: "15866303", // Can be a test or production key.
+    applicationName: "Wonne Test RN",
+    userConsent: "granted",
     debug: true,
-    gatewayUrl: 'TODO'
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
