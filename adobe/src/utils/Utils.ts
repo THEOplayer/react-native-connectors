@@ -1,7 +1,7 @@
-import type { Ad, AdBreak } from "react-native-theoplayer";
-import type { AdobeEventRequestBody } from "../internal/Types";
+import type { Ad, AdBreak, TextTrackCue } from "react-native-theoplayer";
+import type { AdobeMetaData } from "../internal/Types";
 
-export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: number): AdobeEventRequestBody {
+export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: number): AdobeMetaData {
   const currentAdBreakTimeOffset = adBreak.timeOffset;
   let podIndex: number;
   if (currentAdBreakTimeOffset === 0) {
@@ -20,7 +20,7 @@ export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: nu
   };
 }
 
-export function calculateAdBeginMetadata(ad: Ad, adPodPosition: number): AdobeEventRequestBody {
+export function calculateAdBeginMetadata(ad: Ad, adPodPosition: number): AdobeMetaData {
   return {
     params: {
       'media.ad.podPosition': adPodPosition,

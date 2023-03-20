@@ -173,7 +173,7 @@ export class AdobeConnectorAdapter {
         this.isPlayingAd = true;
         this.startPinger(AD_PING_INTERVAL);
         const adBreak = event.ad as AdBreak;
-        const metadata: AdobeEventRequestBody = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
+        const metadata = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
         if (( metadata.params as any )[ "media.ad.podIndex" ] > this.adBreakPodIndex) { // TODO fix!
           this.adBreakPodIndex++;
@@ -189,7 +189,7 @@ export class AdobeConnectorAdapter {
       }
       case AdEventType.AD_BEGIN: {
         const ad = event.ad as Ad;
-        const metadata: AdobeEventRequestBody = calculateAdBeginMetadata(ad, this.adPodPosition);
+        const metadata = calculateAdBeginMetadata(ad, this.adPodPosition);
         void this.sendEventRequest(AdobeEventTypes.AD_START, metadata);
         this.adPodPosition++;
         break;
