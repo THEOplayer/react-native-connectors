@@ -116,7 +116,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
             genreName: metadata["genreName"] as! String,
             genreId: metadata["genreId"] as? String,
             carryTvAdvertisementLoad: metadata["carryTvAdvertisementLoad"] as? Bool,
-            classifyAsCompleteEpisode: metadata["classifyAsCompleteEpisode"] as! Bool,
+            classifyAsCompleteEpisode: metadata["classifyAsCompleteEpisode"] as? Bool,
             productionDate: mapDate(date: metadata["productionDate"] as! [String:Int]),
             productionTime: mapTime(time: metadata["productionTime"] as! [String:Int]),
             tvAirDate: mapDate(date: metadata["tvAirDate"] as! [String:Int]),
@@ -322,7 +322,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
         }
     }
     
-    func mapDimension(dimension: [String:Int]) -> THEOplayerConnectorComscore.Dimension? {
+    func mapDimension(dimension: [String:Int]?) -> THEOplayerConnectorComscore.Dimension? {
         if let width = dimension["width"] as Int?, let height = dimension["height"] as Int? {
             return Dimension(width: width, height: height)
         } else {
