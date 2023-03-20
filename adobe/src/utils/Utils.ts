@@ -30,3 +30,15 @@ export function calculateAdBeginMetadata(ad: Ad, adPodPosition: number): AdobeEv
     }
   }
 }
+
+export function calculateChapterStartMetadata(cue: TextTrackCue): AdobeMetaData {
+  const id = Number(cue.id);
+  const index = isNaN(id) ? 0 : id;
+  return {
+    params: {
+      'media.chapter.length': (cue.endTime-cue.startTime)/1000,
+      'media.chapter.offset': cue.startTime/1000,
+      'media.chapter.index': index
+    }
+  }
+}

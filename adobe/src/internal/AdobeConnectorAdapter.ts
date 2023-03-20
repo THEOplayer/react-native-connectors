@@ -2,7 +2,7 @@ import type { Ad, AdBreak, AdEvent, ErrorEvent, MediaTrackEvent, TextTrackCue, T
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
-import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata } from "../utils/Utils";
+import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
 import { Platform } from "react-native";
 
 const CONTENT_PING_INTERVAL = 10_000;
@@ -144,7 +144,8 @@ export class AdobeConnectorAdapter {
           if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
             void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP);
           }
-          void this.sendEventRequest(AdobeEventTypes.CHAPTER_START);
+          const metadata = calculateChapterStartMetadata(chapterCue);
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_START, metadata);
           this.currentChapter = chapterCue;
           break;
         }
