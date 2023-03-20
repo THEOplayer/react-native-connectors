@@ -1,4 +1,4 @@
-import type { Ad, AdBreak, AdEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
+import type { Ad, AdBreak, AdEvent, ErrorEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
@@ -57,6 +57,10 @@ export class AdobeConnectorAdapter {
 
   updateMetadata(metadata: AdobeMetaData): void {
     this.customMetadata = { ...this.customMetadata, ...metadata };
+  }
+
+  setError(metadata: AdobeMetaData): void {
+    void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
   }
 
   private addEventListeners(): void {
@@ -152,8 +156,14 @@ export class AdobeConnectorAdapter {
     }
   }
 
-  private onError = () => {
-    void this.sendEventRequest(AdobeEventTypes.ERROR);
+  private onError = (error: ErrorEvent) => {
+    const metadata: AdobeMetaData = {
+      qoeData: {
+        "media.qoe.errorID": error.error.errorCode,
+        "media.qoe.errorSource": "player"
+      }
+    }
+    void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
   }
 
   private onAdEvent = (event: AdEvent) => {

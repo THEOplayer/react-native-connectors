@@ -18,6 +18,14 @@ export class AdobeConnector {
   }
 
   /**
+   * Dispatch error event to adobe
+   * @param metadata containing at least the qoeData with the errorID and the errorSource set to external.
+   */
+  setError(metadata: AdobeMetaData): void {
+    this.connectorAdapter.setError(metadata);
+  }
+
+  /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
