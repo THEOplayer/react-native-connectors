@@ -26,7 +26,7 @@ export class ComscoreConnectorAdapter {
 
   constructor (player: THEOplayer, ComscoreMetadata: ComscoreMetadata, ComscoreConfig: ComscoreConfiguration) {
     this.integration = new ComscoreTheo(
-      ComscoreConfig.customerKey,
+      ComscoreConfig.publisherId,
       player,
       new ContentMetadata(ComscoreMetadata),
       new AdMetadata(),
