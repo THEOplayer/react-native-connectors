@@ -232,18 +232,19 @@ export class AdobeConnectorAdapter {
     }
     this.sessionInProgress = true;
     const body = this.createBaseRequest(AdobeEventTypes.SESSION_START);
-    const mediaChannel = this.customMetadata.params ? ( this.customMetadata.params as any )[ "media.channel" ] : "N/A";
-    const mediaId = this.customMetadata.params ? ( this.customMetadata.params as any )[ "media.id" ] : "N/A";
     body.params = {
       "analytics.reportSuite": this.sid,
       "analytics.trackingServer": this.trackingUrl,
-      "media.channel": mediaChannel,
+      "media.channel": "N/A",
       "media.contentType": this.getContentType(),
-      "media.id": mediaId,
+      "media.id": "N/A",
       "media.length": this.getContentLength(),
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
-      "visitor.marketingCloudOrgId": this.ecid
+      "visitor.marketingCloudOrgId": this.ecid,
+      ...this.customMetadata.params
     }
+    body.qoeData = {...this.customMetadata.qoeData};
+    body.customMetadata = {...this.customMetadata.customMetadata};
 
     const response = await this.sendRequest(this.uri, body);
 
