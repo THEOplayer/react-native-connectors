@@ -242,8 +242,8 @@ export class AdobeConnectorAdapter {
       return;
     }
     this.sessionInProgress = true;
-    const body = this.createBaseRequest(AdobeEventTypes.SESSION_START);
-    body.params = {
+    const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
+    initialBody.params = {
       "analytics.reportSuite": this.sid,
       "analytics.trackingServer": this.trackingUrl,
       "media.channel": "N/A",
@@ -254,8 +254,7 @@ export class AdobeConnectorAdapter {
       "visitor.marketingCloudOrgId": this.ecid,
       ...this.customMetadata.params
     }
-    body.qoeData = {...this.customMetadata.qoeData};
-    body.customMetadata = {...this.customMetadata.customMetadata};
+    const body = this.addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody);
 
     const response = await this.sendRequest(this.uri, body);
 
@@ -284,8 +283,23 @@ export class AdobeConnectorAdapter {
     }
   }
 
-  private async sendEventRequest(eventType: string, metadata?: AdobeEventRequestBody): Promise<void> {
-    const body: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata, ...this.customMetadata };
+  private addCustomMetadata(eventType: AdobeEventTypes, body: AdobeEventRequestBody): AdobeEventRequestBody {
+    if (eventType !== AdobeEventTypes.PING) {
+      if (eventType === AdobeEventTypes.AD_BREAK_START
+        || eventType === AdobeEventTypes.CHAPTER_START
+        || eventType === AdobeEventTypes.AD_START
+        || eventType === AdobeEventTypes.SESSION_START) {
+        body.customMetadata = {...this.customMetadata.customMetadata};
+      }
+      // TODO check params which are fine and which need more limitations?
+    }
+    body.qoeData = {...body.qoeData, ...this.customMetadata.qoeData};
+    return body;
+  }
+
+  private async sendEventRequest(eventType: AdobeEventTypes, metadata?: AdobeEventRequestBody): Promise<void> {
+    const initialBody: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata};
+    const body = this.addCustomMetadata(eventType, initialBody);
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);

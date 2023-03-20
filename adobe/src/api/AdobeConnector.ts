@@ -11,7 +11,7 @@ export class AdobeConnector {
   }
 
   /**
-   * Sets metadata which will be passed for every event request.
+   * Sets metadata which will be passed for the session start request.
    */
   updateMetadata(metadata: AdobeMetaData): void {
     this.connectorAdapter.updateMetadata(metadata);
