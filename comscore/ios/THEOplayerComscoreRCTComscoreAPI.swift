@@ -323,7 +323,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
     }
     
     func mapDimension(dimension: [String:Int]?) -> THEOplayerConnectorComscore.Dimension? {
-        if let width = dimension["width"] as Int?, let height = dimension["height"] as Int? {
+        if let width = dimension?["width"] as Int?, let height = dimension?["height"] as Int? {
             return Dimension(width: width, height: height)
         } else {
             return nil
