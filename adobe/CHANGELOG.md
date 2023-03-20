@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2023-03-20
+
+### Fixed
+
+- Fixed correctly passing the `playHead` property.
+- Fixed correctly passing custom metadata to the session request.
+- Fixed an issue where the `chapterStart` parameters would be missing.
+- Fixed some http issues during `sendEventRequest`.
+
+### Changed
+
+- Improved sending error event.
+- Improved property typing.
+
 ## [0.2.0] - 2023-03-16
 
 ### Fixed
