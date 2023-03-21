@@ -199,6 +199,7 @@ export class ComscoreTheo extends TheoBase {
     if (adType === AD_TYPES.POSTROLL) {
       return adsInCurrentBreak == this.postrollCount;
     }
+    return false
   }
 
   /**
