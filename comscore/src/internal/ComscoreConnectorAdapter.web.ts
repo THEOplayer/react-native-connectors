@@ -26,22 +26,15 @@ export class ComscoreConnectorAdapter {
     this.integration.setContentMetadata(new ContentMetadata(metadata));
   }
 
-  updateAdMetadata(metadata: ComscoreMetadata): void {
-    // TODO uncomment once Comscore version has been updated
-    this.integration.setAdMetadata(new AdMetadata(metadata));
-  }
-
   setPersistentLabel(label: string, value: string): void {
-    // TODO uncomment once Comscore version has been updated
-    this.integration.setAdMetadata(new AdMetadata(metadata));
+    // TODO Implement web counterpart
   }
 
   setPersistentLabels(labels: { [key: string]: string }): void {
-    // TODO uncomment once Comscore version has been updated
-    this.integration.setAdMetadata(new AdMetadata(metadata));
+    // TODO Implement web counterpart
   }
 
   destroy() {
-    this.integration.destroy(); // TODO
+    // TODO do any cleanup if necessary
   }
 }
