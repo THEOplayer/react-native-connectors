@@ -5,8 +5,8 @@ import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
 import { Platform } from "react-native";
 
-const CONTENT_PING_INTERVAL = 10_000;
-const AD_PING_INTERVAL = 1_000;
+const CONTENT_PING_INTERVAL = 10000;
+const AD_PING_INTERVAL = 1000;
 
 export class AdobeConnectorAdapter {
   private player: THEOplayer;
