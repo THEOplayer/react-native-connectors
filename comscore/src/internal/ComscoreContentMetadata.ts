@@ -1,32 +1,5 @@
-import type { IContentMetadata } from './IComscoreContentMetadata';
-import * as analytics  from '../comscore/comscore';
-
-class CustomLabels {
-  /**
-   * On Demand Type (vod / catch_up), LIVE: *null, VOD: Mandatory, Adv: Inherited from Content
-   */
-  oce_odt: string;
-  /**
-   * Broadcaster Platform, LIVE: Mandatory, VOD: Mandatory, Adv: Mandatory
-   */
-  oce_bpf: string;
-  /**
-   * Content additional description (especially for clips), LIVE: Optional, VOD: Mandatory, Adv: Inherited from Content
-   */
-  oce_ctl: string;
-  /**
-   * Distribution Mode ID, LIVE: Optional, VOD: Optional, Adv: Optional
-   */
-  oce_emb: string;
-  /**
-   * Audience Measurement Project, LIVE: Mandatory, VOD: Mandatory, Adv: Mandatory
-   */
-  cs_proid: string;
-  /**
-   *
-   */
-  name: string;
-}
+import * as analytics  from '../sdk/comscore';
+import { ComscoreDeliveryAdvertisementCapability, ComscoreDeliveryComposition, ComscoreDeliveryMode, ComscoreDeliverySubscriptionType, ComscoreDistributionModel, ComscoreMediaFormat, ComscoreMediaType, ComscoreMetadata } from '../api/ComscoreMetadata';
 
 /**
  * Object for stream metadata
@@ -39,7 +12,7 @@ export class ContentMetadata {
    * @memberof ContentMetadata
    */
   private cm: any;
-
+  private isLivecontentMediaType: boolean;
   /**
    * Stores the main content length this is needed in order to fix a bug with the order of events flowing after
    * a preroll on VOD content
@@ -48,252 +21,166 @@ export class ContentMetadata {
   public mainContentLength: number;
 
   /**
-   * @param {IContentMetadata} data
+   * @param {ComscoreMetadata} data
    */
-  constructor(data: IContentMetadata) {
+  constructor(data: ComscoreMetadata) {
     const {
-      ns_st_ct,
-      ns_st_ci,
-      ns_st_cl,
-      ns_st_st,
-      ns_st_stc,
-      networkAffiliateCode,
-      ns_st_pu,
-      ns_st_pr,
-      ns_st_tpr,
-      ns_st_ep,
-      ns_st_tep,
-      ns_st_sn,
-      episodeNumber,
-      ns_st_ce,
-      ns_st_ge,
-      genreId,
-      carryTvAdvertisement,
-      isAudioOnly,
+      mediaType,
+      uniqueId,
+      length,
       c3,
       c4,
       c6,
-      ns_st_tm,
-      ns_st_tdt,
-      ns_st_ddt,
+      stationTitle,
+      stationCode,
+      networkAffiliate,
+      publisherName,
+      programTitle,
+      programId,
+      episodeTitle,
+      episodeId,
+      episodeSeasonNumber,
+      episodeNumber,
+      genreName,
+      genreId,
+      carryTvAdvertisementLoad,
+      classifyAsCompleteEpisode,
+      dateOfProduction,
+      timeOfProduction,
+      dateOfTvAiring,
+      timeOfTvAiring,
+      dateOfDigitalAiring,
+      timeOfDigitalAiring,
       feedType,
-      setDeliveryMode,
+      classifyAsAudioStream,
+      deliveryMode,
       deliverySubscriptionType,
       deliveryComposition,
       deliveryAdvertisementCapability,
-      ns_st_cmt,
-      ns_st_cdm,
+      mediaFormat,
+      distributionModel,
       playlistTitle,
-      totalSegment,
+      totalSegments,
       clipUrl,
-      pixelsWide,
-      pixelsHigh,
-      oce_odt,
-      oce_bpf,
-      oce_ctl,
-      oce_emb,
-      cs_proid,
-      name,
+      videoDimension,
+      customLabels,
     } = data;
 
-    let isLive = false;
-
-    const cm = new analytics.StreamingAnalytics.ContentMetadata();
-    const {
-      BUMPER,
-      LIVE,
-      LONG_FORM_ON_DEMAND,
-      OTHER,
-      SHORT_FORM_ON_DEMAND,
-      USER_GENERATED_LIVE,
-      USER_GENERATED_LONG_FORM_ON_DEMAND,
-      USER_GENERATED_SHORT_FORM_ON_DEMAND,
-    } = analytics.StreamingAnalytics.ContentMetadata.ContentType;
-
-    let mediaType = ns_st_ct;
-
-    //LONG_FORM_ON_DEMAND is considered default when ns_st_ct is undefined
-    if (!mediaType) mediaType = LONG_FORM_ON_DEMAND;
-
-    // Fail safe to make sure users do not accidentally pass the
-    // vc or VC prefixed values in the data structure
-    // comscore will add these automatically when reporting
-    mediaType = mediaType.toLowerCase();
-    if (mediaType.indexOf('vc') > -1) mediaType = mediaType.replace('vc', '');
-
-    switch (mediaType) {
-      case BUMPER:
-      case LIVE:
-      case LONG_FORM_ON_DEMAND:
-      case OTHER:
-      case SHORT_FORM_ON_DEMAND:
-      case USER_GENERATED_LIVE:
-      case USER_GENERATED_LONG_FORM_ON_DEMAND:
-      case USER_GENERATED_SHORT_FORM_ON_DEMAND:
-        console.log('SETMEDIATYPE TO', mediaType);
-        cm.setMediaType(mediaType);
-        break;
-      default:
-        console.log('UNKNOWN MEDIA TYPE:', mediaType);
-    }
-
-    isLive = mediaType === LIVE;
-    this.isLivecontentMediaType = isLive;
-
+    const isLive = mediaType === ComscoreMediaType.live;
+    this.isLivecontentMediaType = isLive; //TODO check wat ze hier nog mee doen
     // The media type is critical for enabling Comscore to distinguish different types of streams.
     //isLive ? cm.setMediaType(LIVE) : cm.setMediaType(LONG_FORM_ON_DEMAND);
     //ns_st_li - what to do with it?
-    // Used in report calculations logic to identify individual content. Provide your internal unique identifier for the content
-    cm.setUniqueId(ns_st_ci || '0');
-    // A value in milliseconds indicating the length of the individual content (the available amount of content).
-    this.mainContentLength = ns_st_cl;
-    cm.setLength(isLive || !ns_st_cl ? 0 : ns_st_cl);
-    //Title of the station or channel for which content was recorded or where content is made available.
-    cm.setStationTitle(ns_st_st);
+    this.mainContentLength = length;
 
-    // Can be used for matching purposes (for example when the station titles are multilingual).
-    if (ns_st_stc !== undefined) {
-      cm.setStationCode(ns_st_stc);
-    }
-
-    // Code to identify station affiliation in cases where the same local TV station call sign is affiliated with multiple national TV networks. Expected to be used alongside setStationTitle( String title ) or setStationCode( String code ).
-    if (networkAffiliateCode !== undefined) {
-      cm.setNetworkAffiliate(networkAffiliateCode);
-    }
-
-    // Collect the consumer-facing brand name of the media publisher that owns the content.
-    if (ns_st_pu !== undefined) {
-      cm.setPublisherName(ns_st_pu);
-    }
-    //Top level content title (i.e., the name of the overall program, show, or content series)
-    cm.setProgramId(ns_st_tpr || '*null');
-    //Top level content title (i.e., the name of the overall program, show, or content series)
-    cm.setProgramTitle(ns_st_pr || '*null');
-    // Sub level content title (i.e., the title of the specific episode). Can be used with setProgramTitle( String title ) to tag TV shows on program and episode level.
-    cm.setEpisodeTitle(ns_st_ep || '*null');
-    cm.setEpisodeSeasonNumber(ns_st_sn || '*null');
-    //Episode identifier to link the online content to the corresponding Episode of a TV Program (or series). Each time you create a new episode, an Episode ID should be automatically assigned.
-    cm.setEpisodeId(ns_st_tep || '*null');
-    if (episodeNumber !== undefined) {
-      cm.setEpisodeNumber(episodeNumber || '*null');
-    }
-    cm.classifyAsCompleteEpisode(ns_st_ce || '*null');
-
-    // Genre description. Multiple values can be provided as a comma-separated string.
-    cm.setGenreName(ns_st_ge || '*null');
-
-    // Genre ID to be used for matching and grouping purposes (for example when the genres are multilingual).
-    if (genreId !== undefined) {
-      cm.setGenreId(genreId);
-    }
-
-    // Use value true if the streamed content carries the same advertisement load that was used during the TV airing. Otherwise omit or use value false.
-    if (carryTvAdvertisement !== undefined) {
-      cm.carryTvAdvertisementLoad(true);
-    }
-
-    // This metadata helps Comscore identify if the streaming content is audio-only in nature.
-    cm.classifyAsAudioStream(isAudioOnly || false);
+    const cm = new analytics.StreamingAnalytics.ContentMetadata();
+    cm.setMediaType(this.mapMediaType(mediaType))
+    cm.setUniqueId(uniqueId || '0');                  // Used in report calculations logic to identify individual content. Provide your internal unique identifier for the content
+    cm.setLength(isLive || !length ? 0 : length);     // A value in milliseconds indicating the length of the individual content (the available amount of content).
     cm.setDictionaryClassificationC3(c3 || '*null');
     cm.setDictionaryClassificationC4(c4 || '*null');
     cm.setDictionaryClassificationC6(c6 || '*null');
-
-    if (ns_st_tdt !== undefined && ns_st_tdt !== '*null') {
-      let dateOfTvAiring = new Date(ns_st_tdt.toString());
-      if (ns_st_tm !== undefined && ns_st_tm !== '*null') {
-        dateOfTvAiring = new Date(
-          ns_st_tdt.toString() + ' ' + ns_st_tm.toString()
-        );
-      }
-
-      // The date on which the content aired on TV
-      cm.setDateOfTvAiring(
-        dateOfTvAiring.getFullYear(),
-        dateOfTvAiring.getMonth(),
-        dateOfTvAiring.getDay()
-      );
-
-      cm.setTimeOfTvAiring(
-        dateOfTvAiring.getHours(),
-        dateOfTvAiring.getMinutes()
-      );
+    cm.setStationTitle(stationTitle);                 // Title of the station or channel for which content was recorded or where content is made available.
+    if (stationCode !== undefined) {
+      cm.setStationCode(stationCode);                 // Can be used for matching purposes (for example when the station titles are multilingual).
     }
-    if (ns_st_ddt !== undefined && ns_st_ddt !== '*null') {
-      const dateOfDigitalAiring = new Date(ns_st_ddt.toString());
-      //The date on which the content was made available for streaming consumption
-      cm.setDateOfDigitalAiring(
-        dateOfDigitalAiring.getFullYear(),
-        dateOfDigitalAiring.getMonth(),
-        dateOfDigitalAiring.getDay()
-      );
-      cm.setTimeOfDigitalAiring(
-        dateOfDigitalAiring.getHours(),
-        dateOfDigitalAiring.getMinutes()
-      );
+    if (networkAffiliate !== undefined) {
+      cm.setNetworkAffiliate(networkAffiliate);       // Code to identify station affiliation in cases where the same local TV station call sign is affiliated with multiple national TV networks. Expected to be used alongside setStationTitle( String title ) or setStationCode( String code ).
+    }
+    if (publisherName !== undefined) {
+      cm.setPublisherName(publisherName);             // Collect the consumer-facing brand name of the media publisher that owns the content.
+    }
+    cm.setProgramTitle(programTitle || '*null')       // Top level content title (i.e., the name of the overall program, show, or content series)
+    cm.setProgramId(programId || '*null');            // Top level content id 
+    cm.setEpisodeTitle(episodeTitle || '*null');      // Sub level content title (i.e., the title of the specific episode). Can be used with setProgramTitle( String title ) to tag TV shows on program and episode level.
+    cm.setEpisodeId(episodeId || '*null');            // Episode identifier to link the online content to the corresponding Episode of a TV Program (or series). Each time you create a new episode, an Episode ID should be automatically assigned.
+    cm.setEpisodeSeasonNumber(episodeSeasonNumber || '*null');
+    if (episodeNumber !== undefined) {
+      cm.setEpisodeNumber(episodeNumber || '*null');
+    }
+    cm.setGenreName(genreName || '*null');            // Genre description. Multiple values can be provided as a comma-separated string.
+    if (genreId !== undefined) {
+      cm.setGenreId(genreId);                         // Genre ID to be used for matching and grouping purposes (for example when the genres are multilingual).
+
+    }
+    if (carryTvAdvertisementLoad !== undefined) {
+      cm.carryTvAdvertisementLoad(true);              // Use value true if the streamed content carries the same advertisement load that was used during the TV airing. Otherwise omit or use value false.
+
+    }
+    cm.classifyAsCompleteEpisode(classifyAsCompleteEpisode || '*null');
+    if(dateOfProduction !== undefined) {
+      const { year, month, day } = dateOfProduction
+      cm.setDateOfProduction(year,month,day)
+    }
+    if (timeOfProduction !== undefined) {
+      const  { hours, minutes } = timeOfProduction
+      cm.setTimeOfProduction(hours,minutes)
+    }
+    if(dateOfTvAiring !== undefined) {
+      const { year, month, day } = dateOfTvAiring
+      cm.setDateOfTvAiring(year,month,day)
+    }
+    if (timeOfTvAiring !== undefined) {
+      const  { hours, minutes } = timeOfTvAiring
+      cm.setTimeOfTvAiring(hours,minutes)
+    }
+    if(dateOfDigitalAiring !== undefined) {
+      const { year, month, day } = dateOfDigitalAiring
+      cm.setDateOfDigitalAiring(year,month,day)
+    }
+    if (timeOfDigitalAiring !== undefined) {
+      const  { hours, minutes } = timeOfDigitalAiring
+      cm.setTimeOfDigitalAiring(hours,minutes)
     }
     if (feedType !== undefined) {
       cm.setFeedType(feedType);
     }
-    if (setDeliveryMode !== undefined) {
-      const {
-        LINEAR,
-        ON_DEMAND,
-      } = analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryMode;
-      cm.setDeliveryMode(isLive ? LINEAR : ON_DEMAND);
+    cm.classifyAsAudioStream(classifyAsAudioStream || false);     // This metadata helps Comscore identify if the streaming content is audio-only in nature.
+    if (deliveryMode !== undefined) {
+      cm.setDeliveryMode(this.mapDeliveryMode(deliveryMode));
     }
     if (deliverySubscriptionType !== undefined) {
-      cm.setDeliverySubscriptionType(deliverySubscriptionType);
+      cm.setDeliverySubscriptionType(this.mapDeliverySubcriptionType(deliverySubscriptionType));
     }
     if (deliveryComposition !== undefined) {
-      cm.setDeliveryComposition(deliveryComposition);
+      cm.setDeliveryComposition(this.mapDeliveryComposition(deliveryComposition));
     }
     if (deliveryAdvertisementCapability !== undefined) {
-      cm.setDeliveryAdvertisementCapability(deliveryAdvertisementCapability);
+      cm.setDeliveryAdvertisementCapability(this.mapDeliveryAdvertisementCapability(deliveryAdvertisementCapability));
     }
-    if (ns_st_cmt !== undefined) {
-      cm.setMediaFormat(ns_st_cmt);
+    if (mediaFormat !== undefined) {
+      cm.setMediaFormat(this.mapMediaFormat(mediaFormat));
     }
-    if (ns_st_cdm !== undefined) {
-      cm.setDistributionModel(ns_st_cdm);
+    if (distributionModel !== undefined) {
+      cm.setDistributionModel(this.mapDistributionModel(distributionModel));
     }
     if (playlistTitle !== undefined) {
       cm.setPlaylistTitle(playlistTitle);
     }
-    if (totalSegment !== undefined) {
-      cm.setTotalSegments(totalSegment);
+    if (totalSegments !== undefined) {
+      cm.setTotalSegments(totalSegments);
     }
     if (clipUrl !== undefined) {
       cm.setClipUrl(clipUrl);
     }
-    if (pixelsWide !== undefined && pixelsHigh !== undefined) {
-      cm.setVideoDimensions(pixelsWide, pixelsHigh);
-    }
-    const customLabels = new CustomLabels();
-    if (oce_odt !== undefined) {
-      customLabels.oce_odt = oce_odt;
-    }
-    if (oce_bpf !== undefined) {
-      customLabels.oce_bpf = oce_bpf;
-    }
-    if (oce_ctl !== undefined) {
-      customLabels.oce_ctl = oce_ctl;
-    }
-    if (oce_emb !== undefined) {
-      customLabels.oce_emb = oce_emb;
-    }
-    if (cs_proid !== undefined) {
-      customLabels.cs_proid = cs_proid;
-    }
-    if (name !== undefined) {
-      customLabels.name = name;
+    if (videoDimension !== undefined) {
+      cm.setVideoDimensions(videoDimension.width, videoDimension.height);
     }
     cm.addCustomLabels(customLabels);
     this.cm = cm;
   }
 
-  private isLivecontentMediaType: boolean;
   /**
-   *  Returns id the ContentMetadata MediaType is configured as LIVE
+ * Gets content metadata
+ * @readonly
+ * @memberof ContentMetadata
+ */
+  public getContentMetadata() {
+    return this.cm;
+  }
+
+  /**
+   *  Returns if the ContentMetadata MediaType is configured as LIVE
    */
   public isLiveContentMediaType(): boolean {
     return this.isLivecontentMediaType;
@@ -311,12 +198,129 @@ export class ContentMetadata {
     this.setLength(length, this.isLivecontentMediaType);
   }
 
-  /**
-   * Gets  content metadata
-   * @readonly
-   * @memberof ContentMetadata
-   */
-  public getContentMetadata() {
-    return this.cm;
+  private mapMediaType(mediaType: ComscoreMediaType) {
+    switch(mediaType) {
+      case ComscoreMediaType.longFormOnDemand:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.LONG_FORM_ON_DEMAND;
+      case ComscoreMediaType.shortFormOnDemand:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.SHORT_FORM_ON_DEMAND;
+      case ComscoreMediaType.live:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.LIVE;
+      case ComscoreMediaType.userGeneratedLongFormOnDemand:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.USER_GENERATED_LONG_FORM_ON_DEMAND;
+      case ComscoreMediaType.userGeneratedShortFormOnDemand:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.USER_GENERATED_SHORT_FORM_ON_DEMAND;
+      case ComscoreMediaType.userGeneratedLive:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.USER_GENERATED_LIVE;
+      case ComscoreMediaType.bumper:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.BUMPER;
+      case ComscoreMediaType.other:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.OTHER;
+      default:
+        console.log('UNKNOWN MEDIA TYPE:', mediaType);
+        return analytics.StreamingAnalytics.ContentMetadata.ContentType.LONG_FORM_ON_DEMAND;
+    }
+  }
+
+  private mapDeliveryMode(deliveryMode: ComscoreDeliveryMode) {
+    switch(deliveryMode){
+      case ComscoreDeliveryMode.linear:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryMode.LINEAR;
+      case ComscoreDeliveryMode.ondemand:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryMode.ON_DEMAND;
+    }
+  }
+
+  private mapDeliverySubcriptionType(deliverySubscriptionType: ComscoreDeliverySubscriptionType) {
+    switch(deliverySubscriptionType){
+      case ComscoreDeliverySubscriptionType.traditionalMvpd:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.TRADITIONAL_MVPD;
+      case ComscoreDeliverySubscriptionType.virtualMvpd:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.VIRTUAL_MVPD;
+      case ComscoreDeliverySubscriptionType.subscription:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.SUBSCRIPTION;
+      case ComscoreDeliverySubscriptionType.transactional:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.TRANSACTIONAL;
+      case ComscoreDeliverySubscriptionType.advertising:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.ADVERTISING;
+      case ComscoreDeliverySubscriptionType.premium:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliverySubscriptionType.PREMIUM
+    }
+  }
+
+  private mapDeliveryComposition(deliveryComposition: ComscoreDeliveryComposition) {
+    switch(deliveryComposition){
+      case ComscoreDeliveryComposition.clean:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryComposition.CLEAN;
+      case ComscoreDeliveryComposition.embed:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryComposition.EMBED;
+    }
+  }
+
+  private mapDeliveryAdvertisementCapability(deliveryAdvertisementCapability: ComscoreDeliveryAdvertisementCapability) {
+    switch(deliveryAdvertisementCapability){
+      case ComscoreDeliveryAdvertisementCapability.none:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.NONE;
+      case ComscoreDeliveryAdvertisementCapability.dynamicLoad:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.DYNAMIC_LOAD;
+      case ComscoreDeliveryAdvertisementCapability.dynamicReplacement:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.DYNAMIC_REPLACEMENT;
+      case ComscoreDeliveryAdvertisementCapability.linear1day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_1DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear2day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_2DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear3day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_3DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear4day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_4DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear5day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_5DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear6day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_6DAY;
+      case ComscoreDeliveryAdvertisementCapability.linear7day:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDeliveryAdvertisementCapability.LINEAR_7DAY;
+    }
+  }
+
+  private mapMediaFormat(mediaFormat: ComscoreMediaFormat) {
+    switch(mediaFormat){
+      case ComscoreMediaFormat.fullContentEpisode:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_EPISODE; 
+      case ComscoreMediaFormat.fullContentMovie:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_MOVIE; 
+      case ComscoreMediaFormat.fullContentPodcast:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_PODCAST; 
+      case ComscoreMediaFormat.fullContentGeneric:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_GENERIC; 
+      case ComscoreMediaFormat.partialContentEpisode:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_EPISODE; 
+      case ComscoreMediaFormat.partialContentMovie:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_MOVIE; 
+      case ComscoreMediaFormat.partialContentPodcast:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_PODCAST; 
+      case ComscoreMediaFormat.partialContentGeneric:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_GENERIC; 
+      case ComscoreMediaFormat.previewEpisode:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_EPISODE; 
+      case ComscoreMediaFormat.previewMovie:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_MOVIE; 
+      case ComscoreMediaFormat.previewGeneric:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_GENERIC; 
+      case ComscoreMediaFormat.extraEpisode:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_EPISODE; 
+      case ComscoreMediaFormat.extraMovie:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_MOVIE; 
+      case ComscoreMediaFormat.extraGeneric:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_GENERIC; 
+    }
+  }
+
+  private mapDistributionModel(distributionModel: ComscoreDistributionModel) {
+    switch(distributionModel){
+      case ComscoreDistributionModel.exclusivelyOnline:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDistributionModel.EXCLUSIVELY_ONLINE;
+      case ComscoreDistributionModel.tvAndOnline:
+        return analytics.StreamingAnalytics.ContentMetadata.ContentDistributionModel.TV_AND_ONLINE;
+    }
   }
 }
