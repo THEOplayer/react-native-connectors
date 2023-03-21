@@ -92,7 +92,7 @@ export type ComscoreDimension = {
 
 export type ComscoreMetadata = {
   /**
-   * Classification type, mandatory, setMediaType( value )
+   * Classification type, mandatory, setMediaType( value ) - (ns_st_li)
    */
   mediaType: ComscoreMediaType;
   /**
@@ -104,15 +104,15 @@ export type ComscoreMetadata = {
    */
   length: number;
   /**
-   * VMX dictionary (level 1), mandatory, Comscore API: setDictionaryClassificationC3( string value )
+   * VMX dictionary (level 1), mandatory, Comscore API: setDictionaryClassificationC3( string value ) - (c3)
    */
   c3?: string;
   /**
-   * VMX dictionary (level 2), mandatory, Comscore API: setDictionaryClassificationC4( string value )
+   * VMX dictionary (level 2), mandatory, Comscore API: setDictionaryClassificationC4( string value ) - (c4)
    */
   c4?: string;
   /**
-   * VMX dictionary (level 3), mandatory, Comscore API: setDictionaryClassificationC6( string value )
+   * VMX dictionary (level 3), mandatory, Comscore API: setDictionaryClassificationC6( string value ) - (c6)
    */
   c6?: string;
   /**
@@ -124,7 +124,7 @@ export type ComscoreMetadata = {
   */
   stationCode?: string;
   /**
-   * Code to identify station affiliation in cases where the same local TV station call sign is affiliated with multiple national TV networks, Comscore API: setNetworkAffiliate( string code )
+   * Code to identify station affiliation in cases where the same local TV station call sign is affiliated with multiple national TV networks, Comscore API: setNetworkAffiliate( string code ) - (ns_st_sta)
    */
   networkAffiliate?: string;
   /**
@@ -152,7 +152,7 @@ export type ComscoreMetadata = {
    */
   episodeSeasonNumber?: string;
   /**
-   * Episode number for episodic content. It is recommended to use values with 2 digits — or 3 digits for episodic content with more than 99 episodes in a season — left-padded with 0, Comscore API: setEpisodeNumber( string value )
+   * Episode number for episodic content. It is recommended to use values with 2 digits — or 3 digits for episodic content with more than 99 episodes in a season — left-padded with 0, Comscore API: setEpisodeNumber( string value ) - (ns_st_en)
    */
   episodeNumber?: string;
   /**
@@ -160,11 +160,11 @@ export type ComscoreMetadata = {
    */
   genreName: string;
   /**
-   * Genre ID to be used for matching and grouping purposes (for example when the genres are multilingual). Multiple values can be provided as a comma-separated string, Comscore API: setGenreId( string id )
+   * Genre ID to be used for matching and grouping purposes (for example when the genres are multilingual). Multiple values can be provided as a comma-separated string, Comscore API: setGenreId( string id ) - (ns_st_tge)
    */
   genreId?: string;
   /**
-   * This metadata helps Comscore differentiate if the stream is carrying the same ad load as TV, Comscore API: carryTvAdvertisementLoad( Boolean value )
+   * This metadata helps Comscore differentiate if the stream is carrying the same ad load as TV, Comscore API: carryTvAdvertisementLoad( Boolean value ) - (ns_st_ia)
    */
   carryTvAdvertisementLoad?: boolean;
   /**
@@ -172,53 +172,53 @@ export type ComscoreMetadata = {
    */
   classifyAsCompleteEpisode?: boolean;
   /**
-   * The date on which the content was produced or created,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setDateOfProduction( int year, int month, int day )
+   * The date on which the content was produced or created,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setDateOfProduction( int year, int month, int day ) - (ns_st_dt)
    */
   dateOfProduction?: ComscoreDate;
   /**
-   * The time at which the content was produced or created,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfProduction( int hours, int minutes )
+   * The time at which the content was produced or created,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfProduction( int hours, int minutes ) - (ns_st_tm)
    */
   timeOfProduction?: ComscoreTime;
   /**
    * The date on which the content aired on TV. This metadata helps Comscore establish monetization windows (live, day +1, day +3, etc.) for any given episode or show.
    * The monetization windows are used to calculate commercial and program ratings. LIVE: Optional,VOD: Optional,Adv: Inherited from Content
-   * Comscore API: setDateOfTvAiring( int year, int month, int day )
+   * Comscore API: setDateOfTvAiring( int year, int month, int day ) - (ns_st_tdt)
    */
   dateOfTvAiring?: ComscoreDate;
   /**
-   * The time at which the content aired on TV,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfTvAiring( int hours, int minutes )
+   * The time at which the content aired on TV,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfTvAiring( int hours, int minutes ) - (ns_st_ttm)
    */
   timeOfTvAiring?: ComscoreTime;
   /**
-   * The date on which the content was made available for streaming consumption. This metadata helps Comscore establish monetization windows (live, day +1, day +3, etc.) for any given episode or show. The monetization windows are used to calculate commercial and program ratings,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setDateOfDigitalAiring( int year, int month, int day )
+   * The date on which the content was made available for streaming consumption. This metadata helps Comscore establish monetization windows (live, day +1, day +3, etc.) for any given episode or show. The monetization windows are used to calculate commercial and program ratings,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setDateOfDigitalAiring( int year, int month, int day ) - (ns_st_ddt)
    */
   dateOfDigitalAiring?: ComscoreDate;
   /**
-   * The time at which the content was made available for streaming consumption,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfDigitalAiring( int hours, int minutes )
+   * The time at which the content was made available for streaming consumption,  LIVE: Optional,VOD: Optional,Adv: Inherited from Content, Comscore API: setTimeOfDigitalAiring( int hours, int minutes ) - (ns_st_dtm)
    */
   timeOfDigitalAiring?: ComscoreTime;
   /**
-   * Specify the type of feed provided on the live stream, Comscore API: setFeedType( value )
+   * Specify the type of feed provided on the live stream, Comscore API: setFeedType( value ) - (ns_st_ft)
    */
   feedType?: ComscoreFeedType;
   /**
-   * Use value true if the content is audio-only, rather than video (with or without audio). Otherwise omit or use value false, Comscore API: classifyAsAudioStream( Boolean value )
+   * Use value true if the content is audio-only, rather than video (with or without audio). Otherwise omit or use value false, Comscore API: classifyAsAudioStream( Boolean value ) - (ns_st_ty)
    */
   classifyAsAudioStream: boolean;
   /**
-   * Identifies the content delivery to be on-demand or linear, Comscore API:  setDeliveryMode( value )
+   * Identifies the content delivery to be on-demand or linear, Comscore API:  setDeliveryMode( value ) - (ns_st_cde)
    */
   deliveryMode?: ComscoreDeliveryMode;
   /**
-   * Identifies the type of subscription of the user, Comscore API: setDeliverySubscriptionType( value )
+   * Identifies the type of subscription of the user, Comscore API: setDeliverySubscriptionType( value ) - (ns_st_cds)
    */
   deliverySubscriptionType?: ComscoreDeliverySubscriptionType;
   /**
-   * Indicates whether or not ads are delivered as part of the content stream, Comscore API: setDeliveryComposition( value )
+   * Indicates whether or not ads are delivered as part of the content stream, Comscore API: setDeliveryComposition( value ) - (ns_st_cdc)
    */
   deliveryComposition?: ComscoreDeliveryComposition;
   /**
-   * Indicate what capability is allowed for advertisement placements, Comscore API: setDeliveryAdvertisementCapability( value )
+   * Indicate what capability is allowed for advertisement placements, Comscore API: setDeliveryAdvertisementCapability( value ) - (ns_st_cda)
    */
   deliveryAdvertisementCapability?: ComscoreDeliveryAdvertisementCapability;
   /**
@@ -230,19 +230,19 @@ export type ComscoreMetadata = {
    */
   distributionModel?: ComscoreDistributionModel;
   /**
-   * Can be used if the player offers the media as part of a playlist. Specify an identifier (title, etc.) for the playlist. For example, the TV Show title for a playlist which contains all episodes from a specific TV show, Comscore API: setPlaylistTitle( string title )
+   * Can be used if the player offers the media as part of a playlist. Specify an identifier (title, etc.) for the playlist. For example, the TV Show title for a playlist which contains all episodes from a specific TV show, Comscore API: setPlaylistTitle( string title ) - (ns_st_pl)
    */
   playlistTitle?: string;
   /**
-   * Indicates the total number of segments of the content, which is one more than the number of mid-roll ad breaks. For example, content with no mid-roll ad breaks has 1 segment and content with 2 mid-roll ad breaks has 3 segments, Comscore API: setTotalSegments( int total )
+   * Indicates the total number of segments of the content, which is one more than the number of mid-roll ad breaks. For example, content with no mid-roll ad breaks has 1 segment and content with 2 mid-roll ad breaks has 3 segments, Comscore API: setTotalSegments( int total ) - (ns_st_tp)
    */
   totalSegments?: number;
   /**
-   * The URL (or path/filename) of the content stream, Comscore API: setClipUrl( string url )
+   * The URL (or path/filename) of the content stream, Comscore API: setClipUrl( string url ) - (ns_st_cu)
    */
   clipUrl?: string;
   /**
-   * Content video dimensions in pixels, Comscore API: setVideoDimensions( int pixelsWide, int pixelsHigh )
+   * Content video dimensions in pixels, Comscore API: setVideoDimensions( int pixelsWide, int pixelsHigh ) - (ns_st_cs)
    */
   videoDimension?: ComscoreDimension;
   /**
