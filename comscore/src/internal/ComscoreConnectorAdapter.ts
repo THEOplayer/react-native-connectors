@@ -10,6 +10,19 @@ export class ComscoreConnectorAdapter {
     NativeModules.ComscoreModule.initialize(this.player.nativeHandle, comscoreMetadata, comscoreConfig);
   }
 
+  update(metadata: ComscoreMetadata): void {
+    NativeModules.ComscoreModule.update(this.player.nativeHandle, metadata);
+  }
+
+  setPersistentLabel(label: string, value: string): void {
+    NativeModules.ComscoreModule.setPersistentLabel(this.player.nativeHandle, label, value);
+  }
+
+  setPersistentLabels(labels: { [key: string]: string }): void {
+    NativeModules.ComscoreModule.setPersistentLabels(this.player.nativeHandle, labels);
+  }
+
+
   destroy(): void {
     // @ts-ignore
     NativeModules.ComscoreModule.destroy(this.player.nativeHandle);

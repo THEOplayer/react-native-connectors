@@ -33,12 +33,22 @@ export class ComscoreConnectorAdapter {
     );
   }
 
-  setContentInfo(metadata: ComscoreMetadata): void {
+  update(metadata: ComscoreMetadata): void {
     // TODO uncomment once Comscore version has been updated
     this.integration.setContentMetadata(new ContentMetadata(metadata));
   }
 
-  setAdInfo(metadata: ComscoreMetadata): void {
+  updateAdMetadata(metadata: ComscoreMetadata): void {
+    // TODO uncomment once Comscore version has been updated
+    this.integration.setAdMetadata(new AdMetadata(metadata));
+  }
+
+  setPersistentLabel(label: string, value: string): void {
+    // TODO uncomment once Comscore version has been updated
+    this.integration.setAdMetadata(new AdMetadata(metadata));
+  }
+
+  setPersistentLabels(labels: { [key: string]: string }): void {
     // TODO uncomment once Comscore version has been updated
     this.integration.setAdMetadata(new AdMetadata(metadata));
   }
