@@ -14,7 +14,7 @@ export class AdMetadata {
   /**
    * sets ad metadata
    * @param {Boolean} isAudio Use value true if the advertisement is audio-only, rather than video (with or without audio). Otherwise omit or use value false, Comscore API: classifyAsAudioStream( Boolean value )
-   * @param {Object} metadata a collection of custom metadata name/value pair, Comscore API: addCustomLabels( Object labels )
+   * @param {Object} customLabels a collection of custom metadata name/value pair, Comscore API: addCustomLabels( Object labels )
    * @param {analytics.StreamingAnalytics.AdvertisementMetadata.AdvertisementDeliveryType} deliveryType Specify the mechanism use to deliver an advertisement, Comscore API: setDeliveryType( value )
    * @param {analytics.StreamingAnalytics.AdvertisementMetadata.AdvertisementOwner} owner Specify who is monetizing the advertisement, Comscore API: setOwner( value )
    * @param {String} serverCampaignId Provide an ID for the advertisement campaign being delivered, Comscore API: setServerCampaignId( String id )
@@ -29,7 +29,7 @@ export class AdMetadata {
    */
   constructor(
     isAudio = false,
-    metadata: string = null,
+    customLabels: string = null,
     deliveryType: string = null,
     owner: string = null,
     serverCampaignId: string = null,
@@ -44,17 +44,13 @@ export class AdMetadata {
   ) {
     const cm = new analytics.StreamingAnalytics.AdvertisementMetadata();
 
-    cm.classifyAsAudioStream(isAudio);
     if (deliveryType) {
       cm.setDeliveryType(deliveryType);
     }
     if (owner) {
       cm.setOwner(owner);
     }
-    if (metadata) {
-      // Can be used to specify a collection of custom metadata name/value pairs.
-      cm.addCustomLabels(metadata);
-    }
+    cm.classifyAsAudioStream(isAudio);
     if (serverCampaignId) {
       cm.setServerCampaignId(serverCampaignId);
     }
@@ -79,31 +75,17 @@ export class AdMetadata {
     if (pixelsWide && pixelsHigh) {
       cm.setVideoDimensions(pixelsWide, pixelsHigh);
     }
+    if (customLabels) {
+      cm.addCustomLabels(customLabels);                 // Can be used to specify a collection of custom metadata name/value pairs.
+    }
     this.cm = cm;
   }
 
   /**
-   * Sets a unique identifier of the advertisement
-   * @param ns_st_ami  a unique identifier of the advertisement Comscore API: setUniqueId( String id )
-   * @memberof AdMetadata
-   */
-  public setId(ns_st_ami: string) {
-    this.cm.setUniqueId(ns_st_ami || '*null');
-  }
-
-  /**
-   * sets the analytics.StreamingAnalytics.ContentMetadata of the content which the advertisement is served for. Omit for cases where player is not aware which content the advertisement is playing for.
-   * @param {ContentMetadata} relatedContent , Comscore API: setRelatedContentMetadata(contentMetadataObject )
-   */
-  public setRelatedContentMetadata(relatedContent: ContentMetadata) {
-    this.cm.setRelatedContentMetadata(relatedContent.getContentMetadata());
-  }
-
-  /**
-   * Sets media type based on ad type and if stream is live
-   * @param adType ad type: preroll, midroll, postroll
-   * @param isLive specifies if stream is LIVE
-   */
+ * Sets media type based on ad type and if stream is live
+ * @param adType ad type: preroll, midroll, postroll
+ * @param isLive specifies if stream is LIVE
+ */
   public setMediaType(adType: string, isLive: boolean) {
     const {
       ON_DEMAND_PRE_ROLL,
@@ -136,6 +118,23 @@ export class AdMetadata {
   }
 
   /**
+   * sets the analytics.StreamingAnalytics.ContentMetadata of the content which the advertisement is served for. Omit for cases where player is not aware which content the advertisement is playing for.
+   * @param {ContentMetadata} relatedContent , Comscore API: setRelatedContentMetadata(contentMetadataObject )
+   */
+  public setRelatedContentMetadata(relatedContent: ContentMetadata) {
+    this.cm.setRelatedContentMetadata(relatedContent.getContentMetadata());
+  }
+
+  /**
+   * Sets a unique identifier of the advertisement
+   * @param ns_st_ami  a unique identifier of the advertisement Comscore API: setUniqueId( String id )
+   * @memberof AdMetadata
+   */
+  public setId(uniqueId: string) {
+    this.cm.setUniqueId(uniqueId || '*null');
+  }
+
+  /**
    * sets duration of ad
    * @memberof AdMetadata, Comscore API: setLength( int length )
    */
@@ -148,7 +147,7 @@ export class AdMetadata {
    * @param {String} oce_skp Advertisement's skippable duration, Adv: Mandatory
    * @memberof ContentMetadata
    */
-  public addCustomAuditelLabels(oce_skp: string) {
+  public addCustomLabels(oce_skp: string) {
     let customLabels: {[key: string]: string};
     if (oce_skp) {
       customLabels.oce_skp = oce_skp;
@@ -168,7 +167,7 @@ export class AdMetadata {
   public static clone(old: AdMetadata): AdMetadata {
     const newmd: AdMetadata = new AdMetadata(
       old.cm.isAudio,
-      old.cm.metadata,
+      old.cm.customLabels,
       old.cm.deliveryType,
       old.cm.owner,
       old.cm.serverCampaignId,
