@@ -1,6 +1,6 @@
 import { AD_TYPES } from './Utils';
 import type { ContentMetadata } from './ComscoreContentMetadata';
-import * as analytics  from '../comscore/comscore';
+import * as analytics  from '../sdk/comscore';
 
 export class AdMetadata {
   /**

@@ -1,4 +1,4 @@
-import * as analytics  from './../comscore/comscore';
+import * as analytics  from '../sdk/comscore';
 import type { RaiSkeletonAPI } from './SkeletonApi';
 
 /**
