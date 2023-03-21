@@ -45,12 +45,13 @@ export class AdobeConnectorAdapter {
 
   private currentChapter: TextTrackCue | undefined;
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string) {
+  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData) {
     this.player = player
     this.uri = `https://${ uri }/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
     this.trackingUrl = trackingUrl;
+    this.customMetadata = { ...this.customMetadata, ...metadata };
 
     this.addEventListeners();
   }
