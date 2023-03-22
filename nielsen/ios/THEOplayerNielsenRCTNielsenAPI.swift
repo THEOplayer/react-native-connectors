@@ -41,14 +41,9 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
         }
     }
 
-    @objc(setContentInfo:metadata:)
-    func setContentInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
-        print("[NielsenModule] setContentInfo triggered.")
-    }
-
-    @objc(setAdInfo:metadata:)
-    func setAdInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
-        print("[NielsenModule] setAdInfo triggered.")
+    @objc(updateMetadata:metadata:)
+    func updateMetadata(for node: NSNumber, metadata: NSDictionary) {
+        print("[NielsenModule] Warning: updating metadata not possible on iOS.")
     }
 
     @objc(destroy:)
