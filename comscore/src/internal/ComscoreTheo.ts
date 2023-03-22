@@ -143,6 +143,21 @@ export class ComscoreTheo extends TheoBase {
     this.comscore.setMediaType(this.contentMetada.isLiveContentMediaType());
   }
 
+  protected isFirstAdInBreak(adType: string) {
+    if (adType === AD_TYPES.PREROLL) {
+      return this.prerollCount == 1;
+    }
+
+    if (adType === AD_TYPES.MIDROLL) {
+      return this.midrollCount == 1;
+    }
+
+    if (adType === AD_TYPES.POSTROLL) {
+      return this.postrollCount == 1;
+    }
+    return false;
+  }
+
   protected async isLastAdInBreak(adType: string) {
     const currentAdBreak: AdBreak = await this.player.ads.currentAdBreak()
     const adsInCurrentBreak = currentAdBreak.ads.length
