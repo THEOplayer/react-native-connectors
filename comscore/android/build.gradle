@@ -64,6 +64,9 @@ repositories {
   // Local Maven repo
   maven { url("local") }
   maven { url 'https://jitpack.io' }
+  maven {
+    url "https://comscore.bintray.com/Analytics"
+  }
 }
 
 def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
@@ -81,5 +84,5 @@ dependencies {
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
   implementation project(':react-native-theoplayer')
 
-  implementation "com.comscoreappsdk.global:ad:9.0.0.0"
+  implementation "com.comscore:android-analytics:6.+"
 }
