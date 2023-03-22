@@ -69,6 +69,7 @@ const App = () => {
     comscoreConnector.current = new ComscoreConnector(player, comscoreMetadata, comscoreConfig);
     player.autoplay = !paused;
     player.source = source;
+    comscoreConnector.current.update(comscoreMetadata)
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
     // Update theoPlayer reference.
