@@ -168,3 +168,10 @@ enum class ComscoreDistributionModel {
     }
   }
 }
+
+data class ComscoreDimension(val width: Int, val height: Int)
+data class ComscoreDate(val year: Int, val month: Int, val day: Int)
+data class ComscoreTime(val hours: Int, val minutes: Int)
+
+
+

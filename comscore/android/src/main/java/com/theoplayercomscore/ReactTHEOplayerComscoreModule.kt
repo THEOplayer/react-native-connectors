@@ -75,23 +75,35 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     )
   }
 
-  fun mapDate(date: ReadableMap): ComscoreDate {
-    var day = date.getInt("day")
-    var month = date.getInt("month")
-    var year = date.getInt("year")
-    return ComscoreDate(year,month,day)
+  fun mapDate(date: ReadableMap?): ComscoreDate? {
+    var day = date?.getInt("day")
+    var month = date?.getInt("month")
+    var year = date?.getInt("year")
+    if (day != null && month != null && year != null) {
+      return ComscoreDate(year,month,day)
+    } else {
+      return null
+    }
   }
 
-  fun mapTime(time: ReadableMap): ComscoreTime {
-    var hours = time.getInt("hours")
-    var minutes = time.getInt("minutes")
-    return ComscoreTime(hours,minutes)
+  fun mapTime(time: ReadableMap?): ComscoreTime? {
+    var hours = time?.getInt("hours")
+    var minutes = time?.getInt("minutes")
+    if (hours != null && minutes != null) {
+      return ComscoreTime(hours,minutes)
+    } else {
+      return null
+    }
   }
 
-  fun mapDimension(dimension: ReadableMap): ComscoreDimension {
-    var width = dimension.getInt("width")
-    var height = dimension.getInt("height")
-    return ComscoreDimension(width,height)
+  fun mapDimension(dimension: ReadableMap?): ComscoreDimension? {
+    var width = dimension?.getInt("width")
+    var height = dimension?.getInt("height")
+    if (width != null && height != null) {
+      return ComscoreDimension(width,height)
+    } else {
+      return null
+    }
   }
 
   fun mapMediaType(mediaType: String?): ComscoreMediaType? {
@@ -211,12 +223,12 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     var genreId = metadata.getString("genreId")
     var carryTvAdvertisementLoad = metadata.getBoolean("carryTvAdvertisementLoad")
     var classifyAsCompleteEpisode = metadata.getBoolean("classifyAsCompleteEpisode")
-//    var dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
-//    var timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
-//    var dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
-//    var timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
-//    var dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
-//    var timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
+    var dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
+    var timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
+    var dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
+    var timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
+    var dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
+    var timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
     var feedType = mapFeedType(metadata.getString("feedType"))
     var classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
     var deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
@@ -228,9 +240,9 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     var playlistTitle = metadata.getString("playlistTitle")
     var totalSegments = metadata.getInt("totalSegments")
     var clipUrl = metadata.getString("clipUrl")
-//    var videoDimension = mapDimension(metadata.getMap("videoDimension"))
+    var videoDimension = mapDimension(metadata.getMap("videoDimension"))
     var customLabels = metadata.getMap("customLabels")
-    
+
     return ComscoreMetaData(
       uniqueId,
       publisherName,
