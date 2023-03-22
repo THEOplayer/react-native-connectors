@@ -40,7 +40,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
                     metadata: ComScoreMetadata(
                         mediaType: .shortFormOnDemand,
                         uniqueId: ComscoreMetadata["uniqueId"] as! String,
-                        length: ComscoreMetadata["length"] as! Int,
+                        length: Int(truncating: ComscoreMetadata["length"] as! NSNumber),
                         stationTitle: ComscoreMetadata["stationTitle"] as! String,
                         programTitle: ComscoreMetadata["programTitle"] as! String,
                         episodeTitle: ComscoreMetadata["episodeTitle"] as! String ,
@@ -99,7 +99,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
         let comscoreMetadata = ComScoreMetadata(
             mediaType: mapMediaType(mediaType: metadata["mediaType"] as! String),
             uniqueId: metadata["uniqueId"] as! String,
-            length: metadata["length"] as! Int,
+            length: Int(truncating: metadata["length"] as! NSNumber),
             c3: metadata["c3"] as? String,
             c4: metadata["c4"] as? String,
             c6: metadata["c6"] as? String,
@@ -117,12 +117,12 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
             genreId: metadata["genreId"] as? String,
             carryTvAdvertisementLoad: metadata["carryTvAdvertisementLoad"] as? Bool,
             classifyAsCompleteEpisode: metadata["classifyAsCompleteEpisode"] as? Bool,
-            productionDate: mapDate(date: metadata["productionDate"] as! [String:Int]),
-            productionTime: mapTime(time: metadata["productionTime"] as! [String:Int]),
-            tvAirDate: mapDate(date: metadata["tvAirDate"] as! [String:Int]),
-            tvAirTime: mapTime(time: metadata["tvAirTime"] as! [String:Int]),
-            digitalAirDate: mapDate(date: metadata["digitalAirDate"] as! [String:Int]),
-            digitalAirTime: mapTime(time: metadata["digitalAirTime"] as! [String:Int]),
+            productionDate: mapDate(date: metadata["productionDate"] as? [String:NSNumber] ?? [:]),
+            productionTime: mapTime(time: metadata["productionTime"] as? [String:NSNumber] ?? [:]),
+            tvAirDate: mapDate(date: metadata["tvAirDate"] as? [String:NSNumber] ?? [:]),
+            tvAirTime: mapTime(time: metadata["tvAirTime"] as? [String:NSNumber] ?? [:]),
+            digitalAirDate: mapDate(date: metadata["digitalAirDate"] as? [String:NSNumber] ?? [:]),
+            digitalAirTime: mapTime(time: metadata["digitalAirTime"] as? [String:NSNumber] ?? [:]),
             feedType: mapFeedType(feedType: metadata["feedType"] as? String),
             classifyAsAudioStream: metadata["classifyAsAudioStream"] as! Bool,
             deliveryMode: mapDeliveryMode(deliveryMode: metadata["deliveryMode"] as? String),
@@ -132,12 +132,14 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
             mediaFormat: mapMediaFormat(mediaFormat: metadata["mediaFormat"] as? String),
             distributionModel: mapDistributionModel(distributionModel: metadata["distributionModel"] as? String),
             playlistTitle: metadata["playlistTitle"] as? String,
-            totalSegments: metadata["totalSegments"] as? Int,
+            totalSegments: (metadata["totalSegments"] as? NSNumber).flatMap({ totalSegments in
+                Int(truncating: totalSegments)
+            }) ?? nil,
             clipUrl: metadata["clipUrl"] as? String,
-            videoDimension: mapDimension(dimension: metadata["videoDimension"] as? [String:Int]),
+            videoDimension: mapDimension(dimension: metadata["videoDimension"] as? [String:NSNumber] ?? [:]),
             customLabels: metadata["customLabels"] as? [String:String]
         )
-        return ComScoreMetadata(mediaType: .shortFormOnDemand, uniqueId: "4567DEF", length: 211, stationTitle: "THEO TV", programTitle: "Star Wars", episodeTitle: "Episode VII The Force Awakens", genreName: "Science Fiction", classifyAsAudioStream: false)
+        return comscoreMetadata
     }
     
     func mapUserConsent(userConsent: String) -> ComScoreUserConsent {
@@ -306,25 +308,25 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
         }
     }
     
-    func mapDate(date: [String:Int]) -> ComScoreDate? {
-        if let day = date["day"] as Int?, let month = date["month"] as Int?, let year = date["year"] as Int? {
-            return ComScoreDate(year:year,month: month,day: day)
+    func mapDate(date: [String:NSNumber]) -> ComScoreDate? {
+        if let day = date["day"], let month = date["month"], let year = date["year"] {
+            return ComScoreDate(year:Int(truncating: year),month: Int(truncating: month),day: Int(truncating: day))
         } else {
             return nil
         }
     }
     
-    func mapTime(time: [String:Int]) -> ComScoreTime? {
-        if let hours = time["hours"] as Int?, let minutes = time["minutes"] as Int? {
-            return ComScoreTime(hours:hours,minutes:minutes)
+    func mapTime(time: [String:NSNumber]) -> ComScoreTime? {
+        if let hours = time["hours"], let minutes = time["minutes"] {
+            return ComScoreTime(hours:Int(truncating: hours),minutes:Int(truncating: minutes))
         } else {
             return nil
         }
     }
     
-    func mapDimension(dimension: [String:Int]?) -> THEOplayerConnectorComscore.Dimension? {
-        if let width = dimension?["width"] as Int?, let height = dimension?["height"] as Int? {
-            return Dimension(width: width, height: height)
+    func mapDimension(dimension: [String:NSNumber]?) -> THEOplayerConnectorComscore.Dimension? {
+        if let width = dimension?["width"], let height = dimension?["height"] {
+            return Dimension(width: Int(truncating: width), height: Int(truncating: height))
         } else {
             return nil
         }
