@@ -139,32 +139,32 @@ enum class ComscoreMediaFormat {
 
   fun toComscore(mediaFormat: ComscoreMediaFormat): Int {
     when(mediaFormat){
-      FULL_CONTENT_EPISODE -> ContentMediaFormat.FULL_CONTENT_EPISODE
-      FULL_CONTENT_MOVIE -> ContentMediaFormat.FULL_CONTENT_MOVIE
-      FULL_CONTENT_PODCAST -> ContentMediaFormat.FULL_CONTENT_PODCAST
-      FULL_CONTENT_GENERIC -> ContentMediaFormat.FULL_CONTENT_GENERIC
-      PARTIAL_CONTENT_EPISODE -> ContentMediaFormat.PARTIAL_CONTENT_EPISODE
-      PARTIAL_CONTENT_MOVIE -> ContentMediaFormat.PARTIAL_CONTENT_MOVIE
-      PARTIAL_CONTENT_PODCAST -> ContentMediaFormat.PARTIAL_CONTENT_PODCAST
-      PARTIAL_CONTENT_GENERIC -> ContentMediaFormat.PARTIAL_CONTENT_GENERIC
-      PREVIEW_EPISODE -> ContentMediaFormat.PREVIEW_EPISODE
-      PREVIEW_MOVIE -> ContentMediaFormat.PREVIEW_MOVIE
-      PREVIEW_GENERIC -> ContentMediaFormat.PREVIEW_GENERIC
-      EXTRA_EPISODE -> ContentMediaFormat.EXTRA_EPISODE
-      EXTRA_MOVIE -> ContentMediaFormat.EXTRA_MOVIE
-      EXTRA_GENERIC -> ContentMediaFormat.EXTRA_GENERIC
+      FULL_CONTENT_EPISODE -> return ContentMediaFormat.FULL_CONTENT_EPISODE
+      FULL_CONTENT_MOVIE -> return ContentMediaFormat.FULL_CONTENT_MOVIE
+      FULL_CONTENT_PODCAST -> return ContentMediaFormat.FULL_CONTENT_PODCAST
+      FULL_CONTENT_GENERIC -> return ContentMediaFormat.FULL_CONTENT_GENERIC
+      PARTIAL_CONTENT_EPISODE -> return ContentMediaFormat.PARTIAL_CONTENT_EPISODE
+      PARTIAL_CONTENT_MOVIE -> return ContentMediaFormat.PARTIAL_CONTENT_MOVIE
+      PARTIAL_CONTENT_PODCAST -> return ContentMediaFormat.PARTIAL_CONTENT_PODCAST
+      PARTIAL_CONTENT_GENERIC -> return ContentMediaFormat.PARTIAL_CONTENT_GENERIC
+      PREVIEW_EPISODE -> return ContentMediaFormat.PREVIEW_EPISODE
+      PREVIEW_MOVIE -> return ContentMediaFormat.PREVIEW_MOVIE
+      PREVIEW_GENERIC -> return ContentMediaFormat.PREVIEW_GENERIC
+      EXTRA_EPISODE -> return ContentMediaFormat.EXTRA_EPISODE
+      EXTRA_MOVIE -> return ContentMediaFormat.EXTRA_MOVIE
+      EXTRA_GENERIC -> return ContentMediaFormat.EXTRA_GENERIC
     }
   }
+}
 
-  enum class ComscoreDistributionModel {
-    TV_AND_ONLINE,
-    EXCLUSIVELY_ONLINE;
+enum class ComscoreDistributionModel {
+  TV_AND_ONLINE,
+  EXCLUSIVELY_ONLINE;
 
-    fun toComscore(distributionModel: ComscoreDistributionModel): Int {
-      when(distributionModel) {
-        TV_AND_ONLINE -> return ContentDistributionModel.TV_AND_ONLINE
-        EXCLUSIVELY_ONLINE -> return ContentDistributionModel.EXCLUSIVELY_ONLINE
-      }
+  fun toComscore(distributionModel: ComscoreDistributionModel): Int {
+    when(distributionModel) {
+      TV_AND_ONLINE -> return ContentDistributionModel.TV_AND_ONLINE
+      EXCLUSIVELY_ONLINE -> return ContentDistributionModel.EXCLUSIVELY_ONLINE
     }
   }
 }

@@ -182,11 +182,12 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDistributionModel(distributionModel: String): ComscoreMediaFormat.ComscoreDistributionModel {
+  fun mapDistributionModel(distributionModel: String?): ComscoreDistributionModel? {
     when(distributionModel) {
-      "tvAndOnline" -> ComscoreMediaFormat.ComscoreDistributionModel.TV_AND_ONLINE
-      "exclusivelyOnline" -> ComscoreMediaFormat.ComscoreDistributionModel.EXCLUSIVELY_ONLINE
+      "tvAndOnline" -> return ComscoreDistributionModel.TV_AND_ONLINE
+      "exclusivelyOnline" -> return  ComscoreDistributionModel.EXCLUSIVELY_ONLINE
     }
+    return null
   }
 
   fun mapMetadata(metadata: ReadableMap): ComscoreMetaData {
@@ -210,12 +211,12 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     var genreId = metadata.getString("genreId")
     var carryTvAdvertisementLoad = metadata.getBoolean("carryTvAdvertisementLoad")
     var classifyAsCompleteEpisode = metadata.getBoolean("classifyAsCompleteEpisode")
-    var dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
-    var timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
-    var dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
-    var timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
-    var dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
-    var timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
+//    var dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
+//    var timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
+//    var dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
+//    var timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
+//    var dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
+//    var timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
     var feedType = mapFeedType(metadata.getString("feedType"))
     var classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
     var deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
@@ -227,8 +228,9 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     var playlistTitle = metadata.getString("playlistTitle")
     var totalSegments = metadata.getInt("totalSegments")
     var clipUrl = metadata.getString("clipUrl")
-    var videoDimension = mapDimension(metadata.getMap("videoDimension"))
+//    var videoDimension = mapDimension(metadata.getMap("videoDimension"))
     var customLabels = metadata.getMap("customLabels")
+    
     return ComscoreMetaData(
       uniqueId,
       publisherName,
