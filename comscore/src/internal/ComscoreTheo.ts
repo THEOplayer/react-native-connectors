@@ -143,48 +143,6 @@ export class ComscoreTheo extends TheoBase {
     this.comscore.setMediaType(this.contentMetada.isLiveContentMediaType());
   }
 
-  private static INTEGRATION_THEO = 'theo';
-  private static INTEGRATION_GOOGLE = 'google-ima';
-  private static ADSYSTEM_GOOGLE = 'GDFP';
-  private static DEFAULT_CUSV = '-1';
-  private static ERROR_CUSV = '-2';
-  private static CUSV_REGEX = /^[a-z]{6}\w{7}[a-z]$/i;
-  private static MUST_ENFORCE_CUSV_FORMAT = false;
-
-  // Format of the CUSV code
-  // should be 14 long starting with 6 letters and ending with 1 letter
-  // The rule for extracting the CUSV code is the following:
-  // if Adsystem is GDPF  return the creativeId, no validation needed
-  // else return the univeralAdID
-  // UniversalAdID MUST ALLWAYS adhere to the CUSV_REGEX
-  // in case of multiple UniversalAdID return the first that matches CUSV_REGEX
-  // if NO universalAdID return -1, if NO MATCHES return - 2
-
-  /**
-   * finds the id code related to the CUSV
-   * guidelines according to auditel.
-   * @param ad the ad object
-   */
-  protected findCUSVCode(ad: THEOplayer.Ad) {
-    // Irrelevant for most customers
-    return ComscoreTheo.DEFAULT_CUSV;
-  }
-
-  protected isFirstAdInBreak(adType: string) {
-    if (adType === AD_TYPES.PREROLL) {
-      return this.prerollCount == 1;
-    }
-
-    if (adType === AD_TYPES.MIDROLL) {
-      return this.midrollCount == 1;
-    }
-
-    if (adType === AD_TYPES.POSTROLL) {
-      return this.postrollCount == 1;
-    }
-    return false;
-  }
-
   protected async isLastAdInBreak(adType: string) {
     const currentAdBreak: AdBreak = await this.player.ads.currentAdBreak()
     const adsInCurrentBreak = currentAdBreak.ads.length
@@ -225,8 +183,7 @@ export class ComscoreTheo extends TheoBase {
     // the player has currently loaded the advertisement
     //for documentation on how the cUSV code is validated
     //refer to the docs in the libs folder
-    const uniqueId = this.findCUSVCode(ad);
-    console.log('cusv', uniqueId);
+    const uniqueId = ad.id;
     this.adMetadata.setId(uniqueId);
     //this must be in ms
     this.adMetadata.setLength(this.player.duration * 1000);
