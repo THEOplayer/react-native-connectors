@@ -1,7 +1,7 @@
 /**
- * Interface to Comscore SkeletonAPI for RAI
+ * Interface to Comscore SkeletonAPI for some customers
  */
-export interface RaiSkeletonAPI {
+export interface CustomSkeletonAPI {
     /**
      * should return the device model
      */
@@ -25,9 +25,9 @@ export interface RaiSkeletonAPI {
   }
   
   /**
-   *  MOCK implementation for Skeleton API for RAI
+   *  MOCK implementation for Skeleton API for some customers
    */
-  export class ComscoreSkeletonMock implements RaiSkeletonAPI {
+  export class ComscoreSkeletonMock implements CustomSkeletonAPI {
     getDeviceModel(): string {
       return 'MOCK::getDeviceModel';
     }
@@ -46,10 +46,10 @@ export interface RaiSkeletonAPI {
   }
   
   /**
-   *  Simple Javascript implementation for Skeleton API for RAI
+   *  Simple Javascript implementation for Skeleton API for some customers
    *  Initialised values from the constru ctor are returned
    */
-  export class ComscoreSkeletonWeb implements RaiSkeletonAPI {
+  export class ComscoreSkeletonWeb implements CustomSkeletonAPI {
     private dm = 'Default deviceModel';
     private pid = 'Default publisherUniqueDeviceId';
     private cid = 'Default crossPublisherUniqueDeviceId';
@@ -94,33 +94,4 @@ export interface RaiSkeletonAPI {
       return this.rv;
     };
   }
-  
-//   declare let ComscoreSkeletonAndroidBridge: RaiSkeletonAPI;
-//   /**
-//    *  JS Bridge for Android implementation for Skeleton API for RAI
-//    *  Requires a Native Implementation with the  RaiSkeletonAPI interface
-//    *  where the all interface methods are annotated with the  android.webkit.JavascriptInterface
-//    *  annotation.
-//    *
-//    *  The Android android app needs to enable javascript on the webview through
-//    *  WebView::getSettings.setJavaScriptEnabled(true);
-//    *  And the bridge interface needs to be declared on the WebViewClient
-//    *  WebViewClient::addJavascriptInterface( YOUR_CLASS_INSTNACE , "ComscoreSkeletonAndroidBridge");
-//    */
-//   export class ComscoreSkeletonAndroid extends ComscoreSkeletonWeb {
-//     constructor(successCallback, errorCallback) {
-//       if (!ComscoreSkeletonAndroidBridge)
-//         throw new Error(
-//           'RaiAndroidSkeleton is missing ComscoreSkeletonAndroidBridge context'
-//         );
-  
-//       super(
-//         ComscoreSkeletonAndroidBridge.getDeviceModel(),
-//         ComscoreSkeletonAndroidBridge.getCrossPublisherUniqueDeviceId(),
-//         ComscoreSkeletonAndroidBridge.getPublisherSpecificUniqueDeviceId(),
-//         ComscoreSkeletonAndroidBridge.getRuntimeName(),
-//         ComscoreSkeletonAndroidBridge.getRuntimeVersion()
-//       );
-//     }
-//   }
   

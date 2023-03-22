@@ -3,7 +3,7 @@ import { ComscoreAPI } from './ComscoreAPI';
 import type { ContentMetadata } from './ComscoreContentMetadata';
 import { AdMetadata } from './ComscoreAdMetadata';
 import { AD_TYPES } from './Utils';
-import type { RaiSkeletonAPI } from './SkeletonApi';
+import type { CustomSkeletonAPI } from './SkeletonApi';
 import type { AdBreak, THEOplayer } from 'react-native-theoplayer'
 
 /**
@@ -52,7 +52,7 @@ export class ComscoreTheo extends TheoBase {
     projectId: string = null,
     playerName: string = null,
     playerVersion: string = null,
-    skeleton: RaiSkeletonAPI | undefined = undefined
+    skeleton: CustomSkeletonAPI | undefined = undefined
   ) {
     super(player);
     if (contentMetada) {
