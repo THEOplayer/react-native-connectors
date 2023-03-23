@@ -3,7 +3,6 @@ package com.theoplayercomscore.integration;
 import android.content.Context;
 import android.util.Log;
 
-import com.theoplayer.android.api.THEOplayerConfig;
 import com.theoplayer.android.api.THEOplayerGlobal;
 import com.theoplayer.android.api.player.Player;
 

@@ -7,7 +7,6 @@ import com.comscore.Analytics;
 import com.comscore.Configuration;
 import com.comscore.PublisherConfiguration;
 import com.theoplayer.android.api.player.Player;
-import com.theoplayercomscore.integration.ComscoreConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;

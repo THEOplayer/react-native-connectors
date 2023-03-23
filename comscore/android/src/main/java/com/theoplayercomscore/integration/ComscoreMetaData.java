@@ -2,13 +2,8 @@ package com.theoplayercomscore.integration;
 
 import androidx.annotation.NonNull;
 
-import com.comscore.streaming.AssetMetadata;
-import com.comscore.streaming.ContentDistributionModel;
-import com.comscore.streaming.ContentMediaFormat;
 import com.comscore.streaming.ContentMetadata;
-import com.comscore.streaming.ContentType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ComscoreMetaData {
@@ -175,7 +170,9 @@ public class ComscoreMetaData {
       if(totalSegments != null) cm.totalSegments(totalSegments);
       if(clipUrl != null) cm.clipUrl(clipUrl);
       if(videoDimension != null) cm.videoDimensions(videoDimension.getWidth(),videoDimension.getHeight());
-      if(!customLabels.isEmpty()) cm.customLabels(customLabels);
+      if(!customLabels.isEmpty()){
+        cm.customLabels(customLabels);
+      }
       return cm.build();
     }
 
