@@ -35,6 +35,6 @@ export class ComscoreConnectorAdapter {
   }
 
   destroy() {
-    // TODO do any cleanup if necessary
+    this.integration.destroy();
   }
 }

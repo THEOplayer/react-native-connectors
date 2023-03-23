@@ -512,7 +512,7 @@ export abstract class TheoBase {
   /**
    * destroy the object
    */
-  protected destroy() {
+  public destroy() {
     this.removeListeners();
   }
 
