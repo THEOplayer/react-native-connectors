@@ -32,7 +32,6 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
         if (customerKey.isEmpty()) {
           Log.e(TAG, "Invalid $PUBLISHER_ID")
         } else {
-          // TODO: create connector
           comscoreConnectors[tag] = ComscoreConnector(view.context, player, mapConfig(comscoreConfig), mapMetadata(comscoreMetadata) )
         }
       }
@@ -242,7 +241,6 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val clipUrl = metadata.getString("clipUrl")
     val videoDimension = mapDimension(metadata.getMap("videoDimension"))
     val customLabels = metadata.getMap("customLabels")
-
     return ComscoreMetaData(
       mediaType,
       uniqueId,
@@ -282,7 +280,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
       totalSegments,
       clipUrl,
       videoDimension,
-      customLabels?.toHashMap()?.mapValues { it.toString() }
+      customLabels?.toHashMap()?.mapValues { it.value.toString() }
     )
   }
 }
