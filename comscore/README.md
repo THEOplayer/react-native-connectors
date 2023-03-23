@@ -70,7 +70,7 @@ const onUpdateMetadata = () => {
 
 ### ComscoreMetadata fields
 
-Based on the `ComscoreMetadata` type, you can tell which fields are mandatory and which aren't. Note that this is purely for the integration to work correctly. Depending on the Comscore solution you are using, different fields are required/optional. The mandatory fields in the `ComscoreMetadata` type are the ones that are mandatory for all three Comsocre solutions:
+Based on the `ComscoreMetadata` type, you can tell which fields are mandatory and which aren't. Note that this is purely for the integration to work correctly. Depending on the Comscore solution you are using, different fields are required/optional. The mandatory fields in the `ComscoreMetadata` type are the ones that are mandatory for all three Comscore solutions:
 
 -   Video Metrix (V)
 -   Cross Platform Product Suite (X)
