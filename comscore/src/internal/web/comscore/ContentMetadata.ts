@@ -1,30 +1,30 @@
-import { IContentMetadata } from './IContentMetadata';
+import type { IContentMetadata } from './IContentMetadata';
 
 class CustomLabels {
   /**
    * On Demand Type (vod / catch_up), LIVE: *null, VOD: Mandatory, Adv: Inherited from Content
    */
-  oce_odt: String;
+  oce_odt: string;
   /**
    * Broadcaster Platform, LIVE: Mandatory, VOD: Mandatory, Adv: Mandatory
    */
-  oce_bpf: String;
+  oce_bpf: string;
   /**
    * Content additional description (especially for clips), LIVE: Optional, VOD: Mandatory, Adv: Inherited from Content
    */
-  oce_ctl: String;
+  oce_ctl: string;
   /**
    * Distribution Mode ID, LIVE: Optional, VOD: Optional, Adv: Optional
    */
-  oce_emb: String;
+  oce_emb: string;
   /**
    * Audience Measurement Project, LIVE: Mandatory, VOD: Mandatory, Adv: Mandatory
    */
-  cs_proid: String;
+  cs_proid: string;
   /**
    *
    */
-  name: String;
+  name: string;
 }
 
 /**
@@ -37,7 +37,7 @@ export class ContentMetadata {
    * @type {*}
    * @memberof ContentMetadata
    */
-  private cm: any;
+  private readonly cm: any;
 
   /**
    * Stores the main content length this is needed in order to fix a bug with the order of events flowing after
@@ -221,7 +221,7 @@ export class ContentMetadata {
       );
     }
     if (ns_st_ddt !== undefined && ns_st_ddt !== '*null') {
-      let dateOfDigitalAiring = new Date(ns_st_ddt.toString());
+      const dateOfDigitalAiring = new Date(ns_st_ddt.toString());
       //The date on which the content was made available for streaming consumption
       cm.setDateOfDigitalAiring(
         dateOfDigitalAiring.getFullYear(),
@@ -268,7 +268,7 @@ export class ContentMetadata {
     if (pixelsWide !== undefined && pixelsHigh !== undefined) {
       cm.setVideoDimensions(pixelsWide, pixelsHigh);
     }
-    let customLabels = new CustomLabels();
+    const customLabels = new CustomLabels();
     if (oce_odt !== undefined) {
       customLabels.oce_odt = oce_odt;
     }
@@ -291,7 +291,7 @@ export class ContentMetadata {
     this.cm = cm;
   }
 
-  private isLivecontentMediaType: boolean;
+  private readonly isLivecontentMediaType: boolean;
   /**
    *  Returns id the ContentMetadata MediaType is configured as LIVE
    */

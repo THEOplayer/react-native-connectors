@@ -1,5 +1,5 @@
 import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
-import { AD_TYPES, THEO_EVENTS, READY_STATES } from '../internal/Utils';
+import { AD_TYPES, THEO_EVENTS, READY_STATES } from './Utils';
 import type {THEOplayer} from 'react-native-theoplayer'
 
 const MINIMUM_DVR_DURATION = 60;
@@ -130,7 +130,7 @@ export abstract class TheoBase {
    * Instanciate object and bind internal listeners
    * @param player THEOPlayer instance
    */
-  constructor(player: THEOplayer) {
+  protected constructor(player: THEOplayer) {
     this.player = player;
     this.bindListenersInternal();
     //CVA: this is certainly not something to be done in the integration
@@ -535,7 +535,7 @@ export abstract class TheoBase {
   }
 
   /**
-     
+
      * formats playhead position
      */
   protected getFlooredPlayerPosition() {
@@ -543,7 +543,7 @@ export abstract class TheoBase {
   }
 
   /**
-     
+
      * determines ad type: preroll, midroll, postroll
      */
   public getAdType() {

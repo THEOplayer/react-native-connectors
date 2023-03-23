@@ -23,7 +23,7 @@ export interface CustomSkeletonAPI {
      */
     getRuntimeVersion(): string | undefined;
   }
-  
+
   /**
    *  MOCK implementation for Skeleton API for some customers
    */
@@ -44,18 +44,18 @@ export interface CustomSkeletonAPI {
       return 'MOCK::getRuntimeVersion';
     }
   }
-  
+
   /**
    *  Simple Javascript implementation for Skeleton API for some customers
    *  Initialised values from the constru ctor are returned
    */
   export class ComscoreSkeletonWeb implements CustomSkeletonAPI {
-    private dm = 'Default deviceModel';
-    private pid = 'Default publisherUniqueDeviceId';
-    private cid = 'Default crossPublisherUniqueDeviceId';
-    private rn = 'Default runTimeName';
-    private rv = 'Default runTimeVersion';
-  
+    private readonly dm: string = 'Default deviceModel';
+    private readonly pid: string = 'Default publisherUniqueDeviceId';
+    private readonly cid: string = 'Default crossPublisherUniqueDeviceId';
+    private readonly rn: string = 'Default runTimeName';
+    private readonly rv: string = 'Default runTimeVersion';
+
     /**
      * Constructor
      * @param deviceModel device model as a string
@@ -77,7 +77,7 @@ export interface CustomSkeletonAPI {
       this.rn = runTimeName;
       this.rv = runTimeVersion;
     }
-  
+
     getDeviceModel = (): string => {
       return this.dm;
     };
@@ -94,4 +94,3 @@ export interface CustomSkeletonAPI {
       return this.rv;
     };
   }
-  

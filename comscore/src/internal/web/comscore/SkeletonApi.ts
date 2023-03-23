@@ -50,11 +50,11 @@ export class ComscoreSkeletonMock implements RaiSkeletonAPI {
  *  Initialised values from the constru ctor are returned
  */
 export class ComscoreSkeletonWeb implements RaiSkeletonAPI {
-  private dm: string = 'Default deviceModel';
-  private pid: string = 'Default publisherUniqueDeviceId';
-  private cid: string = 'Default crossPublisherUniqueDeviceId';
-  private rn: string = 'Default runTimeName';
-  private rv: string = 'Default runTimeVersion';
+  private readonly dm: string = 'Default deviceModel';
+  private readonly pid: string = 'Default publisherUniqueDeviceId';
+  private readonly cid: string = 'Default crossPublisherUniqueDeviceId';
+  private readonly rn: string = 'Default runTimeName';
+  private readonly rv: string = 'Default runTimeVersion';
 
   /**
    * Constructor
@@ -95,7 +95,7 @@ export class ComscoreSkeletonWeb implements RaiSkeletonAPI {
   };
 }
 
-declare var ComscoreSkeletonAndroidBridge: RaiSkeletonAPI;
+declare let ComscoreSkeletonAndroidBridge: RaiSkeletonAPI;
 /**
  *  JS Bridge for Android implementation for Skeleton API for RAI
  *  Requires a Native Implementation with the  RaiSkeletonAPI interface

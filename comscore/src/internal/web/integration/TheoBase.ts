@@ -1,4 +1,3 @@
-import { HighlightSpanKind } from 'typescript';
 import { AD_TYPES, THEO_EVENTS, READY_STATES } from '../enums';
 const MINIMUM_DVR_DURATION = 60;
 const LIVE_MARGIN = 10;
@@ -34,7 +33,7 @@ export abstract class TheoBase {
    * @type {number}
    * @memberof TheoBase
    */
-  protected prerollCount: number = 0;
+  protected prerollCount = 0;
 
   /**
    * stores the number of midRolls started
@@ -42,7 +41,7 @@ export abstract class TheoBase {
    * @type {number}
    * @memberof TheoBase
    */
-  protected midrollCount: number = 0;
+  protected midrollCount = 0;
 
   /**
    * stores the number of postrolls started
@@ -50,7 +49,7 @@ export abstract class TheoBase {
    * @type {number}
    * @memberof TheoBase
    */
-  protected postrollCount: number = 0;
+  protected postrollCount = 0;
 
   /**
    * stores the stream playhead position
@@ -72,7 +71,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  private isBuffering: boolean = false;
+  private isBuffering = false;
 
   /**
    * flag to switch the plugin to report low level buffer state changes,
@@ -81,7 +80,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  private simpleBufferNotifications: boolean = true;
+  private simpleBufferNotifications = true;
 
   /**
    * the flag for waiting state
@@ -89,7 +88,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  private isWaiting: boolean = false;
+  private isWaiting = false;
 
   /**
    * the flag used to inform to ignore ended after postroll
@@ -97,7 +96,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  protected ignoreEndedAfterPostroll: boolean = false;
+  protected ignoreEndedAfterPostroll = false;
 
   /**
    * the flag used to inform to ignore ended after postroll
@@ -105,7 +104,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  private _adsPlaying: boolean = false;
+  private _adsPlaying = false;
 
   /**
    * the flag used to verify whether the player has fired its first play event
@@ -113,7 +112,7 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  private _isFirstPlay: boolean = true;
+  private _isFirstPlay = true;
 
   /**
    * the flag used to inform not to call notifyPlay with ContentMetadata
@@ -122,13 +121,13 @@ export abstract class TheoBase {
    * @type {boolean}
    * @memberof TheoBase
    */
-  protected sendContentPlayOnEnded: boolean = false;
+  protected sendContentPlayOnEnded = false;
 
   /**
    * Instanciate object and bind internal listeners
    * @param player THEOPlayer instance
    */
-  constructor(player) {
+  protected constructor(player) {
     this.player = player;
     this.bindListenersInternal();
     //CVA: this is certainly not something to be done in the integration
@@ -275,7 +274,7 @@ export abstract class TheoBase {
    * used to set DVR window
    */
   private onLoadedMetaData() {
-    this.addListener(this.player, THEO_EVENTS.LOADED_METADATA, (event) => {});
+    this.addListener(this.player, THEO_EVENTS.LOADED_METADATA, (event) => { /*NoOp*/ });
   }
 
   /**
@@ -336,7 +335,7 @@ export abstract class TheoBase {
   protected onAdEnds() {
     this.addListener(this.player.ads, THEO_EVENTS.AD_END, () => {
       this._adsPlaying = false;
-      var adType = this.getAdType();
+      const adType = this.getAdType();
 
       if (adType === AD_TYPES.POSTROLL) {
         this.ignoreEndedAfterPostroll = true;
@@ -529,7 +528,7 @@ export abstract class TheoBase {
   }
 
   /**
-     
+
      * formats playhead position
      */
   protected getFlooredPlayerPosition() {
@@ -537,7 +536,7 @@ export abstract class TheoBase {
   }
 
   /**
-     
+
      * determines ad type: preroll, midroll, postroll
      */
   public getAdType() {
@@ -553,7 +552,7 @@ export abstract class TheoBase {
   }
 
   private getSeekable() {
-    let seekable = this.player.seekable;
+    const seekable = this.player.seekable;
     if (seekable && seekable.length) {
       return seekable;
     }
@@ -574,8 +573,8 @@ export abstract class TheoBase {
    */
   protected isAtLive(): boolean {
     if (this.isLive()) {
-      let seekable = this.getSeekable();
-      let seekableEnd = seekable.end(seekable.length - 1);
+      const seekable = this.getSeekable();
+      const seekableEnd = seekable.end(seekable.length - 1);
       return seekableEnd - this.player.currentTime < LIVE_MARGIN;
     }
     return false;
@@ -589,7 +588,7 @@ export abstract class TheoBase {
    * @returns {number}
    */
   protected getReferenceTime(): number {
-    let seekable = this.getSeekable();
+    const seekable = this.getSeekable();
     return this.isLive()
       ? seekable.end(seekable.length - 1)
       : seekable.start(0);
@@ -603,7 +602,7 @@ export abstract class TheoBase {
    * @returns {number}
    */
   private getDuration(): number {
-    let seekable = this.getSeekable();
+    const seekable = this.getSeekable();
     try {
       return seekable.end(seekable.length - 1) - seekable.start(0);
     } catch (e) {

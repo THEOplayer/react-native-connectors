@@ -1,9 +1,9 @@
 import { TheoBase } from './TheoBase';
 import { ComscoreAPI } from '../comscore/ComscoreAPI';
-import { ContentMetadata } from '../comscore/ContentMetadata';
+import type { ContentMetadata } from '../comscore/ContentMetadata';
 import { AdMetadata } from '../comscore/AdMetadata';
 import { AD_TYPES } from '../enums';
-import { RaiSkeletonAPI } from '../comscore/SkeletonApi';
+import type { RaiSkeletonAPI } from '../comscore/SkeletonApi';
 
 /**
  * Comscore theo analytics integration
@@ -117,9 +117,9 @@ export class ComscoreTheo extends TheoBase {
    */
   protected notifyDataLoaded() {
     if (!this.adsPlaying() && this.isLiveDVR()) {
-      let start = this.player.seekable.start(0);
-      let end = this.player.seekable.end(0);
-      let dvrSize = end - start;
+      const start = this.player.seekable.start(0);
+      const end = this.player.seekable.end(0);
+      const dvrSize = end - start;
       this.comscore.setDvrWindowLength(dvrSize);
     }
 
@@ -174,8 +174,8 @@ export class ComscoreTheo extends TheoBase {
 
       //else adsystem is not GDPF return the universalAdId which matches the regex
       else {
-        let uids = ad.universalAdIds;
-        let matches = uids.filter((u) =>
+        const uids = ad.universalAdIds;
+        const matches = uids.filter((u) =>
           ComscoreTheo.CUSV_REGEX.test(u.adIdValue)
         );
         return matches.length > 0
@@ -194,8 +194,8 @@ export class ComscoreTheo extends TheoBase {
       if (ad.adSystem == ComscoreTheo.ADSYSTEM_GOOGLE) {
         return ad.creativeId ? ad.creativeId : ComscoreTheo.DEFAULT_CUSV;
       } else {
-        let uids = ad.universalAdIds;
-        let matches = uids.filter((u) => {
+        const uids = ad.universalAdIds;
+        const matches = uids.filter((u) => {
           console.log(u.adIdValue);
           return ComscoreTheo.CUSV_REGEX.test(u.adIdValue);
         });
@@ -211,8 +211,8 @@ export class ComscoreTheo extends TheoBase {
       if (ad.adSystem === ComscoreTheo.ADSYSTEM_GOOGLE) {
         return ad.imaAd.getCreativeId();
       } else {
-        let uids = ad.imaAd.getUniversalAdIds();
-        let matches = uids.filter((u) =>
+        const uids = ad.imaAd.getUniversalAdIds();
+        const matches = uids.filter((u) =>
           ComscoreTheo.CUSV_REGEX.test(u.getAdIdValue())
         );
         return matches.length > 0
@@ -241,7 +241,7 @@ export class ComscoreTheo extends TheoBase {
   }
 
   protected isLastAdInBreak(adType) {
-    var adsInCurrentBreak = this.player.ads.currentAdBreak.ads.length;
+    const adsInCurrentBreak = this.player.ads.currentAdBreak.ads.length;
     if (adType === AD_TYPES.PREROLL) {
       return adsInCurrentBreak == this.prerollCount;
     }
@@ -250,9 +250,8 @@ export class ComscoreTheo extends TheoBase {
       return adsInCurrentBreak == this.midrollCount;
     }
 
-    if (adType === AD_TYPES.POSTROLL) {
-      return adsInCurrentBreak == this.postrollCount;
-    }
+    // AD_TYPES.POSTROLL
+    return adsInCurrentBreak == this.postrollCount;
   }
 
   /**
@@ -278,7 +277,7 @@ export class ComscoreTheo extends TheoBase {
     // the player has currently loaded the advertisement
     //for documentation on how the cUSV code is validated
     //refer to the docs in the libs folder
-    let uniqueId = this.findCUSVCode(ad);
+    const uniqueId = this.findCUSVCode(ad);
     console.log('cusv', uniqueId);
     this.adMetadata.setId(uniqueId);
     //this must be in ms

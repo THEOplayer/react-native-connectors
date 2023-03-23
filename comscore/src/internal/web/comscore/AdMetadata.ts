@@ -8,7 +8,7 @@ export class AdMetadata {
    * @type {*}
    * @memberof AdMetadata
    */
-  private cm: any;
+  private readonly cm: any;
   /**
    * sets ad metadata
    * @param {Boolean} isAudio Use value true if the advertisement is audio-only, rather than video (with or without audio). Otherwise omit or use value false, Comscore API: classifyAsAudioStream( Boolean value )
@@ -26,7 +26,7 @@ export class AdMetadata {
    * @param {Number} pixelsHigh Advertisement video height, Comscore API: setVideoDimensions( int pixelsWide, int pixelsHigh )
    */
   constructor(
-    isAudio: boolean = false,
+    isAudio = false,
     metadata: string = null,
     deliveryType = null,
     owner = null,
@@ -37,8 +37,8 @@ export class AdMetadata {
     title: string = null,
     callToActionUrl: string = null,
     clipUrl: string = null,
-    pixelsWide: number = 0,
-    pixelsHigh: number = 0
+    pixelsWide = 0,
+    pixelsHigh = 0
   ) {
     const cm = new (
       window as any
@@ -149,7 +149,7 @@ export class AdMetadata {
    * @param {String} oce_skp Advertisement's skippable duration, Adv: Mandatory
    * @memberof ContentMetadata
    */
-  public addCustomAuditelLabels(oce_skp: String) {
+  public addCustomAuditelLabels(oce_skp: string) {
     let customLabels;
     if (oce_skp) {
       customLabels.oce_skp = oce_skp;
@@ -167,7 +167,7 @@ export class AdMetadata {
   }
 
   public static clone(old: AdMetadata): AdMetadata {
-    var newmd: AdMetadata = new AdMetadata(
+    const newmd: AdMetadata = new AdMetadata(
       old.cm.isAudio,
       old.cm.metadata,
       old.cm.deliveryType,

@@ -1,4 +1,4 @@
-import { RaiSkeletonAPI } from './SkeletonApi';
+import type { RaiSkeletonAPI } from './SkeletonApi';
 
 /**
  * Bridge to ComscoreAPI
@@ -217,7 +217,7 @@ export class ComscoreAPI {
   setMetadata(cm) {
     this.streamingAnalytics.setMetadata(cm);
 
-    let m = cm.getMetadataLabels();
+    const m = cm.getMetadataLabels();
     if (this.showLogs()) {
       //console.log('[this.streamingAnalytics.setMetadata(cm)]');
       console.log('[COMSCORE] setMetadata ', cm);

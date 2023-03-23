@@ -10,7 +10,7 @@ export class AdMetadata {
    * @type {*}
    * @memberof AdMetadata
    */
-  private cm: any;
+  private readonly cm: any;
   /**
    * sets ad metadata
    * @param {Boolean} isAudio Use value true if the advertisement is audio-only, rather than video (with or without audio). Otherwise omit or use value false, Comscore API: classifyAsAudioStream( Boolean value )

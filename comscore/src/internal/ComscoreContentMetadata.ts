@@ -11,8 +11,8 @@ export class ContentMetadata {
    * @type {*}
    * @memberof ContentMetadata
    */
-  private cm: any;
-  private isLivecontentMediaType: boolean;
+  private readonly cm: any;
+  private readonly isLivecontentMediaType: boolean;
   /**
    * Stores the main content length this is needed in order to fix a bug with the order of events flowing after
    * a preroll on VOD content
@@ -91,7 +91,7 @@ export class ContentMetadata {
       cm.setPublisherName(publisherName);             // Collect the consumer-facing brand name of the media publisher that owns the content.
     }
     cm.setProgramTitle(programTitle || '*null')       // Top level content title (i.e., the name of the overall program, show, or content series)
-    cm.setProgramId(programId || '*null');            // Top level content id 
+    cm.setProgramId(programId || '*null');            // Top level content id
     cm.setEpisodeTitle(episodeTitle || '*null');      // Sub level content title (i.e., the title of the specific episode). Can be used with setProgramTitle( String title ) to tag TV shows on program and episode level.
     cm.setEpisodeId(episodeId || '*null');            // Episode identifier to link the online content to the corresponding Episode of a TV Program (or series). Each time you create a new episode, an Episode ID should be automatically assigned.
     cm.setEpisodeSeasonNumber(episodeSeasonNumber || '*null');
@@ -285,33 +285,33 @@ export class ContentMetadata {
   private mapMediaFormat(mediaFormat: ComscoreMediaFormat) {
     switch(mediaFormat){
       case ComscoreMediaFormat.fullContentEpisode:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_EPISODE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_EPISODE;
       case ComscoreMediaFormat.fullContentMovie:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_MOVIE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_MOVIE;
       case ComscoreMediaFormat.fullContentPodcast:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_PODCAST; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_PODCAST;
       case ComscoreMediaFormat.fullContentGeneric:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_GENERIC; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.FULL_CONTENT_GENERIC;
       case ComscoreMediaFormat.partialContentEpisode:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_EPISODE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_EPISODE;
       case ComscoreMediaFormat.partialContentMovie:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_MOVIE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_MOVIE;
       case ComscoreMediaFormat.partialContentPodcast:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_PODCAST; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_PODCAST;
       case ComscoreMediaFormat.partialContentGeneric:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_GENERIC; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PARTIAL_CONTENT_GENERIC;
       case ComscoreMediaFormat.previewEpisode:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_EPISODE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_EPISODE;
       case ComscoreMediaFormat.previewMovie:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_MOVIE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_MOVIE;
       case ComscoreMediaFormat.previewGeneric:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_GENERIC; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.PREVIEW_GENERIC;
       case ComscoreMediaFormat.extraEpisode:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_EPISODE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_EPISODE;
       case ComscoreMediaFormat.extraMovie:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_MOVIE; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_MOVIE;
       case ComscoreMediaFormat.extraGeneric:
-        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_GENERIC; 
+        return analytics.StreamingAnalytics.ContentMetadata.ContentMediaFormat.EXTRA_GENERIC;
     }
   }
 
