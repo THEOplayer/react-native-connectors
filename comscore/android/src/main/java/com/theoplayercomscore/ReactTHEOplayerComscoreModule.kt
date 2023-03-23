@@ -60,11 +60,11 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     comscoreConnectors.remove(tag)
   }
 
-  fun mapLabels(labels: ReadableMap): Map<String,String> {
-    return mapOf("a" to "1", "b" to "2") //TODO
+  private fun mapLabels(labels: ReadableMap): Map<String,String> {
+    return labels.toHashMap().mapValues { it.toString() }
   }
 
-  fun mapConfig(config: ReadableMap): ComscoreConfiguration {
+  private fun mapConfig(config: ReadableMap): ComscoreConfiguration {
     return ComscoreConfiguration(
       config.getString("publisherId"),
       config.getString("applicationName"),
@@ -75,38 +75,38 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     )
   }
 
-  fun mapDate(date: ReadableMap?): ComscoreDate? {
-    var day = date?.getInt("day")
-    var month = date?.getInt("month")
-    var year = date?.getInt("year")
-    if (day != null && month != null && year != null) {
-      return ComscoreDate(year,month,day)
+  private fun mapDate(date: ReadableMap?): ComscoreDate? {
+    val day = date?.getInt("day")
+    val month = date?.getInt("month")
+    val year = date?.getInt("year")
+    return if (day != null && month != null && year != null) {
+      ComscoreDate(year,month,day)
     } else {
-      return null
+      null
     }
   }
 
-  fun mapTime(time: ReadableMap?): ComscoreTime? {
-    var hours = time?.getInt("hours")
-    var minutes = time?.getInt("minutes")
-    if (hours != null && minutes != null) {
-      return ComscoreTime(hours,minutes)
+  private fun mapTime(time: ReadableMap?): ComscoreTime? {
+    val hours = time?.getInt("hours")
+    val minutes = time?.getInt("minutes")
+    return if (hours != null && minutes != null) {
+      ComscoreTime(hours,minutes)
     } else {
-      return null
+      null
     }
   }
 
-  fun mapDimension(dimension: ReadableMap?): ComscoreDimension? {
-    var width = dimension?.getInt("width")
-    var height = dimension?.getInt("height")
-    if (width != null && height != null) {
-      return ComscoreDimension(width,height)
+  private fun mapDimension(dimension: ReadableMap?): ComscoreDimension? {
+    val width = dimension?.getInt("width")
+    val height = dimension?.getInt("height")
+    return if (width != null && height != null) {
+      ComscoreDimension(width,height)
     } else {
-      return null
+      null
     }
   }
 
-  fun mapMediaType(mediaType: String?): ComscoreMediaType? {
+  private fun mapMediaType(mediaType: String?): ComscoreMediaType? {
     when(mediaType) {
       "longFormOnDemand" -> return ComscoreMediaType.LONG_FORM_ON_DEMAND
       "shortFormOnDemand" -> return ComscoreMediaType.SHORT_FORM_ON_DEMAND
@@ -120,7 +120,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapFeedType(feedType: String?): ComscoreFeedType? {
+  private fun mapFeedType(feedType: String?): ComscoreFeedType? {
     when(feedType) {
       "easthd" -> return ComscoreFeedType.EASTHD
       "westhd" -> return ComscoreFeedType.WESTHD
@@ -130,7 +130,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDeliveryMode(deliveryMode: String?): ComscoreDeliveryMode? {
+  private fun mapDeliveryMode(deliveryMode: String?): ComscoreDeliveryMode? {
     when(deliveryMode) {
       "linear" -> return ComscoreDeliveryMode.LINEAR
       "ondemand" -> return ComscoreDeliveryMode.ON_DEMAND
@@ -138,7 +138,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDeliverySubscriptionType(deliverySubscriptionType: String?): ComscoreDeliverySubscriptionType? {
+  private fun mapDeliverySubscriptionType(deliverySubscriptionType: String?): ComscoreDeliverySubscriptionType? {
     when(deliverySubscriptionType) {
       "traditionalMvpd" -> return ComscoreDeliverySubscriptionType.TRADITIONAL_MVPD
       "virtualMvpd" -> return ComscoreDeliverySubscriptionType.VIRTUAL_MVPD
@@ -150,7 +150,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDeliveryComposition(deliveryComposition: String?): ComscoreDeliveryComposition? {
+  private fun mapDeliveryComposition(deliveryComposition: String?): ComscoreDeliveryComposition? {
     when(deliveryComposition) {
       "clean" -> return ComscoreDeliveryComposition.CLEAN
       "embed" -> return ComscoreDeliveryComposition.EMBED
@@ -158,7 +158,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDeliveryAdvertisementCapability(deliveryAdvertisementCapability: String?): ComscoreDeliveryAdvertisementCapability? {
+  private fun mapDeliveryAdvertisementCapability(deliveryAdvertisementCapability: String?): ComscoreDeliveryAdvertisementCapability? {
     when(deliveryAdvertisementCapability) {
       "none" -> return ComscoreDeliveryAdvertisementCapability.NONE
       "dynamicLoad" -> return ComscoreDeliveryAdvertisementCapability.DYNAMIC_LOAD
@@ -174,7 +174,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapMediaFormat(mediaFormat: String?): ComscoreMediaFormat? {
+  private fun mapMediaFormat(mediaFormat: String?): ComscoreMediaFormat? {
     when(mediaFormat) {
       "fullContentEpisode" -> return ComscoreMediaFormat.FULL_CONTENT_EPISODE
       "fullContentMovie" -> return ComscoreMediaFormat.FULL_CONTENT_MOVIE
@@ -194,7 +194,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapDistributionModel(distributionModel: String?): ComscoreDistributionModel? {
+  private fun mapDistributionModel(distributionModel: String?): ComscoreDistributionModel? {
     when(distributionModel) {
       "tvAndOnline" -> return ComscoreDistributionModel.TV_AND_ONLINE
       "exclusivelyOnline" -> return  ComscoreDistributionModel.EXCLUSIVELY_ONLINE
@@ -202,49 +202,57 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return null
   }
 
-  fun mapMetadata(metadata: ReadableMap): ComscoreMetaData {
-    var mediaType = mapMediaType(metadata.getString("mediaType"))
-    var uniqueId = metadata.getString("uniqueId")
-    var length = metadata.getInt("length")
-    var c3 = metadata.getString("c3")
-    var c4 = metadata.getString("c4")
-    var c6 = metadata.getString("c6")
-    var stationTitle = metadata.getString("stationTitle")
-    var stationCode = metadata.getString("stationCode")
-    var networkAffiliate = metadata.getString("networkAffiliate")
-    var publisherName = metadata.getString("publisherName")
-    var programTitle = metadata.getString("programTitle")
-    var programId = metadata.getString("programId")
-    var episodeTitle = metadata.getString("episodeTitle")
-    var episodeId = metadata.getString("episodeId")
-    var episodeSeasonNumber = metadata.getString("episodeSeasonNumber")
-    var episodeNumber = metadata.getString("episodeNumber")
-    var genreName = metadata.getString("genreName")
-    var genreId = metadata.getString("genreId")
-    var carryTvAdvertisementLoad = metadata.getBoolean("carryTvAdvertisementLoad")
-    var classifyAsCompleteEpisode = metadata.getBoolean("classifyAsCompleteEpisode")
-    var dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
-    var timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
-    var dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
-    var timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
-    var dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
-    var timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
-    var feedType = mapFeedType(metadata.getString("feedType"))
-    var classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
-    var deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
-    var deliverySubscriptionType = mapDeliverySubscriptionType(metadata.getString("deliverySubscriptionType"))
-    var deliveryComposition = mapDeliveryComposition(metadata.getString("deliveryComposition"))
-    var deliveryAdvertisementCapability = mapDeliveryAdvertisementCapability(metadata.getString("deliveryAdvertisementCapability"))
-    var mediaFormat = mapMediaFormat(metadata.getString("mediaFormat"))
-    var distributionModel = mapDistributionModel(metadata.getString("distributionModel"))
-    var playlistTitle = metadata.getString("playlistTitle")
-    var totalSegments = metadata.getInt("totalSegments")
-    var clipUrl = metadata.getString("clipUrl")
-    var videoDimension = mapDimension(metadata.getMap("videoDimension"))
-    var customLabels = metadata.getMap("customLabels")
+  private fun mapMetadata(metadata: ReadableMap): ComscoreMetaData {
+    val mediaType = mapMediaType(metadata.getString("mediaType"))
+    val uniqueId = metadata.getString("uniqueId")
+    val length = metadata.getInt("length").toLong()
+    val c3 = metadata.getString("c3")
+    val c4 = metadata.getString("c4")
+    val c6 = metadata.getString("c6")
+    val stationTitle = metadata.getString("stationTitle")
+    val stationCode = metadata.getString("stationCode")
+    val networkAffiliate = metadata.getString("networkAffiliate")
+    val publisherName = metadata.getString("publisherName")
+    val programTitle = metadata.getString("programTitle")
+    val programId = metadata.getString("programId")
+    val episodeTitle = metadata.getString("episodeTitle")
+    val episodeId = metadata.getString("episodeId")
+    val episodeSeasonNumber = metadata.getString("episodeSeasonNumber")
+    val episodeNumber = metadata.getString("episodeNumber")
+    val genreName = metadata.getString("genreName")
+    val genreId = metadata.getString("genreId")
+    val carryTvAdvertisementLoad = metadata.getBoolean("carryTvAdvertisementLoad")
+    val classifyAsCompleteEpisode = metadata.getBoolean("classifyAsCompleteEpisode")
+    val dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
+    val timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
+    val dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
+    val timeOfTvAiring = mapTime(metadata.getMap("timeOfTvAiring"))
+    val dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
+    val timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
+    val feedType = mapFeedType(metadata.getString("feedType"))
+    val classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
+    val deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
+    val deliverySubscriptionType = mapDeliverySubscriptionType(metadata.getString("deliverySubscriptionType"))
+    val deliveryComposition = mapDeliveryComposition(metadata.getString("deliveryComposition"))
+    val deliveryAdvertisementCapability = mapDeliveryAdvertisementCapability(metadata.getString("deliveryAdvertisementCapability"))
+    val mediaFormat = mapMediaFormat(metadata.getString("mediaFormat"))
+    val distributionModel = mapDistributionModel(metadata.getString("distributionModel"))
+    val playlistTitle = metadata.getString("playlistTitle")
+    val totalSegments = metadata.getInt("totalSegments")
+    val clipUrl = metadata.getString("clipUrl")
+    val videoDimension = mapDimension(metadata.getMap("videoDimension"))
+    val customLabels = metadata.getMap("customLabels")
 
     return ComscoreMetaData(
+      mediaType,
       uniqueId,
+      length,
+      c3,
+      c4,
+      c6,
+      stationTitle,
+      stationCode,
+      networkAffiliate,
       publisherName,
       programTitle,
       programId,
@@ -253,19 +261,28 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
       episodeSeasonNumber,
       episodeNumber,
       genreName,
+      genreId,
       carryTvAdvertisementLoad,
-      dateOfDigitalAiring,
-      dateOfTvAiring,
-      stationTitle,
-      c3,
-      c4,
-      c6,
       classifyAsCompleteEpisode,
+      dateOfProduction,
+      timeOfProduction,
+      dateOfTvAiring,
+      timeOfTvAiring,
+      dateOfDigitalAiring,
+      timeOfDigitalAiring,
       feedType,
+      classifyAsAudioStream,
+      deliveryMode,
+      deliverySubscriptionType,
+      deliveryComposition,
+      deliveryAdvertisementCapability,
+      mediaFormat,
       distributionModel,
-      stationCode,
-      mediaType,
-      length
+      playlistTitle,
+      totalSegments,
+      clipUrl,
+      videoDimension,
+      customLabels?.toHashMap()?.mapValues { it.toString() }
     )
   }
 }
