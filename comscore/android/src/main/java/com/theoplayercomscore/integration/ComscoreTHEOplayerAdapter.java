@@ -4,14 +4,8 @@ import android.util.Log;
 
 import com.comscore.streaming.AdvertisementMetadata;
 import com.comscore.streaming.AdvertisementType;
-import com.comscore.streaming.ContentDistributionModel;
-import com.comscore.streaming.ContentMediaFormat;
 import com.comscore.streaming.ContentMetadata;
-import com.comscore.streaming.ContentType;
 import com.comscore.streaming.StreamingAnalytics;
-import com.theoplayer.android.api.ads.Ad;
-import com.theoplayer.android.api.ads.GoogleImaAd;
-import com.theoplayer.android.api.ads.UniversalAdId;
 import com.theoplayer.android.api.event.EventListener;
 import com.theoplayer.android.api.event.ads.AdsEventTypes;
 import com.theoplayer.android.api.event.player.PlayerEventTypes;
@@ -20,9 +14,7 @@ import com.theoplayer.android.api.player.Player;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class ComscoreTHEOplayerAdapter {
 
@@ -346,6 +338,8 @@ public class ComscoreTHEOplayerAdapter {
             case INITIALIZED:
                 Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
                 comScoreState = ComscoreState.VIDEO;
+                setContentMetadata();
+                streamingAnalytics.notifyPlay();
                 break;
             case VIDEO:
             default:
