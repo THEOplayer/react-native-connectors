@@ -1,5 +1,5 @@
 import * as analytics  from '../sdk/comscore';
-import type { RaiSkeletonAPI } from './SkeletonApi';
+import type { CustomSkeletonAPI } from './SkeletonApi';
 
 /**
  * Bridge to ComscoreAPI
@@ -41,7 +41,7 @@ export class ComscoreAPI {
    * @type {boolean}
    * @memberof ComscoreAPI
    */
-  private skeletonInterface?: RaiSkeletonAPI;
+  private skeletonInterface?: CustomSkeletonAPI;
 
   /**
    * @param publisherId Publisher ID value. The Publisher ID is often also referred to as the Client ID or c2 value, Comscore API: setPublisherId
@@ -56,7 +56,7 @@ export class ComscoreAPI {
     projectId: string,
     playerName: string,
     playerVersion: string,
-    skeleton: RaiSkeletonAPI | undefined
+    skeleton: CustomSkeletonAPI | undefined
   ) {
     if (!publisherId) {
       throw new Error('publisherId is mandatory parameter!');
