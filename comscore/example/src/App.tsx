@@ -1,13 +1,16 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { PlayerConfiguration, PlayerError, PlayerEventType, THEOplayer, THEOplayerView } from 'react-native-theoplayer';
+import {
+  PlayerConfiguration,
+  PlayerError,
+  PlayerEventType,
+  SourceDescription,
+  THEOplayer,
+  THEOplayerView
+} from 'react-native-theoplayer';
 import { ComscoreConnector } from '@theoplayer/react-native-analytics-comscore';
 import { PlayButton } from './res/images';
 import { ComscoreConfiguration, ComscoreMetadata, ComscoreMediaType, ComscoreUserConsent } from '@theoplayer/react-native-analytics-comscore';
-
-
-const TEST_CUSTOMER_KEY = '01234567'; // TODO: Test with customer key
-
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -15,9 +18,9 @@ const playerConfig: PlayerConfiguration = {
   libraryLocation: 'theoplayer'
 };
 
-const source = {
+const source: SourceDescription = {
   sources: [
-    
+
     {
       "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
       "type": "application/dash+xml"
@@ -64,6 +67,11 @@ const App = () => {
     debug: true,
   };
 
+  useEffect(() => {
+    // Destroy connector when unmounting
+    return () => { comscoreConnector.current?.destroy() }
+  }, [])
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Create Comscore connector
     comscoreConnector.current = new ComscoreConnector(player, comscoreMetadata, comscoreConfig);
@@ -74,10 +82,7 @@ const App = () => {
 
     // Update theoPlayer reference.
     theoPlayer.current = player;
-
-    // Destroy connector when unmounting
-    return () => { comscoreConnector.current?.destroy() }
-  }, []);
+  }, [theoPlayer]);
 
   const onTogglePlayPause = useCallback(() => {
     const player = theoPlayer.current;
