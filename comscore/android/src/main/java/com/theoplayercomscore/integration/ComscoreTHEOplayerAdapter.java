@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 
 public class ComscoreTHEOplayerAdapter {
 
-//    public static final String CONTENT_LENGTH_KEY = "ns_st_cl";
-//    public static final String CUSV_KEY = "ns_st_ami";
     public static final String TAG = "THEOLOG";
 
     private Player player;
@@ -42,7 +40,6 @@ public class ComscoreTHEOplayerAdapter {
     private boolean buffering;
     private Double dvrWindowEnd;
     private boolean inAd;
-    private String cusv;
 
     final EventListener<SeekedEvent> onFirstSeekedAfterEnded = seekedEvent -> {
         if (seekedEvent.getCurrentTime() < 0.5) {
@@ -221,14 +218,13 @@ public class ComscoreTHEOplayerAdapter {
         player.getAds().addEventListener(AdsEventTypes.AD_BEGIN, adBeginEvent -> {
             Log.i(TAG, "DEBUG: AD_BEGIN event");
             currentAdDuration = new Double(player.getDuration() * 1000);
-            cusv = extractCusv(adBeginEvent.getAd());
-            setAdMetadata(currentAdDuration,currentAdOffset);
+            setAdMetadata(currentAdDuration,currentAdOffset, adBeginEvent.getAd().getId());
         });
 
         Log.i("THEOlog", "DEBUG: done setting up listeners");
     }
 
-    private void setAdMetadata(Double currentAdDuration, Double currentAdOffset) {
+    private void setAdMetadata(Double currentAdDuration, Double currentAdOffset, String adId) {
         int advertisementType;
         Log.i("THEOlog", "DEBUG: setting ad metadata ad duration: " + currentAdDuration + " ad offset: " + currentAdOffset);
         if (comscoreMetaData.getLength() == 0L) {
@@ -247,7 +243,7 @@ public class ComscoreTHEOplayerAdapter {
 
         AdvertisementMetadata advertisementMetadata = new AdvertisementMetadata.Builder()
                 .mediaType(advertisementType)
-                .uniqueId(cusv)
+                .uniqueId(adId)
                 .length(currentAdDuration.longValue())
                 .relatedContentMetadata(currentContentMetadata)
                 .build();
@@ -264,69 +260,9 @@ public class ComscoreTHEOplayerAdapter {
     }
 
     private void buildContentMetadata() {
-        Map<String,String> customLabelMap = comscoreMetaData.buildCustomLabelMap();;
-        ContentMetadata.Builder contentMetadata = new ContentMetadata.Builder();
-        Log.i(TAG, "DEBUG: Building content metadata with media type" + comscoreMetaData.getContentMediaType());
-        contentMetadata
-                .dictionaryClassificationC3(comscoreMetaData.getC3())
-                .dictionaryClassificationC4(comscoreMetaData.getC4())
-                .dictionaryClassificationC6(comscoreMetaData.getC6())
-                .length(comscoreMetaData.getLength())
-                .mediaType(comscoreMetaData.getContentMediaType())
-                .publisherName(comscoreMetaData.getPublisherBrandName())
-                .stationCode(comscoreMetaData.getStationCode())
-                .stationTitle(comscoreMetaData.getStationTitle())
-                .uniqueId(comscoreMetaData.getUniqueContentId())
-                .customLabels(customLabelMap);
-
-        // VOD only fields
-        if (comscoreMetaData.getContentMediaType() != ContentType.LIVE && comscoreMetaData.getContentMediaType() != ContentType.USER_GENERATED_LIVE) {
-            contentMetadata.classifyAsCompleteEpisode(comscoreMetaData.isCompleteEpisode());
-            contentMetadata.episodeNumber(comscoreMetaData.getEpisodeNumber());
-            contentMetadata.episodeTitle(comscoreMetaData.getEpisodeTitle());
-            contentMetadata.programTitle(comscoreMetaData.getProgramTitle());
-
-            // VOD optional
-            if (comscoreMetaData.getEpisodeId() != null) {
-                contentMetadata.episodeId(comscoreMetaData.getEpisodeId());
-            }
-            if (comscoreMetaData.getEpisodeSeasonNumber() != null) {
-                contentMetadata.episodeSeasonNumber(comscoreMetaData.getEpisodeSeasonNumber());
-            }
-        }
-
-        // General optional fields
-        if (comscoreMetaData.getContentDistributionModel() != 0) {
-            contentMetadata.distributionModel(comscoreMetaData.getContentDistributionModel());
-        }
-        if (comscoreMetaData.getContentGenre() != null) {
-            contentMetadata.genreName(comscoreMetaData.getContentGenre());
-        }
-
-        currentContentMetadata = contentMetadata.build();
+      currentContentMetadata = comscoreMetaData.toComscoreContentMetadata();
     }
 
-    private String extractCusv(Ad ad) {
-        String cusv = "-1";
-        try {
-            GoogleImaAd googleImaAd = (GoogleImaAd) ad;
-            if (googleImaAd.getAdSystem() == "GDFP") {
-                return googleImaAd.getCreativeId();
-            } else {
-                List<UniversalAdId> uids = googleImaAd.getUniversalAdIds();
-                for(UniversalAdId uid : uids) {
-                    String uidValue = uid.getUniversalAdIdValue();
-                    boolean didMatch = Pattern.matches("[A-Za-z]{6}\\w{7}[A-Za-z]", uidValue);
-                    if (didMatch) {
-                        cusv = uidValue;
-                    }
-                }
-                return cusv;
-            }
-        } catch (Exception e) {
-            return "-1";
-        }
-    }
 
     private void transitionToStopped(){
         switch (comScoreState) {
