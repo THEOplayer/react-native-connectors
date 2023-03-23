@@ -3,6 +3,7 @@ package com.theoplayercomscore.integration;
 import android.content.Context;
 import android.util.Log;
 
+import com.comscore.BuildConfig;
 import com.theoplayer.android.api.THEOplayerGlobal;
 import com.theoplayer.android.api.player.Player;
 
@@ -17,9 +18,13 @@ public class ComscoreConnector {
     ComscoreAnalytics.start(configuration,appContext);
     try {
       this.streamingAnalytics = ComscoreAnalytics.createComscoreStreamingAnalytics(player, THEOplayerGlobal.getVersion(),metadata);
-      Log.i("THEOlog", "DEBUG: initializing the analytics adapter success");
+      if (BuildConfig.DEBUG) {
+        Log.i("THEOlog", "DEBUG: initializing the analytics adapter success");
+      }
     } catch (Exception e) {
-      Log.i("THEOlog", "DEBUG: initializing the analytics adapter failed");
+      if (BuildConfig.DEBUG) {
+        Log.e("THEOlog", "DEBUG: initializing the analytics adapter failed");
+      }
       e.printStackTrace();
     }
   }

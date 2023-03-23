@@ -2,6 +2,7 @@ package com.theoplayercomscore.integration;
 
 import android.util.Log;
 
+import com.comscore.BuildConfig;
 import com.comscore.streaming.AdvertisementMetadata;
 import com.comscore.streaming.AdvertisementType;
 import com.comscore.streaming.ContentMetadata;
@@ -35,7 +36,9 @@ public class ComscoreTHEOplayerAdapter {
 
     final EventListener<SeekedEvent> onFirstSeekedAfterEnded = seekedEvent -> {
         if (seekedEvent.getCurrentTime() < 0.5) {
-            Log.i(TAG, "DEBUG: SEEKED event to start after an end event, create new session");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: SEEKED event to start after an end event, create new session");
+            }
             streamingAnalytics.createPlaybackSession();
             currentAdOffset = 0.0; // Set to default value
             setContentMetadata();
@@ -71,7 +74,9 @@ public class ComscoreTHEOplayerAdapter {
     }
 
     public void setMedatata(ComscoreMetaData metadata) {
-        Log.i("THEOlog", "DEBUG: setting theo metadata and removing old comscore metadata");
+        if (BuildConfig.DEBUG) {
+          Log.i("THEOlog", "DEBUG: setting theo metadata and removing old comscore metadata");
+        }
         comscoreMetaData = metadata;
         currentContentMetadata = null;
     }
@@ -93,29 +98,39 @@ public class ComscoreTHEOplayerAdapter {
 //        });
 
         player.addEventListener(PlayerEventTypes.SOURCECHANGE, sourceChangeEvent -> {
-            Log.i("THEOlog", "DEBUG: SOURCECHANGE event");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "DEBUG: SOURCECHANGE event");
+            }
             comScoreState = ComscoreState.INITIALIZED;
             currentContentMetadata = null;
-            Log.i(TAG, "DEBUG: createPlaybackSession");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: createPlaybackSession");
+            }
             streamingAnalytics.createPlaybackSession();
         });
 
         player.addEventListener(PlayerEventTypes.LOADEDMETADATA, loadedMetadataEvent -> {
             if (comscoreMetaData.getLength() == 0L && !inAd) {
-                Log.i("THEOLog", "DEBUG: detected stream type LIVE");
+                if (BuildConfig.DEBUG) {
+                  Log.i("THEOLog", "DEBUG: detected stream type LIVE");
+                }
                 try {
                     player.requestSeekable(seekableRanges -> {
                         if (seekableRanges.length() > 0) {
                             double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
                             double dvrWindowLengthInSeconds = dvrWindowEnd - seekableRanges.getStart(0);
                             if (dvrWindowLengthInSeconds > 0) {
-                                Log.i("THEOLog", "DEBUG: set DVR window length of " + dvrWindowLengthInSeconds);
+                                if (BuildConfig.DEBUG) {
+                                  Log.i("THEOLog", "DEBUG: set DVR window length of " + dvrWindowLengthInSeconds);
+                                }
                                 streamingAnalytics.setDvrWindowLength(new Double(dvrWindowLengthInSeconds * 1000).longValue());
                             }
                         }
                     });
                 } catch (Exception e) {
-                    Log.i("THEOLog", "No seekable ranges available");
+                  if (BuildConfig.DEBUG) {
+                    Log.e("THEOLog", "No seekable ranges available");
+                  }
                 }
             }
         });
@@ -124,14 +139,18 @@ public class ComscoreTHEOplayerAdapter {
             // If in the buffering state, get out of it and notify comscore about this
             if (buffering) {
                 buffering = false;
-                Log.i(TAG, "DEBUG: notifyBufferStop");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyBufferStop");
+                }
                 streamingAnalytics.notifyBufferStop();
             }
 
             if (inAd) {
                 transitionToAdvertisement(); // will set ad metadata and notify play if not done already
             } else if (currentAdOffset < 0.0) {
-                Log.i(TAG, "DEBUG: IGNORING PLAYING event after post-roll");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: IGNORING PLAYING event after post-roll");
+                }
                 return; // last played ad was a post-roll so there's no real content coming, return and report nothing
             } else {
                 transitionToVideo();// will set content metadata and notify play if not done already
@@ -139,29 +158,39 @@ public class ComscoreTHEOplayerAdapter {
         });
 
         player.addEventListener(PlayerEventTypes.PAUSE, pauseEvent -> {
-            Log.i(TAG, "DEBUG: PAUSE event");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: PAUSE event");
+            }
             transitionToPaused();
         });
 
         player.addEventListener(PlayerEventTypes.SEEKING, seekingEvent -> {
-            Log.i(TAG, "DEBUG: notifySeekStart");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: notifySeekStart");
+            }
             streamingAnalytics.notifySeekStart();
         });
 
         player.addEventListener(PlayerEventTypes.SEEKED, seekedEvent -> {
-            Log.i("THEOlog", "DEBUG: SEEKED to: " + seekedEvent.getCurrentTime());
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "DEBUG: SEEKED to: " + seekedEvent.getCurrentTime());
+            }
             Double currentTime = seekedEvent.getCurrentTime();
             if (Double.isNaN(player.getDuration())) {
                 player.requestSeekable(seekableRanges -> {
                     double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
                     Long newDvrWindowOffset = new Double(dvrWindowEnd - currentTime).longValue()*1000;
-                    Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset.toString());
+                    if (BuildConfig.DEBUG) {
+                      Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset.toString());
+                    }
                     streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset);
                 });
             } else {
                 Long newPosition = new Double(currentTime).longValue()*1000;
-                Log.i("THEOlog", "DEBUG: new position: " + newPosition.toString());
-                Log.i(TAG, "DEBUG: startFromPosition");
+                if (BuildConfig.DEBUG) {
+                  Log.i("THEOlog", "DEBUG: new position: " + newPosition.toString());
+                  Log.i(TAG, "DEBUG: startFromPosition");
+                }
                 streamingAnalytics.startFromPosition(newPosition);
             }
         });
@@ -169,7 +198,9 @@ public class ComscoreTHEOplayerAdapter {
         player.addEventListener(PlayerEventTypes.WAITING, waitingEvent -> {
             if ((comScoreState == ComscoreState.ADVERTISEMENT && inAd)|| (comScoreState == ComscoreState.VIDEO && !inAd)) {
                 buffering = true;
-                Log.i(TAG, "DEBUG: notifyBufferStart");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyBufferStart");
+                }
                 streamingAnalytics.notifyBufferStart();
             }
         });
@@ -179,46 +210,62 @@ public class ComscoreTHEOplayerAdapter {
         });
 
         player.addEventListener(PlayerEventTypes.ERROR, errorEvent -> {
-            Log.i("THEOlog", "DEBUG: ERROR event");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "DEBUG: ERROR event");
+            }
             transitionToStopped();
         });
 
         player.addEventListener(PlayerEventTypes.CONTENTPROTECTIONERROR, contentProtectionErrorEvent -> {
-            Log.i("THEOlog", "DEBUG: DRM ERROR event");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "DEBUG: DRM ERROR event");
+            }
             transitionToStopped();
         });
 
         player.addEventListener(PlayerEventTypes.ENDED, endedEvent -> {
-            Log.i("THEOlog", "DEBUG: ENDED event");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "DEBUG: ENDED event");
+            }
             transitionToStopped();
             player.addEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded);
         });
 
         player.getAds().addEventListener(AdsEventTypes.AD_BREAK_BEGIN, adBreakBeginEvent -> {
-            Log.i(TAG, "DEBUG: AD_BREAK_BEGIN event");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: AD_BREAK_BEGIN event");
+            }
             currentAdOffset = new Double(adBreakBeginEvent.getAdBreak().getTimeOffset());
             inAd = true;
             transitionToStopped();
         });
 
         player.getAds().addEventListener(AdsEventTypes.AD_BREAK_END, adBreakEndEvent -> {
-            Log.i(TAG, "DEBUG: AD_BREAK_END event");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: AD_BREAK_END event");
+            }
             inAd = false;
             transitionToStopped();
         });
 
         player.getAds().addEventListener(AdsEventTypes.AD_BEGIN, adBeginEvent -> {
-            Log.i(TAG, "DEBUG: AD_BEGIN event");
+            if (BuildConfig.DEBUG) {
+              Log.i(TAG, "DEBUG: AD_BEGIN event");
+            }
             currentAdDuration = new Double(player.getDuration() * 1000);
             setAdMetadata(currentAdDuration,currentAdOffset, adBeginEvent.getAd().getId());
         });
 
-        Log.i("THEOlog", "DEBUG: done setting up listeners");
+        if (BuildConfig.DEBUG) {
+          Log.i("THEOlog", "DEBUG: done setting up listeners");
+        }
     }
 
     private void setAdMetadata(Double currentAdDuration, Double currentAdOffset, String adId) {
         int advertisementType;
-        Log.i("THEOlog", "DEBUG: setting ad metadata ad duration: " + currentAdDuration + " ad offset: " + currentAdOffset);
+        if (BuildConfig.DEBUG) {
+          Log.i("THEOlog", "DEBUG: setting ad metadata ad duration: " + currentAdDuration + " ad offset: " + currentAdOffset);
+        }
         if (comscoreMetaData.getLength() == 0L) {
             advertisementType = AdvertisementType.LIVE;
         } else if (currentAdOffset == 0.0) {
@@ -244,7 +291,9 @@ public class ComscoreTHEOplayerAdapter {
     }
 
     private void setContentMetadata() {
-        Log.i(TAG, "DEBUG: setting content metadata with duration " + comscoreMetaData.getLength());
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: setting content metadata with duration " + comscoreMetaData.getLength());
+        }
         if (currentContentMetadata == null) {
             buildContentMetadata();
         }
@@ -259,12 +308,18 @@ public class ComscoreTHEOplayerAdapter {
     private void transitionToStopped(){
         switch (comScoreState) {
             case STOPPED:
-                Log.i(TAG, "DEBUG: Ignoring transition to STOPPED while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: Ignoring transition to STOPPED while in " + comScoreState.toString());
+                }
                 break;
             default:
-                Log.i(TAG, "DEBUG: transition to STOPPED while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transition to STOPPED while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.STOPPED;
-                Log.i(TAG, "DEBUG: notifyEnd");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyEnd");
+                }
                 streamingAnalytics.notifyEnd();
         }
     }
@@ -272,42 +327,61 @@ public class ComscoreTHEOplayerAdapter {
     private void transitionToPaused(){
         switch (comScoreState){
             case VIDEO:
-                Log.i(TAG, "DEBUG: transition to PAUSED_VIDEO while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transition to PAUSED_VIDEO while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.PAUSED_VIDEO;
-                Log.i(TAG, "DEBUG: notifyPause");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPause");
+                }
                 streamingAnalytics.notifyPause();
                 break;
             case ADVERTISEMENT:
-                Log.i(TAG, "DEBUG: transition to PAUSED_AD while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transition to PAUSED_AD while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.PAUSED_AD;
-                Log.i(TAG, "DEBUG: notifyPause");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPause");
+                }
                 streamingAnalytics.notifyPause();
                 break;
             default:
-                Log.i(TAG, "DEBUG: Ignore transition to PAUSED while in " + comScoreState.toString());
-
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: Ignore transition to PAUSED while in " + comScoreState.toString());
+                }
         }
     }
 
     private void transitionToAdvertisement(){
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());  // 2021-03-24 16:34:26.666
-        Log.i(TAG, "DEBUG: trying to transition to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: trying to transition to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+        }
         switch (comScoreState) {
             case PAUSED_AD:
             case INITIALIZED:
-                Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                }
                 comScoreState = ComscoreState.ADVERTISEMENT;
-                Log.i(TAG, "DEBUG: notifyPlay");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPlay");
+                }
                 streamingAnalytics.notifyPlay();
                 break;
             case VIDEO:
             case PAUSED_VIDEO:
             case STOPPED:
                 transitionToStopped();
-                Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                }
                 comScoreState = ComscoreState.ADVERTISEMENT;
-                Log.i(TAG, "DEBUG: notifyPlay");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPlay");
+                }
                 streamingAnalytics.notifyPlay();
                 break;
             case ADVERTISEMENT:
@@ -317,26 +391,38 @@ public class ComscoreTHEOplayerAdapter {
     }
 
     private void transitionToVideo(){
-        Log.i(TAG, "DEBUG: trying to transition to VIDEO while in " + comScoreState.toString());
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: trying to transition to VIDEO while in " + comScoreState.toString());
+        }
         switch (comScoreState) {
             case PAUSED_VIDEO:
-                Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.VIDEO;
-                Log.i(TAG, "DEBUG: notifyPlay");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPlay");
+                }
                 streamingAnalytics.notifyPlay();
                 break;
             case ADVERTISEMENT:
             case PAUSED_AD:
             case STOPPED:
                 transitionToStopped();
-                Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.VIDEO;
                 setContentMetadata();
-                Log.i(TAG, "DEBUG: notifyPlay");
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: notifyPlay");
+                }
                 streamingAnalytics.notifyPlay();
                 break;
             case INITIALIZED:
-                Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                if (BuildConfig.DEBUG) {
+                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                }
                 comScoreState = ComscoreState.VIDEO;
                 setContentMetadata();
                 streamingAnalytics.notifyPlay();
@@ -348,12 +434,16 @@ public class ComscoreTHEOplayerAdapter {
     }
 
     public void notifyEnd() {
-        Log.i(TAG, "DEBUG: notifyEnd");
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: notifyEnd");
+        }
         streamingAnalytics.notifyEnd();
     }
 
     public void notifyPause() {
-        Log.i(TAG, "DEBUG: notifyPause");
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: notifyPause");
+        }
         streamingAnalytics.notifyPause();
     }
 

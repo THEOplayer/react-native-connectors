@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.comscore.Analytics;
+import com.comscore.BuildConfig;
 import com.comscore.Configuration;
 import com.comscore.PublisherConfiguration;
 import com.theoplayer.android.api.player.Player;
@@ -17,7 +18,9 @@ public class ComscoreAnalytics {
 
     public static void start(ComscoreConfiguration configuration, Context context) {
         if (!startedTracking) {
-            Log.i("THEOlog", "calling start");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "calling start");
+            }
             comscoreConfiguration = configuration;
 
             PublisherConfiguration.Builder publisherConfigurationBuilder = new PublisherConfiguration.Builder()
@@ -65,7 +68,9 @@ public class ComscoreAnalytics {
 
     public static ComscoreStreamingAnalytics createComscoreStreamingAnalytics(Player player, String playerVersion, ComscoreMetaData metadata) throws Exception {
         if (startedTracking) {
-            Log.i("THEOlog", "will create CSA object");
+            if (BuildConfig.DEBUG) {
+              Log.i("THEOlog", "will create CSA object");
+            }
             return new ComscoreStreamingAnalytics(player, playerVersion, comscoreConfiguration, metadata);
         } else {
             throw new ComscoreAnalyticsException("start should be called first, can't create the streaming analytics");
