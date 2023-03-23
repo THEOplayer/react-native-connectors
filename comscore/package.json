@@ -75,7 +75,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0"
+    "react-native-theoplayer": "*"
   },
   "commitlint": {
     "extends": [
