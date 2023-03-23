@@ -220,8 +220,8 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val episodeNumber = metadata.getString("episodeNumber")
     val genreName = metadata.getString("genreName")
     val genreId = metadata.getString("genreId")
-    val carryTvAdvertisementLoad = metadata.getBoolean("carryTvAdvertisementLoad")
-    val classifyAsCompleteEpisode = metadata.getBoolean("classifyAsCompleteEpisode")
+    val carryTvAdvertisementLoad = if (metadata.hasKey("carryTvAdvertisementLoad")) metadata.getBoolean("carryTvAdvertisementLoad") else false
+    val classifyAsCompleteEpisode = if(metadata.hasKey("classifyAsCompleteEpisode")) metadata.getBoolean("classifyAsCompleteEpisode") else false
     val dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
     val timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
     val dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
@@ -237,7 +237,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val mediaFormat = mapMediaFormat(metadata.getString("mediaFormat"))
     val distributionModel = mapDistributionModel(metadata.getString("distributionModel"))
     val playlistTitle = metadata.getString("playlistTitle")
-    val totalSegments = metadata.getInt("totalSegments")
+    val totalSegments = if (metadata.hasKey("totalSegments")) metadata.getInt("totalSegments") else null
     val clipUrl = metadata.getString("clipUrl")
     val videoDimension = mapDimension(metadata.getMap("videoDimension"))
     val customLabels = metadata.getMap("customLabels")
