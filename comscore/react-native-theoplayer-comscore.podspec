@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "12.0" }
-  s.source       = { :git => "https://github.com/theoplayer/react-native-theoplayer.git", :tag => "#{s.version}" }
+  s.platforms    = { :ios => "12.0", :tvos => "12.0" }
+  s.source       = { :git => "https://github.com/theoplayer/react-native-theoplayer-analytics.git", :tag => "comscore_v#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
