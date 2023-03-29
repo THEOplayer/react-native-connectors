@@ -10,6 +10,10 @@ export class ConvivaConnectorAdapter {
     NativeModules.ConvivaModule.initialize(this.player.nativeHandle, convivaMetadata, convivaConfig);
   }
 
+  stopAndStartNewSession(metadata: ConvivaMetadata): void {
+    NativeModules.ConvivaModule.stopAndStartNewSession(metadata);
+  }
+
   setContentInfo(metadata: ConvivaMetadata): void {
     NativeModules.ConvivaModule.setContentInfo(this.player.nativeHandle, metadata);
   }

@@ -17,6 +17,11 @@ export class ConvivaConnectorAdapter {
     );
   }
 
+  stopAndStartNewSession(metadata: ConvivaMetadata): void {
+    // TODO
+    // this.integration.stopAndStartNewSession(metadata)
+  }
+
   setContentInfo(metadata: ConvivaMetadata): void {
     // TODO uncomment once conviva version has been updated
     this.integration.setContentInfo(metadata);
