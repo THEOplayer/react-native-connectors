@@ -280,7 +280,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
       totalSegments,
       clipUrl,
       videoDimension,
-      customLabels?.toHashMap()?.mapValues { it.value.toString() }
+      customLabels?.toHashMap()?.mapValues { it.value.toString() } ?: mapOf()
     )
   }
 }
