@@ -49,6 +49,11 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun stopAndStartNewSession(tag: Int, convivaMetadata: ReadableMap) {
+    convivaConnectors[tag]?.stopAndStartNewSession(convivaMetadata.toHashMap())
+  }
+
+  @ReactMethod
   fun setContentInfo(tag: Int, convivaMetadata: ReadableMap) {
     convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
   }
