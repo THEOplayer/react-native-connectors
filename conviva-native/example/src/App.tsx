@@ -26,10 +26,7 @@ const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
-  libraryLocation: 'theoplayer',
-  pip: {
-    canStartPictureInPictureAutomaticallyFromInline: true,
-  }
+  libraryLocation: 'theoplayer'
 };
 
 const App = () => {
@@ -70,6 +67,7 @@ const App = () => {
     convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
     player.autoplay = !paused;
     player.source = SOURCES[sourceIndex].source as SourceDescription;
+    player.pipConfiguration = { startsAutomatically: true };
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
     player.addEventListener(PlayerEventType.PAUSE, () => setPaused(true));
 
