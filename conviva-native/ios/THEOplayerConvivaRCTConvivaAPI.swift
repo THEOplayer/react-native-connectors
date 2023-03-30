@@ -4,6 +4,7 @@ import UIKit
 import react_native_theoplayer
 import THEOplayerConnectorConviva
 import THEOplayerSDK
+import ConvivaSDK
 
 @objc(THEOplayerConvivaRCTConvivaAPI)
 class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
@@ -25,8 +26,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         
         DispatchQueue.main.async {
             print("[ConvivaModule]", convivaConfig)
-            let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
-            if let player = theView?.player {
+            if let player = self.player(for: node) {
                 let configuration = ConvivaConfiguration(
                     customerKey: convivaConfig["customerKey"] as! String,
                     gatewayURL: convivaConfig["gatewayUrl"] as? String,
@@ -72,12 +72,28 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         }
     }
     
+    @objc(stopAndStartNewSession:metadata:)
+    func stopAndStartNewSession(_ node: NSNumber, metadata: NSDictionary) -> Void {
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node], let contentInfo = metadata as? [String: Any], self.player(for: node)?.paused == false {
+                connector.videoAnalytics.reportPlaybackEnded()
+                connector.videoAnalytics.reportPlaybackRequested(contentInfo)
+                connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+            }
+        }
+    }
+    
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
         print("[ConvivaModule] destroy triggered.")
         DispatchQueue.main.async {
             self.connectors.removeValue(forKey: node)
         }
+    }
+    
+    func player(for node: NSNumber) -> THEOplayer? {
+        let view = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
+        return view?.player
     }
     
 }
