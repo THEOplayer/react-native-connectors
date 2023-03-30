@@ -83,6 +83,11 @@ const App = () => {
     }
   }, [theoPlayer])
 
+  const onDestroy = useCallback(() => {
+    convivaConnector.current?.destroy();
+    convivaConnector.current = undefined;
+  }, [theoPlayer])
+
   return (
     <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
 
@@ -122,6 +127,9 @@ const App = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onCustomMetadata}>
               <Text style={styles.buttonText}>{"Set custom metadata"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onDestroy}>
+              <Text style={styles.buttonText}>{"Destroy connector"}</Text>
             </TouchableOpacity>
           </View>
         </View>
