@@ -86,8 +86,9 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
+  // TODO: remove once published
 //  implementation "com.theoplayer.android-connector:conviva:$theoplayer_version"
-  implementation "com.theoplayer.android-connector:conviva:4.9.0-2"
+  implementation "com.theoplayer.android-connector:conviva:4.11.0-2"
 
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
