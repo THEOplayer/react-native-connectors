@@ -54,6 +54,11 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun reportPlaybackFailed(tag: Int, message: String?) {
+    convivaConnectors[tag]?.reportPlaybackFailed(message ?: "")
+  }
+
+  @ReactMethod
   fun setContentInfo(tag: Int, convivaMetadata: ReadableMap) {
     convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
   }

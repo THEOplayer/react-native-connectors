@@ -11,7 +11,11 @@ export class ConvivaConnectorAdapter {
   }
 
   stopAndStartNewSession(metadata: ConvivaMetadata): void {
-    NativeModules.ConvivaModule.stopAndStartNewSession(metadata);
+    NativeModules.ConvivaModule.stopAndStartNewSession(this.player.nativeHandle, metadata);
+  }
+
+  reportPlaybackFailed(errorMessage: string): void {
+    NativeModules.ConvivaModule.reportPlaybackFailed(this.player.nativeHandle, errorMessage);
   }
 
   setContentInfo(metadata: ConvivaMetadata): void {

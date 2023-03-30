@@ -22,6 +22,10 @@ export class ConvivaConnectorAdapter {
     // this.integration.stopAndStartNewSession(metadata)
   }
 
+  reportPlaybackFailed(errorMessage: string): void {
+    this.integration.reportPlaybackFailed(errorMessage);
+  }
+
   setContentInfo(metadata: ConvivaMetadata): void {
     // TODO uncomment once conviva version has been updated
     this.integration.setContentInfo(metadata);
