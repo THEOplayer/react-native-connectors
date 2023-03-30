@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2023-03-30
+
+### Fixed
+
+### Changed
+
+- Updated Android connector to v4.11.0-2
+- Updated Web connector to v1.1.0
+- Updated iOS connector
+
+### Added
+
+- Added `stopAndStartNewSession` to enable explicitly stopping the current session and starting a new one.
+
 ## [0.2.2] - 2023-03-06
 
 ### Changed
