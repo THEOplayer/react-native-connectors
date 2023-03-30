@@ -74,11 +74,24 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     
     @objc(stopAndStartNewSession:metadata:)
     func stopAndStartNewSession(_ node: NSNumber, metadata: NSDictionary) -> Void {
+        log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
             if let connector = self.connectors[node], let contentInfo = metadata as? [String: Any], self.player(for: node)?.paused == false {
+                log("reporting stopAndStartNewSession")
                 connector.videoAnalytics.reportPlaybackEnded()
                 connector.videoAnalytics.reportPlaybackRequested(contentInfo)
                 connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+            }
+        }
+    }
+    
+    @objc(reportPlaybackFailed:errorDescription:)
+    func reportPlaybackFailed(node: NSNumber, errorDescription: NSString) {
+        log("reportPlaybackFailed triggered")
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node] {
+                log("reporting playback failed")
+                connector.videoAnalytics.reportPlaybackFailed(errorDescription as String, contentInfo: nil)
             }
         }
     }
