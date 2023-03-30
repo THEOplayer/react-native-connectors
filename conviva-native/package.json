@@ -121,8 +121,5 @@
   "dependencies": {
     "@convivainc/conviva-js-coresdk": "^4.5.13",
     "@theoplayer/conviva-connector-web": "https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-conviva-connector-web-1.1.0.tgz"
-  },
-  "overrides": {
-    "theoplayer": "^4.7.0"
   }
 }
