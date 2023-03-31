@@ -81,7 +81,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'androidx.lifecycle:lifecycle-process:2.6.0'
+  implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
 
   implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
