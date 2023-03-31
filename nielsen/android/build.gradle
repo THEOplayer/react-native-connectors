@@ -74,6 +74,7 @@ rootProject.allprojects {
 
 def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.8.10")
+def nielsen_version = safeExtGet("THEOplayerNielsen_nielsenVersion", "9.0.0.0")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -88,8 +89,8 @@ dependencies {
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
   implementation project(':react-native-theoplayer')
 
-  implementation "com.nielsenappsdk.global:ad:9.0.0.0"
+  implementation "com.nielsenappsdk.global:ad:$nielsen_version"
 
   // Align the Kotlin SDK libraries with the same version.
-  implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
 }

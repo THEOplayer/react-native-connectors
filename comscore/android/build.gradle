@@ -70,7 +70,8 @@ repositories {
 }
 
 def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
-def kotlin_version = safeExtGet("THEOplayerComscore_kotlinVersion", "1.7.10")
+def kotlin_version = safeExtGet("THEOplayerComscore_kotlinVersion", "1.8.10")
+def comscore_version = safeExtGet("THEOplayerComscore_comscoreVersion", "6.+")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -84,5 +85,8 @@ dependencies {
   implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
   implementation project(':react-native-theoplayer')
 
-  implementation "com.comscore:android-analytics:6.+"
+  implementation "com.comscore:android-analytics:$comscore_version"
+
+  // Align the Kotlin SDK libraries with the same version.
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
 }
