@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   PlayerConfiguration,
   PlayerError,
   PlayerEventType,
+  PresentationMode,
   SourceDescription,
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
+import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
 import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
 import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
-import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
 import SOURCES_ANDROID from "./res/sources_android.json"
 import SOURCES_IOS from "./res/sources_ios.json"
 import SOURCES_WEB from "./res/sources_web.json"
+
 const SOURCES = Platform.select({
   "ios": SOURCES_IOS,
   "android": SOURCES_ANDROID,
@@ -161,7 +163,7 @@ function seekToBeforeEnd(player: THEOplayer | undefined) {
 
 function toPip(player: THEOplayer | undefined) {
   if (player) {
-    player.presentationMode = 'picture-in-picture';
+    player.presentationMode = PresentationMode.pip;
   }
 }
 
