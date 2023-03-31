@@ -4,9 +4,10 @@ import com.theoplayer.android.api.player.Player;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class ComscoreStreamingAnalytics {
 
-    private ComscoreTHEOplayerAdapter adapter;
+    private final ComscoreTHEOplayerAdapter adapter;
 
     public ComscoreStreamingAnalytics(Player player, String playerVersion, ComscoreConfiguration configuration, ComscoreMetaData metadata) {
         adapter = new ComscoreTHEOplayerAdapter(player, playerVersion, configuration,metadata);

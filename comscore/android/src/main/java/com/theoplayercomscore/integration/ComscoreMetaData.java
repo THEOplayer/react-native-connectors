@@ -8,45 +8,45 @@ import java.util.Map;
 
 public class ComscoreMetaData {
 
-  private ComscoreMediaType mediaType;
-  private String uniqueId;
-  private long length;
-  private String c3 = null;
-  private String c4 = null;
-  private String c6 = null;
-  private String stationTitle;
-  private String stationCode = null;
-  private String networkAffiliate = null;
-  private String publisherName = null;
-  private String programTitle;
-  private String programId = null;
-  private String episodeTitle;
-  private String episodeId = null;
-  private String episodeSeasonNumber = null;
-  private String episodeNumber = null;
-  private String genreName;
-  private String genreId = null;
-  private Boolean carryTvAdvertisementLoad = null;
-  private Boolean classifyAsCompleteEpisode = null;
-  private ComscoreDate dateOfProduction = null;
-  private ComscoreTime timeOfProduction = null;
-  private ComscoreDate dateOfTvAiring = null;
-  private ComscoreTime timeOfTvAiring = null;
-  private ComscoreDate dateOfDigitalAiring = null;
-  private ComscoreTime timeOfDigitalAiring = null;
-  private ComscoreFeedType feedType = null;
-  private Boolean classifyAsAudioStream;
-  private ComscoreDeliveryMode deliveryMode = null;
-  private ComscoreDeliverySubscriptionType deliverySubscriptionType = null;
-  private ComscoreDeliveryComposition deliveryComposition = null;
-  private ComscoreDeliveryAdvertisementCapability deliveryAdvertisementCapability = null;
-  private ComscoreMediaFormat mediaFormat = null;
-  private ComscoreDistributionModel distributionModel = null;
-  private String playlistTitle = null;
-  private Integer totalSegments = null;
-  private String clipUrl = null;
-  private ComscoreDimension videoDimension = null;
-  private Map<String,String> customLabels = null;
+  private final ComscoreMediaType mediaType;
+  private final String uniqueId;
+  private final long length;
+  private final String c3;
+  private final String c4;
+  private final String c6;
+  private final String stationTitle;
+  private final String stationCode;
+  private final String networkAffiliate;
+  private final String publisherName;
+  private final String programTitle;
+  private final String programId;
+  private final String episodeTitle;
+  private final String episodeId;
+  private final String episodeSeasonNumber;
+  private final String episodeNumber;
+  private final String genreName;
+  private final String genreId;
+  private final Boolean carryTvAdvertisementLoad;
+  private final Boolean classifyAsCompleteEpisode;
+  private final ComscoreDate dateOfProduction;
+  private final ComscoreTime timeOfProduction;
+  private final ComscoreDate dateOfTvAiring;
+  private final ComscoreTime timeOfTvAiring;
+  private final ComscoreDate dateOfDigitalAiring;
+  private final ComscoreTime timeOfDigitalAiring;
+  private final ComscoreFeedType feedType;
+  private final Boolean classifyAsAudioStream;
+  private final ComscoreDeliveryMode deliveryMode;
+  private final ComscoreDeliverySubscriptionType deliverySubscriptionType;
+  private final ComscoreDeliveryComposition deliveryComposition;
+  private final ComscoreDeliveryAdvertisementCapability deliveryAdvertisementCapability;
+  private final ComscoreMediaFormat mediaFormat;
+  private final ComscoreDistributionModel distributionModel;
+  private final String playlistTitle;
+  private final Integer totalSegments;
+  private final String clipUrl;
+  private final ComscoreDimension videoDimension;
+  private final Map<String,String> customLabels;
 
     public ComscoreMetaData(
       ComscoreMediaType mediaType,
@@ -183,6 +183,7 @@ public class ComscoreMetaData {
   /**
      * The builder for {@link ComscoreMetaData}.
      */
+    @SuppressWarnings("unused")
     public static class Builder {
       private ComscoreMediaType mediaType;
       private String uniqueId;
@@ -232,7 +233,6 @@ public class ComscoreMetaData {
         /**
          * Creates a builder for a default Comscore metadata object.
          *
-         * @remarks
          * <pre>
          *     - This configuration does not contain any sources.
          * </pre>
@@ -250,7 +250,7 @@ public class ComscoreMetaData {
         this.uniqueId = uniqueId;
         return this;
       }
-      public Builder length(@NonNull long length) {
+      public Builder length(long length) {
         this.length = length;
         return this;
       }

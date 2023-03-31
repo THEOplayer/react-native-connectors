@@ -11,10 +11,8 @@ import java.util.Map;
 
 public class ComscoreConnector {
     private ComscoreStreamingAnalytics streamingAnalytics;
-    private Player player;
 
-  public ComscoreConnector(Context appContext, Player player, ComscoreConfiguration configuration, ComscoreMetaData metadata) throws Exception {
-    this.player = player;
+  public ComscoreConnector(Context appContext, Player player, ComscoreConfiguration configuration, ComscoreMetaData metadata) {
     ComscoreAnalytics.start(configuration,appContext);
     try {
       this.streamingAnalytics = ComscoreAnalytics.createComscoreStreamingAnalytics(player, THEOplayerGlobal.getVersion(),metadata);

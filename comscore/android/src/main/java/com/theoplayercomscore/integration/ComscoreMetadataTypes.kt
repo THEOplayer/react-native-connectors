@@ -20,15 +20,15 @@ enum class ComscoreMediaType {
   OTHER;
 
   fun toComscore(): Int {
-    when(this){
-      LONG_FORM_ON_DEMAND -> return ContentType.LONG_FORM_ON_DEMAND
-      SHORT_FORM_ON_DEMAND -> return ContentType.SHORT_FORM_ON_DEMAND
-      LIVE -> return ContentType.LIVE
-      USER_GENERATED_LONG_FORM_ON_DEMAND -> return ContentType.USER_GENERATED_LONG_FORM_ON_DEMAND
-      USER_GENERATED_SHORT_FORM_ON_DEMAND -> return ContentType.USER_GENERATED_SHORT_FORM_ON_DEMAND
-      USER_GENERATED_LIVE -> return ContentType.USER_GENERATED_LIVE
-      BUMPER -> return ContentType.BUMPER
-      OTHER -> return ContentType.OTHER
+    return when(this){
+      LONG_FORM_ON_DEMAND -> ContentType.LONG_FORM_ON_DEMAND
+      SHORT_FORM_ON_DEMAND -> ContentType.SHORT_FORM_ON_DEMAND
+      LIVE -> ContentType.LIVE
+      USER_GENERATED_LONG_FORM_ON_DEMAND -> ContentType.USER_GENERATED_LONG_FORM_ON_DEMAND
+      USER_GENERATED_SHORT_FORM_ON_DEMAND -> ContentType.USER_GENERATED_SHORT_FORM_ON_DEMAND
+      USER_GENERATED_LIVE -> ContentType.USER_GENERATED_LIVE
+      BUMPER -> ContentType.BUMPER
+      OTHER -> ContentType.OTHER
     }
   }
 }
@@ -40,11 +40,11 @@ enum class ComscoreFeedType {
   WESTSD;
 
   fun toComscore(): Int {
-    when(this) {
-      EASTHD -> return ContentFeedType.EAST_HD
-      WESTHD -> return ContentFeedType.WEST_HD
-      EASTSD -> return ContentFeedType.EAST_SD
-      WESTSD -> return ContentFeedType.WEST_SD
+    return when(this) {
+      EASTHD -> ContentFeedType.EAST_HD
+      WESTHD -> ContentFeedType.WEST_HD
+      EASTSD -> ContentFeedType.EAST_SD
+      WESTSD -> ContentFeedType.WEST_SD
     }
   }
 }
@@ -54,9 +54,9 @@ enum class ComscoreDeliveryMode {
   ON_DEMAND;
 
   fun toComscore(): Int {
-    when(this) {
-      LINEAR -> return ContentDeliveryMode.LINEAR
-      ON_DEMAND -> return ContentDeliveryMode.ON_DEMAND
+    return when(this) {
+      LINEAR -> ContentDeliveryMode.LINEAR
+      ON_DEMAND -> ContentDeliveryMode.ON_DEMAND
     }
   }
 }
@@ -70,13 +70,13 @@ enum class ComscoreDeliverySubscriptionType {
   PREMIUM;
 
   fun toComscore(): Int {
-    when(this) {
-      TRADITIONAL_MVPD -> return ContentDeliverySubscriptionType.TRADITIONAL_MVPD
-      VIRTUAL_MVPD -> return ContentDeliverySubscriptionType.VIRTUAL_MVPD
-      SUBSCRIPTION -> return ContentDeliverySubscriptionType.SUBSCRIPTION
-      TRANSACTIONAL -> return ContentDeliverySubscriptionType.TRANSACTIONAL
-      ADVERTISING -> return ContentDeliverySubscriptionType.ADVERTISING
-      PREMIUM -> return ContentDeliverySubscriptionType.PREMIUM
+    return when(this) {
+      TRADITIONAL_MVPD -> ContentDeliverySubscriptionType.TRADITIONAL_MVPD
+      VIRTUAL_MVPD -> ContentDeliverySubscriptionType.VIRTUAL_MVPD
+      SUBSCRIPTION -> ContentDeliverySubscriptionType.SUBSCRIPTION
+      TRANSACTIONAL -> ContentDeliverySubscriptionType.TRANSACTIONAL
+      ADVERTISING -> ContentDeliverySubscriptionType.ADVERTISING
+      PREMIUM -> ContentDeliverySubscriptionType.PREMIUM
     }
   }
 }
@@ -86,9 +86,9 @@ enum class ComscoreDeliveryComposition {
   EMBED;
 
   fun toComscore(): Int {
-    when(this) {
-      CLEAN -> return ContentDeliveryComposition.CLEAN
-      EMBED -> return ContentDeliveryComposition.EMBED
+    return when(this) {
+      CLEAN -> ContentDeliveryComposition.CLEAN
+      EMBED -> ContentDeliveryComposition.EMBED
     }
   }
 }
@@ -106,17 +106,17 @@ enum class ComscoreDeliveryAdvertisementCapability {
   LINEAR_7DAY;
 
   fun toComscore(): Int {
-    when(this) {
-      NONE -> return ContentDeliveryAdvertisementCapability.NONE
-      DYNAMIC_LOAD  -> return ContentDeliveryAdvertisementCapability.DYNAMIC_LOAD
-      DYNAMIC_REPLACEMENT -> return ContentDeliveryAdvertisementCapability.DYNAMIC_REPLACEMENT
-      LINEAR_1DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_1DAY
-      LINEAR_2DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_2DAY
-      LINEAR_3DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_3DAY
-      LINEAR_4DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_4DAY
-      LINEAR_5DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_5DAY
-      LINEAR_6DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_6DAY
-      LINEAR_7DAY -> return ContentDeliveryAdvertisementCapability.LINEAR_7DAY
+    return when(this) {
+      NONE -> ContentDeliveryAdvertisementCapability.NONE
+      DYNAMIC_LOAD  -> ContentDeliveryAdvertisementCapability.DYNAMIC_LOAD
+      DYNAMIC_REPLACEMENT -> ContentDeliveryAdvertisementCapability.DYNAMIC_REPLACEMENT
+      LINEAR_1DAY -> ContentDeliveryAdvertisementCapability.LINEAR_1DAY
+      LINEAR_2DAY -> ContentDeliveryAdvertisementCapability.LINEAR_2DAY
+      LINEAR_3DAY -> ContentDeliveryAdvertisementCapability.LINEAR_3DAY
+      LINEAR_4DAY -> ContentDeliveryAdvertisementCapability.LINEAR_4DAY
+      LINEAR_5DAY -> ContentDeliveryAdvertisementCapability.LINEAR_5DAY
+      LINEAR_6DAY -> ContentDeliveryAdvertisementCapability.LINEAR_6DAY
+      LINEAR_7DAY -> ContentDeliveryAdvertisementCapability.LINEAR_7DAY
     }
   }
 }
@@ -162,9 +162,9 @@ enum class ComscoreDistributionModel {
   EXCLUSIVELY_ONLINE;
 
   fun toComscore(): Int {
-    when(this) {
-      TV_AND_ONLINE -> return ContentDistributionModel.TV_AND_ONLINE
-      EXCLUSIVELY_ONLINE -> return ContentDistributionModel.EXCLUSIVELY_ONLINE
+    return when(this) {
+      TV_AND_ONLINE -> ContentDistributionModel.TV_AND_ONLINE
+      EXCLUSIVELY_ONLINE -> ContentDistributionModel.EXCLUSIVELY_ONLINE
     }
   }
 }

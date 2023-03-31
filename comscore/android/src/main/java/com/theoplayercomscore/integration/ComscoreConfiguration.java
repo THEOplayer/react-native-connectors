@@ -1,8 +1,9 @@
 package com.theoplayercomscore.integration;
 
+@SuppressWarnings("unused")
 public class ComscoreConfiguration {
-    private String publisherId;
-    private String applicationName;
+    private final String publisherId;
+    private final String applicationName;
     private String userConsent = "0";
     private boolean secureTransmission = false;
     private boolean childDirected = false;

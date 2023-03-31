@@ -22,12 +22,11 @@ public class ComscoreTHEOplayerAdapter {
     public static final String TAG = "THEOLOG";
 
     private Player player;
-    private ComscoreConfiguration configuration;
+    private final ComscoreConfiguration configuration;
     private ComscoreMetaData comscoreMetaData;
     private ContentMetadata currentContentMetadata;
     private StreamingAnalytics streamingAnalytics;
     private ComscoreState comScoreState;
-    private Double videoDuration;
     private Double currentAdDuration;
     private Double currentAdOffset;
     private boolean buffering;
@@ -61,7 +60,7 @@ public class ComscoreTHEOplayerAdapter {
         comscoreMetaData = metadata;
         streamingAnalytics = new StreamingAnalytics();
         comScoreState = ComscoreState.INITIALIZED;
-        videoDuration = 0.0;
+      Double videoDuration = 0.0;
         currentAdDuration = 0.0;
         currentAdOffset = 0.0;
         inAd = false;
@@ -123,7 +122,7 @@ public class ComscoreTHEOplayerAdapter {
                                 if (BuildConfig.DEBUG) {
                                   Log.i("THEOLog", "DEBUG: set DVR window length of " + dvrWindowLengthInSeconds);
                                 }
-                                streamingAnalytics.setDvrWindowLength(new Double(dvrWindowLengthInSeconds * 1000).longValue());
+                                streamingAnalytics.setDvrWindowLength(Double.valueOf(dvrWindowLengthInSeconds * 1000).longValue());
                             }
                         }
                     });
@@ -175,20 +174,20 @@ public class ComscoreTHEOplayerAdapter {
             if (BuildConfig.DEBUG) {
               Log.i("THEOlog", "DEBUG: SEEKED to: " + seekedEvent.getCurrentTime());
             }
-            Double currentTime = seekedEvent.getCurrentTime();
+            double currentTime = seekedEvent.getCurrentTime();
             if (Double.isNaN(player.getDuration())) {
                 player.requestSeekable(seekableRanges -> {
                     double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
-                    Long newDvrWindowOffset = new Double(dvrWindowEnd - currentTime).longValue()*1000;
+                    long newDvrWindowOffset = Double.valueOf(dvrWindowEnd - currentTime).longValue()*1000;
                     if (BuildConfig.DEBUG) {
-                      Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset.toString());
+                      Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset);
                     }
                     streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset);
                 });
             } else {
-                Long newPosition = new Double(currentTime).longValue()*1000;
+                long newPosition = Double.valueOf(currentTime).longValue()*1000;
                 if (BuildConfig.DEBUG) {
-                  Log.i("THEOlog", "DEBUG: new position: " + newPosition.toString());
+                  Log.i("THEOlog", "DEBUG: new position: " + newPosition);
                   Log.i(TAG, "DEBUG: startFromPosition");
                 }
                 streamingAnalytics.startFromPosition(newPosition);
@@ -205,9 +204,7 @@ public class ComscoreTHEOplayerAdapter {
             }
         });
 
-        player.addEventListener(PlayerEventTypes.RATECHANGE, rateChangeEvent -> {
-            streamingAnalytics.notifyChangePlaybackRate(new Double(rateChangeEvent.getPlaybackRate()).floatValue());
-        });
+        player.addEventListener(PlayerEventTypes.RATECHANGE, rateChangeEvent -> streamingAnalytics.notifyChangePlaybackRate(Double.valueOf(rateChangeEvent.getPlaybackRate()).floatValue()));
 
         player.addEventListener(PlayerEventTypes.ERROR, errorEvent -> {
             if (BuildConfig.DEBUG) {
@@ -235,7 +232,7 @@ public class ComscoreTHEOplayerAdapter {
             if (BuildConfig.DEBUG) {
               Log.i(TAG, "DEBUG: AD_BREAK_BEGIN event");
             }
-            currentAdOffset = new Double(adBreakBeginEvent.getAdBreak().getTimeOffset());
+            currentAdOffset = (double) adBreakBeginEvent.getAdBreak().getTimeOffset();
             inAd = true;
             transitionToStopped();
         });
@@ -252,7 +249,7 @@ public class ComscoreTHEOplayerAdapter {
             if (BuildConfig.DEBUG) {
               Log.i(TAG, "DEBUG: AD_BEGIN event");
             }
-            currentAdDuration = new Double(player.getDuration() * 1000);
+            currentAdDuration = player.getDuration() * 1000;
             setAdMetadata(currentAdDuration,currentAdOffset, adBeginEvent.getAd().getId());
         });
 
@@ -309,12 +306,12 @@ public class ComscoreTHEOplayerAdapter {
         switch (comScoreState) {
             case STOPPED:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: Ignoring transition to STOPPED while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: Ignoring transition to STOPPED while in " + comScoreState);
                 }
                 break;
             default:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transition to STOPPED while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: transition to STOPPED while in " + comScoreState);
                 }
                 comScoreState = ComscoreState.STOPPED;
                 if (BuildConfig.DEBUG) {
@@ -328,7 +325,7 @@ public class ComscoreTHEOplayerAdapter {
         switch (comScoreState){
             case VIDEO:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transition to PAUSED_VIDEO while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: transition to PAUSED_VIDEO while in " + comScoreState);
                 }
                 comScoreState = ComscoreState.PAUSED_VIDEO;
                 if (BuildConfig.DEBUG) {
@@ -338,7 +335,7 @@ public class ComscoreTHEOplayerAdapter {
                 break;
             case ADVERTISEMENT:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transition to PAUSED_AD while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: transition to PAUSED_AD while in " + comScoreState);
                 }
                 comScoreState = ComscoreState.PAUSED_AD;
                 if (BuildConfig.DEBUG) {
@@ -348,7 +345,7 @@ public class ComscoreTHEOplayerAdapter {
                 break;
             default:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: Ignore transition to PAUSED while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: Ignore transition to PAUSED while in " + comScoreState);
                 }
         }
     }
@@ -357,13 +354,13 @@ public class ComscoreTHEOplayerAdapter {
         Date date = new Date();
         Timestamp ts = new Timestamp(date.getTime());  // 2021-03-24 16:34:26.666
         if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: trying to transition to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+          Log.i(TAG, "DEBUG: trying to transition to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts);
         }
         switch (comScoreState) {
             case PAUSED_AD:
             case INITIALIZED:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState + " at " + ts);
                 }
                 comScoreState = ComscoreState.ADVERTISEMENT;
                 if (BuildConfig.DEBUG) {
@@ -376,7 +373,7 @@ public class ComscoreTHEOplayerAdapter {
             case STOPPED:
                 transitionToStopped();
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts.toString());
+                  Log.i(TAG, "DEBUG: transitioned to ADVERTISEMENT while in " + comScoreState.toString() + " at " + ts);
                 }
                 comScoreState = ComscoreState.ADVERTISEMENT;
                 if (BuildConfig.DEBUG) {
@@ -397,7 +394,7 @@ public class ComscoreTHEOplayerAdapter {
         switch (comScoreState) {
             case PAUSED_VIDEO:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState);
                 }
                 comScoreState = ComscoreState.VIDEO;
                 if (BuildConfig.DEBUG) {
@@ -421,7 +418,7 @@ public class ComscoreTHEOplayerAdapter {
                 break;
             case INITIALIZED:
                 if (BuildConfig.DEBUG) {
-                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState.toString());
+                  Log.i(TAG, "DEBUG: transitioned to VIDEO while in " + comScoreState);
                 }
                 comScoreState = ComscoreState.VIDEO;
                 setContentMetadata();

@@ -12,6 +12,7 @@ import com.theoplayer.android.api.player.Player;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class ComscoreAnalytics {
     private static boolean startedTracking;
     private static ComscoreConfiguration comscoreConfiguration;
@@ -66,7 +67,7 @@ public class ComscoreAnalytics {
         }
     }
 
-    public static ComscoreStreamingAnalytics createComscoreStreamingAnalytics(Player player, String playerVersion, ComscoreMetaData metadata) throws Exception {
+    public static ComscoreStreamingAnalytics createComscoreStreamingAnalytics(Player player, String playerVersion, ComscoreMetaData metadata) throws ComscoreAnalyticsException {
         if (startedTracking) {
             if (BuildConfig.DEBUG) {
               Log.i("THEOlog", "will create CSA object");
