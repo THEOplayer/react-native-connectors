@@ -20,7 +20,7 @@ enum class ComscoreMediaType {
   OTHER;
 
   fun toComscore(): Int {
-    return when(this){
+    return when (this) {
       LONG_FORM_ON_DEMAND -> ContentType.LONG_FORM_ON_DEMAND
       SHORT_FORM_ON_DEMAND -> ContentType.SHORT_FORM_ON_DEMAND
       LIVE -> ContentType.LIVE
@@ -40,7 +40,7 @@ enum class ComscoreFeedType {
   WESTSD;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       EASTHD -> ContentFeedType.EAST_HD
       WESTHD -> ContentFeedType.WEST_HD
       EASTSD -> ContentFeedType.EAST_SD
@@ -54,7 +54,7 @@ enum class ComscoreDeliveryMode {
   ON_DEMAND;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       LINEAR -> ContentDeliveryMode.LINEAR
       ON_DEMAND -> ContentDeliveryMode.ON_DEMAND
     }
@@ -70,7 +70,7 @@ enum class ComscoreDeliverySubscriptionType {
   PREMIUM;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       TRADITIONAL_MVPD -> ContentDeliverySubscriptionType.TRADITIONAL_MVPD
       VIRTUAL_MVPD -> ContentDeliverySubscriptionType.VIRTUAL_MVPD
       SUBSCRIPTION -> ContentDeliverySubscriptionType.SUBSCRIPTION
@@ -86,7 +86,7 @@ enum class ComscoreDeliveryComposition {
   EMBED;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       CLEAN -> ContentDeliveryComposition.CLEAN
       EMBED -> ContentDeliveryComposition.EMBED
     }
@@ -106,9 +106,9 @@ enum class ComscoreDeliveryAdvertisementCapability {
   LINEAR_7DAY;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       NONE -> ContentDeliveryAdvertisementCapability.NONE
-      DYNAMIC_LOAD  -> ContentDeliveryAdvertisementCapability.DYNAMIC_LOAD
+      DYNAMIC_LOAD -> ContentDeliveryAdvertisementCapability.DYNAMIC_LOAD
       DYNAMIC_REPLACEMENT -> ContentDeliveryAdvertisementCapability.DYNAMIC_REPLACEMENT
       LINEAR_1DAY -> ContentDeliveryAdvertisementCapability.LINEAR_1DAY
       LINEAR_2DAY -> ContentDeliveryAdvertisementCapability.LINEAR_2DAY
@@ -138,7 +138,7 @@ enum class ComscoreMediaFormat {
   EXTRA_GENERIC;
 
   fun toComscore(): Int {
-    when(this){
+    when (this) {
       FULL_CONTENT_EPISODE -> return ContentMediaFormat.FULL_CONTENT_EPISODE
       FULL_CONTENT_MOVIE -> return ContentMediaFormat.FULL_CONTENT_MOVIE
       FULL_CONTENT_PODCAST -> return ContentMediaFormat.FULL_CONTENT_PODCAST
@@ -162,7 +162,7 @@ enum class ComscoreDistributionModel {
   EXCLUSIVELY_ONLINE;
 
   fun toComscore(): Int {
-    return when(this) {
+    return when (this) {
       TV_AND_ONLINE -> ContentDistributionModel.TV_AND_ONLINE
       EXCLUSIVELY_ONLINE -> ContentDistributionModel.EXCLUSIVELY_ONLINE
     }

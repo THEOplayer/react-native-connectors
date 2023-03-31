@@ -10,12 +10,12 @@ import com.theoplayer.android.api.player.Player;
 import java.util.Map;
 
 public class ComscoreConnector {
-    private ComscoreStreamingAnalytics streamingAnalytics;
+  private ComscoreStreamingAnalytics streamingAnalytics;
 
   public ComscoreConnector(Context appContext, Player player, ComscoreConfiguration configuration, ComscoreMetaData metadata) {
-    ComscoreAnalytics.start(configuration,appContext);
+    ComscoreAnalytics.start(configuration, appContext);
     try {
-      this.streamingAnalytics = ComscoreAnalytics.createComscoreStreamingAnalytics(player, THEOplayerGlobal.getVersion(),metadata);
+      this.streamingAnalytics = ComscoreAnalytics.createComscoreStreamingAnalytics(player, THEOplayerGlobal.getVersion(), metadata);
       if (BuildConfig.DEBUG) {
         Log.i("THEOlog", "DEBUG: initializing the analytics adapter success");
       }
@@ -31,12 +31,12 @@ public class ComscoreConnector {
     streamingAnalytics.update(metadata);
   }
 
-  public void setPersistentLabels(Map<String,String> labels) {
+  public void setPersistentLabels(Map<String, String> labels) {
     streamingAnalytics.setPersistentLabels(labels);
   }
 
   public void setPersistentLabel(String label, String value) {
-    streamingAnalytics.setPersistentLabel(label,value);
+    streamingAnalytics.setPersistentLabel(label, value);
   }
 
   public void destroy() {

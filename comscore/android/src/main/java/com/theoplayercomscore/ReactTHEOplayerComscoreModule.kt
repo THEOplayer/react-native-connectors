@@ -27,12 +27,17 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   @ReactMethod
   fun initialize(tag: Int, comscoreMetadata: ReadableMap, comscoreConfig: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
-      view?.player?. let { player ->
+      view?.player?.let { player ->
         val customerKey = comscoreConfig.getString(PUBLISHER_ID) ?: ""
         if (customerKey.isEmpty()) {
           Log.e(TAG, "Invalid $PUBLISHER_ID")
         } else {
-          comscoreConnectors[tag] = ComscoreConnector(view.context, player, mapConfig(comscoreConfig), mapMetadata(comscoreMetadata) )
+          comscoreConnectors[tag] = ComscoreConnector(
+            view.context,
+            player,
+            mapConfig(comscoreConfig),
+            mapMetadata(comscoreMetadata)
+          )
         }
       }
     }
@@ -50,7 +55,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun setPersistentLabel(tag: Int, label: String, value: String) {
-    comscoreConnectors[tag]?.setPersistentLabel(label,value)
+    comscoreConnectors[tag]?.setPersistentLabel(label, value)
   }
 
   @ReactMethod
@@ -59,7 +64,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     comscoreConnectors.remove(tag)
   }
 
-  private fun mapLabels(labels: ReadableMap): Map<String,String> {
+  private fun mapLabels(labels: ReadableMap): Map<String, String> {
     return labels.toHashMap().mapValues { it.toString() }
   }
 
@@ -79,7 +84,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val month = date?.getInt("month")
     val year = date?.getInt("year")
     return if (day != null && month != null && year != null) {
-      ComscoreDate(year,month,day)
+      ComscoreDate(year, month, day)
     } else {
       null
     }
@@ -89,7 +94,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val hours = time?.getInt("hours")
     val minutes = time?.getInt("minutes")
     return if (hours != null && minutes != null) {
-      ComscoreTime(hours,minutes)
+      ComscoreTime(hours, minutes)
     } else {
       null
     }
@@ -99,14 +104,14 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val width = dimension?.getInt("width")
     val height = dimension?.getInt("height")
     return if (width != null && height != null) {
-      ComscoreDimension(width,height)
+      ComscoreDimension(width, height)
     } else {
       null
     }
   }
 
   private fun mapMediaType(mediaType: String?): ComscoreMediaType? {
-    when(mediaType) {
+    when (mediaType) {
       "longFormOnDemand" -> return ComscoreMediaType.LONG_FORM_ON_DEMAND
       "shortFormOnDemand" -> return ComscoreMediaType.SHORT_FORM_ON_DEMAND
       "live" -> return ComscoreMediaType.LIVE
@@ -120,7 +125,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapFeedType(feedType: String?): ComscoreFeedType? {
-    when(feedType) {
+    when (feedType) {
       "easthd" -> return ComscoreFeedType.EASTHD
       "westhd" -> return ComscoreFeedType.WESTHD
       "eastsd" -> return ComscoreFeedType.EASTSD
@@ -130,7 +135,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapDeliveryMode(deliveryMode: String?): ComscoreDeliveryMode? {
-    when(deliveryMode) {
+    when (deliveryMode) {
       "linear" -> return ComscoreDeliveryMode.LINEAR
       "ondemand" -> return ComscoreDeliveryMode.ON_DEMAND
     }
@@ -138,7 +143,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapDeliverySubscriptionType(deliverySubscriptionType: String?): ComscoreDeliverySubscriptionType? {
-    when(deliverySubscriptionType) {
+    when (deliverySubscriptionType) {
       "traditionalMvpd" -> return ComscoreDeliverySubscriptionType.TRADITIONAL_MVPD
       "virtualMvpd" -> return ComscoreDeliverySubscriptionType.VIRTUAL_MVPD
       "subscription" -> return ComscoreDeliverySubscriptionType.SUBSCRIPTION
@@ -150,7 +155,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapDeliveryComposition(deliveryComposition: String?): ComscoreDeliveryComposition? {
-    when(deliveryComposition) {
+    when (deliveryComposition) {
       "clean" -> return ComscoreDeliveryComposition.CLEAN
       "embed" -> return ComscoreDeliveryComposition.EMBED
     }
@@ -158,7 +163,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapDeliveryAdvertisementCapability(deliveryAdvertisementCapability: String?): ComscoreDeliveryAdvertisementCapability? {
-    when(deliveryAdvertisementCapability) {
+    when (deliveryAdvertisementCapability) {
       "none" -> return ComscoreDeliveryAdvertisementCapability.NONE
       "dynamicLoad" -> return ComscoreDeliveryAdvertisementCapability.DYNAMIC_LOAD
       "dynamicReplacement" -> return ComscoreDeliveryAdvertisementCapability.DYNAMIC_REPLACEMENT
@@ -174,7 +179,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapMediaFormat(mediaFormat: String?): ComscoreMediaFormat? {
-    when(mediaFormat) {
+    when (mediaFormat) {
       "fullContentEpisode" -> return ComscoreMediaFormat.FULL_CONTENT_EPISODE
       "fullContentMovie" -> return ComscoreMediaFormat.FULL_CONTENT_MOVIE
       "fullContentPodcast" -> return ComscoreMediaFormat.FULL_CONTENT_PODCAST
@@ -194,9 +199,9 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapDistributionModel(distributionModel: String?): ComscoreDistributionModel? {
-    when(distributionModel) {
+    when (distributionModel) {
       "tvAndOnline" -> return ComscoreDistributionModel.TV_AND_ONLINE
-      "exclusivelyOnline" -> return  ComscoreDistributionModel.EXCLUSIVELY_ONLINE
+      "exclusivelyOnline" -> return ComscoreDistributionModel.EXCLUSIVELY_ONLINE
     }
     return null
   }
@@ -220,8 +225,10 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val episodeNumber = metadata.getString("episodeNumber")
     val genreName = metadata.getString("genreName")
     val genreId = metadata.getString("genreId")
-    val carryTvAdvertisementLoad = if (metadata.hasKey("carryTvAdvertisementLoad")) metadata.getBoolean("carryTvAdvertisementLoad") else false
-    val classifyAsCompleteEpisode = if(metadata.hasKey("classifyAsCompleteEpisode")) metadata.getBoolean("classifyAsCompleteEpisode") else false
+    val carryTvAdvertisementLoad =
+      if (metadata.hasKey("carryTvAdvertisementLoad")) metadata.getBoolean("carryTvAdvertisementLoad") else false
+    val classifyAsCompleteEpisode =
+      if (metadata.hasKey("classifyAsCompleteEpisode")) metadata.getBoolean("classifyAsCompleteEpisode") else false
     val dateOfProduction = mapDate(metadata.getMap("dateOfProduction"))
     val timeOfProduction = mapTime(metadata.getMap("timeOfProduction"))
     val dateOfTvAiring = mapDate(metadata.getMap("dateOfTvAiring"))
@@ -231,13 +238,16 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val feedType = mapFeedType(metadata.getString("feedType"))
     val classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
     val deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
-    val deliverySubscriptionType = mapDeliverySubscriptionType(metadata.getString("deliverySubscriptionType"))
+    val deliverySubscriptionType =
+      mapDeliverySubscriptionType(metadata.getString("deliverySubscriptionType"))
     val deliveryComposition = mapDeliveryComposition(metadata.getString("deliveryComposition"))
-    val deliveryAdvertisementCapability = mapDeliveryAdvertisementCapability(metadata.getString("deliveryAdvertisementCapability"))
+    val deliveryAdvertisementCapability =
+      mapDeliveryAdvertisementCapability(metadata.getString("deliveryAdvertisementCapability"))
     val mediaFormat = mapMediaFormat(metadata.getString("mediaFormat"))
     val distributionModel = mapDistributionModel(metadata.getString("distributionModel"))
     val playlistTitle = metadata.getString("playlistTitle")
-    val totalSegments = if (metadata.hasKey("totalSegments")) metadata.getInt("totalSegments") else null
+    val totalSegments =
+      if (metadata.hasKey("totalSegments")) metadata.getInt("totalSegments") else null
     val clipUrl = metadata.getString("clipUrl")
     val videoDimension = mapDimension(metadata.getMap("videoDimension"))
     val customLabels = metadata.getMap("customLabels")
