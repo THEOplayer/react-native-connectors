@@ -13,6 +13,6 @@ export class NielsenConnectorAdapter {
   }
 
   destroy(): void {
-    NativeModules.NielsenModule.destroy(this.player.nativeHandle);
+    NativeModules.NielsenModule.destroy(this.player.nativeHandle || -1);
   }
 }

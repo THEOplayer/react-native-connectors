@@ -22,9 +22,7 @@ export class ComscoreConnectorAdapter {
     NativeModules.ComscoreModule.setPersistentLabels(this.player.nativeHandle, labels);
   }
 
-
   destroy(): void {
-    // @ts-ignore
-    NativeModules.ComscoreModule.destroy(this.player.nativeHandle);
+    NativeModules.ComscoreModule.destroy(this.player.nativeHandle || -1);
   }
 }
