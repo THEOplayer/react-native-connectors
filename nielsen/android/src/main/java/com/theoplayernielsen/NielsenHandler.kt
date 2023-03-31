@@ -51,11 +51,9 @@ class NielsenHandler(
   debug: Boolean = false,
 ) {
   private val onPlay: EventListener<PlayEvent>
-  private val onPlaying: EventListener<PlayingEvent>
   private val onPause: EventListener<PauseEvent>
   private val onEnded: EventListener<EndedEvent>
   private val onSourceChange: EventListener<SourceChangeEvent>
-  private val onTimeUpdate: EventListener<TimeUpdateEvent>
   private val onDurationChange: EventListener<DurationChangeEvent>
   private val onLoadedMetadata: EventListener<LoadedMetadataEvent>
   private val onAddTrack: EventListener<AddTrackEvent>
@@ -87,17 +85,11 @@ class NielsenHandler(
     onPlay = EventListener<PlayEvent> {
       maybeSendPlayEvent()
     }
-    onPlaying = EventListener<PlayingEvent> {
-      reportPlayheadPosition()
-    }
     onPause = EventListener<PauseEvent> {
       if (BuildConfig.DEBUG) {
         Log.d(TAG, "onPause")
       }
       appSdk?.stop()
-    }
-    onTimeUpdate = EventListener<TimeUpdateEvent> {
-      reportPlayheadPosition()
     }
     onDurationChange = EventListener<DurationChangeEvent> {
       maybeSendPlayEvent()
@@ -185,12 +177,14 @@ class NielsenHandler(
           if (BuildConfig.DEBUG) {
             Log.d(TAG, "lifecycleObserver - pause")
           }
+          @Suppress("DEPRECATION")
           AppLaunchMeasurementManager.appInBackground(appContext)
         }
         Lifecycle.Event.ON_RESUME -> {
           if (BuildConfig.DEBUG) {
             Log.d(TAG, "lifecycleObserver - resume")
           }
+          @Suppress("DEPRECATION")
           AppLaunchMeasurementManager.appInForeground(appContext)
         }
         else -> {/*ignore*/
@@ -221,9 +215,7 @@ class NielsenHandler(
       Log.d(TAG, "addEventListeners")
     }
     player.addEventListener(PlayerEventTypes.PLAY, onPlay)
-    player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.addEventListener(PlayerEventTypes.PAUSE, onPause)
-    player.addEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
     player.addEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
     player.addEventListener(PlayerEventTypes.ENDED, onEnded)
     player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
@@ -241,9 +233,7 @@ class NielsenHandler(
       Log.d(TAG, "removeEventListeners")
     }
     player.removeEventListener(PlayerEventTypes.PLAY, onPlay)
-    player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
-    player.removeEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
     player.removeEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
     player.removeEventListener(PlayerEventTypes.ENDED, onEnded)
     player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
@@ -253,17 +243,6 @@ class NielsenHandler(
     player.ads.removeEventListener(GoogleImaAdEventType.COMPLETED, onAdEnd)
     mainHandler.post {
       ProcessLifecycleOwner.get().lifecycle.removeObserver(lifecycleObserver)
-    }
-  }
-
-  private fun reportPlayheadPosition() {
-    val newPosition = player.currentTime.toLong()
-    if (newPosition != lastPosition) {
-      if (BuildConfig.DEBUG) {
-        Log.d(TAG, "setPlayheadPosition $newPosition")
-      }
-      appSdk?.setPlayheadPosition(newPosition)
-      lastPosition = newPosition
     }
   }
 
