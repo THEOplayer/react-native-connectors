@@ -111,17 +111,16 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   }
 
   private fun mapMediaType(mediaType: String?): ComscoreMediaType? {
-    when (mediaType) {
-      "longFormOnDemand" -> return ComscoreMediaType.LONG_FORM_ON_DEMAND
-      "shortFormOnDemand" -> return ComscoreMediaType.SHORT_FORM_ON_DEMAND
-      "live" -> return ComscoreMediaType.LIVE
-      "userGeneratedLongFormOnDemand" -> return ComscoreMediaType.USER_GENERATED_LONG_FORM_ON_DEMAND
-      "userGeneratedShortFormOnDemand" -> return ComscoreMediaType.USER_GENERATED_SHORT_FORM_ON_DEMAND
-      "userGeneratedLive" -> return ComscoreMediaType.USER_GENERATED_LIVE
-      "bumper" -> return ComscoreMediaType.BUMPER
-      "other" -> return ComscoreMediaType.OTHER
+    return when (mediaType) {
+      "longFormOnDemand" -> ComscoreMediaType.LONG_FORM_ON_DEMAND
+      "shortFormOnDemand" -> ComscoreMediaType.SHORT_FORM_ON_DEMAND
+      "live" -> ComscoreMediaType.LIVE
+      "userGeneratedLongFormOnDemand" -> ComscoreMediaType.USER_GENERATED_LONG_FORM_ON_DEMAND
+      "userGeneratedShortFormOnDemand" -> ComscoreMediaType.USER_GENERATED_SHORT_FORM_ON_DEMAND
+      "userGeneratedLive" -> ComscoreMediaType.USER_GENERATED_LIVE
+      "bumper" -> ComscoreMediaType.BUMPER
+      else -> ComscoreMediaType.OTHER
     }
-    return null
   }
 
   private fun mapFeedType(feedType: String?): ComscoreFeedType? {
@@ -209,7 +208,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
   private fun mapMetadata(metadata: ReadableMap): ComscoreMetaData {
     val mediaType = mapMediaType(metadata.getString("mediaType"))
     val uniqueId = metadata.getString("uniqueId")
-    val length = metadata.getInt("length").toLong()
+    val length = if (metadata.hasKey("length")) metadata.getInt("length").toLong() else 0
     val c3 = metadata.getString("c3")
     val c4 = metadata.getString("c4")
     val c6 = metadata.getString("c6")
@@ -236,7 +235,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     val dateOfDigitalAiring = mapDate(metadata.getMap("dateOfDigitalAiring"))
     val timeOfDigitalAiring = mapTime(metadata.getMap("timeOfDigitalAiring"))
     val feedType = mapFeedType(metadata.getString("feedType"))
-    val classifyAsAudioStream = metadata.getBoolean("classifyAsAudioStream")
+    val classifyAsAudioStream = if (metadata.hasKey("classifyAsAudioStream")) metadata.getBoolean("classifyAsAudioStream") else false
     val deliveryMode = mapDeliveryMode(metadata.getString("deliveryMode"))
     val deliverySubscriptionType =
       mapDeliverySubscriptionType(metadata.getString("deliverySubscriptionType"))
