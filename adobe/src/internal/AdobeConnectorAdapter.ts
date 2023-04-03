@@ -64,9 +64,11 @@ export class AdobeConnectorAdapter {
     void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
   }
 
-  async stopAndStartNewSession(metadata: AdobeMetaData): Promise<void> {
+  async stopAndStartNewSession(metadata?: AdobeMetaData): Promise<void> {
     await this.maybeEndSession();
-    this.updateMetadata(metadata);
+    if (metadata !== undefined) {
+      this.updateMetadata(metadata);
+    }
     void this.startSession();
   }
 

@@ -33,7 +33,7 @@ export class AdobeConnector {
    *
    * @param metadata object of key value pairs.
    */
-  stopAndStartNewSession(metadata: AdobeMetaData): void {
+  stopAndStartNewSession(metadata?: AdobeMetaData): void {
     void this.connectorAdapter.stopAndStartNewSession(metadata);
   }
 
