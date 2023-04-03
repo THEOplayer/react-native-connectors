@@ -212,7 +212,7 @@ export class AdobeConnectorAdapter {
 
   private maybeEndSession(): void {
     if (this.sessionId !== '') {
-      void this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
+      this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
         this.reset();
       });
     }
