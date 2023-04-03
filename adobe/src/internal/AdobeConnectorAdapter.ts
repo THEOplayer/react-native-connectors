@@ -269,7 +269,7 @@ export class AdobeConnectorAdapter {
     const response = await this.sendRequest(this.uri, body);
 
     if (response.status !== 201) {
-      console.log('ERROR DURING SESSION CREATION', response);
+      console.error('ERROR DURING SESSION CREATION', response);
       return;
     }
 
@@ -340,7 +340,6 @@ export class AdobeConnectorAdapter {
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
-    console.log('sendRequest', body.eventType);
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
