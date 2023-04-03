@@ -26,6 +26,18 @@ export class AdobeConnector {
   }
 
   /**
+   * Explicitly stop the current session and start a new one.
+   *
+   * This can be used to manually mark the start of a new session during a live stream,
+   * for example when a new program starts.
+   *
+   * @param metadata object of key value pairs.
+   */
+  stopAndStartNewSession(metadata: AdobeMetaData): void {
+    void this.connectorAdapter.stopAndStartNewSession(metadata);
+  }
+
+  /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {

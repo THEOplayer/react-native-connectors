@@ -64,6 +64,12 @@ export class AdobeConnectorAdapter {
     void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
   }
 
+  async stopAndStartNewSession(metadata: AdobeMetaData): Promise<void> {
+    await this.maybeEndSession();
+    this.updateMetadata(metadata);
+    void this.startSession();
+  }
+
   private addEventListeners(): void {
     this.player.addEventListener(PlayerEventType.PLAYING, this.onPlaying);
     this.player.addEventListener(PlayerEventType.PAUSE, this.onPause);
