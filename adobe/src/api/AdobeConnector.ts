@@ -29,6 +29,6 @@ export class AdobeConnector {
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
-    this.connectorAdapter.destroy();
+    void this.connectorAdapter.destroy();
   }
 }

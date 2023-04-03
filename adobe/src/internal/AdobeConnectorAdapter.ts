@@ -126,7 +126,7 @@ export class AdobeConnectorAdapter {
   }
 
   private onSourceChange = () => {
-    this.maybeEndSession();
+    void this.maybeEndSession();
   }
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
@@ -207,15 +207,16 @@ export class AdobeConnectorAdapter {
   }
 
   private onBeforeUnload = () => {
-    this.maybeEndSession();
+    void this.maybeEndSession();
   }
 
-  private maybeEndSession(): void {
+  private async maybeEndSession(): Promise<void> {
     if (this.sessionId !== '') {
-      this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
+      return this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
         this.reset();
       });
     }
+    return Promise.resolve();
   }
 
   private createBaseRequest(eventType: string): AdobeEventRequestBody {
@@ -359,9 +360,8 @@ export class AdobeConnectorAdapter {
     this.currentChapter = undefined;
   }
 
-  destroy(): void {
-    this.maybeEndSession();
-    this.reset();
+  async destroy(): Promise<void> {
+    await this.maybeEndSession();
     this.removeEventListeners();
   }
 }
