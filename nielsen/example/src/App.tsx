@@ -39,7 +39,7 @@ const App = () => {
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  let appId: String
+  let appId: string
   if (Platform.OS === "web") {
     appId = "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5";
   } else if (Platform.OS === "android") {
