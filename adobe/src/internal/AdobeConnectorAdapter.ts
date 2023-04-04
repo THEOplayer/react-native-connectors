@@ -253,6 +253,12 @@ export class AdobeConnectorAdapter {
     }
     this.sessionInProgress = true;
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
+    let friendlyName = {};
+    if (this.player.source?.metadata?.title) {
+      friendlyName = {
+        "media.name": this.player.source.metadata.title
+      };
+    }
     initialBody.params = {
       "analytics.reportSuite": this.sid,
       "analytics.trackingServer": this.trackingUrl,
@@ -262,6 +268,7 @@ export class AdobeConnectorAdapter {
       "media.length": this.getContentLength(),
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid,
+      ...friendlyName,
       ...this.customMetadata.params
     }
     const body = this.addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody);
