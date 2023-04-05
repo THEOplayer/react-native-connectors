@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2023-04-05
+
+### Added
+
+- Add `media.name` to `sessionStart` request if `player.source.metadata.title` is set.
+- Add functionality to stop the current session and start a new one.
+
 ## [0.5.0] - 2023-03-21
 
 ### Changed
