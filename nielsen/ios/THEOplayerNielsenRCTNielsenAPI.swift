@@ -5,6 +5,12 @@ import react_native_theoplayer
 import THEOplayerConnectorNielsen
 import THEOplayerSDK
 
+func log(_ text: String) {
+    #if DEBUG
+        print("[react-native-theoplayer-nielsen]", text)
+    #endif
+}
+
 @objc(THEOplayerNielsenRCTNielsenAPI)
 class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
@@ -21,10 +27,10 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
 
     @objc(initialize:appId:instanceName:nielsenOptions:)
     func initialize(_ node: NSNumber, appId: String, instanceName: String, nielsenOptions: NSDictionary) -> Void {
-        print("[NielsenModule] initialize triggered.")
+        log("initialize triggered.")
 
         DispatchQueue.main.async {
-            print("[NielsenModule]", appId, instanceName, nielsenOptions)
+            log("\(appId) \(instanceName) \(nielsenOptions)")
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
             if let player = theView?.player {
                 nielsenOptions.setValue(appId, forKey: "appId")
@@ -33,9 +39,9 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
                     player: player
                 ) {
                     self.connectors[node] = connector
-                    print("[NielsenModule] added connector to view", node)
+                    log("added connector to view \(node)")
                 } else {
-                    print("[NielsenModule] Cannot create Nielsen connector for node", node)
+                    log("Cannot create Nielsen connector for node \(node)")
                 }
             }
         }
@@ -43,13 +49,12 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
 
     @objc(updateMetadata:metadata:)
     func updateMetadata(for node: NSNumber, metadata: NSDictionary) {
-        print("[NielsenModule] Warning: updating metadata not possible on iOS.")
+        log("Warning: updating metadata not possible on iOS.")
     }
 
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
-        print("[NielsenModule] destroy triggered.")
+        log("destroy triggered for \(node).")
         connectors.removeValue(forKey: node)
     }
-
 }
