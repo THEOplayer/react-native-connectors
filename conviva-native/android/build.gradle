@@ -73,9 +73,12 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "1.8.10")
 def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.30')
+def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
+def core_prefix = enabledV4 ? 'unified' : 'core'
+def integration_prefix = enabledV4 ? 'unified' : 'integration'
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -86,12 +89,12 @@ dependencies {
 
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
   // TODO: remove once published
-//  implementation "com.theoplayer.android-connector:conviva:$theoplayer_version"
+//  implementation "com.theoplayer.android-connector:conviva:$theoplayer_sdk_version"
   implementation "com.theoplayer.android-connector:conviva:4.11.0-3"
 
-  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
   // Align the Kotlin SDK libraries with the same version.

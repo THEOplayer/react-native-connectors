@@ -72,9 +72,12 @@ rootProject.allprojects {
   }
 }
 
-def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.8.10")
 def nielsen_version = safeExtGet("THEOplayerNielsen_nielsenVersion", "9.0.0.0")
+def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
+def core_prefix = enabledV4 ? 'unified' : 'core'
+def integration_prefix = enabledV4 ? 'unified' : 'integration'
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -84,9 +87,9 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
 
-  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
   implementation "com.nielsenappsdk.global:ad:$nielsen_version"

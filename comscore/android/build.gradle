@@ -69,9 +69,12 @@ repositories {
   }
 }
 
-def theoplayer_version = safeExtGet('THEOplayer_sdk', '+')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerComscore_kotlinVersion", "1.8.10")
 def comscore_version = safeExtGet("THEOplayerComscore_comscoreVersion", "6.+")
+def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
+def core_prefix = enabledV4 ? 'unified' : 'core'
+def integration_prefix = enabledV4 ? 'unified' : 'integration'
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -80,9 +83,9 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
   implementation "com.comscore:android-analytics:$comscore_version"
