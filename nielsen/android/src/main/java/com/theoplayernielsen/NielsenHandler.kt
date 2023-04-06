@@ -28,7 +28,6 @@ private const val TAG = "NielsenHandler"
 private const val PROP_APP_ID = "appid"
 private const val PROP_DEBUG = "nol_devDebug"
 private const val PROP_CHANNEL_NAME = "channelname"
-private const val PROP_LENGTH = "length"
 private const val PROP_TYPE = "type"
 private const val PROP_ADMODEL = "adModel"
 private const val PROP_ASSET_ID = "assetid"
@@ -112,10 +111,7 @@ class NielsenHandler(
       }
 
       // contentMetadataObject contains the JSON metadata for the content being played
-      appSdk?.loadMetadata(buildMetadata().apply {
-        // Length in seconds (int or float)
-        put(PROP_LENGTH, player.duration.toInt())
-      })
+      appSdk?.loadMetadata(buildMetadata())
     }
     onCueEnter = EventListener<EnterCueEvent> { event ->
       if (BuildConfig.DEBUG) {
@@ -257,7 +253,6 @@ class NielsenHandler(
       // stream starts
       appSdk?.play(JSONObject().apply {
         put(PROP_CHANNEL_NAME, player.src)
-        put(PROP_LENGTH, player.duration.toInt())
       })
     }
   }
