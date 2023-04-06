@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 - Updated iOS connector dependency to `~> 4.6`.
-- Only show logs in DEBUG builds
+- Only show logs in DEBUG builds on iOS.
+- Removed length reporting on Android.
 
 ## [0.3.0] - 2023-03-31
 
