@@ -12,6 +12,7 @@ import com.theoplayer.android.api.event.ads.AdsEventTypes;
 import com.theoplayer.android.api.event.player.PlayerEventTypes;
 import com.theoplayer.android.api.event.player.SeekedEvent;
 import com.theoplayer.android.api.player.Player;
+import com.theoplayer.android.api.timerange.TimeRanges;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -114,18 +115,17 @@ public class ComscoreTHEOplayerAdapter {
           Log.i("THEOLog", "DEBUG: detected stream type LIVE");
         }
         try {
-          player.requestSeekable(seekableRanges -> {
-            if (seekableRanges.length() > 0) {
-              double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
-              double dvrWindowLengthInSeconds = dvrWindowEnd - seekableRanges.getStart(0);
-              if (dvrWindowLengthInSeconds > 0) {
-                if (BuildConfig.DEBUG) {
-                  Log.i("THEOLog", "DEBUG: set DVR window length of " + dvrWindowLengthInSeconds);
-                }
-                streamingAnalytics.setDvrWindowLength(Double.valueOf(dvrWindowLengthInSeconds * 1000).longValue());
+          TimeRanges seekableRanges = player.getSeekable();
+          if (seekableRanges.length() > 0) {
+            double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
+            double dvrWindowLengthInSeconds = dvrWindowEnd - seekableRanges.getStart(0);
+            if (dvrWindowLengthInSeconds > 0) {
+              if (BuildConfig.DEBUG) {
+                Log.i("THEOLog", "DEBUG: set DVR window length of " + dvrWindowLengthInSeconds);
               }
+              streamingAnalytics.setDvrWindowLength(Double.valueOf(dvrWindowLengthInSeconds * 1000).longValue());
             }
-          });
+          }
         } catch (Exception e) {
           if (BuildConfig.DEBUG) {
             Log.e("THEOLog", "No seekable ranges available");
@@ -176,14 +176,13 @@ public class ComscoreTHEOplayerAdapter {
       }
       double currentTime = seekedEvent.getCurrentTime();
       if (Double.isNaN(player.getDuration())) {
-        player.requestSeekable(seekableRanges -> {
-          double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
-          long newDvrWindowOffset = Double.valueOf(dvrWindowEnd - currentTime).longValue() * 1000;
-          if (BuildConfig.DEBUG) {
-            Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset);
-          }
-          streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset);
-        });
+        TimeRanges seekableRanges = player.getSeekable();
+        double dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1);
+        long newDvrWindowOffset = Double.valueOf(dvrWindowEnd - currentTime).longValue() * 1000;
+        if (BuildConfig.DEBUG) {
+          Log.i("THEOlog", "DEBUG: new dvrWindowOffset: " + newDvrWindowOffset);
+        }
+        streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset);
       } else {
         long newPosition = Double.valueOf(currentTime).longValue() * 1000;
         if (BuildConfig.DEBUG) {
