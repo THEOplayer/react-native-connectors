@@ -92,9 +92,9 @@ dependencies {
 //  implementation "com.theoplayer.android-connector:conviva:$theoplayer_sdk_version"
   implementation "com.theoplayer.android-connector:conviva:4.11.0-3"
 
-  implementation "com.theoplayer.theoplayer-sdk-android:unified:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:unified-ads-ima:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
   // Align the Kotlin SDK libraries with the same version.
