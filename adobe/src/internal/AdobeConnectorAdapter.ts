@@ -303,6 +303,8 @@ export class AdobeConnectorAdapter {
 
     if (!this.isPlayingAd) {
       this.startPinger(CONTENT_PING_INTERVAL);
+    } else {
+      this.startPinger(AD_PING_INTERVAL);
     }
   }
 
