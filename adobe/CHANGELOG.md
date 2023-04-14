@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed sending play/pause on program boundaries.
+- Fixed sending ad ping events if a program boundary occurs mid ad.
 
 ## [0.6.0] - 2023-04-05
 
