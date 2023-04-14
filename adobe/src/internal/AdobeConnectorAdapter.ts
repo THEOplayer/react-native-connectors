@@ -69,7 +69,13 @@ export class AdobeConnectorAdapter {
     if (metadata !== undefined) {
       this.updateMetadata(metadata);
     }
-    void this.startSession();
+    await this.startSession();
+
+    if (this.player.paused) {
+      this.onPause();
+    } else {
+      this.onPlaying();
+    }
   }
 
   private addEventListeners(): void {
