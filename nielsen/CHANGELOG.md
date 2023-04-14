@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Prevent an application crash when destroying the Nielsen connector
+- Prevented an application crash when destroying the Nielsen connector on iOS.
 
 ## [0.5.0] - 2023-04-07
 
