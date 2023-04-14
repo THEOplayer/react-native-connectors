@@ -55,6 +55,8 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
         log("destroy triggered for \(node).")
-        connectors.removeValue(forKey: node)
+		DispatchQueue.main.async {
+		    self.connectors.removeValue(forKey: node)
+		}
     }
 }
