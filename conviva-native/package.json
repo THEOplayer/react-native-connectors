@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-conviva",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Conviva analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
