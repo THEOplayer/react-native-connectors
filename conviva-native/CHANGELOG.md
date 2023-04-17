@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- Ensured on Web and Android that metadata property `duration` is never passed as `Infinity` or `NaN`, and passed as `-1` when a playback error is reported.
+
 ## [0.6.0] - 2023-04-07
 
 ### Added
