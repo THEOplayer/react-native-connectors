@@ -52,7 +52,7 @@ const App = () => {
 
   const convivaConfig: ConvivaConfiguration = {
     customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
-    debug: true,
+    debug: false,
     gatewayUrl: TOUCHSTONE_SERVICE_URL
   };
 
@@ -88,6 +88,12 @@ const App = () => {
   const onDestroy = useCallback(() => {
     convivaConnector.current?.destroy();
     convivaConnector.current = undefined;
+  }, [theoPlayer])
+
+  const onStopAndStartNewSession = useCallback(() => {
+    convivaConnector.current?.stopAndStartNewSession({
+      ['Conviva.assetName']: 'New session title'
+    });
   }, [theoPlayer])
 
   return (
@@ -132,6 +138,9 @@ const App = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onDestroy}>
               <Text style={styles.buttonText}>{"Destroy connector"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={onStopAndStartNewSession}>
+              <Text style={styles.buttonText}>{"Stop & start new session"}</Text>
             </TouchableOpacity>
           </View>
         </View>
