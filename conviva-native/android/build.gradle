@@ -90,7 +90,7 @@ dependencies {
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
   // TODO: remove once published
 //  implementation "com.theoplayer.android-connector:conviva:$theoplayer_sdk_version"
-  implementation "com.theoplayer.android-connector:conviva:5.0.2-1"
+  implementation "com.theoplayer.android-connector:conviva:5.0.2-2"
 
   implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
