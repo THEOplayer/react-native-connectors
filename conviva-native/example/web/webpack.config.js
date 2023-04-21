@@ -63,6 +63,7 @@ module.exports = {
       'react-native$': 'react-native-web',
       'react-native-url-polyfill': 'url-polyfill',
       'react-native-google-cast': path.resolve(stubDirectory, 'CastButtonStub'),
+      'react-native-svg': 'react-native-svg-web',
     },
   },
   plugins: [HTMLWebpackPluginConfig],

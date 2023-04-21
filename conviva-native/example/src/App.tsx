@@ -46,6 +46,7 @@ const App = () => {
   }, []);
 
   const convivaMetadata: ConvivaMetadata = {
+    ['Conviva.assetName']: 'NA (not set)',
     ['Conviva.applicationName']: 'THEOplayer',
     ['Conviva.viewerId']: 'your_viewer_id'
   };
