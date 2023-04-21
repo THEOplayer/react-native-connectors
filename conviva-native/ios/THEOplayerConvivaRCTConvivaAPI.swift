@@ -10,7 +10,7 @@ import ConvivaSDK
 class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
     
-    var connectors = [NSNumber: ConvivaConnector]()
+    var connectors = [NSNumber: ConnectorWithVpfHandler]()
     
     static func moduleName() -> String! {
         return "ConvivaModule"
@@ -26,7 +26,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         
         DispatchQueue.main.async {
             log(convivaConfig.debugDescription)
-            if let player = self.player(for: node) {
+            if let view = self.view(for: node), let player = view.player, let sendError = view.mainEventHandler.onNativeError {
                 let configuration = ConvivaConfiguration(
                     customerKey: convivaConfig["customerKey"] as! String,
                     gatewayURL: convivaConfig["gatewayUrl"] as? String,
@@ -36,7 +36,8 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                     configuration: configuration,
                     player: player
                 ) {
-                    self.connectors[node] = connector
+                    let extendedConnector = ConnectorWithVpfHandler(connector: connector, sendError: sendError) // TODO: Remove when THEOplayer correctly handles VPFs
+                    self.connectors[node] = extendedConnector
                     log("added connector to view \(node)")
                     if let contentInfo = convivaMetadata as? [String: Any] {
                         connector.videoAnalytics.setContentInfo(contentInfo)
@@ -56,8 +57,8 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     func setContentInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("setContentInfo triggered.")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node], let contentInfo = metadata as? [String: Any] {
-                connector.videoAnalytics.setContentInfo(contentInfo)
+            if let extendedConnector = self.connectors[node]?.base, let contentInfo = metadata as? [String: Any] {
+                extendedConnector.videoAnalytics.setContentInfo(contentInfo)
             }
         }
     }
@@ -66,7 +67,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     func setAdInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("setAdInfo triggered.")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node], let adInfo = metadata as? [String: Any] {
+            if let connector = self.connectors[node]?.base, let adInfo = metadata as? [String: Any] {
                 connector.adAnalytics.setAdInfo(adInfo)
             }
         }
@@ -76,7 +77,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     func stopAndStartNewSession(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node], let contentInfo = metadata as? [String: Any], self.player(for: node)?.paused == false {
+            if let connector = self.connectors[node]?.base, let contentInfo = metadata as? [String: Any], self.player(for: node)?.paused == false {
                 log("reporting stopAndStartNewSession")
                 connector.videoAnalytics.reportPlaybackEnded()
                 connector.videoAnalytics.reportPlaybackRequested(contentInfo)
@@ -89,7 +90,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     func reportPlaybackFailed(node: NSNumber, errorDescription: NSString) {
         log("reportPlaybackFailed triggered")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node] {
+            if let connector = self.connectors[node]?.base {
                 log("reporting playback failed")
                 connector.videoAnalytics.reportPlaybackFailed(errorDescription as String, contentInfo: nil)
             }
@@ -104,9 +105,12 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         }
     }
     
+    func view(for node: NSNumber) -> THEOplayerRCTView? {
+        self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
+    }
+    
     func player(for node: NSNumber) -> THEOplayer? {
-        let view = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
-        return view?.player
+        view(for: node)?.player
     }
 }
 
