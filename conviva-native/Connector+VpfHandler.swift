@@ -36,6 +36,7 @@ struct ConnectorWithVpfHandler {
                 if let log = player.currentItem?.errorLog(), vpfDetector.isTransitionToPauseFatal(log: log, pause: event) {
                     sendError(vpfDictionary)
                     conviva.videoAnalytics.reportPlaybackFailed(vpfMessage, contentInfo: nil)
+                    player.stop()
                 }
             },
             player.addRemovableEventListener(type: PlayerEventTypes.PLAYING) { event in
