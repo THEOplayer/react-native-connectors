@@ -10,7 +10,7 @@ import THEOplayerConnectorConviva
 import THEOplayerConnectorUtilities
 import react_native_theoplayer
 
-// TODO: Remove when THEOplayer correctly handles VPF failures
+// TODO: Remove when THEOplayer correctly handles Video Playback Failures (VPF)
 struct ConnectorWithVpfHandler {
     let base: ConvivaConnector
     let vpfDetector: VpfDetector

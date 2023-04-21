@@ -20,8 +20,8 @@ import THEOplayerSDK
 ///
 /// Then when you receive `PlayerEventTypes.PAUSE` check `isTransitionToPauseFatal` to see if the transition is assumed as fatal.
 class VpfDetector {
-    static let timeRange = TimeInterval(0) ..< 30
-    static let errorCountTreshold = 6
+    static let timeRange = TimeInterval(0) ..< 32
+    static let errorCountTreshold = 5
 
     private var playerIsWaiting = false
     
@@ -38,8 +38,13 @@ class VpfDetector {
                 errorCountWithinDetectionRange += 1
             }
         }
-        print(errorCountWithinDetectionRange, pause.date, log.events.map{($0.kind, $0.date)})
-        return errorCountWithinDetectionRange > Self.errorCountTreshold
+        if errorCountWithinDetectionRange >= Self.errorCountTreshold {
+            react_native_theoplayer_conviva.log("VPF detected. (\(errorCountWithinDetectionRange) errors within error range.")
+            return true
+        } else {
+            react_native_theoplayer_conviva.log("Pause event not interpreted as caused by network error. (\(errorCountWithinDetectionRange) errors within error range.")
+            return false
+        }
     }
     
     func reset() {
@@ -49,30 +54,25 @@ class VpfDetector {
 }
 
 extension VpfDetector {
-    struct NetworkErrorEvent {
-        let date: Date
-        let event: AVPlayerItemErrorLogEvent
-                
-        struct Kind: Hashable {
-            let domain: String
-            let code: Int
-            
-            var isSevere: Bool { Self.severeErrors.contains(self) }
-            
-            static var severeErrors = Set([
-                Kind(domain: NSURLErrorDomain, code: URLError.Code.secureConnectionFailed.rawValue),
-                Kind(domain: NSURLErrorDomain, code: URLError.Code.cannotFindHost.rawValue),
-                Kind(domain: NSURLErrorDomain, code: URLError.Code.cannotConnectToHost.rawValue),
-                Kind(domain: NSURLErrorDomain, code: URLError.Code.networkConnectionLost.rawValue),
-                Kind(domain: "CoreMediaErrorDomain", code: 12938), // HTTP 404: File Not Found
-                Kind(domain: "CoreMediaErrorDomain", code: 12660), // HTTP 403: Forbidden
-            ])
-        }
+    struct NetworkEventKind: Hashable {
+        let domain: String
+        let code: Int
+        
+        var isSevere: Bool { Self.severeErrors.contains(self) }
+        
+        static var severeErrors = Set([
+            Self(domain: NSURLErrorDomain, code: URLError.Code.secureConnectionFailed.rawValue),
+            Self(domain: NSURLErrorDomain, code: URLError.Code.cannotFindHost.rawValue),
+            Self(domain: NSURLErrorDomain, code: URLError.Code.cannotConnectToHost.rawValue),
+            Self(domain: NSURLErrorDomain, code: URLError.Code.networkConnectionLost.rawValue),
+            Self(domain: "CoreMediaErrorDomain", code: 12938), // HTTP 404: File Not Found
+            Self(domain: "CoreMediaErrorDomain", code: 12660), // HTTP 403: Forbidden
+        ])
     }
 }
 
 extension AVPlayerItemErrorLogEvent {
-    var kind: VpfDetector.NetworkErrorEvent.Kind {
+    var kind: VpfDetector.NetworkEventKind {
         .init(domain: errorDomain, code: errorStatusCode)
     }
 }
