@@ -32,18 +32,11 @@ const convivaConfig: ConvivaConfiguration = {
 };
 
 const App = () => {
-  const convivaConnector = useRef<ConvivaConnector | null>();
-
-  useEffect(() => {
-    return () => {
-      // Destroy connector when unmounting
-      convivaConnector.current?.destroy()
-    }
-  }, []);
+  const [conviva, initConviva] = useConviva(convivaMetadata, convivaConfig);
 
   const onPlayerReady = (player: THEOplayer) => {
-    // Create Conviva connector
-    convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
+    // Initialize connector
+    initConviva(player);
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
@@ -70,6 +63,6 @@ const onUpdateMetadata = () => {
     ['customTag1']: "customValue1",
     ['customTag2']: "customValue2",
   };
-  convivaConnector.current?.setContentInfo(metadata);
+  conviva.current?.setContentInfo(metadata);
 };
 ```
