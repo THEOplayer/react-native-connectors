@@ -17,8 +17,21 @@ npm install https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theop
 Create the connector by providing the `THEOplayer` instance, a ComscoreConfiguration (which contains your publisher id) and the ComscoreMetadata of the first source you will set to the player (you can change it dynamically throughout the entire lifecycle of the connector):
 
 ```jsx
-import { ComscoreConnector } from '@theoplayer/react-native-analytics-comscore';
+import { useComscore } from '@theoplayer/react-native-analytics-comscore';
 
+export const comscoreMetadata: ComscoreMetadata = {
+  mediaType: ComscoreMediaType.longFormOnDemand,
+  uniqueId: "testuniqueId",
+  length: 634.566,
+  stationTitle: "THEOTV",
+  programTitle: "Big Buck Bunny",
+  episodeTitle: "Intro",
+  genreName: "Animation",
+  classifyAsAudioStream: false,
+  customLabels: {
+    "testcustomlabel": "testcustomvalue"
+  }
+};
 
 const comscoreConfig: ComscoreConfiguration = {
     publisherId: "<your publisher id (aka c2 id)",
@@ -28,18 +41,11 @@ const comscoreConfig: ComscoreConfiguration = {
   };
 
 const App = () => {
-  const comscoreConnector = useRef<ComscoreConnector | null>();
-
-  useEffect(() => {
-    return () => {
-      // Destroy connector when unmounting
-      comscoreConnector.current?.destroy()
-    }
-  }, []);
+  const [comscore, initComscore] = useComscore(COMSCORE_METADATA, comscoreConfig);
 
   const onPlayerReady = (player: THEOplayer) => {
-    // Create Comscore connector
-    comscoreConnector.current = new ComscoreConnector(player, comscoreMetadata, comscoreConfig);
+    // Initialize Comscore connector
+    initComscore(player);
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
@@ -52,19 +58,19 @@ The connector allows passing or updating the current asset's metadata at any tim
 
 ```typescript
 const onUpdateMetadata = () => {
-    comscoreConnector.current.update({
-        mediaType: ComscoreMediaType.longFormOnDemand,
-        uniqueId: 'testuniqueId',
-        length: 634.566,
-        stationTitle: 'THEOTV',
-        programTitle: 'Big Buck Bunny',
-        episodeTitle: 'Intro',
-        genreName: 'Animation',
-        classifyAsAudioStream: false,
-        customLabels: {
-            testcustomlabel: 'testcustomvalue'
-        }
-    });
+  comscore.current.update({
+      mediaType: ComscoreMediaType.longFormOnDemand,
+      uniqueId: 'testuniqueId',
+      length: 634.566,
+      stationTitle: 'THEOTV',
+      programTitle: 'Big Buck Bunny',
+      episodeTitle: 'Intro',
+      genreName: 'Animation',
+      classifyAsAudioStream: false,
+      customLabels: {
+          testcustomlabel: 'testcustomvalue'
+      }
+  });
 };
 ```
 
