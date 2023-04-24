@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import {
   PlayerConfiguration,
@@ -8,7 +8,7 @@ import {
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
-import { ComscoreConnector } from '@theoplayer/react-native-analytics-comscore';
+import { useComscore } from '@theoplayer/react-native-analytics-comscore';
 import { PlayButton } from './res/images';
 import { ComscoreConfiguration, ComscoreMetadata, ComscoreMediaType, ComscoreUserConsent } from '@theoplayer/react-native-analytics-comscore';
 
@@ -40,44 +40,39 @@ const source: SourceDescription = {
   ]
 };
 
+const comscoreMetadata: ComscoreMetadata = {
+  mediaType: ComscoreMediaType.longFormOnDemand,
+  uniqueId: "testuniqueId",
+  length: 634.566,
+  stationTitle: "THEOTV",
+  programTitle: "Big Buck Bunny",
+  episodeTitle: "Intro",
+  genreName: "Animation",
+  classifyAsAudioStream: false,
+  customLabels: {
+    "testcustomlabel": "testcustomvalue"
+  }
+};
+
+const comscoreConfig: ComscoreConfiguration = {
+  publisherId: "15866303", // Can be a test or production key.
+  applicationName: "Wonne Test RN",
+  userConsent: ComscoreUserConsent.granted,
+  debug: true,
+};
+
 const App = () => {
-  const comscoreConnector = useRef<ComscoreConnector | null>();
+  const [comscore, initComscore] = useComscore(comscoreMetadata, comscoreConfig);
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  const comscoreMetadata: ComscoreMetadata = {
-    mediaType: ComscoreMediaType.longFormOnDemand,
-    uniqueId: "testuniqueId",
-    length: 634.566,
-    stationTitle: "THEOTV",
-    programTitle: "Big Buck Bunny",
-    episodeTitle: "Intro",
-    genreName: "Animation",
-    classifyAsAudioStream: false,
-    customLabels: {
-      "testcustomlabel": "testcustomvalue"
-    }
-  };
-
-  const comscoreConfig: ComscoreConfiguration = {
-    publisherId: "15866303", // Can be a test or production key.
-    applicationName: "Wonne Test RN",
-    userConsent: ComscoreUserConsent.granted,
-    debug: true,
-  };
-
-  useEffect(() => {
-    // Destroy connector when unmounting
-    return () => { comscoreConnector.current?.destroy() }
-  }, [])
-
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Create Comscore connector
-    comscoreConnector.current = new ComscoreConnector(player, comscoreMetadata, comscoreConfig);
+    // Initialize Comscore connector
+    initComscore(player);
     player.autoplay = !paused;
     player.source = source;
-    comscoreConnector.current.update(comscoreMetadata)
+    comscore.current.update(comscoreMetadata)
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
     // Update theoPlayer reference.
@@ -93,7 +88,7 @@ const App = () => {
   }, [theoPlayer])
 
   return (
-    <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
+    <View style={ styles.fullscreen }>
 
       <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
 
