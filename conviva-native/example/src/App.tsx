@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   PlayerConfiguration,
@@ -10,7 +10,7 @@ import {
   THEOplayerView
 } from 'react-native-theoplayer';
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
-import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
+import { useConviva } from '@theoplayer/react-native-analytics-conviva';
 import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
 import SOURCES_ANDROID from "./res/sources_android.json"
 import SOURCES_IOS from "./res/sources_ios.json"
@@ -25,6 +25,18 @@ const SOURCES = Platform.select({
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
 
+const convivaMetadata: ConvivaMetadata = {
+  ['Conviva.assetName']: 'NA (not set)',
+  ['Conviva.applicationName']: 'THEOplayer',
+  ['Conviva.viewerId']: 'your_viewer_id'
+};
+
+const convivaConfig: ConvivaConfiguration = {
+  customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
+  debug: true,
+  gatewayUrl: TOUCHSTONE_SERVICE_URL
+};
+
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
@@ -32,42 +44,23 @@ const playerConfig: PlayerConfiguration = {
 };
 
 const App = () => {
-  const convivaConnector = useRef<ConvivaConnector | undefined>();
+  const [conviva, initConviva] = useConviva(convivaMetadata, convivaConfig);
   const theoPlayer = useRef<THEOplayer | undefined>();
   const [sourceIndex, setSourceIndex] = useState<number>(0);
   const [error, setError] = useState<PlayerError | undefined>();
   const [paused, setPaused] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Destroy connector when unmounting
-    return () => {
-      convivaConnector.current?.destroy()
-    }
-  }, []);
-
-  const convivaMetadata: ConvivaMetadata = {
-    ['Conviva.assetName']: 'NA (not set)',
-    ['Conviva.applicationName']: 'THEOplayer',
-    ['Conviva.viewerId']: 'your_viewer_id'
-  };
-
-  const convivaConfig: ConvivaConfiguration = {
-    customerKey: TEST_CUSTOMER_KEY, // Can be a test or production key.
-    debug: true,
-    gatewayUrl: TOUCHSTONE_SERVICE_URL
-  };
 
   const onCustomMetadata = () => {
     const metadata: ConvivaMetadata = {
       ['customTag1']: `custom ${(new Date()).toLocaleString()}`,
       ['customTag2']: "customValue2",
     };
-    convivaConnector.current?.setContentInfo(metadata);
+    conviva.current?.setContentInfo(metadata);
   };
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Create Conviva connector
-    convivaConnector.current = new ConvivaConnector(player, convivaMetadata, convivaConfig);
+    // Initialize Conviva connector
+    initConviva(player);
     player.autoplay = !paused;
     player.source = SOURCES[sourceIndex].source as SourceDescription;
     player.pipConfiguration = { startsAutomatically: true };
@@ -86,13 +79,8 @@ const App = () => {
     }
   }, [theoPlayer])
 
-  const onDestroy = useCallback(() => {
-    convivaConnector.current?.destroy();
-    convivaConnector.current = undefined;
-  }, [theoPlayer])
-
   const onStopAndStartNewSession = useCallback(() => {
-    convivaConnector.current?.stopAndStartNewSession({
+    conviva.current?.stopAndStartNewSession({
       ['Conviva.assetName']: 'New session title'
     });
   }, [theoPlayer])
@@ -136,9 +124,6 @@ const App = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onCustomMetadata}>
               <Text style={styles.buttonText}>{"Set custom metadata"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onDestroy}>
-              <Text style={styles.buttonText}>{"Destroy connector"}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onStopAndStartNewSession}>
               <Text style={styles.buttonText}>{"Stop & start new session"}</Text>
