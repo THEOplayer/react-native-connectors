@@ -18,7 +18,7 @@ Create the connector by providing the `THEOplayer` instance, the `appId` provide
 that describes the player or site, and an optional set of `NielsenOptions`:
 
 ```jsx
-import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
+import { useNielsen } from '@theoplayer/react-native-analytics-nielsen';
 
 const appId = 'PXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
 
@@ -36,18 +36,11 @@ const nielsenOptions: NielsenOptions = {
 };
 
 const App = () => {
-  const nielsenConnector = useRef<NielsenConnector | null>();
-
-  useEffect(() => {
-    return () => {
-      // Destroy connector when unmounting
-      nielsenConnector.current?.destroy()
-    }
-  }, []);
+  const [nielsen, initNielsen] = useNielsen(appId, instanceName, nielsenOptions);
 
   const onPlayerReady = (player: THEOplayer) => {
-    // Create Nielsen connector
-    nielsenConnector.current = new NielsenConnector(player, appId, instanceName, nielsenOptions);
+    // Initialize Nielsen connector
+    initNielsen(player);
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
@@ -60,7 +53,7 @@ The connector allows passing or updating the current asset's metadata at any tim
 
 ```typescript
 const onUpdateMetadata = () => {
-  nielsenConnector.current?.updateMetadata({
+  nielsen.current?.updateMetadata({
     'title': 'Episode Title',
     'assetid': 'unique_id_500291'
   });
