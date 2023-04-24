@@ -18,7 +18,7 @@ Create the connector by providing the `THEOplayer` instance, the Media Collectio
 Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
 
 ```jsx
-import { AdobeConnector } from '@theoplayer/react-native-analytics-adobe';
+import { AdobeConnector, useAdobe } from '@theoplayer/react-native-analytics-adobe';
 
 const uri = "<Media Collection API's end point>";
 const ecid = "<Visitor Experience Cloud Org ID>";
@@ -26,18 +26,11 @@ const sid = "<Report Suite ID>";
 const trackingUrl = "<Tracking Server URL>";
 
 const App = () => {
-  const adobeConnector = useRef<AdobeConnector | null>();
-
-  useEffect(() => {
-    return () => {
-      // Destroy connector when unmounting
-      adobeConnector.current?.destroy()
-    }
-  }, []);
+  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
 
   const onPlayerReady = (player: THEOplayer) => {
-    // Create Adobe connector
-    adobeConnector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl);
+    // Initialize Adobe connector
+    initAdobe(player);
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
@@ -65,6 +58,6 @@ const onUpdateMetadata = () => {
       "customTag2": "customValue2"
     }
   };
-  adobeConnector.current?.updateMetadata(metadata);
+  adobe.current?.updateMetadata(metadata);
 };
 ```
