@@ -8,7 +8,7 @@ import {
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
-import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
+import { NielsenConnector, useNielsen } from '@theoplayer/react-native-analytics-nielsen';
 import { PlayButton } from './res/images';
 import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 
@@ -22,7 +22,7 @@ const source = {
   sources: [
     {
       type: "application/x-mpegurl",
-      src: "https://www.nielseninternet.com/DTVR/RTVOD_%28PC-FD%29_C3/prog_index.m3u8"
+      src: "https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8"
     }
   ],
   ads: [
@@ -33,34 +33,29 @@ const source = {
   ]
 } as SourceDescription;
 
+let appId: string
+if (Platform.OS === "web") {
+  appId = "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5";
+} else if (Platform.OS === "android") {
+  appId = "P4B35DFE9-0EB1-41F9-8E66-7ED2FF4746DB";
+} else if (Platform.OS === "ios") {
+  appId = "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
+}
+
+const nielsenOptions: NielsenOptions = {
+  // containerId: 'THEOplayer',
+  nol_sdkDebug: 'debug'
+};
+
 const App = () => {
-  const nielsenConnector = useRef<NielsenConnector | null>();
+  const [nielsen, initNielsen] = useNielsen(appId, 'THEOplayer demo', nielsenOptions);
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  let appId: string
-  if (Platform.OS === "web") {
-    appId = "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5";
-  } else if (Platform.OS === "android") {
-    appId = "P4B35DFE9-0EB1-41F9-8E66-7ED2FF4746DB";
-  } else if (Platform.OS === "ios") {
-    appId = "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
-  }
-
-  const nielsenOptions: NielsenOptions = {
-    // containerId: 'THEOplayer',
-    nol_sdkDebug: 'debug'
-  };
-
-  useEffect(() => {
-    // Destroy connector when unmounting
-    return () => { nielsenConnector.current?.destroy() }
-  },[]);
-
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Create Nielsen connector
-    nielsenConnector.current = new NielsenConnector(player, appId, 'THEOplayer demo', nielsenOptions);
+    // Initialize Nielsen connector
+    initNielsen(player);
     player.autoplay = !paused;
     player.source = source;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
@@ -74,7 +69,7 @@ const App = () => {
       'assetid': 'C77664',
       'program': 'testprogram'
     };
-    nielsenConnector.current?.updateMetadata(metadata);
+    nielsen.current?.updateMetadata(metadata);
   };
 
   const onTogglePlayPause = useCallback(() => {
