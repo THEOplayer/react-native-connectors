@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Next
+## [unreleased]
 
 ### Added
 
 - Added a workaround on iOS to detect video playback failures, propagate an error to the THEOplayer and report the error to conviva.
+- Added `useConviva` hook to create and initialize a Conviva connector. See README.md for usage.
+
+### Fixed
+
+- Fixed an issue on Web where the `Framework version` would be incorrectly reported.
 
 ## [0.8.0] - 2023-04-18
 
