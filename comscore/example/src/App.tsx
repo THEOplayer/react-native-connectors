@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import {
+  AdIntegrationKind,
   PlayerConfiguration,
   PlayerError,
   PlayerEventType,
@@ -20,7 +21,6 @@ const playerConfig: PlayerConfiguration = {
 
 const source: SourceDescription = {
   sources: [
-
     {
       "src": "https://cdn.theoplayer.com/video/dash/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
       "type": "application/dash+xml"
@@ -32,7 +32,7 @@ const source: SourceDescription = {
   ],
   "ads": [
     {
-      "integration": "google-ima",
+      "integration": "google-ima" as AdIntegrationKind,
       "sources": {
         "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
       }
