@@ -18,7 +18,7 @@ Create the connector by providing the `THEOplayer` instance, the Media Collectio
 Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
 
 ```jsx
-import { AdobeConnector, useAdobe } from '@theoplayer/react-native-analytics-adobe';
+import { useAdobe } from '@theoplayer/react-native-analytics-adobe';
 
 const uri = "<Media Collection API's end point>";
 const ecid = "<Visitor Experience Cloud Org ID>";

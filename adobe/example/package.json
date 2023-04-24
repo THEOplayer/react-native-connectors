@@ -14,8 +14,9 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.2",
-    "react-native-theoplayer": "github:THEOplayer/react-native-theoplayer#feature/2.0.0",
-    "react-native-web": "^0.18.12"
+    "react-native-theoplayer": ">=2.2.0",
+    "react-native-web": "^0.18.12",
+    "node-polyfill-webpack-plugin": "^2.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

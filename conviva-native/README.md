@@ -18,7 +18,7 @@ Create the connector by providing the `THEOplayer` instance, some initial metada
 object:
 
 ```jsx
-import { ConvivaConnector, useConviva } from '@theoplayer/react-native-analytics-conviva';
+import { useConviva } from '@theoplayer/react-native-analytics-conviva';
 
 const convivaMetadata: ConvivaMetadata = {
   ['Conviva.applicationName']: 'THEOplayer',

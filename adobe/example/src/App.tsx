@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import {
   PlayerConfiguration,
@@ -9,7 +9,7 @@ import {
   THEOplayerView
 } from 'react-native-theoplayer';
 import { PlayButton } from './res/images';
-import { AdobeConnector } from "@theoplayer/react-native-analytics-adobe";
+import { useAdobe } from "@theoplayer/react-native-analytics-adobe";
 
 const playerConfig: PlayerConfiguration = {
   license:
@@ -47,28 +47,21 @@ const source_hls: SourceDescription = {
   ]
 };
 
+const uri = "smetrics.nfl.com/va" // "<Media Collection API's end point>";
+const ecid = "F75C3025512D2C1D0A490D44@AdobeOrg" // "<Visitor Experience Cloud Org ID>";
+const sid = "nfldev" // "<Report Suite ID>";
+const trackingUrl = "smetrics.nfl.com" // "<Tracking Server URL>";
+
 const App = () => {
-  const adobeConnector = useRef<AdobeConnector | null>();
+  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
   const theoPlayer = useRef<THEOplayer | null>();
   const [error, setError] = useState<PlayerError | null>();
   const [paused, setPaused] = useState<boolean>(true);
 
-  useEffect(() => {
-    // Destroy connector when unmounting
-    return () => {
-      adobeConnector.current?.destroy()
-    }
-  }, []);
-
-  const uri = "smetrics.nfl.com/va" // "<Media Collection API's end point>";
-  const ecid = "F75C3025512D2C1D0A490D44@AdobeOrg" // "<Visitor Experience Cloud Org ID>";
-  const sid = "nfldev" // "<Report Suite ID>";
-  const trackingUrl = "smetrics.nfl.com" // "<Tracking Server URL>";
-
   const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Create Adobe connector
-    adobeConnector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl);
-    player.source = (Platform.OS == 'ios') ? source_hls : source_dash;
+    // Initialize Adobe connector
+    initAdobe(player);
+    player.source = source_hls;
     player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
 
     // Update theoPlayer reference.
