@@ -31,7 +31,7 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it",
+    "release": "release-it ",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
@@ -55,6 +55,7 @@
     "@commitlint/config-conventional": "^17.0.2",
     "@react-native-community/eslint-config": "^3.0.2",
     "@release-it/conventional-changelog": "^5.0.0",
+    "@release-it/keep-a-changelog": "^3.1.0",
     "@types/react": "~17.0.21",
     "@types/react-native": "0.70.0",
     "commitlint": "^17.0.2",
@@ -86,7 +87,7 @@
   "release-it": {
     "git": {
       "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
+      "tagName": "adobe_v${version}"
     },
     "npm": {
       "publish": true
@@ -95,8 +96,8 @@
       "release": true
     },
     "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
+      "@release-it/keep-a-changelog": {
+        "filename": "CHANGELOG.md"
       }
     }
   },
