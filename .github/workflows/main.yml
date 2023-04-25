@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.4.1
+
+      - name: Run npm
+        run: npm ci --prefix adobe &&
+          npm ci --prefix conviva &&
+          npm ci --prefix comscore &&
+          npm ci --prefix nielsen
+
+      - name: Check lint
+        run: npm run lint --prefix adobe &&
+          npm run lint --prefix conviva &&
+          npm run lint --prefix comscore &&
+          npm run lint --prefix nielsen
