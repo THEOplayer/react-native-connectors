@@ -70,9 +70,9 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
 
   private fun mapConfig(config: ReadableMap): ComscoreConfiguration {
     return ComscoreConfiguration(
-      config.getString("publisherId"),
-      config.getString("applicationName"),
-      config.getString("userConsent"),
+      config.getString("publisherId") ?: "",
+      config.getString("applicationName") ?: "",
+      config.getString("userConsent") ?: "0",
       false, // TODO: bring in line with other platforms
       false, // TODO: bring in line with other platforms
       config.getBoolean("debug")
