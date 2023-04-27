@@ -30,7 +30,6 @@ class ComscoreTHEOplayerAdapter(
   private var currentAdDuration: Double = 0.0
   private var currentAdOffset: Double = 0.0
   private var buffering: Boolean = false
-  private val dvrWindowEnd: Double? = null
   private var ended: Boolean = false
   private var inAd: Boolean = false
   private var currentAdBreak: AdBreak? = null
@@ -481,20 +480,6 @@ class ComscoreTHEOplayerAdapter(
     }
     inAd = false
     transitionToStopped()
-  }
-
-  fun notifyEnd() {
-    if (BuildConfig.DEBUG) {
-      Log.i(TAG, "DEBUG: notifyEnd")
-    }
-    streamingAnalytics.notifyEnd()
-  }
-
-  fun notifyPause() {
-    if (BuildConfig.DEBUG) {
-      Log.i(TAG, "DEBUG: notifyPause")
-    }
-    streamingAnalytics.notifyPause()
   }
 
   fun setPersistentLabel(label: String, value: String) {
