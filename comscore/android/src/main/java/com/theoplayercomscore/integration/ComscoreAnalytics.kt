@@ -32,7 +32,7 @@ class ComscoreAnalytics {
     Analytics.getConfiguration().apply {
       addClient(PublisherConfiguration.Builder()
         .publisherId(configuration.publisherId)
-        .secureTransmission(configuration.isSecureTransmission).apply {
+        .secureTransmission(configuration.secureTransmission).apply {
           if (configuration.userConsent === "1" || configuration.userConsent === "0") {
             persistentLabels(hashMapOf("cs_ucfr" to configuration.userConsent))
           }
@@ -40,10 +40,10 @@ class ComscoreAnalytics {
         .build()
       )
       setApplicationName(configuration.applicationName)
-      if (configuration.isChildDirected) {
+      if (configuration.childDirected) {
         enableChildDirectedApplicationMode()
       }
-      if (configuration.isDebug) {
+      if (configuration.debug) {
         enableImplementationValidationMode()
       }
     }

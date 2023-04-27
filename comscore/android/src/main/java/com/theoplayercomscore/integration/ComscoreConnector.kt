@@ -4,8 +4,6 @@ import android.content.Context
 import com.theoplayer.android.api.THEOplayerGlobal
 import com.theoplayer.android.api.player.Player
 
-private const val TAG = "ComscoreConnector"
-
 class ComscoreConnector(
   appContext: Context,
   player: Player,
