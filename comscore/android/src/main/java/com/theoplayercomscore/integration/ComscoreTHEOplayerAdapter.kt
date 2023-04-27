@@ -6,6 +6,10 @@ import com.comscore.streaming.AdvertisementMetadata
 import com.comscore.streaming.AdvertisementType
 import com.comscore.streaming.ContentMetadata
 import com.comscore.streaming.StreamingAnalytics
+import com.theoplayer.android.api.ads.AdBreak
+import com.theoplayer.android.api.ads.GoogleImaAd
+import com.theoplayer.android.api.ads.ima.GoogleImaAdEvent
+import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -31,6 +35,7 @@ class ComscoreTHEOplayerAdapter(
   private var buffering: Boolean
   private val dvrWindowEnd: Double? = null
   private var inAd: Boolean
+  private var currentAdBreak: AdBreak? = null
 
   private val onFirstSeekedAfterEnded = EventListener { seekedEvent: SeekedEvent ->
     if (seekedEvent.currentTime < 0.5) {
@@ -43,6 +48,21 @@ class ComscoreTHEOplayerAdapter(
     }
     player.removeEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded)
   }
+
+  private val onSourceChange: EventListener<SourceChangeEvent>
+  private val onLoadedMetadata: EventListener<LoadedMetadataEvent>
+  private val onDurationChange: EventListener<DurationChangeEvent>
+  private val onPlaying: EventListener<PlayingEvent>
+  private val onPause: EventListener<PauseEvent>
+  private val onSeeking: EventListener<SeekingEvent>
+  private val onSeeked: EventListener<SeekedEvent>
+  private val onWaiting: EventListener<WaitingEvent>
+  private val onRateChange: EventListener<RateChangeEvent>
+  private val onError: EventListener<ErrorEvent>
+  private val onContentProtectionError: EventListener<ContentProtectionErrorEvent>
+  private val onEnded: EventListener<EndedEvent>
+  private val onAdStarted: EventListener<GoogleImaAdEvent>
+  private val onContentResume: EventListener<GoogleImaAdEvent>
 
   private enum class ComscoreState {
     INITIALIZED, STOPPED, PAUSED_AD, PAUSED_VIDEO, ADVERTISEMENT, VIDEO
@@ -57,7 +77,39 @@ class ComscoreTHEOplayerAdapter(
     buffering = false
     streamingAnalytics.setMediaPlayerName("THEOplayer")
     streamingAnalytics.setMediaPlayerVersion(playerVersion)
+
+    onSourceChange = EventListener { handleSourceChange() }
+    onLoadedMetadata = EventListener { handleMetadataLoaded() }
+    onDurationChange = EventListener { event -> handleDurationChange(event) }
+    onPlaying = EventListener { handlePlaying() }
+    onPause = EventListener { handlePause() }
+    onSeeking = EventListener { handleSeeking() }
+    onSeeked = EventListener { event -> handleSeeked(event) }
+    onWaiting = EventListener { handleWaiting() }
+    onRateChange = EventListener { event -> handleRateChange(event) }
+    onError = EventListener { handleError() }
+    onContentProtectionError = EventListener { handleError() }
+    onEnded = EventListener { handleEnded() }
+    onAdStarted = EventListener { event -> handleAdBegin(event.ad) }
+    onContentResume = EventListener { handleAdBreakEnd() }
     addEventListeners()
+  }
+
+  fun destroy() {
+    player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
+    player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
+    player.removeEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
+    player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
+    player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
+    player.removeEventListener(PlayerEventTypes.SEEKING, onSeeking)
+    player.removeEventListener(PlayerEventTypes.SEEKED, onSeeked)
+    player.removeEventListener(PlayerEventTypes.WAITING, onWaiting)
+    player.removeEventListener(PlayerEventTypes.RATECHANGE, onRateChange)
+    player.removeEventListener(PlayerEventTypes.ERROR, onError)
+    player.removeEventListener(PlayerEventTypes.CONTENTPROTECTIONERROR, onContentProtectionError)
+    player.removeEventListener(PlayerEventTypes.ENDED, onEnded)
+    player.ads.removeEventListener(GoogleImaAdEventType.STARTED, onAdStarted)
+    player.ads.removeEventListener(GoogleImaAdEventType.CONTENT_RESUME_REQUESTED, onContentResume)
   }
 
   fun setMedatata(metadata: ComscoreMetaData) {
@@ -69,175 +121,20 @@ class ComscoreTHEOplayerAdapter(
   }
 
   private fun addEventListeners() {
-//        // TODO check if durationchange gives content duration when there's a preroll
-//        player.addEventListener(PlayerEventTypes.DURATIONCHANGE, durationChangeEvent -> {
-//            Double durationInSeconds = durationChangeEvent.getDuration();
-//            Log.i(TAG, "DEBUG: DURATIONCHANGE event: " + durationInSeconds);
-//            if (!inAd && !durationInSeconds.isNaN() && durationInSeconds > 0) {
-//                if (durationInSeconds.isInfinite()) {
-//                    videoDuration = 0.0;
-//                } else {
-//                    videoDuration = durationInSeconds * 1000;
-//                }
-//                Log.i(TAG, "DEBUG: Setting content metadata");
-//                setContentMetadata();
-//            }
-//        });
-    player.addEventListener(PlayerEventTypes.SOURCECHANGE) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: SOURCECHANGE event")
-      }
-      comScoreState = ComscoreState.INITIALIZED
-      currentContentMetadata = null
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: createPlaybackSession")
-      }
-      streamingAnalytics.createPlaybackSession()
-    }
-    player.addEventListener(PlayerEventTypes.LOADEDMETADATA) {
-      if (comscoreMetaData.length == 0L && !inAd) {
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: detected stream type LIVE")
-        }
-        try {
-          val seekableRanges = player.seekable
-          if (seekableRanges.length() > 0) {
-            val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
-            val dvrWindowLengthInSeconds = dvrWindowEnd - seekableRanges.getStart(0)
-            if (dvrWindowLengthInSeconds > 0) {
-              if (BuildConfig.DEBUG) {
-                Log.i(
-                  TAG,
-                  "DEBUG: set DVR window length of $dvrWindowLengthInSeconds"
-                )
-              }
-              streamingAnalytics.setDvrWindowLength(
-                java.lang.Double.valueOf(
-                  dvrWindowLengthInSeconds * 1000
-                ).toLong()
-              )
-            }
-          }
-        } catch (e: Exception) {
-          if (BuildConfig.DEBUG) {
-            Log.e(TAG, "No seekable ranges available")
-          }
-        }
-      }
-    }
-    player.addEventListener(PlayerEventTypes.PLAYING) {
-      // If in the buffering state, get out of it and notify comscore about this
-      if (buffering) {
-        buffering = false
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: notifyBufferStop")
-        }
-        streamingAnalytics.notifyBufferStop()
-      }
-      if (inAd) {
-        transitionToAdvertisement() // will set ad metadata and notify play if not done already
-      } else if (currentAdOffset < 0.0) {
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: IGNORING PLAYING event after post-roll")
-        }
-        return@addEventListener   // last played ad was a post-roll so there's no real content coming, return and report nothing
-      } else {
-        transitionToVideo() // will set content metadata and notify play if not done already
-      }
-    }
-    player.addEventListener(PlayerEventTypes.PAUSE) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: PAUSE event")
-      }
-      transitionToPaused()
-    }
-    player.addEventListener(PlayerEventTypes.SEEKING) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: notifySeekStart")
-      }
-      streamingAnalytics.notifySeekStart()
-    }
-    player.addEventListener(/* p0 = */ PlayerEventTypes.SEEKED) { seekedEvent: SeekedEvent ->
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: SEEKED to: " + seekedEvent.currentTime)
-      }
-      val currentTime = seekedEvent.currentTime
-      if (java.lang.Double.isNaN(player.duration)) {
-        val seekableRanges = player.seekable
-        val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
-        val newDvrWindowOffset =
-          java.lang.Double.valueOf(dvrWindowEnd - currentTime).toLong() * 1000
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: new dvrWindowOffset: $newDvrWindowOffset")
-        }
-        streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset)
-      } else {
-        val newPosition = java.lang.Double.valueOf(currentTime).toLong() * 1000
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: new position: $newPosition")
-          Log.i(TAG, "DEBUG: startFromPosition")
-        }
-        streamingAnalytics.startFromPosition(newPosition)
-      }
-    }
-    player.addEventListener(PlayerEventTypes.WAITING) {
-      if (comScoreState == ComscoreState.ADVERTISEMENT && inAd || comScoreState == ComscoreState.VIDEO && !inAd) {
-        buffering = true
-        if (BuildConfig.DEBUG) {
-          Log.i(TAG, "DEBUG: notifyBufferStart")
-        }
-        streamingAnalytics.notifyBufferStart()
-      }
-    }
-    player.addEventListener(PlayerEventTypes.RATECHANGE) { rateChangeEvent: RateChangeEvent ->
-      streamingAnalytics.notifyChangePlaybackRate(
-        java.lang.Double.valueOf(rateChangeEvent.playbackRate).toFloat()
-      )
-    }
-    player.addEventListener(PlayerEventTypes.ERROR) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: ERROR event")
-      }
-      transitionToStopped()
-    }
-    player.addEventListener(PlayerEventTypes.CONTENTPROTECTIONERROR) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: DRM ERROR event")
-      }
-      transitionToStopped()
-    }
-    player.addEventListener(PlayerEventTypes.ENDED) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: ENDED event")
-      }
-      transitionToStopped()
-      player.addEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded)
-    }
-    player.ads.addEventListener(AdsEventTypes.AD_BREAK_BEGIN) { adBreakBeginEvent: AdBreakBeginEvent ->
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: AD_BREAK_BEGIN event")
-      }
-      currentAdOffset = adBreakBeginEvent.adBreak.timeOffset.toDouble()
-      inAd = true
-      transitionToStopped()
-    }
-    player.ads.addEventListener(AdsEventTypes.AD_BREAK_END) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: AD_BREAK_END event")
-      }
-      inAd = false
-      transitionToStopped()
-    }
-    player.ads.addEventListener(AdsEventTypes.AD_BEGIN) { adBeginEvent: AdBeginEvent ->
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: AD_BEGIN event")
-      }
-      currentAdDuration = player.duration * 1000
-      setAdMetadata(currentAdDuration, currentAdOffset, adBeginEvent.ad!!.id)
-    }
-    if (BuildConfig.DEBUG) {
-      Log.i(TAG, "DEBUG: done setting up listeners")
-    }
+    player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
+    player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
+    player.addEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
+    player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
+    player.addEventListener(PlayerEventTypes.PAUSE, onPause)
+    player.addEventListener(PlayerEventTypes.SEEKING, onSeeking)
+    player.addEventListener(PlayerEventTypes.SEEKED, onSeeked)
+    player.addEventListener(PlayerEventTypes.WAITING, onWaiting)
+    player.addEventListener(PlayerEventTypes.RATECHANGE, onRateChange)
+    player.addEventListener(PlayerEventTypes.ERROR, onError)
+    player.addEventListener(PlayerEventTypes.CONTENTPROTECTIONERROR, onContentProtectionError)
+    player.addEventListener(PlayerEventTypes.ENDED, onEnded)
+    player.ads.addEventListener(GoogleImaAdEventType.STARTED, onAdStarted)
+    player.ads.addEventListener(GoogleImaAdEventType.CONTENT_RESUME_REQUESTED, onContentResume)
   }
 
   private fun setAdMetadata(currentAdDuration: Double, currentAdOffset: Double, adId: String) {
@@ -406,6 +303,185 @@ class ComscoreTHEOplayerAdapter(
       }
       ComscoreState.VIDEO -> {}
     }
+  }
+
+  private fun handleSourceChange() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: SOURCECHANGE event")
+    }
+    comScoreState = ComscoreState.INITIALIZED
+    currentContentMetadata = null
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: createPlaybackSession")
+    }
+    streamingAnalytics.createPlaybackSession()
+  }
+
+  private fun handleMetadataLoaded() {
+    if (comscoreMetaData.length == 0L && !inAd) {
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: detected stream type LIVE")
+      }
+      try {
+        val seekableRanges = player.seekable
+        if (seekableRanges.length() > 0) {
+          val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
+          val dvrWindowLengthInSeconds = dvrWindowEnd - seekableRanges.getStart(0)
+          if (dvrWindowLengthInSeconds > 0) {
+            if (BuildConfig.DEBUG) {
+              Log.i(
+                TAG,
+                "DEBUG: set DVR window length of $dvrWindowLengthInSeconds"
+              )
+            }
+            streamingAnalytics.setDvrWindowLength(
+              java.lang.Double.valueOf(
+                dvrWindowLengthInSeconds * 1000
+              ).toLong()
+            )
+          }
+        }
+      } catch (e: Exception) {
+        if (BuildConfig.DEBUG) {
+          Log.e(TAG, "No seekable ranges available")
+        }
+      }
+    }
+  }
+
+  private fun handleDurationChange(durationChangeEvent: DurationChangeEvent) {
+    // TODO check if durationchange gives content duration when there's a preroll
+//      val durationInSeconds = durationChangeEvent.getDuration();
+//      Log.i(TAG, "DEBUG: DURATIONCHANGE event: " + durationInSeconds);
+//      if (!inAd && !durationInSeconds.isNaN() && durationInSeconds > 0) {
+//          if (durationInSeconds.isInfinite()) {
+//              videoDuration = 0.0;
+//          } else {
+//              videoDuration = durationInSeconds * 1000;
+//          }
+//          Log.i(TAG, "DEBUG: Setting content metadata");
+//          setContentMetadata();
+//      }
+  }
+
+  private fun handlePlaying() {
+    // If in the buffering state, get out of it and notify comscore about this
+    if (buffering) {
+      buffering = false
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: notifyBufferStop")
+      }
+      streamingAnalytics.notifyBufferStop()
+    }
+    if (inAd) {
+      transitionToAdvertisement() // will set ad metadata and notify play if not done already
+    } else if (currentAdOffset < 0.0) {
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: IGNORING PLAYING event after post-roll")
+      }
+      return   // last played ad was a post-roll so there's no real content coming, return and report nothing
+    } else {
+      transitionToVideo() // will set content metadata and notify play if not done already
+    }
+  }
+
+  private fun handlePause() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: PAUSE event")
+    }
+    transitionToPaused()
+  }
+
+  private fun handleSeeking() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: notifySeekStart")
+    }
+    streamingAnalytics.notifySeekStart()
+  }
+
+  private fun handleSeeked(seekedEvent: SeekedEvent) {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: SEEKED to: " + seekedEvent.currentTime)
+    }
+    val currentTime = seekedEvent.currentTime
+    if (java.lang.Double.isNaN(player.duration)) {
+      val seekableRanges = player.seekable
+      val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
+      val newDvrWindowOffset =
+        java.lang.Double.valueOf(dvrWindowEnd - currentTime).toLong() * 1000
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: new dvrWindowOffset: $newDvrWindowOffset")
+      }
+      streamingAnalytics.startFromDvrWindowOffset(newDvrWindowOffset)
+    } else {
+      val newPosition = java.lang.Double.valueOf(currentTime).toLong() * 1000
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: new position: $newPosition")
+        Log.i(TAG, "DEBUG: startFromPosition")
+      }
+      streamingAnalytics.startFromPosition(newPosition)
+    }
+  }
+
+  private fun handleWaiting() {
+    if (comScoreState == ComscoreState.ADVERTISEMENT && inAd || comScoreState == ComscoreState.VIDEO && !inAd) {
+      buffering = true
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: notifyBufferStart")
+      }
+      streamingAnalytics.notifyBufferStart()
+    }
+  }
+
+  private fun handleRateChange(rateChangeEvent: RateChangeEvent) {
+    streamingAnalytics.notifyChangePlaybackRate(
+      java.lang.Double.valueOf(rateChangeEvent.playbackRate).toFloat()
+    )
+  }
+
+  private fun handleError() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: ERROR event")
+    }
+    transitionToStopped()
+  }
+
+  private fun handleEnded() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: ENDED event")
+    }
+    transitionToStopped()
+    player.addEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded)
+  }
+
+  private fun handleAdBreakBegin(adBreak: AdBreak?) {
+    this.currentAdBreak = adBreak
+
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: AD_BREAK_BEGIN event")
+    }
+    currentAdOffset = adBreak?.timeOffset?.toDouble() ?: 0.0
+    inAd = true
+    transitionToStopped()
+  }
+
+  private fun handleAdBegin(ad: GoogleImaAd?) {
+    if (currentAdBreak == null && ad?.imaAd != null) {
+      handleAdBreakBegin(ad.adBreak)
+    }
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: AD_BEGIN event")
+    }
+    currentAdDuration = player.duration * 1000
+    setAdMetadata(currentAdDuration, currentAdOffset, ad?.id ?: "")
+  }
+
+  private fun handleAdBreakEnd() {
+    if (BuildConfig.DEBUG) {
+      Log.i(TAG, "DEBUG: AD_BREAK_END event")
+    }
+    inAd = false
+    transitionToStopped()
   }
 
   fun notifyEnd() {
