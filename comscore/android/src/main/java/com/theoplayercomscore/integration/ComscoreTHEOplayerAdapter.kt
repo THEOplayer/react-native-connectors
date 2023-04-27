@@ -422,7 +422,7 @@ class ComscoreTHEOplayerAdapter(
     streamingAnalytics.notifyPause()
   }
 
-  fun setPersistentLabel(label: String?, value: String?) {
+  fun setPersistentLabel(label: String, value: String) {
     ComscoreUtils.notifyHiddenEvent(configuration.publisherId, label, value)
   }
 
