@@ -1,7 +1,6 @@
 package com.theoplayercomscore.integration
 
 import android.util.Log
-import com.comscore.BuildConfig
 import com.comscore.streaming.AdvertisementMetadata
 import com.comscore.streaming.AdvertisementType
 import com.comscore.streaming.ContentMetadata
@@ -13,6 +12,7 @@ import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.player.*
 import com.theoplayer.android.api.player.Player
+import com.theoplayercomscore.BuildConfig
 import java.sql.Timestamp
 import java.util.*
 
