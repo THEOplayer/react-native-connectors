@@ -11,9 +11,6 @@ import com.theoplayer.android.api.ads.GoogleImaAd
 import com.theoplayer.android.api.ads.ima.GoogleImaAdEvent
 import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
-import com.theoplayer.android.api.event.ads.AdBeginEvent
-import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
-import com.theoplayer.android.api.event.ads.AdsEventTypes
 import com.theoplayer.android.api.event.player.*
 import com.theoplayer.android.api.player.Player
 import java.sql.Timestamp
@@ -29,29 +26,19 @@ class ComscoreTHEOplayerAdapter(
 ) {
   private var currentContentMetadata: ContentMetadata? = null
   private val streamingAnalytics: StreamingAnalytics = StreamingAnalytics()
-  private var comScoreState: ComscoreState
-  private var currentAdDuration: Double
-  private var currentAdOffset: Double
-  private var buffering: Boolean
+  private var comScoreState: ComscoreState = ComscoreState.INITIALIZED
+  private var currentAdDuration: Double = 0.0
+  private var currentAdOffset: Double = 0.0
+  private var buffering: Boolean = false
   private val dvrWindowEnd: Double? = null
-  private var inAd: Boolean
+  private var ended: Boolean = false
+  private var inAd: Boolean = false
   private var currentAdBreak: AdBreak? = null
-
-  private val onFirstSeekedAfterEnded = EventListener { seekedEvent: SeekedEvent ->
-    if (seekedEvent.currentTime < 0.5) {
-      if (BuildConfig.DEBUG) {
-        Log.i(TAG, "DEBUG: SEEKED event to start after an end event, create new session")
-      }
-      streamingAnalytics.createPlaybackSession()
-      currentAdOffset = 0.0 // Set to default value
-      setContentMetadata()
-    }
-    player.removeEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded)
-  }
 
   private val onSourceChange: EventListener<SourceChangeEvent>
   private val onLoadedMetadata: EventListener<LoadedMetadataEvent>
   private val onDurationChange: EventListener<DurationChangeEvent>
+  private val onPlay: EventListener<PlayEvent>
   private val onPlaying: EventListener<PlayingEvent>
   private val onPause: EventListener<PauseEvent>
   private val onSeeking: EventListener<SeekingEvent>
@@ -69,18 +56,13 @@ class ComscoreTHEOplayerAdapter(
   }
 
   init {
-    comScoreState = ComscoreState.INITIALIZED
-    val videoDuration = 0.0
-    currentAdDuration = 0.0
-    currentAdOffset = 0.0
-    inAd = false
-    buffering = false
     streamingAnalytics.setMediaPlayerName("THEOplayer")
     streamingAnalytics.setMediaPlayerVersion(playerVersion)
 
     onSourceChange = EventListener { handleSourceChange() }
     onLoadedMetadata = EventListener { handleMetadataLoaded() }
     onDurationChange = EventListener { event -> handleDurationChange(event) }
+    onPlay = EventListener { handlePlay() }
     onPlaying = EventListener { handlePlaying() }
     onPause = EventListener { handlePause() }
     onSeeking = EventListener { handleSeeking() }
@@ -92,6 +74,7 @@ class ComscoreTHEOplayerAdapter(
     onEnded = EventListener { handleEnded() }
     onAdStarted = EventListener { event -> handleAdBegin(event.ad) }
     onContentResume = EventListener { handleAdBreakEnd() }
+
     addEventListeners()
   }
 
@@ -99,6 +82,7 @@ class ComscoreTHEOplayerAdapter(
     player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.removeEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
+    player.removeEventListener(PlayerEventTypes.PLAY, onPlay)
     player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
     player.removeEventListener(PlayerEventTypes.SEEKING, onSeeking)
@@ -124,6 +108,7 @@ class ComscoreTHEOplayerAdapter(
     player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.addEventListener(PlayerEventTypes.DURATIONCHANGE, onDurationChange)
+    player.addEventListener(PlayerEventTypes.PLAY, onPlay)
     player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
     player.addEventListener(PlayerEventTypes.PAUSE, onPause)
     player.addEventListener(PlayerEventTypes.SEEKING, onSeeking)
@@ -364,6 +349,20 @@ class ComscoreTHEOplayerAdapter(
 //      }
   }
 
+  private fun handlePlay() {
+    if (ended) {
+      // Create new session when replaying an asset
+      ended = false
+
+      if (BuildConfig.DEBUG) {
+        Log.i(TAG, "DEBUG: PLAY event to start after an end event, create new session")
+      }
+      streamingAnalytics.createPlaybackSession()
+      currentAdOffset = 0.0 // Set to default value
+      setContentMetadata()
+    }
+  }
+
   private fun handlePlaying() {
     // If in the buffering state, get out of it and notify comscore about this
     if (buffering) {
@@ -451,7 +450,7 @@ class ComscoreTHEOplayerAdapter(
       Log.i(TAG, "DEBUG: ENDED event")
     }
     transitionToStopped()
-    player.addEventListener(PlayerEventTypes.SEEKED, onFirstSeekedAfterEnded)
+    ended = true
   }
 
   private fun handleAdBreakBegin(adBreak: AdBreak?) {
