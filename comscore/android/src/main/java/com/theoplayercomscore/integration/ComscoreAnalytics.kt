@@ -53,12 +53,8 @@ class ComscoreAnalytics {
     adapter = ComscoreTHEOplayerAdapter(player, playerVersion, configuration, metadata)
   }
 
-  fun reportEnd() {
-    adapter?.notifyEnd()
-  }
-
-  fun reportPause() {
-    adapter?.notifyPause()
+  fun destroy() {
+    adapter?.destroy()
   }
 
   fun setPersistentLabel(label: String, value: String) {

@@ -10,7 +10,7 @@ class ComscoreConnector(
   configuration: ComscoreConfiguration,
   metadata: ComscoreMetaData
 ) {
-  private val streamingAnalytics: ComscoreAnalytics = ComscoreAnalytics()
+  private val streamingAnalytics = ComscoreAnalytics()
 
   init {
     streamingAnalytics.initialize(appContext, configuration, player, THEOplayerGlobal.getVersion(), metadata)
@@ -29,6 +29,6 @@ class ComscoreConnector(
   }
 
   fun destroy() {
-    // TODO
+    streamingAnalytics.destroy()
   }
 }
