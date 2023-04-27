@@ -72,7 +72,7 @@ class ComscoreTHEOplayerAdapter(
     onContentProtectionError = EventListener { handleError() }
     onEnded = EventListener { handleEnded() }
     onAdStarted = EventListener { event -> handleAdBegin(event.ad) }
-    onContentResume = EventListener { handleAdBreakEnd() }
+    onContentResume = EventListener { handleContentResume() }
 
     addEventListeners()
   }
@@ -246,7 +246,7 @@ class ComscoreTHEOplayerAdapter(
         }
         streamingAnalytics.notifyPlay()
       }
-      ComscoreState.ADVERTISEMENT -> {}
+      ComscoreState.ADVERTISEMENT -> { /* Already in ADVERTISEMENT*/ }
     }
   }
 
@@ -460,7 +460,7 @@ class ComscoreTHEOplayerAdapter(
     }
     currentAdOffset = adBreak?.timeOffset?.toDouble() ?: 0.0
     inAd = true
-    transitionToStopped()
+    transitionToAdvertisement()
   }
 
   private fun handleAdBegin(ad: GoogleImaAd?) {
@@ -474,12 +474,12 @@ class ComscoreTHEOplayerAdapter(
     setAdMetadata(currentAdDuration, currentAdOffset, ad?.id ?: "")
   }
 
-  private fun handleAdBreakEnd() {
+  private fun handleContentResume() {
     if (BuildConfig.DEBUG) {
       Log.i(TAG, "DEBUG: AD_BREAK_END event")
     }
     inAd = false
-    transitionToStopped()
+    transitionToVideo()
   }
 
   fun setPersistentLabel(label: String, value: String) {
