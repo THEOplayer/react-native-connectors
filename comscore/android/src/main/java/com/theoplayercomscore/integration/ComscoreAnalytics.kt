@@ -30,7 +30,7 @@ class ComscoreAnalytics {
     }
 
     Analytics.getConfiguration().apply {
-      val publisherConfiguration = PublisherConfiguration.Builder()
+      addClient(PublisherConfiguration.Builder()
         .publisherId(configuration.publisherId)
         .secureTransmission(configuration.isSecureTransmission).apply {
           if (configuration.userConsent === "1" || configuration.userConsent === "0") {
@@ -38,8 +38,7 @@ class ComscoreAnalytics {
           }
         }
         .build()
-
-      addClient(publisherConfiguration)
+      )
       setApplicationName(configuration.applicationName)
       if (configuration.isChildDirected) {
         enableChildDirectedApplicationMode()

@@ -3,7 +3,7 @@ package com.theoplayercomscore.integration
 import com.comscore.streaming.ContentMetadata
 
 class ComscoreMetaData(
-  private val mediaType: ComscoreMediaType?,
+  private val mediaType: ComscoreMediaType,
   private val uniqueId: String?,
   val length: Long,
   private val c3: String?,
@@ -30,7 +30,7 @@ class ComscoreMetaData(
   private val dateOfDigitalAiring: ComscoreDate?,
   private val timeOfDigitalAiring: ComscoreTime?,
   private val feedType: ComscoreFeedType?,
-  private val classifyAsAudioStream: Boolean?,
+  private val classifyAsAudioStream: Boolean,
   private val deliveryMode: ComscoreDeliveryMode?,
   private val deliverySubscriptionType: ComscoreDeliverySubscriptionType?,
   private val deliveryComposition: ComscoreDeliveryComposition?,
@@ -41,11 +41,12 @@ class ComscoreMetaData(
   private val totalSegments: Int?,
   private val clipUrl: String?,
   private val videoDimension: ComscoreDimension?,
-  private val customLabels: Map<String, String>?
+  private val customLabels: Map<String, String>
 ) {
+
   fun toComscoreContentMetadata(): ContentMetadata {
     val cm = ContentMetadata.Builder()
-    cm.mediaType(mediaType!!.toComscore())
+    cm.mediaType(mediaType.toComscore())
     cm.uniqueId(uniqueId)
     cm.length(length)
     if (c3 != null) cm.dictionaryClassificationC3(c3)
@@ -92,7 +93,7 @@ class ComscoreMetaData(
       timeOfDigitalAiring.minutes
     )
     if (feedType != null) cm.feedType(feedType.toComscore())
-    cm.classifyAsAudioStream(classifyAsAudioStream!!)
+    cm.classifyAsAudioStream(classifyAsAudioStream)
     if (deliveryMode != null) cm.deliveryMode(deliveryMode.toComscore())
     if (deliverySubscriptionType != null) cm.deliverySubscriptionType(deliverySubscriptionType.toComscore())
     if (deliveryComposition != null) cm.deliveryComposition(deliveryComposition.toComscore())
@@ -105,7 +106,7 @@ class ComscoreMetaData(
     if (totalSegments != null) cm.totalSegments(totalSegments)
     if (clipUrl != null) cm.clipUrl(clipUrl)
     if (videoDimension != null) cm.videoDimensions(videoDimension.width, videoDimension.height)
-    if (customLabels!!.isNotEmpty()) {
+    if (customLabels.isNotEmpty()) {
       cm.customLabels(customLabels)
     }
     return cm.build()
@@ -115,7 +116,7 @@ class ComscoreMetaData(
    * The builder for [ComscoreMetaData].
    */
   class Builder {
-    private var mediaType: ComscoreMediaType? = null
+    private var mediaType: ComscoreMediaType = ComscoreMediaType.OTHER
     private var uniqueId: String? = null
     private var length: Long = 0
     private var c3: String? = null
@@ -142,7 +143,7 @@ class ComscoreMetaData(
     private var dateOfDigitalAiring: ComscoreDate? = null
     private var timeOfDigitalAiring: ComscoreTime? = null
     private var feedType: ComscoreFeedType? = null
-    private var classifyAsAudioStream: Boolean? = null
+    private var classifyAsAudioStream: Boolean = false
     private var deliveryMode: ComscoreDeliveryMode? = null
     private var deliverySubscriptionType: ComscoreDeliverySubscriptionType? = null
     private var deliveryComposition: ComscoreDeliveryComposition? = null
@@ -153,7 +154,7 @@ class ComscoreMetaData(
     private var totalSegments: Int? = null
     private var clipUrl: String? = null
     private var videoDimension: ComscoreDimension? = null
-    private var customLabels: Map<String, String>? = null
+    private var customLabels: Map<String, String> = mapOf()
 
     fun mediaType(mediaType: ComscoreMediaType): Builder {
       this.mediaType = mediaType
@@ -396,7 +397,7 @@ class ComscoreMetaData(
 
     companion object {
       private fun createComscoreMetadata(
-        mediaType: ComscoreMediaType?,
+        mediaType: ComscoreMediaType,
         uniqueId: String?,
         length: Long,
         c3: String?,
@@ -423,7 +424,7 @@ class ComscoreMetaData(
         dateOfDigitalAiring: ComscoreDate?,
         timeOfDigitalAiring: ComscoreTime?,
         feedType: ComscoreFeedType?,
-        classifyAsAudioStream: Boolean?,
+        classifyAsAudioStream: Boolean,
         deliveryMode: ComscoreDeliveryMode?,
         deliverySubscriptionType: ComscoreDeliverySubscriptionType?,
         deliveryComposition: ComscoreDeliveryComposition?,
@@ -434,7 +435,7 @@ class ComscoreMetaData(
         totalSegments: Int?,
         clipUrl: String?,
         videoDimension: ComscoreDimension?,
-        customLabels: Map<String, String>?
+        customLabels: Map<String, String>
       ): ComscoreMetaData {
         return ComscoreMetaData(
           mediaType,
