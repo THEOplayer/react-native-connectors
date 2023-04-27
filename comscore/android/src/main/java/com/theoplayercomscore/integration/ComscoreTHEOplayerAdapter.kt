@@ -13,6 +13,7 @@ import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.player.*
 import com.theoplayer.android.api.player.Player
 import com.theoplayercomscore.BuildConfig
+import java.lang.Double.isNaN
 import java.sql.Timestamp
 import java.util.*
 
@@ -402,7 +403,7 @@ class ComscoreTHEOplayerAdapter(
       Log.i(TAG, "DEBUG: SEEKED to: " + seekedEvent.currentTime)
     }
     val currentTime = seekedEvent.currentTime
-    if (java.lang.Double.isNaN(player.duration)) {
+    if (isNaN(player.duration)) {
       val seekableRanges = player.seekable
       val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
       val newDvrWindowOffset =
@@ -470,13 +471,13 @@ class ComscoreTHEOplayerAdapter(
     if (BuildConfig.DEBUG) {
       Log.i(TAG, "DEBUG: AD_BEGIN event")
     }
-    currentAdDuration = player.duration * 1000
+    currentAdDuration = (ad?.imaAd?.duration ?: 0.0) * 1000
     setAdMetadata(currentAdDuration, currentAdOffset, ad?.id ?: "")
   }
 
   private fun handleContentResume() {
     if (BuildConfig.DEBUG) {
-      Log.i(TAG, "DEBUG: AD_BREAK_END event")
+      Log.i(TAG, "DEBUG: CONTENT_RESUME event")
     }
     inAd = false
     transitionToVideo()
