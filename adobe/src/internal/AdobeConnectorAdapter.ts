@@ -254,13 +254,13 @@ export class AdobeConnectorAdapter {
   }
 
   private async startSession(): Promise<void> {
-    if (this.sessionInProgress) {
+    if (this.sessionInProgress || !this.player.source) {
       return;
     }
     this.sessionInProgress = true;
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
     let friendlyName = {};
-    if (this.player.source?.metadata?.title) {
+    if (this.player.source.metadata?.title) {
       friendlyName = {
         "media.name": this.player.source.metadata.title
       };
