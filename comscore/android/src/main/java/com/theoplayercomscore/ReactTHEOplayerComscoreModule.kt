@@ -70,12 +70,12 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
 
   private fun mapConfig(config: ReadableMap): ComscoreConfiguration {
     return ComscoreConfiguration(
-      config.getString("publisherId"),
-      config.getString("applicationName"),
-      config.getString("userConsent"),
-      false, // TODO: bring in line with other platforms
-      false, // TODO: bring in line with other platforms
-      config.getBoolean("debug")
+      config.getString("publisherId") ?: "",
+      config.getString("applicationName") ?: "",
+      config.getString("userConsent") ?: "0",
+      secureTransmission = false, // TODO: bring in line with other platforms
+      childDirected = false, // TODO: bring in line with other platforms
+      debug = config.getBoolean("debug")
     )
   }
 
@@ -110,7 +110,7 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     }
   }
 
-  private fun mapMediaType(mediaType: String?): ComscoreMediaType? {
+  private fun mapMediaType(mediaType: String?): ComscoreMediaType {
     return when (mediaType) {
       "longFormOnDemand" -> ComscoreMediaType.LONG_FORM_ON_DEMAND
       "shortFormOnDemand" -> ComscoreMediaType.SHORT_FORM_ON_DEMAND
