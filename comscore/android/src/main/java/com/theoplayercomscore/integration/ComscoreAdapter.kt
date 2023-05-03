@@ -19,7 +19,7 @@ import java.util.*
 
 private const val TAG = "ComscoreConnector"
 
-class ComscoreTHEOplayerAdapter(
+class ComscoreAdapter(
   private val player: Player,
   playerVersion: String?,
   private val configuration: ComscoreConfiguration,

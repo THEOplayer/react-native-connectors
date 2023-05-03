@@ -10,7 +10,7 @@ import com.theoplayercomscore.BuildConfig
 private const val TAG = "ComscoreConnector"
 
 class ComscoreAnalytics {
-  private var adapter: ComscoreTHEOplayerAdapter? = null
+  private var adapter: ComscoreAdapter? = null
   private var startedTracking = false
 
   fun initialize(
@@ -50,7 +50,7 @@ class ComscoreAnalytics {
 
     Analytics.start(context)
 
-    adapter = ComscoreTHEOplayerAdapter(player, playerVersion, configuration, metadata)
+    adapter = ComscoreAdapter(player, playerVersion, configuration, metadata)
   }
 
   fun destroy() {
