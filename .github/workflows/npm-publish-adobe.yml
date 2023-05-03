@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
-      - run: npm ci --prefix adobe
-      - run: npm publish --prefix adobe
+          cache-dependency-path: "./adobe/package-lock.json"
+      - run: (cd adobe && npm ci && npm publish --access public)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
