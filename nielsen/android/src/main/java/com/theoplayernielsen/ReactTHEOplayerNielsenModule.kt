@@ -2,6 +2,7 @@ package com.theoplayernielsen
 
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
+import com.theoplayer.android.connector.analytics.nielsen.NielsenConnector
 import com.theoplayer.util.ViewResolver
 
 private const val PROP_DEBUG = "nol_sdkDebug"

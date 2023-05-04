@@ -68,13 +68,14 @@ repositories {
 
 rootProject.allprojects {
   repositories {
+    maven { url 'https://raw.githubusercontent.com/NielsenDigitalSDK/nielsenappsdk-android/master/' }
     maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-nielsen/android/local") }
   }
 }
 
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.8.10")
-def nielsen_version = safeExtGet("THEOplayerNielsen_nielsenVersion", "9.0.0.0")
+def nielsen_version = safeExtGet("THEOplayerNielsen_nielsenVersion", "9.1.0.0")
 def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
 def core_prefix = enabledV4 ? 'unified' : 'core'
 def integration_prefix = enabledV4 ? 'unified' : 'integration'
@@ -87,10 +88,16 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
 
-  implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
-  implementation project(':react-native-theoplayer')
+  // THEOplayer dependencies
+  compileOnly "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
+  compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
+  compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
+  compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
+  compileOnly project(':react-native-theoplayer')
+
+  // Local maven dependency: remove once published.
+  implementation "com.theoplayer.android-connector:nielsen:5.0.3-pre"
+//  implementation "com.theoplayer.android-connector:nielsen:$theoplayer_sdk_version"
 
   implementation "com.nielsenappsdk.global:ad:$nielsen_version"
 
