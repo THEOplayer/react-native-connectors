@@ -93,7 +93,7 @@ dependencies {
   compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
   compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
   compileOnly "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
-  compileOnly project(':react-native-theoplayer')
+  implementation project(':react-native-theoplayer')
 
   // Local maven dependency: remove once published.
   implementation "com.theoplayer.android-connector:nielsen:5.0.3-pre"
