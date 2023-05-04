@@ -15,6 +15,7 @@
     "cpp",
     "*.podspec",
     "*.tgz",
+    "CHANGELOG.md",
     "!lib/typescript/example",
     "!ios/build",
     "!android/build",
