@@ -5,7 +5,7 @@ An Adobe analytics connector for `@theoplayer/react-native`.
 ## Installation
 
 ```sh
-npm install https://theoplayer-cdn.s3.eu-west-1.amazonaws.com/react-native-theoplayer/theoplayer-react-native-analytics-adobe-0.1.0.tgz
+npm install @theoplayer/react-native-analytics-adobe
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
