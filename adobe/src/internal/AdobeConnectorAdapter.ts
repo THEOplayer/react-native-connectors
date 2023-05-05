@@ -45,13 +45,16 @@ export class AdobeConnectorAdapter {
 
   private currentChapter: TextTrackCue | undefined;
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData) {
+  private customUserAgent: string | undefined;
+
+  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData, userAgent?: string) {
     this.player = player
     this.uri = `https://${ uri }/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
     this.trackingUrl = trackingUrl;
     this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.customUserAgent = userAgent;
 
     this.addEventListeners();
   }
@@ -354,12 +357,27 @@ export class AdobeConnectorAdapter {
     }, interval);
   }
 
+  private buildUserAgent() {
+    let agent = `${Platform.OS}`;
+    if (Platform.OS === 'android') {
+      const {Version, Fingerprint, Model, Brand, Manufacturer, uiMode} = Platform.constants;
+      agent += `; API ${Version}; ${Fingerprint}; ${Model}; ${Brand}; ${Manufacturer}; ${uiMode}`;
+    }
+    return agent;
+  }
+
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+
+        // For Android replace the `okhttp` User-Agent with a generated one.
+        ...(Platform.OS === 'android' && {'User-Agent': this.buildUserAgent()}),
+
+        // Optionally override User-Agent with provided value.
+        ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
       }
     })
   }

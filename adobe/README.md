@@ -24,9 +24,11 @@ const uri = "<Media Collection API's end point>";
 const ecid = "<Visitor Experience Cloud Org ID>";
 const sid = "<Report Suite ID>";
 const trackingUrl = "<Tracking Server URL>";
+const metadata = {}; // Optionally provide initial metadata
+const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
+  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, metadata, userAgent);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
