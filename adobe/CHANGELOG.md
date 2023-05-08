@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- Changed the default `User-Agent` header value on Android to custom value that contains `"$Platform.OS}; API {Version}; {Fingerprint}; {Model}; {Brand}; {Manufacturer}; {uiMode}"`.
+- Changed the default `User-Agent` header value on Android to custom value that contains `Mozilla/5.0 (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`.
+- Changed the default `User-Agent` header value on iOS to custom value that contains `Mozilla/5.0 (${model}; CPU OS ${osVersion} like Mac OS X; ${localeIdentifier})`.
 
 ## [1.0.0] - 2023-05-03
 
