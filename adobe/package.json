@@ -77,6 +77,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
+    "react-native-device-info": "*",
     "react-native-theoplayer": ">=2.0.0"
   },
   "commitlint": {
@@ -118,8 +119,5 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "react-native-device-info": "^10.6.0"
   }
 }
