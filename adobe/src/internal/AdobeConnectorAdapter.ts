@@ -382,8 +382,8 @@ export class AdobeConnectorAdapter {
       return `${USER_AGENT_PREFIX} (${model}; CPU OS ${osVersion} like Mac OS X; ${localeString})`;
     } else if (Platform.OS === 'web') {
       return navigator.userAgent;
-    } else /* if (Platform.OS === 'windows') */ {
-      // Custom User-Agent for Windows not supported
+    } else /* if (Platform.OS === 'windows' || Platform.OS === 'macos') */ {
+      // Custom User-Agent for Windows and MacOS not supported
       return undefined;
     }
   }
