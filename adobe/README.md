@@ -4,8 +4,12 @@ An Adobe analytics connector for `@theoplayer/react-native`.
 
 ## Installation
 
+The `@theoplayer/react-native` package has a peer dependency on `react-native-device-info`, which has to be installed as well:
+
 ```sh
-npm install @theoplayer/react-native-analytics-adobe
+npm install \
+  react-native-device-info \
+  @theoplayer/react-native-analytics-adobe
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
