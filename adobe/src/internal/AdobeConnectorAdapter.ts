@@ -3,10 +3,11 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
-import { Platform } from "react-native";
+import { NativeModules, Platform } from "react-native";
 
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
+const USER_AGENT_PREFIX = 'Mozilla/5.0';
 
 export class AdobeConnectorAdapter {
   private player: THEOplayer;
@@ -357,24 +358,38 @@ export class AdobeConnectorAdapter {
     }, interval);
   }
 
-  private buildUserAgent() {
-    let agent = `${Platform.OS}`;
+  private buildUserAgent(): string | undefined {
     if (Platform.OS === 'android') {
-      const {Version, Fingerprint, Model, Brand, Manufacturer, uiMode} = Platform.constants;
-      agent += `; API ${Version}; ${Fingerprint}; ${Model}; ${Brand}; ${Manufacturer}; ${uiMode}`;
+      // Release: Build.VERSION.RELEASE
+      // Model: Build.MODEL
+      const {Release, Model} = Platform.constants;
+      const localeString = NativeModules.I18nManager.localeIdentifier?.replace('_', '-');
+      const operatingSystem = `Android ${Release}`;
+      const deviceName = Model;
+      const deviceBuildId = '';//DeviceInfo.getBuildIdSync();
+      return `${USER_AGENT_PREFIX} (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`;
+    } else if (Platform.OS === 'ios') {
+      const localeString = NativeModules.SettingsManager.settings.AppleLocale ||
+        NativeModules.SettingsManager.settings.AppleLanguages[0]
+      const model = DeviceInfo.getModel();
+      const osVersion = DeviceInfo.getSystemVersion().replace('.', '_');
+      return `${USER_AGENT_PREFIX} (${model}; CPU OS ${osVersion} like Mac OS X; ${localeString})`;
+    } else if (Platform.OS === 'web') {
+      return navigator.userAgent;
     }
-    return agent;
+    return undefined;
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
+    const userAgent = this.buildUserAgent();
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
 
-        // For Android replace the `okhttp` User-Agent with a generated one.
-        ...(Platform.OS === 'android' && {'User-Agent': this.buildUserAgent()}),
+        // Provide a custom User-Agent
+        ...(userAgent && {'User-Agent': userAgent}),
 
         // Optionally override User-Agent with provided value.
         ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
