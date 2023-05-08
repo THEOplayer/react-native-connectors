@@ -9,6 +9,11 @@ import DeviceInfo from "react-native-device-info";
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 const USER_AGENT_PREFIX = 'Mozilla/5.0';
+const UNKNOWN = 'unknown';
+
+function nonEmptyOrUnknown(str?: string): string {
+  return str && str !== '' ? str : UNKNOWN;
+}
 
 export class AdobeConnectorAdapter {
   private player: THEOplayer;
@@ -47,7 +52,7 @@ export class AdobeConnectorAdapter {
 
   private currentChapter: TextTrackCue | undefined;
 
-  private customUserAgent: string | undefined;
+  private readonly customUserAgent: string | undefined;
 
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData, userAgent?: string) {
     this.player = player
@@ -362,9 +367,9 @@ export class AdobeConnectorAdapter {
   private buildUserAgent(): string | undefined {
     if (Platform.OS === 'android') {
       const {Release, Model: deviceName} = Platform.constants;
-      const localeString = NativeModules.I18nManager.localeIdentifier?.replace('_', '-');
+      const localeString = nonEmptyOrUnknown(NativeModules.I18nManager?.localeIdentifier?.replace('_', '-'));
       const operatingSystem = `Android ${Release}`;
-      const deviceBuildId = DeviceInfo.getBuildIdSync();
+      const deviceBuildId = nonEmptyOrUnknown(DeviceInfo.getBuildIdSync());
       // operatingSystem: `Android Build.VERSION.RELEASE`
       // deviceName: Build.MODEL
       // Example: Mozilla/5.0 (Linux; U; Android 7.1.2; en-US; AFTN Build/NS6296)
@@ -377,8 +382,10 @@ export class AdobeConnectorAdapter {
       return `${USER_AGENT_PREFIX} (${model}; CPU OS ${osVersion} like Mac OS X; ${localeString})`;
     } else if (Platform.OS === 'web') {
       return navigator.userAgent;
+    } else /* if (Platform.OS === 'windows') */ {
+      // Custom User-Agent for Windows not supported
+      return undefined;
     }
-    return undefined;
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
