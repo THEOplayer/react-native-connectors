@@ -118,5 +118,8 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "react-native-device-info": "^10.6.0"
   }
 }

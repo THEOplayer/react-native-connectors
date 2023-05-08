@@ -3,7 +3,8 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
-import { NativeModules, Platform } from "react-native";
+  import { NativeModules, Platform } from "react-native";
+import DeviceInfo from "react-native-device-info";
 
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
@@ -55,7 +56,7 @@ export class AdobeConnectorAdapter {
     this.sid = sid;
     this.trackingUrl = trackingUrl;
     this.customMetadata = { ...this.customMetadata, ...metadata };
-    this.customUserAgent = userAgent;
+    this.customUserAgent = userAgent || this.buildUserAgent();
 
     this.addEventListeners();
   }
@@ -360,13 +361,13 @@ export class AdobeConnectorAdapter {
 
   private buildUserAgent(): string | undefined {
     if (Platform.OS === 'android') {
-      // Release: Build.VERSION.RELEASE
-      // Model: Build.MODEL
-      const {Release, Model} = Platform.constants;
+      const {Release, Model: deviceName} = Platform.constants;
       const localeString = NativeModules.I18nManager.localeIdentifier?.replace('_', '-');
       const operatingSystem = `Android ${Release}`;
-      const deviceName = Model;
-      const deviceBuildId = '';//DeviceInfo.getBuildIdSync();
+      const deviceBuildId = DeviceInfo.getBuildIdSync();
+      // operatingSystem: `Android Build.VERSION.RELEASE`
+      // deviceName: Build.MODEL
+      // Example: Mozilla/5.0 (Linux; U; Android 7.1.2; en-US; AFTN Build/NS6296)
       return `${USER_AGENT_PREFIX} (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`;
     } else if (Platform.OS === 'ios') {
       const localeString = NativeModules.SettingsManager.settings.AppleLocale ||
@@ -381,17 +382,13 @@ export class AdobeConnectorAdapter {
   }
 
   private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
-    const userAgent = this.buildUserAgent();
     return await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
 
-        // Provide a custom User-Agent
-        ...(userAgent && {'User-Agent': userAgent}),
-
-        // Optionally override User-Agent with provided value.
+        // Override User-Agent with provided value.
         ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
       }
     })
