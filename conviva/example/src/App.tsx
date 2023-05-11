@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import {
   PlayerConfiguration,
   PlayerError,
@@ -15,6 +15,7 @@ import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/imag
 import SOURCES_ANDROID from "./res/sources_android.json"
 import SOURCES_IOS from "./res/sources_ios.json"
 import SOURCES_WEB from "./res/sources_web.json"
+import { TestButton } from "./TestButton";
 
 const SOURCES = Platform.select({
   "ios": SOURCES_IOS,
@@ -22,6 +23,7 @@ const SOURCES = Platform.select({
   "web": SOURCES_WEB
 }) || SOURCES_WEB;
 
+// THEO's test account
 const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
 const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
 
@@ -95,39 +97,21 @@ const App = () => {
           <View style={styles.controlsContainer}>
             {/*Play/pause & trick-play buttons*/}
             <View style={styles.controlsRow}>
-              <TouchableOpacity style={styles.button} onPress={() => skip(theoPlayer.current, -15000)}>
-                <Image style={styles.image} source={RewindButton}/>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={onTogglePlayPause}>
-                {paused && <Image style={styles.image} source={PlayButton}/>}
-                {!paused && <Image style={styles.image} source={PauseButton}/>}
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={() => skip(theoPlayer.current, 15000)}>
-                <Image style={styles.image} source={ForwardButton}/>
-              </TouchableOpacity>
+              <TestButton onPress={() => skip(theoPlayer.current, -15000)} image={RewindButton} />
+              <TestButton onPress={onTogglePlayPause} image={paused ? PlayButton : PauseButton } />
+              <TestButton onPress={() => skip(theoPlayer.current, 15000)} image={ForwardButton} />
             </View>
-
             <Text style={styles.infoText}>{`Source: ${SOURCES[sourceIndex].name}`}</Text>
-            <TouchableOpacity style={styles.button} onPress={() => seekToBeforeEnd(theoPlayer.current)}>
-              <Text style={styles.buttonText}>{"Seek to end -5sec"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => toPip(theoPlayer.current)}>
-              <Text style={styles.buttonText}>{"Picture-in-Picture"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {
+            <TestButton onPress={() => seekToBeforeEnd(theoPlayer.current)} title={"Seek to end -5sec"} />
+            <TestButton onPress={() => toPip(theoPlayer.current)} title={"Picture-in-Picture"} />
+            <TestButton onPress={() => {
               const nextSourceIndex = (sourceIndex + 1) % SOURCES.length;
               setSourceIndex(nextSourceIndex);
               setSource(theoPlayer.current, SOURCES[nextSourceIndex].source as SourceDescription);
               setPaused(true);
-            }}>
-              <Text style={styles.buttonText}>{"Next source"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onCustomMetadata}>
-              <Text style={styles.buttonText}>{"Set custom metadata"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onStopAndStartNewSession}>
-              <Text style={styles.buttonText}>{"Stop & start new session"}</Text>
-            </TouchableOpacity>
+            }} title={"Next source"} />
+            <TestButton onPress={onCustomMetadata} title={"Set custom metadata"} />
+            <TestButton onPress={onStopAndStartNewSession} title={"Stop & start new session"} />
           </View>
         </View>
       )}
@@ -182,23 +166,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row'
   },
-  button: {
-    marginHorizontal: 5,
-  },
   infoText: {
     fontSize: 18,
     marginVertical: 2,
     color: '#ffc50f',
     padding: 3,
     backgroundColor: 'black',
-  },
-  buttonText: {
-    fontSize: 20,
-    marginVertical: 2,
-    color: 'black',
-    borderRadius: 4,
-    padding: 3,
-    backgroundColor: '#ffc50f',
   },
   message: {
     textAlignVertical: 'center',
@@ -208,17 +181,6 @@ const styles = StyleSheet.create({
     paddingRight: 50,
     color: 'white',
     backgroundColor: 'black',
-  },
-  image: {
-    resizeMode: 'contain',
-    width: 75,
-    height: 75,
-    tintColor: '#ffc50f',
-  },
-  playButton: {
-    width: 90,
-    height: 90,
-    tintColor: '#ffc50f',
   }
 });
 
