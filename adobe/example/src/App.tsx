@@ -13,8 +13,8 @@ import { PlayButton } from './res/images';
 import { useAdobe } from "@theoplayer/react-native-analytics-adobe";
 
 const playerConfig: PlayerConfiguration = {
-  license:
-    'sZP7IYe6T6P6CSRo0uUe36zLIleLFSx63lR-TSaiC6zrISbr3Sfc3QX60l06FOPlUY3zWokgbgjNIOf9flhcTSCZ3QxlFDaoIQh-3uCo36zr3LerFS0_Iu1eIuhi3LBc36fVfK4_bQgZCYxNWoryIQXzImf90SCoTu0LTS0_0lBt0Oi6Io4pIYP1UQgqWgjeCYxgflEc3lCk3lCiTSRZ0SbZFOPeWok1dDrLYtA1Ioh6TgV6v6fVfKcqCoXVdQjLUOfVfGxEIDjiWQXrIYfpCoj-fgzVfKxqWDXNWG3ybojkbK3gflNWf6E6FOPVWo31WQ1qbta6FOPzdQ4qbQc1sD4ZFK3qWmPUFOPLIQ-LflNWfK1zWDikf6i6CDrebKjNIOfVfKXpIwPqdDxzU6fVfKINbK4zU6fVfKgqbZfVfGxNsK4pf6i6UwIqbZfVfGUgCKjLfgzVfG3gWKxydDkibK4LbogqW6f9UwPkIYz',
+  // Get your THEOplayer license from https://portal.theoplayer.com/
+  license: undefined,
   libraryLocation: 'theoplayer',
 };
 
