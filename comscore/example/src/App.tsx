@@ -55,7 +55,7 @@ const comscoreMetadata: ComscoreMetadata = {
 };
 
 const comscoreConfig: ComscoreConfiguration = {
-  publisherId: "15866303", // Can be a test or production key.
+  publisherId: "<publisherId>", // Can be a test or production key.
   applicationName: "ReactNativeTHEOplayer",
   userConsent: ComscoreUserConsent.granted,
   debug: true,

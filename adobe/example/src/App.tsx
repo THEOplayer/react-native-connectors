@@ -33,10 +33,11 @@ const source_hls: SourceDescription = {
   ]
 };
 
-const uri = "smetrics.nfl.com/va" // "<Media Collection API's end point>";
-const ecid = "F75C3025512D2C1D0A490D44@AdobeOrg" // "<Visitor Experience Cloud Org ID>";
-const sid = "nfldev" // "<Report Suite ID>";
-const trackingUrl = "smetrics.nfl.com" // "<Tracking Server URL>";
+// Insert correct config values here.
+const uri = "<api_url>" // "<Media Collection API's end point>";
+const ecid = "<ord_id>" // "<Visitor Experience Cloud Org ID>";
+const sid = "<suite_id>" // "<Report Suite ID>";
+const trackingUrl = "<tracking_url>" // "<Tracking Server URL>";
 
 const App = () => {
   const [_adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);

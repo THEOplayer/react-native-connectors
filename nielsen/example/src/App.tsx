@@ -34,13 +34,14 @@ const source: SourceDescription = {
   ]
 };
 
+// Insert correct config values here.
 let appId: string
 if (Platform.OS === "web") {
-  appId = "P77E3B909-D4B5-4E5C-9B5F-77B0E8FE27F5";
+  appId = "<appId_web>";
 } else if (Platform.OS === "android") {
-  appId = "P4B35DFE9-0EB1-41F9-8E66-7ED2FF4746DB";
+  appId = "<appId_android>";
 } else if (Platform.OS === "ios") {
-  appId = "PE8381632-E66B-4AF5-8C10-D3303C005D9E";
+  appId = "<appId_ios>";
 }
 
 const nielsenOptions: NielsenOptions = {

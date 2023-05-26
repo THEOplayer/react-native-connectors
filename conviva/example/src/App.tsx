@@ -23,9 +23,9 @@ const SOURCES = Platform.select({
   "web": SOURCES_WEB
 }) || SOURCES_WEB;
 
-// THEO's test account
-const TEST_CUSTOMER_KEY = '876a2328cc34e791190d855daf389567c96d1e86';
-const TOUCHSTONE_SERVICE_URL = 'https://theoplayer-test.testonly.conviva.com';
+// Insert correct config values here.
+const TEST_CUSTOMER_KEY = '<customer_key>';
+const TOUCHSTONE_SERVICE_URL = '<touchstone_url>';
 
 const convivaMetadata: ConvivaMetadata = {
   ['Conviva.assetName']: 'NA (not set)',
