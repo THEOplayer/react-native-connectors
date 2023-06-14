@@ -1,0 +1,9 @@
+{
+  "name": "@theoplayer/react-native-analytics-youbora",
+  "type": "lib",
+  "tech": "js",
+  "author": "THEO Technologies",
+  "version": "1.0.0",
+  "built": "2023-06-16",
+  "repo": "git@github.com:THEOplayer/react-native-theoplayer-analytics.git"
+}
