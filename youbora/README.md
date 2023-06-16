@@ -20,7 +20,7 @@ that describes the player or site, and an optional set of `YouboraOptions`:
 ```jsx
 import { useYoubora } from '@theoplayer/react-native-analytics-youbora';
 
-const youboraOptions: YouboraOptions = {
+const youboraOptions: youbora.Options = {
   'accountCode': 'powerdev',
   // 'username': 'dev',
   // 'parse.HLS': true,

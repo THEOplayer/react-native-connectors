@@ -1,21 +1,32 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import {
   PlayerConfiguration,
-  PlayerError,
-  PlayerEventType,
   SourceDescription,
   THEOplayer,
-  THEOplayerView
+  THEOplayerView,
 } from 'react-native-theoplayer';
-import { useYoubora } from '@theoplayer/react-native-analytics-youbora';
-import { PlayButton } from './res/images';
-import youbora from "youboralib";
+import { useYoubora, youbora } from '@theoplayer/react-native-analytics-youbora';
+import {
+  CenteredControlBar,
+  CenteredDelayedActivityIndicator,
+  ControlBar,
+  DEFAULT_THEOPLAYER_THEME,
+  FullscreenButton,
+  FULLSCREEN_CENTER_STYLE, LanguageMenuButton, MuteButton,
+  PlayButton,
+  SeekBar,
+  SkipButton,
+  Spacer,
+  TimeLabel,
+  UiContainer
+} from "@theoplayer/react-native-ui";
 
-const playerConfig: PlayerConfiguration = {
+const config: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
-  libraryLocation: 'theoplayer'
+  libraryLocation: 'theoplayer',
+  chromeless: true
 };
 
 const source: SourceDescription = {
@@ -27,7 +38,7 @@ const source: SourceDescription = {
   ]
 };
 
-const options = {
+const options: youbora.Options = {
   'accountCode': 'powerdev',
   // 'username': 'dev',
   // 'parse.HLS': true,
@@ -57,89 +68,56 @@ const options = {
 }
 
 const App = () => {
-  const [_youbora, initYoubora] = useYoubora(options, youbora.Log.Level.DEBUG);
-  const theoPlayer = useRef<THEOplayer | null>();
-  const [error, setError] = useState<PlayerError | null>();
-  const [paused, setPaused] = useState<boolean>(true);
+  const [connector, initYoubora] = useYoubora(options);
+  const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
+    // Update theoPlayer reference.
+    setPlayer(player);
+
     // Initialize Youbora connector
     initYoubora(player);
-    player.autoplay = !paused;
+
+    // Change log level
+    connector.current?.setDebugLevel(youbora.Log.Level.DEBUG);
+
     player.source = source;
-    player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
-
-    // Update theoPlayer reference.
-    theoPlayer.current = player;
-  }, [theoPlayer]);
-
-  const onTogglePlayPause = useCallback(() => {
-    const player = theoPlayer.current;
-    if (player) {
-      player.paused? player.play() : player.pause();
-      setPaused((paused) => !paused);
-    }
-  }, [theoPlayer])
+  }, [player]);
 
   return (
-    <View style={ { position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 } }>
-
-      <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }/>
-
-      {/*Play/pause button*/}
-      {!error && (
-        <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
-          {paused && <Image style={styles.image} source={PlayButton} />}
-        </TouchableOpacity>
-      )}
-
-      {/*Error message*/}
-      {error && <View style={styles.fullscreen}><Text style={styles.message}>{error.errorMessage}</Text></View>}
+    <View style={StyleSheet.absoluteFill}>
+      <View style={[FULLSCREEN_CENTER_STYLE, {backgroundColor: '#000000'}]}/>
+      <THEOplayerView config={config} onPlayerReady={onPlayerReady}>
+        {player && (
+          <UiContainer
+            theme={{...DEFAULT_THEOPLAYER_THEME}}
+            player={player}
+            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            top={
+              <ControlBar>
+                <LanguageMenuButton/>
+              </ControlBar>
+            }
+            center={<CenteredControlBar left={<SkipButton skip={-10}/>} middle={<PlayButton/>}
+                                        right={<SkipButton skip={30}/>}/>}
+            bottom={
+              <>
+                <ControlBar>
+                  <SeekBar/>
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton/>
+                  <TimeLabel showDuration={true}/>
+                  <Spacer/>
+                  <FullscreenButton/>
+                </ControlBar>
+              </>
+            }
+          />
+        )}
+      </THEOplayerView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  fullscreen: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  message: {
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    fontSize: 16,
-    paddingLeft: 50,
-    paddingRight: 50,
-    color: 'white',
-    backgroundColor: 'black',
-  },
-  image: {
-    resizeMode: 'contain',
-    width: 75,
-    height: 75,
-    tintColor: '#ffc50f',
-  },
-  playButton: {
-    width: 90,
-    height: 90,
-    tintColor: '#ffc50f',
-  },
-  buttonText: {
-    fontSize: 20,
-    marginVertical: 2,
-    color: 'black',
-    borderRadius: 4,
-    padding: 3,
-    backgroundColor: '#ffc50f',
-  },
-  button: {
-    marginHorizontal: 5,
-  },
-});
 
 export default App;

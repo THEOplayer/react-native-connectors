@@ -1,15 +1,15 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import type youbora from "youboralib";
+import youbora from "youboralib";
 
 export class YouboraConnectorAdapter {
 
   constructor (private player: THEOplayer, options: youbora.Options, logLevel?: youbora.Log.Level) {
-    NativeModules.YouboraModule.initialize(this.player.nativeHandle, options, logLevel);
+    NativeModules.YouboraModule.initialize(this.player.nativeHandle, options, logLevel || youbora.Log.Level.SILENT);
   }
 
   setDebugLevel(level: youbora.Log.Level) {
-    NativeModules.YouboraModule.setLogLevel(this.player.nativeHandle, level);
+    NativeModules.YouboraModule.setDebugLevel(this.player.nativeHandle, level);
   }
 
   destroy(): void {
