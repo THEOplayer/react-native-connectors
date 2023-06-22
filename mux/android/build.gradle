@@ -1,0 +1,100 @@
+buildscript {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") :
+    project.properties["THEOplayerMux_kotlinVersion"]
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:7.2.2"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+  compileSdkVersion safeExtGet("THEOplayerMux_compileSdkVersion", 31)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("THEOplayerMux_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerMux_targetSdkVersion", 31)
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+rootProject.allprojects {
+  repositories {
+    // Any project depending on this module through npm should be able to find the local Maven repo.
+    maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-mux/android/local") }
+  }
+}
+
+repositories {
+  mavenLocal()
+  google()
+  mavenCentral()
+  // Local Maven repo
+  maven { url 'local' }
+  maven { url 'https://jitpack.io' }
+  maven { url 'https://muxinc.jfrog.io/artifactory/default-maven-release-local' }
+}
+
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
+def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.8.10")
+def mux_version = safeExtGet('THEOplayerMux_muxVersion', '4.0.30')
+def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
+def core_prefix = enabledV4 ? 'unified' : 'core'
+def integration_prefix = enabledV4 ? 'unified' : 'integration'
+
+dependencies {
+  // For < 0.71, this will be from the local maven repo
+  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_unified:$mux_version"
+
+  implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
+  implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
+  implementation project(':react-native-theoplayer')
+
+  // Align the Kotlin SDK libraries with the same version.
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
+}
