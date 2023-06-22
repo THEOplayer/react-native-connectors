@@ -82,6 +82,9 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                 connector.videoAnalytics.reportPlaybackEnded()
                 connector.videoAnalytics.reportPlaybackRequested(contentInfo)
                 connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+                if let bitrate = connector.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
+                    connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
+                }
             }
         }
     }
