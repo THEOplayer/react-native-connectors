@@ -76,7 +76,7 @@ repositories {
 
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.8.10")
-def mux_version = safeExtGet('THEOplayerMux_muxVersion', '4.0.30')
+def mux_version = safeExtGet('THEOplayerMux_muxVersion', '0.2.0')
 def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
 def core_prefix = enabledV4 ? 'unified' : 'core'
 def integration_prefix = enabledV4 ? 'unified' : 'integration'
@@ -89,7 +89,6 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_unified:$mux_version"
-
   implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
