@@ -59,6 +59,9 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             if let extendedConnector = self.connectors[node]?.base, let contentInfo = metadata as? [String: Any] {
                 extendedConnector.videoAnalytics.setContentInfo(contentInfo)
+				if let assetName = contentInfo[CIS_SSDK_METADATA_ASSET_NAME] as? String {
+				    extendedConnector.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
+				}
             }
         }
     }
