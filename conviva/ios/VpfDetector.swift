@@ -65,8 +65,8 @@ extension VpfDetector {
             Self(domain: NSURLErrorDomain, code: URLError.Code.cannotFindHost.rawValue),
             Self(domain: NSURLErrorDomain, code: URLError.Code.cannotConnectToHost.rawValue),
             Self(domain: NSURLErrorDomain, code: URLError.Code.networkConnectionLost.rawValue),
-            Self(domain: "CoreMediaErrorDomain", code: 12938), // HTTP 404: File Not Found
-            Self(domain: "CoreMediaErrorDomain", code: 12660), // HTTP 403: Forbidden
+            Self(domain: "CoreMediaErrorDomain", code: -12938), // HTTP 404: File Not Found
+            Self(domain: "CoreMediaErrorDomain", code: -12660), // HTTP 403: Forbidden
         ])
     }
 }

@@ -59,6 +59,9 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             if let extendedConnector = self.connectors[node]?.base, let contentInfo = metadata as? [String: Any] {
                 extendedConnector.videoAnalytics.setContentInfo(contentInfo)
+				if let assetName = contentInfo[CIS_SSDK_METADATA_ASSET_NAME] as? String {
+				    extendedConnector.storage.storeKeyValuePair(key: CIS_SSDK_METADATA_ASSET_NAME, value: assetName)
+				}
             }
         }
     }
@@ -82,6 +85,9 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                 connector.videoAnalytics.reportPlaybackEnded()
                 connector.videoAnalytics.reportPlaybackRequested(contentInfo)
                 connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_PLAYER_STATE, value: PlayerState.CONVIVA_PLAYING.rawValue)
+                if let bitrate = connector.storage.valueForKey(CIS_SSDK_PLAYBACK_METRIC_BITRATE) as? NSNumber {
+                    connector.videoAnalytics.reportPlaybackMetric(CIS_SSDK_PLAYBACK_METRIC_BITRATE, value: bitrate)
+                }
             }
         }
     }
