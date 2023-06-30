@@ -9,7 +9,7 @@ export class YouboraConnectorAdapter {
   }
 
   setDebugLevel(level: youbora.Log.Level) {
-    NativeModules.YouboraModule.setDebugLevel(this.player.nativeHandle, level);
+    NativeModules.YouboraModule.setDebugLevel(level);
   }
 
   destroy(): void {

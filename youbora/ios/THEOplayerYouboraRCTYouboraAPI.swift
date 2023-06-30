@@ -2,8 +2,9 @@
 import Foundation
 import UIKit
 import react_native_theoplayer
-import THEOplayerConnectorYoubora
 import THEOplayerSDK
+import YouboraTHEOPlayerAdapter
+import YouboraLib
 
 func log(_ text: String) {
     #if DEBUG
@@ -15,7 +16,7 @@ func log(_ text: String) {
 class THEOplayerYouboraRCTYouboraAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
 
-    var connectors = [NSNumber: YouboraConnector]()
+    var connectors = [NSNumber: YBPlugin]()
 
     static func moduleName() -> String! {
         return "YouboraModule"
@@ -25,37 +26,65 @@ class THEOplayerYouboraRCTYouboraAPI: NSObject, RCTBridgeModule {
         return false
     }
 
-    @objc(initialize:appId:instanceName:youboraOptions:)
-    func initialize(_ node: NSNumber, appId: String, instanceName: String, youboraOptions: NSDictionary) -> Void {
+    @objc(initialize:youboraOptions:logLevel:)
+    func initialize(_ node: NSNumber, youboraOptions: NSDictionary, logLevel: NSNumber) -> Void {
         log("initialize triggered.")
 
         DispatchQueue.main.async {
-            log("\(appId) \(instanceName) \(youboraOptions)")
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
             if let player = theView?.player {
-                youboraOptions.setValue(appId, forKey: "appId")
-                if let connector = YouboraConnector(
-                    configuration: youboraOptions,
-                    player: player
-                ) {
-                    self.connectors[node] = connector
-                    log("added connector to view \(node)")
-                } else {
-                    log("Cannot create Youbora connector for node \(node)")
+                let options = YBOptions.init()
+                if let accountCode = youboraOptions["accountCode"] as? String {
+                    options.accountCode = accountCode
                 }
+                if let httpSecure = youboraOptions["httpSecure"] as? Bool {
+                    options.httpSecure = httpSecure
+                }
+                if let autoDetectBackground = youboraOptions["autoDetectBackground"] as? Bool {
+                    options.autoDetectBackground = autoDetectBackground
+                }
+                let plugin = YBPlugin(options: options)
+                plugin.adapter = YBTHEOPlayerAdapter(player: player)
+                self.connectors[node] = plugin
             }
         }
     }
-
-    @objc(updateMetadata:metadata:)
-    func updateMetadata(for node: NSNumber, metadata: NSDictionary) {
-        log("Warning: updating metadata not possible on iOS.")
+    
+    private func parseDebugLevel(logLevel: Int?) -> YBLogLevel {
+        guard let level = logLevel else {
+            return YBLogLevel.silent
+        }
+        switch level {
+        case 1:
+            return YBLogLevel.verbose
+        case 2:
+            return YBLogLevel.debug
+        case 3:
+            return YBLogLevel.notice
+        case 4:
+            return YBLogLevel.warning
+        case 5:
+            return YBLogLevel.error
+        default:
+            return YBLogLevel.silent
+        }
+    }
+    
+    @objc(setDebugLevel:)
+    func setDebugLevel(level: NSNumber) -> Void {
+        log("setDebugLevel triggered: \(level).")
+        YBLog.setDebugLevel(self.parseDebugLevel(logLevel: level.intValue))
     }
 
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
         log("destroy triggered for \(node).")
 		DispatchQueue.main.async {
+            if let plugin = self.connectors[node] {
+                plugin.fireStop()
+                plugin.removeAdapter()
+                plugin.removeAdsAdapter()
+            }
 		    self.connectors.removeValue(forKey: node)
 		}
     }

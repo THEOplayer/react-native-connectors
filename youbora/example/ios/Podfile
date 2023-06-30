@@ -1,4 +1,4 @@
-source 'https://github.com/YouboraDigitalSDK/youboraappsdk-ios-specs-dynamic.git'
+# source 'https://bitbucket.org/npaw/theoplayer-adapter-ios.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
 require_relative '../node_modules/react-native/scripts/react_native_pods'
@@ -49,6 +49,18 @@ target 'TheoplayerYouboraExample' do
   target 'TheoplayerYouboraExampleTests' do
     inherit! :complete
     # Pods for testing
+  end
+
+  pre_install do |installer|
+    adapter_target_name = "YouboraTHEOPlayerAdapter"
+    puts "Patching dependencies of #{adapter_target_name}"
+    def target_by_name(installer, name)
+      target = installer.pod_targets.filter { |t| t.name == name }.first
+      raise "No target '#{name}'" unless target
+      target
+    end
+    adapter_target = target_by_name(installer, adapter_target_name)
+    adapter_target.dependent_targets <<= target_by_name(installer, "THEOplayerSDK-core")
   end
 
   post_install do |installer|

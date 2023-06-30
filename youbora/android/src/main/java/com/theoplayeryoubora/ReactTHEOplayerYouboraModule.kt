@@ -40,7 +40,7 @@ class ReactTHEOplayerYouboraModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun setDebugLevel(tag: Int, level: Int?) {
+  fun setDebugLevel(level: Int?) {
     YouboraLog.setDebugLevel(parseDebugLevel(level))
   }
 
