@@ -33,16 +33,7 @@ class THEOplayerYouboraRCTYouboraAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
             if let player = theView?.player {
-                let options = YBOptions.init()
-                if let accountCode = youboraOptions["accountCode"] as? String {
-                    options.accountCode = accountCode
-                }
-                if let httpSecure = youboraOptions["httpSecure"] as? Bool {
-                    options.httpSecure = httpSecure
-                }
-                if let autoDetectBackground = youboraOptions["autoDetectBackground"] as? Bool {
-                    options.autoDetectBackground = autoDetectBackground
-                }
+                let options = YBOptions.fromDictionary(youboraOptions)
                 let plugin = YBPlugin(options: options)
                 plugin.adapter = YBTHEOPlayerAdapter(player: player)
                 self.connectors[node] = plugin
