@@ -60,3 +60,22 @@ const App = () => {
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
 }
 ```
+
+### Configuration on iOS
+
+As outlined on the native iOS connector's [git repository](https://bitbucket.org/npaw/theoplayer-adapter-ios),
+the app's Podfile still needs to include a dependency to the THEOplayerSDK by adding a pre-install script:
+
+```ruby
+pre_install do |installer|
+  adapter_target_name = "YouboraTHEOPlayerAdapter"
+  puts "Patching dependencies of #{adapter_target_name}"
+  def target_by_name(installer, name)
+    target = installer.pod_targets.filter { |t| t.name == name }.first
+    raise "No target '#{name}'" unless target
+    target
+  end
+  adapter_target = target_by_name(installer, adapter_target_name)
+  adapter_target.dependent_targets <<= target_by_name(installer, "THEOplayerSDK-core")
+end
+```
