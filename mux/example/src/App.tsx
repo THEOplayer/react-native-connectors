@@ -29,6 +29,7 @@ import {
   TimeLabel,
   UiContainer
 } from '@theoplayer/react-native-ui';
+import { MuxMenuButton } from "./custom/MuxMenuButton";
 
 const SOURCES = Platform.select({
   "ios": SOURCES_IOS,
@@ -65,7 +66,7 @@ const playerConfig: PlayerConfiguration = {
 };
 
 const App = () => {
-  const [, initMux] = useMux(muxOptions);
+  const [muxConnector, initMux] = useMux(muxOptions);
   const [player, setPlayer] = useState<THEOplayer | undefined>();
   const [sourceIndex, setSourceIndex] = useState<number>(0);
 
@@ -89,6 +90,7 @@ const App = () => {
             behind={<CenteredDelayedActivityIndicator size={50}/>}
             top={
               <ControlBar>
+                <MuxMenuButton muxConnector={muxConnector}/>
                 <LanguageMenuButton/>
                 <SettingsMenuButton>
                   {/*Note: quality selection is not available on iOS */}

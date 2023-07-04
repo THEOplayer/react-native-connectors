@@ -2,7 +2,7 @@ export interface MuxData {
   /**
    * Your env key from the Mux dashboard. Note this was previously named property_key
    */
-  env_key: string;
+  env_key?: string;
 
   /**
    * You can use this field to separate views into different experiments, if you would like to filter by this
