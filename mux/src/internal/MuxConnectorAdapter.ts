@@ -10,7 +10,7 @@ export class MuxConnectorAdapter {
   }
 
   changeProgram(data: MuxData) {
-    NativeModules.MuxModule.updateProgram(this.player.nativeHandle, data);
+    NativeModules.MuxModule.changeProgram(this.player.nativeHandle, data);
   }
 
   destroy(): void {
