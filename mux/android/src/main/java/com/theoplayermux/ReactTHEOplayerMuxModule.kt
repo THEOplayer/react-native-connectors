@@ -127,7 +127,9 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
       environmentKey = data.getString(PROP_ENVIRONMENT_KEY)
       playerName = data.getString(PROP_PLAYER_NAME)
       playerVersion = data.getString(PROP_PLAYER_VERSION)
-      playerInitTime = data.getDouble(PROP_PLAYER_INIT_TIME).toLong()
+      if (data.hasKey(PROP_PLAYER_INIT_TIME)) {
+        playerInitTime = data.getDouble(PROP_PLAYER_INIT_TIME).toLong()
+      }
       adConfigVariant = data.getString(PROP_AD_CONFIG_VARIANT)
       experimentName = data.getString(PROP_EXPERIMENT_NAME)
       pageType = data.getString(PROP_PAGE_TYPE)
@@ -141,8 +143,12 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
     return CustomerVideoData().apply {
       videoId = data.getString(PROP_VIDEO_ID)
       videoCdn = data.getString(PROP_VIDEO_CDN)
-      videoDuration = data.getDouble(PROP_VIDEO_DURATION).toLong()
-      videoIsLive = data.getBoolean(PROP_VIDEO_IS_LIVE)
+      if (data.hasKey(PROP_VIDEO_DURATION)) {
+        videoDuration = data.getDouble(PROP_VIDEO_DURATION).toLong()
+      }
+      if (data.hasKey(PROP_VIDEO_IS_LIVE)) {
+        videoIsLive = data.getBoolean(PROP_VIDEO_IS_LIVE)
+      }
       videoExperiments = data.getString(PROP_VIDEO_EXPERIMENTS)
       videoContentType = data.getString(PROP_VIDEO_CONTENT_TYPE)
       videoEncodingVariant = data.getString(PROP_VIDEO_ENCODING_VARIANT)
