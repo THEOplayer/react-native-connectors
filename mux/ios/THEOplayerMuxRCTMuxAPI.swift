@@ -113,8 +113,10 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
     }
     
     private func buildPlayerData(_ data: NSDictionary) -> MUXSDKCustomerPlayerData {
-        let environmentKey = data.value(forKey: PROP_ENVIRONMENT_KEY) as! String
-        let muxPlayerData = MUXSDKCustomerPlayerData(environmentKey: environmentKey)!
+        let muxPlayerData = MUXSDKCustomerPlayerData()
+        if let environmentKey = data.value(forKey: PROP_ENVIRONMENT_KEY) as? String {
+            muxPlayerData.environmentKey = environmentKey
+        }
         if let adConfigVariant = data.value(forKey: PROP_AD_CONFIG_VARIANT) as? String {
             muxPlayerData.adConfigVariant = adConfigVariant
         }
