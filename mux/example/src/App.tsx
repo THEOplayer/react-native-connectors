@@ -48,12 +48,12 @@ const muxOptions = {
     // Player Metadata
     player_name: '', // ex: 'My Main Player'
     player_version: '', // ex: '1.0.0'
-    player_init_time: '', // ex: 1451606400000
+    player_init_time: Date.now(), // ex: 1451606400000
     // Video Metadata
     video_id: '', // ex: 'abcd123'
     video_title: 'Big Buck Bunny', // ex: 'My Great Video'
     video_series: '', // ex: 'Weekly Great Videos'
-    video_duration: '', // in milliseconds, ex: 120000
+    video_duration: 120000, // in milliseconds, ex: 120000
     video_stream_type: '', // 'live' or 'on-demand'
     video_cdn: '' // ex: 'Fastly', 'Akamai'
   }
