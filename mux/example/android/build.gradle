@@ -47,6 +47,9 @@ allprojects {
       // Custom path to @theoplayer/react-native-analytics-mux local Maven folder
       url("$rootDir/../../android/local")
     }
+    maven {
+      url 'https://muxinc.jfrog.io/artifactory/default-maven-release-local'
+    }
     google()
     maven { url 'https://www.jitpack.io' }
   }

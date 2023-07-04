@@ -3,21 +3,59 @@ package com.theoplayermux
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
-import com.theoplayer.android.connector.analytics.mux.MuxConfiguration
-import com.theoplayer.android.connector.analytics.mux.MuxConnector
 import com.theoplayer.util.ViewResolver
+import com.mux.stats.sdk.core.model.CustomerPlayerData
+import com.mux.stats.sdk.core.model.CustomerVideoData
+import com.mux.stats.sdk.core.model.CustomerViewData
+import com.mux.stats.sdk.core.model.CustomData
+import com.mux.stats.sdk.core.model.CustomerData
+import com.mux.stats.sdk.muxstats.theoplayer.MuxStatsSDKTHEOPlayer
 
 private const val TAG = "MuxModule"
-private const val PROP_CUSTOMER_KEY = "customerKey"
+private const val PROP_DATA = "data"
 private const val PROP_DEBUG = "debug"
-private const val PROP_GATEWAY_URL = "gatewayUrl"
+private const val PROP_ENVIRONMENT_KEY = "env_key"
+
+private const val PROP_PLAYER_NAME = "player_name"
+private const val PROP_PLAYER_VERSION = "player_version"
+private const val PROP_PLAYER_INIT_TIME = "player_init_time"
+private const val PROP_AD_CONFIG_VARIANT = "ad_config_variant"
+private const val PROP_EXPERIMENT_NAME = "experiment_name"
+private const val PROP_PAGE_TYPE = "page_type"
+private const val PROP_PROPERTY_KEY = "property_key"
+private const val PROP_SUBPROPERTY_ID = "sub_property_id"
+private const val PROP_VIEWER_USER_ID = "viewer_user_id"
+
+private const val PROP_VIDEO_ID = "video_id"
+private const val PROP_VIDEO_CDN = "video_cdn"
+private const val PROP_VIDEO_DURATION = "video_duration"
+private const val PROP_VIDEO_IS_LIVE = "video_is_live"
+private const val PROP_VIDEO_EXPERIMENTS = "video_experiments"
+private const val PROP_VIDEO_CONTENT_TYPE = "video_content_type"
+private const val PROP_VIDEO_ENCODING_VARIANT = "video_encoding_variant"
+private const val PROP_VIDEO_LANGUAGE_CODE = "video_language_code"
+private const val PROP_VIDEO_PRODUCER = "video_producer"
+private const val PROP_VIDEO_SERIES = "video_series"
+private const val PROP_VIDEO_SOURCE_URL = "video_source_url"
+private const val PROP_VIDEO_STREAM_TYPE = "video_stream_type"
+private const val PROP_VIDEO_TITLE = "video_title"
+private const val PROP_VIDEO_VARIANT_ID = "video_variant_id"
+private const val PROP_VIDEO_VARIANT_NAME = "video_variant_name"
+
+private const val PROP_VIEW_SESSION_ID = "view_session_id"
+
+private const val PROP_CUSTOM_DATA1 = "custom_1"
+private const val PROP_CUSTOM_DATA2 = "custom_2"
+private const val PROP_CUSTOM_DATA3 = "custom_3"
+private const val PROP_CUSTOM_DATA4 = "custom_4"
+private const val PROP_CUSTOM_DATA5 = "custom_5"
 
 class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
   private val viewResolver: ViewResolver
 
-  private var muxConnectors: HashMap<Int, MuxConnector> = HashMap()
+  private var muxConnectors: HashMap<Int, MuxStatsSDKTHEOPlayer> = HashMap()
 
   init {
     viewResolver = ViewResolver(context)
@@ -28,49 +66,110 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun initialize(tag: Int, muxMetadata: ReadableMap, muxConfig: ReadableMap) {
+  fun initialize(tag: Int, muxOptions: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
-      view?.player?.let { player ->
-        val customerKey = muxConfig.getString(PROP_CUSTOMER_KEY) ?: ""
-        if (customerKey.isEmpty()) {
-          Log.e(TAG, "Invalid $PROP_CUSTOMER_KEY")
+      view?.playerContext?.playerView?.let { playerView ->
+        val data = muxOptions.getMap(PROP_DATA)
+        if (data == null) {
+          Log.e(TAG, "MuxOptions does not contain data")
+        } else if (!data.hasKey(PROP_ENVIRONMENT_KEY)) {
+          Log.e(TAG, "Mandatatory $PROP_ENVIRONMENT_KEY not provided")
         } else {
-          val config = MuxConfiguration(
-            customerKey,
-            muxConfig.getBoolean(PROP_DEBUG),
-            muxConfig.getString(PROP_GATEWAY_URL),
+          val muxStatsTHEOplayer = MuxStatsSDKTHEOPlayer(
+            reactApplicationContext,
+            playerView,
+            "ReactNativeTHEOplayer",
+            buildCustomerData(data)
           )
-          muxConnectors[tag] =
-            MuxConnector(reactApplicationContext, player, muxMetadata.toHashMap(), config)
-          muxConnectors[tag]?.setContentInfo(muxMetadata.toHashMap())
+
+          // Optionally toggle debug info
+          if (muxOptions.hasKey(PROP_DEBUG)) {
+            muxStatsTHEOplayer.enableMuxCoreDebug(muxOptions.getBoolean(PROP_DEBUG), true)
+          }
+
+          muxConnectors[tag] = muxStatsTHEOplayer
         }
       }
     }
   }
 
   @ReactMethod
-  fun stopAndStartNewSession(tag: Int, muxMetadata: ReadableMap) {
-    muxConnectors[tag]?.stopAndStartNewSession(muxMetadata.toHashMap())
+  fun updateCustomerData(tag: Int, data: ReadableMap) {
+    muxConnectors[tag]?.updateCustomerData(
+      buildPlayerData(data),
+      buildVideoData(data),
+      buildViewData(data)
+    )
   }
 
   @ReactMethod
-  fun reportPlaybackFailed(tag: Int, message: String?) {
-    muxConnectors[tag]?.reportPlaybackFailed(message ?: "")
+  fun enableDebug(tag: Int, debug: Boolean) {
+    muxConnectors[tag]?.enableMuxCoreDebug(debug, true)
   }
 
-  @ReactMethod
-  fun setContentInfo(tag: Int, muxMetadata: ReadableMap) {
-    muxConnectors[tag]?.setContentInfo(muxMetadata.toHashMap())
+  private fun buildCustomerData(data: ReadableMap): CustomerData {
+    return CustomerData().apply {
+      customerPlayerData = buildPlayerData(data)
+      customerVideoData = buildVideoData(data)
+      customerViewData = buildViewData(data)
+      customData = buildCustomData(data)
+    }
   }
 
-  @ReactMethod
-  fun setAdInfo(tag: Int, muxMetadata: ReadableMap) {
-    muxConnectors[tag]?.setAdInfo(muxMetadata.toHashMap())
+  private fun buildPlayerData(data: ReadableMap): CustomerPlayerData {
+    return CustomerPlayerData().apply {
+      environmentKey = data.getString(PROP_ENVIRONMENT_KEY)
+      playerName = data.getString(PROP_PLAYER_NAME)
+      playerVersion = data.getString(PROP_PLAYER_VERSION)
+      playerInitTime = data.getDouble(PROP_PLAYER_INIT_TIME).toLong()
+      adConfigVariant = data.getString(PROP_AD_CONFIG_VARIANT)
+      experimentName = data.getString(PROP_EXPERIMENT_NAME)
+      pageType = data.getString(PROP_PAGE_TYPE)
+      propertyKey = data.getString(PROP_PROPERTY_KEY)
+      subPropertyId = data.getString(PROP_SUBPROPERTY_ID)
+      viewerUserId = data.getString(PROP_VIEWER_USER_ID)
+    }
+  }
+
+  private fun buildVideoData(data: ReadableMap): CustomerVideoData {
+    return CustomerVideoData().apply {
+      videoId = data.getString(PROP_VIDEO_ID)
+      videoCdn = data.getString(PROP_VIDEO_CDN)
+      videoDuration = data.getDouble(PROP_VIDEO_DURATION).toLong()
+      videoIsLive = data.getBoolean(PROP_VIDEO_IS_LIVE)
+      videoExperiments = data.getString(PROP_VIDEO_EXPERIMENTS)
+      videoContentType = data.getString(PROP_VIDEO_CONTENT_TYPE)
+      videoEncodingVariant = data.getString(PROP_VIDEO_ENCODING_VARIANT)
+      videoLanguageCode = data.getString(PROP_VIDEO_LANGUAGE_CODE)
+      videoProducer = data.getString(PROP_VIDEO_PRODUCER)
+      videoSeries = data.getString(PROP_VIDEO_SERIES)
+      videoSourceUrl = data.getString(PROP_VIDEO_SOURCE_URL)
+      videoStreamType = data.getString(PROP_VIDEO_STREAM_TYPE)
+      videoTitle = data.getString(PROP_VIDEO_TITLE)
+      videoVariantId = data.getString(PROP_VIDEO_VARIANT_ID)
+      videoVariantName = data.getString(PROP_VIDEO_VARIANT_NAME)
+    }
+  }
+
+  private fun buildViewData(data: ReadableMap): CustomerViewData {
+    return CustomerViewData().apply {
+      viewSessionId = data.getString(PROP_VIEW_SESSION_ID)
+    }
+  }
+
+  private fun buildCustomData(data: ReadableMap): CustomData {
+    return CustomData().apply {
+      this.customData1 = data.getString(PROP_CUSTOM_DATA1)
+      this.customData2 = data.getString(PROP_CUSTOM_DATA2)
+      this.customData3 = data.getString(PROP_CUSTOM_DATA3)
+      this.customData4 = data.getString(PROP_CUSTOM_DATA4)
+      this.customData5 = data.getString(PROP_CUSTOM_DATA5)
+    }
   }
 
   @ReactMethod
   fun destroy(tag: Int) {
-    muxConnectors[tag]?.destroy()
+    muxConnectors[tag]?.release()
     muxConnectors.remove(tag)
   }
 }
