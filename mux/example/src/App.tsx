@@ -72,7 +72,6 @@ const App = () => {
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Initialize Mux connector
     initMux(player);
-    player.autoplay = true;
     player.source = SOURCES[sourceIndex].source as SourceDescription;
     player.pipConfiguration = {startsAutomatically: true};
 
