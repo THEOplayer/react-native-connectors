@@ -14,7 +14,7 @@ export class MuxConnectorAdapter {
   }
 
   changeProgram(data: MuxData) {
-    this.connector?.mux?.emit('programchange', data);
+    this.connector?.emit('programchange', data);
   }
 
   destroy() {
