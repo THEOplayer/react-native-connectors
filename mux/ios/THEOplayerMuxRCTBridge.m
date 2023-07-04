@@ -10,6 +10,9 @@
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   muxOptions:(nonnull NSDictionary *)muxOptions)
 
+RCT_EXTERN_METHOD(changeProgram:(nonnull NSNumber *)node
+                  data:(nonnull NSDictionary *)data)
+
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 
 @end

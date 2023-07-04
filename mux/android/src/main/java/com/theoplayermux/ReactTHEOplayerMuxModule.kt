@@ -14,6 +14,7 @@ import com.mux.stats.sdk.muxstats.theoplayer.MuxStatsSDKTHEOPlayer
 private const val TAG = "MuxModule"
 private const val PROP_DATA = "data"
 private const val PROP_DEBUG = "debug"
+private const val PROP_AUTO_ERROR_TRACKING = "automaticErrorTracking"
 private const val PROP_ENVIRONMENT_KEY = "env_key"
 
 private const val PROP_PLAYER_NAME = "player_name"
@@ -71,9 +72,9 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
       view?.playerContext?.playerView?.let { playerView ->
         val data = muxOptions.getMap(PROP_DATA)
         if (data == null) {
-          Log.e(TAG, "MuxOptions does not contain data")
+          Log.e(TAG, "No data property in muxOptions provided")
         } else if (!data.hasKey(PROP_ENVIRONMENT_KEY)) {
-          Log.e(TAG, "Mandatatory $PROP_ENVIRONMENT_KEY not provided")
+          Log.e(TAG, "No $PROP_ENVIRONMENT_KEY provided")
         } else {
           val muxStatsTHEOplayer = MuxStatsSDKTHEOPlayer(
             reactApplicationContext,
@@ -87,6 +88,11 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
             muxStatsTHEOplayer.enableMuxCoreDebug(muxOptions.getBoolean(PROP_DEBUG), true)
           }
 
+          // Optionally toggle automaticErrorTracking
+          if (muxOptions.hasKey(PROP_AUTO_ERROR_TRACKING)) {
+            muxStatsTHEOplayer.setAutomaticErrorTracking(muxOptions.getBoolean(PROP_AUTO_ERROR_TRACKING))
+          }
+
           muxConnectors[tag] = muxStatsTHEOplayer
         }
       }
@@ -94,7 +100,7 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun updateCustomerData(tag: Int, data: ReadableMap) {
+  fun changeProgram(tag: Int, data: ReadableMap) {
     muxConnectors[tag]?.updateCustomerData(
       buildPlayerData(data),
       buildVideoData(data),

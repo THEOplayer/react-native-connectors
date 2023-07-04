@@ -6,7 +6,7 @@ import THEOplayerSDK
 import MuxCore
 import MUXSDKStatsTHEOplayer
 
-private let PROP_DATA = "data"
+let PROP_DATA = "data"
 let PROP_ENVIRONMENT_KEY = "env_key"
 
 let PROP_PLAYER_NAME = "player_name"
@@ -61,11 +61,7 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
     
     @objc(initialize:muxOptions:)
     func initialize(_ node: NSNumber, muxOptions: NSDictionary) -> Void {
-        let debug = muxOptions["debug"] as? Bool ?? false
-        
-        if (debug) {
-            log("[Mux] initialize triggered.")
-        }
+        log("[Mux] initialize triggered.")
         
         DispatchQueue.main.async {
             let view = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
@@ -75,26 +71,30 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
                     log("[Mux] no data property in muxOptions provided")
                     return
                 }
-                
                 // environmentKey is mandatory
-                if let environmentKey = data?.value(forKey: PROP_ENVIRONMENT_KEY) as? String {
-
-                    let customerData = self.buildCustomerData(environmentKey, data!)
-                    let name = self.buildPlayerName(node)
-                    
-                    // Start to monitor a given THEOplayer object.
-                    MUXSDKStatsTHEOplayer.monitorTHEOplayer(player, name: name, customerData: customerData, softwareVersion: "1.0.0", automaticErrorTracking: true)
-                    self.connectors[node] = customerData
-                    
-                    if (debug) {
-                        log("[Mux] added connector to view \(node)")
-                    }
-                } else {
+                if (data?.object(forKey: PROP_ENVIRONMENT_KEY) == nil) {
                     log("[Mux] no environmentKey provided")
+                    return
                 }
+                let customerData = self.buildCustomerData(data!)
+                let name = self.buildPlayerName(node)
+                
+                // Start to monitor a given THEOplayer object.
+                MUXSDKStatsTHEOplayer.monitorTHEOplayer(player, name: name, customerData: customerData, softwareVersion: "1.0.0", automaticErrorTracking: true)
+                self.connectors[node] = customerData
+                
+                log("[Mux] added connector to view \(node)")
             } else {
                 log("[Mux] Cannot find THEOPlayer for node \(node)")
             }
+        }
+    }
+    
+    @objc(changeProgram:data:)
+    func changeProgram(_ node: NSNumber, data: NSDictionary) -> Void {
+        log("[Mux] changeProgram triggered.")
+        DispatchQueue.main.async {
+            MUXSDKStatsTHEOplayer.videoChangeForPlayer(name: self.buildPlayerName(node), customerData: self.buildCustomerData(data))
         }
     }
     
@@ -102,9 +102,9 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
         return  String(format: "%@%d", "ReactNativeTHEOplayer", node)
     }
     
-    private func buildCustomerData(_ environmentKey: String, _ data: NSDictionary) -> MUXSDKCustomerData {
+    private func buildCustomerData(_ data: NSDictionary) -> MUXSDKCustomerData {
         let customerData = MUXSDKCustomerData()
-        customerData.customerPlayerData = self.buildPlayerData(environmentKey, data)
+        customerData.customerPlayerData = self.buildPlayerData(data)
         customerData.customerVideoData = self.buildVideoData(data)
         customerData.customerViewData = self.buildViewData(data)
         customerData.customerViewerData = self.buildViewerData(data)
@@ -112,7 +112,8 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
         return customerData
     }
     
-    private func buildPlayerData(_ environmentKey: String, _ data: NSDictionary) -> MUXSDKCustomerPlayerData {
+    private func buildPlayerData(_ data: NSDictionary) -> MUXSDKCustomerPlayerData {
+        let environmentKey = data.value(forKey: PROP_ENVIRONMENT_KEY) as! String
         let muxPlayerData = MUXSDKCustomerPlayerData(environmentKey: environmentKey)!
         if let adConfigVariant = data.value(forKey: PROP_AD_CONFIG_VARIANT) as? String {
             muxPlayerData.adConfigVariant = adConfigVariant
