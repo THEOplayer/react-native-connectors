@@ -1,6 +1,8 @@
 # THEOplayer React-Native Mux Connector
 
-A Mux analytics connector for `@theoplayer/react-native`.
+A Mux analytics connector for `@theoplayer/react-native`, supporting Web, iOS and Android.
+
+Try the accompanying [example](./example) app for a fully integrated demonstration of the connector.
 
 ## Installation
 
@@ -25,20 +27,20 @@ const muxOptions = {
   data: {
     env_key: 'ENV_KEY', // required
     // Site Metadata
-    viewer_user_id: '', // ex: '12345'
-    experiment_name: '', // ex: 'player_test_A'
-    sub_property_id: '', // ex: 'cus-1'
+    viewer_user_id: '12345',
+    experiment_name: 'player_test_A',
+    sub_property_id: 'cus-1',
     // Player Metadata
-    player_name: '', // ex: 'My Main Player'
-    player_version: '', // ex: '1.0.0'
-    player_init_time: '', // ex: 1451606400000
+    player_name: 'My Main Player',
+    player_version: '1.0.0',
+    player_init_time: 1451606400000,
     // Video Metadata
-    video_id: '', // ex: 'abcd123'
-    video_title: '', // ex: 'My Great Video'
-    video_series: '', // ex: 'Weekly Great Videos'
-    video_duration: '', // in milliseconds, ex: 120000
-    video_stream_type: '', // 'live' or 'on-demand'
-    video_cdn: '' // ex: 'Fastly', 'Akamai'
+    video_id: 'abcd123',
+    video_title: 'My Great Video',
+    video_series: 'Weekly Great Videos',
+    video_duration: 12000, // in milliseconds
+    video_stream_type: 'on-demand', // 'live' or 'on-demand'
+    video_cdn: 'Akamai'
   }
 };
 
@@ -52,4 +54,20 @@ const App = () => {
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
 }
+```
+
+### Change program within a stream
+
+In some cases, you may have the program change within a stream, and you may want to track
+each program as a view on its own.
+An example of this is a live stream that streams multiple programs back to back.
+
+For this purpose, the `changeProgram` method can signal the start of a new program and pass
+updated metadata to the connector.
+
+```typescript
+mux.current?.changeProgram({
+  video_title: 'New program',
+  video_duration: 160000
+});
 ```
