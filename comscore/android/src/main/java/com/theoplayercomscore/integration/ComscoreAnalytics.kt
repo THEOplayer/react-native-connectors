@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.comscore.Analytics
 import com.comscore.PublisherConfiguration
+import com.comscore.UsagePropertiesAutoUpdateMode
 import com.theoplayer.android.api.player.Player
 import com.theoplayercomscore.BuildConfig
 
@@ -39,6 +40,7 @@ class ComscoreAnalytics {
         }
         .build()
       )
+      setUsagePropertiesAutoUpdateMode(UsagePropertiesAutoUpdateMode.FOREGROUND_AND_BACKGROUND)
       setApplicationName(configuration.applicationName)
       if (configuration.childDirected) {
         enableChildDirectedApplicationMode()
