@@ -15,10 +15,8 @@ import {
   CenteredDelayedActivityIndicator,
   ControlBar,
   DEFAULT_THEOPLAYER_THEME,
-  FullscreenButton,
   LanguageMenuButton,
   MuteButton,
-  PipButton,
   PlaybackRateSubMenu,
   PlayButton,
   QualitySubMenu,
@@ -49,13 +47,6 @@ const muxOptions = {
     player_name: '', // ex: 'My Main Player'
     player_version: '', // ex: '1.0.0'
     player_init_time: Date.now(), // ex: 1451606400000
-    // Video Metadata
-    video_id: '', // ex: 'abcd123'
-    video_title: 'Big Buck Bunny', // ex: 'My Great Video'
-    video_series: '', // ex: 'Weekly Great Videos'
-    video_duration: 120000, // in milliseconds, ex: 120000
-    video_stream_type: '', // 'live' or 'on-demand'
-    video_cdn: '' // ex: 'Fastly', 'Akamai'
   }
 };
 
@@ -74,6 +65,16 @@ const App = () => {
     // Initialize Mux connector
     initMux(player);
     player.source = SOURCES[sourceIndex].source as SourceDescription;
+    muxConnector.current?.changeVideo({
+      // Video Metadata
+      video_id: '', // ex: 'abcd123'
+      video_title: 'Big Buck Bunny', // ex: 'My Great Video'
+      video_series: '', // ex: 'Weekly Great Videos'
+      video_duration: 120000, // in milliseconds, ex: 120000
+      video_stream_type: '', // 'live' or 'on-demand'
+      video_cdn: '' // ex: 'Fastly', 'Akamai'
+    });
+
     player.pipConfiguration = {startsAutomatically: true};
 
     // Update theoPlayer reference.

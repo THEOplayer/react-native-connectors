@@ -5,10 +5,12 @@ import { MuxSvg } from "./MuxSvg";
 
 const ALL_OPTIONS_TITLES = [
   'Change Program',
+  'Notify error',
 ]
 
 const enum Action {
-  CHANGE_PROGRAM = 0
+  CHANGE_PROGRAM = 0,
+  NOTIFY_ERROR = 1
 }
 
 const newProgramMetadata: MuxData = {
@@ -36,6 +38,11 @@ export const MuxMenuView = (props: MuxMenuButtonProps) => {
     const { muxConnector } = props;
     switch (id) {
       case Action.CHANGE_PROGRAM: muxConnector.current?.changeProgram(newProgramMetadata); break;
+      case Action.NOTIFY_ERROR: muxConnector.current?.notifyError(
+        100,
+        "Description of error",
+        'Additional context for the error'
+        ); break;
     }
   };
 
