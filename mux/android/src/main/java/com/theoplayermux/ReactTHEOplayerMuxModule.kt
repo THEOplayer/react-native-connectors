@@ -1,15 +1,21 @@
 package com.theoplayermux
 
+import android.content.Context
+import android.graphics.Point
 import android.util.Log
+import android.view.WindowManager
 import com.facebook.react.bridge.*
-import com.theoplayer.ReactTHEOplayerView
-import com.theoplayer.util.ViewResolver
+import com.mux.stats.sdk.core.model.CustomData
+import com.mux.stats.sdk.core.model.CustomerData
 import com.mux.stats.sdk.core.model.CustomerPlayerData
 import com.mux.stats.sdk.core.model.CustomerVideoData
 import com.mux.stats.sdk.core.model.CustomerViewData
-import com.mux.stats.sdk.core.model.CustomData
-import com.mux.stats.sdk.core.model.CustomerData
+import com.mux.stats.sdk.muxstats.MuxErrorException
+import com.mux.stats.sdk.muxstats.MuxSDKViewPresentation
 import com.mux.stats.sdk.muxstats.theoplayer.MuxStatsSDKTHEOPlayer
+import com.theoplayer.ReactTHEOplayerView
+import com.theoplayer.util.ViewResolver
+
 
 private const val TAG = "MuxModule"
 private const val PROP_DATA = "data"
@@ -93,6 +99,26 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
             muxStatsTHEOplayer.setAutomaticErrorTracking(muxOptions.getBoolean(PROP_AUTO_ERROR_TRACKING))
           }
 
+          // In order to correctly monitor if the player is full-screen, provide the screen size
+          // to the MuxStatsSDKTHEOPlayer instance.
+          val windowManager = (reactApplicationContext.getSystemService(Context.WINDOW_SERVICE)) as? WindowManager
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            windowManager?.currentWindowMetrics?.bounds?.let { bounds ->
+              muxStatsTHEOplayer.setScreenSize(bounds.width(), bounds.height())
+            }
+          } else {
+            val size = Point()
+            // getRealSize returns the actual size of the display, accounting for any display
+            // cutouts or notches.
+            @Suppress("DEPRECATION")
+            windowManager?.defaultDisplay?.getRealSize(size)
+            muxStatsTHEOplayer.setScreenSize(size.x, size.y)
+          }
+
+          // In order to determine a number of viewer context values as well as track the size
+          // of the video player, set the player view.
+          muxStatsTHEOplayer.setPlayerView(playerView)
+
           muxConnectors[tag] = muxStatsTHEOplayer
         }
       }
@@ -100,12 +126,30 @@ class ReactTHEOplayerMuxModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun changeVideo(tag: Int, data: ReadableMap) {
+    muxConnectors[tag]?.videoChange(buildVideoData(data))
+  }
+
+  @ReactMethod
   fun changeProgram(tag: Int, data: ReadableMap) {
-    muxConnectors[tag]?.updateCustomerData(
-      buildPlayerData(data),
-      buildVideoData(data),
-      buildViewData(data)
-    )
+    muxConnectors[tag]?.programChange(buildVideoData(data))
+  }
+
+  @ReactMethod
+  fun changePresentation(tag: Int, presentation: String) {
+    muxConnectors[tag]?.apply {
+      when(presentation) {
+        "NORMAL" -> presentationChange(MuxSDKViewPresentation.NORMAL)
+        "FULLSCREEN" -> presentationChange(MuxSDKViewPresentation.FULLSCREEN)
+      }
+    }
+  }
+
+  @ReactMethod
+  fun notifyError(tag: Int, code: Int, message: String, context: String) {
+    muxConnectors[tag]?.apply {
+      error(MuxErrorException(code, message))
+    }
   }
 
   @ReactMethod
