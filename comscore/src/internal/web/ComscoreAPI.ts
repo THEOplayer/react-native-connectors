@@ -1,4 +1,4 @@
-import * as analytics  from '../sdk/comscore';
+import * as analytics  from './sdk/comscore';
 import type { CustomSkeletonAPI } from './SkeletonApi';
 
 /**

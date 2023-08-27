@@ -1,5 +1,5 @@
-import * as analytics  from '../sdk/comscore';
-import { ComscoreDeliveryAdvertisementCapability, ComscoreDeliveryComposition, ComscoreDeliveryMode, ComscoreDeliverySubscriptionType, ComscoreDistributionModel, ComscoreMediaFormat, ComscoreMediaType, ComscoreMetadata } from '../api/ComscoreMetadata';
+import * as analytics  from './sdk/comscore';
+import { ComscoreDeliveryAdvertisementCapability, ComscoreDeliveryComposition, ComscoreDeliveryMode, ComscoreDeliverySubscriptionType, ComscoreDistributionModel, ComscoreMediaFormat, ComscoreMediaType, ComscoreMetadata } from '../../api/ComscoreMetadata';
 
 /**
  * Object for stream metadata

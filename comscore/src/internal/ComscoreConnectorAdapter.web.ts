@@ -2,11 +2,9 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { ComscoreConfiguration } from '../api/ComscoreConfiguration';
 import type { ComscoreMetadata } from '../api/ComscoreMetadata';
 
-
-// @ts-ignore
-import { ComscoreTheo } from './ComscoreTheo';
-import { AdMetadata } from './ComscoreAdMetadata';
-import { ContentMetadata } from './ComscoreContentMetadata';
+import { ComscoreTheo } from './web/ComscoreTheo';
+import { AdMetadata } from './web/ComscoreAdMetadata';
+import { ContentMetadata } from './web/ComscoreContentMetadata';
 
 export class ComscoreConnectorAdapter {
 
