@@ -1,5 +1,6 @@
 import * as analytics  from './sdk/comscore';
 import type { CustomSkeletonAPI } from './SkeletonApi';
+import { logDebug } from "./Utils";
 
 /**
  * Bridge to ComscoreAPI
@@ -94,16 +95,12 @@ export class ComscoreAPI {
         analytics.PlatformAPIs.Skeleton,
         this.skeletonInterface
       );
-      if (this.showLogs()) {
-        console.log('[COMSCORE] setPlatformAPI Skeleton');
-      }
+      logDebug('[COMSCORE] setPlatformAPI Skeleton');
     } else {
       analytics.PlatformApi.setPlatformAPI(
         analytics.PlatformAPIs.WebBrowser
       );
-      if (this.showLogs()) {
-        console.log('[COMSCORE] setPlatformAPI WebBrowser');
-      }
+      logDebug('[COMSCORE] setPlatformAPI WebBrowser');
     }
   }
 
@@ -116,9 +113,7 @@ export class ComscoreAPI {
       publisherId,
     });
     analytics.configuration.addClient(config);
-    if (this.showLogs()) {
-      console.log('[COMSCORE] configurePublisher ', config);
-    }
+    logDebug('[COMSCORE] configurePublisher ', config);
   }
 
   /**
@@ -126,9 +121,7 @@ export class ComscoreAPI {
    */
   startsLibrary() {
     analytics.start();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] startsLibrary');
-    }
+    logDebug('[COMSCORE] startsLibrary');
   }
 
   /**
@@ -188,10 +181,7 @@ export class ComscoreAPI {
    */
   createPlaybackSession() {
     this.streamingAnalytics.createPlaybackSession();
-
-    if (this.showLogs()) {
-      console.log('[COMSCORE] createPlaybackSession');
-    }
+    logDebug('[COMSCORE] createPlaybackSession');
   }
 
   /**
@@ -200,9 +190,7 @@ export class ComscoreAPI {
    */
   setMediaType(isDvr: boolean) {
     this.isDvr = isDvr;
-    if (this.showLogs()) {
-      console.log('[COMSCORE] internal setMediaType: ' + isDvr);
-    }
+    logDebug('[COMSCORE] internal setMediaType: ' + isDvr);
   }
 
   /**
@@ -211,12 +199,7 @@ export class ComscoreAPI {
    */
   setMetadata(cm: any) {
     this.streamingAnalytics.setMetadata(cm);
-
-    const m = cm.getMetadataLabels();
-    if (this.showLogs()) {
-      //console.log('[this.streamingAnalytics.setMetadata(cm)]');
-      console.log('[COMSCORE] setMetadata ', cm);
-    }
+    logDebug('[COMSCORE] setMetadata ', cm);
   }
 
   /**
@@ -227,9 +210,7 @@ export class ComscoreAPI {
   notifyBufferStart(position: number) {
     this.markPosition(position);
     this.streamingAnalytics.notifyBufferStart();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyBufferStart ', position);
-    }
+    logDebug('[COMSCORE] notifyBufferStart ', position);
   }
 
   /**
@@ -240,9 +221,7 @@ export class ComscoreAPI {
   notifyBufferStop(position: number) {
     this.markPosition(position);
     this.streamingAnalytics.notifyBufferStop();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyBufferStop ', position);
-    }
+    logDebug('[COMSCORE] notifyBufferStop ', position);
   }
 
   /**
@@ -255,9 +234,7 @@ export class ComscoreAPI {
   notifyPlay(position: number) {
     this.markPosition(position);
     this.streamingAnalytics.notifyPlay();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyPlay ', position);
-    }
+    logDebug('[COMSCORE] notifyPlay ', position);
   }
 
   /**
@@ -265,9 +242,7 @@ export class ComscoreAPI {
    */
   notifyPause() {
     this.streamingAnalytics.notifyPause();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyPause');
-    }
+    logDebug('[COMSCORE] notifyPause');
   }
 
   /**
@@ -281,9 +256,7 @@ export class ComscoreAPI {
    */
   notifyEnd() {
     this.streamingAnalytics.notifyEnd();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyEnd');
-    }
+    logDebug('[COMSCORE] notifyEnd');
   }
 
   /**
@@ -291,9 +264,7 @@ export class ComscoreAPI {
    */
   notifySeekStart() {
     this.streamingAnalytics.notifySeekStart();
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifySeekStart');
-    }
+    logDebug('[COMSCORE] notifySeekStart');
   }
 
   /**
@@ -302,9 +273,7 @@ export class ComscoreAPI {
    */
   setDvrWindowLength(length: number) {
     this.streamingAnalytics.setDvrWindowLength(length);
-    if (this.showLogs()) {
-      console.log('[COMSCORE] setDvrWindowLength ', length);
-    }
+    logDebug('[COMSCORE] setDvrWindowLength ', length);
   }
 
   /**
@@ -326,9 +295,7 @@ export class ComscoreAPI {
    */
   startFromPosition(position: number) {
     this.streamingAnalytics.startFromPosition(position);
-    if (this.showLogs()) {
-      console.log('[COMSCORE] startFromPosition ', position);
-    }
+    logDebug('[COMSCORE] startFromPosition ', position);
   }
 
   /**
@@ -338,9 +305,7 @@ export class ComscoreAPI {
    */
   startFromDvrWindowOffset(position: number) {
     this.streamingAnalytics.startFromDvrWindowOffset(position);
-    if (this.showLogs()) {
-      console.log('[COMSCORE] startFromDvrWindowOffset ', position);
-    }
+    logDebug('[COMSCORE] startFromDvrWindowOffset ', position);
   }
 
   /**
@@ -350,16 +315,7 @@ export class ComscoreAPI {
    */
   notifyChangePlaybackRate(rate: Float32Array) {
     this.streamingAnalytics.notifyChangePlaybackRate(rate);
-    if (this.showLogs()) {
-      console.log('[COMSCORE] notifyChangePlaybackRate ', rate);
-    }
-  }
-
-  /**
-   * enables logs by setting `window.__DEBUG__` to true
-   */
-  private showLogs(): boolean {
-    return (window as any).__DEBUG__ || false;
+    logDebug('[COMSCORE] notifyChangePlaybackRate ', rate);
   }
 }
 

@@ -262,10 +262,4 @@ export class ComscoreTheo extends TheoBase {
   protected notifyStopped() {
     this.comscore.notifyEnd();
   }
-
-  protected logDebug(message: string) {
-    // if (globalThis.__DEBUG__) {
-      console.debug(message);
-    // }
-  }
 }
