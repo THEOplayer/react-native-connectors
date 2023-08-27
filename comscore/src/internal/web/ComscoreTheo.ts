@@ -126,7 +126,7 @@ export class ComscoreTheo extends TheoBase {
     }
 
     this.contentMetada.setLength(
-      Math.round(this.playerDuration * 1000),
+      Math.round(this.playerDuration),
       this.isLive()
     );
     this.comscore.setMediaType(this.isLiveDVR());
@@ -201,7 +201,7 @@ export class ComscoreTheo extends TheoBase {
     const uniqueId = ad.id;
     this.adMetadata.setId(uniqueId);
     //this must be in ms
-    this.adMetadata.setLength(this.player.duration * 1000);
+    this.adMetadata.setLength(this.player.duration);
     //This is a bug in live , we need to check whether the
     // contentMediaType is of type LIVE rather than verifying the player.duration
     // this.adMetadata.setMediaType(adType, this.isLive());
@@ -234,20 +234,16 @@ export class ComscoreTheo extends TheoBase {
     }
   }
 
-  protected notifyBufferStart(currentTime: number) {
-    const currentTimeInMs = this.changeCurrentTimeToMs(currentTime);
+  protected notifyBufferStart(currentTimeInMs: number) {
     this.comscore.notifyBufferStart(currentTimeInMs);
   }
 
-  protected notifyBufferStop(currentTime: number) {
-    const currentTimeInMs = this.changeCurrentTimeToMs(currentTime);
+  protected notifyBufferStop(currentTimeInMs: number) {
     this.comscore.notifyBufferStop(currentTimeInMs);
   }
 
-  protected notifyPlay(currentTime: number) {
-    //console.log('[ComscoreTHEO] notifyPlay currentTime:', currentTime);
-    const currentTimeInMs = this.changeCurrentTimeToMs(currentTime);
-    //console.log('[ComscoreTHEO] comscore.notifyPlay currentTime:',currentTimeInMs);
+  protected notifyPlay(currentTimeInMs: number) {
+    //console.log('[ComscoreTHEO] notifyPlay currentTime:', currentTimeInMs);
     this.comscore.notifyPlay(currentTimeInMs);
   }
 
@@ -271,13 +267,5 @@ export class ComscoreTheo extends TheoBase {
     // if (globalThis.__DEBUG__) {
       console.debug(message);
     // }
-  }
-
-  /**
-   * converts current time to rounded ms
-   * @param {number} currentTime current time in sec
-   */
-  private changeCurrentTimeToMs(currentTime: number) {
-    return Math.floor(currentTime * 1000);
   }
 }
