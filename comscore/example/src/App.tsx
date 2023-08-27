@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Image, Text, StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
 import {
   AdIntegrationKind,
   PlayerConfiguration,
@@ -12,6 +12,10 @@ import {
 import { useComscore } from '@theoplayer/react-native-analytics-comscore';
 import { PlayButton } from './res/images';
 import { ComscoreConfiguration, ComscoreMetadata, ComscoreMediaType, ComscoreUserConsent } from '@theoplayer/react-native-analytics-comscore';
+
+if (Platform.OS === 'web') {
+  __DEBUG__ = true;
+}
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
