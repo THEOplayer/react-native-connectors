@@ -11,13 +11,14 @@
     "postinstall": "npm update react-native-theoplayer"
   },
   "dependencies": {
+    "@theoplayer/react-native-ui": "latest",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "^0.71.5",
-    "react-native-theoplayer": "^2.0.0",
+    "react-native-theoplayer": "latest",
     "react-native-web": "^0.19.2",
-    "theoplayer": "^5.0.0"
+    "theoplayer": "5.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
