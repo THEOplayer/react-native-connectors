@@ -9,6 +9,7 @@ import {
     ComscoreMediaType,
     ComscoreMetadata
 } from '../../api/ComscoreMetadata';
+import { logDebug } from "./Utils";
 
 /**
  * Object for stream metadata
@@ -201,10 +202,13 @@ export class ContentMetadata {
      * @param isLive specifies if stream is LIVE
      */
     public setLength(length: number, isLive: boolean) {
-        this.cm.setLength(isLive || !length ? 0 : length);
+        const cmLength = isLive || !length ? 0 : length;
+        logDebug('ContentMetadata - setLength', cmLength);
+        this.cm.setLength(cmLength);
     }
 
     public setContentLength(length: number) {
+        logDebug('ContentMetadata - setContentLength', length);
         this.setLength(length, this.isLivecontentMediaType);
     }
 

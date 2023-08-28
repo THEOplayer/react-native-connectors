@@ -32,6 +32,6 @@ export enum READY_STATES {
 
 export function logDebug(message?: any, ...optionalParams: any[]) {
     if ((window as any).__DEBUG__) {
-        console.debug(message, optionalParams);
+        console.debug('[COMSCORE]', message, ...optionalParams);
     }
 }

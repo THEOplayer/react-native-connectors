@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { AD_TYPES } from './Utils';
+import { AD_TYPES, logDebug } from './Utils';
 import type { ContentMetadata } from './ComscoreContentMetadata';
 import * as analytics from './sdk/comscore';
 
@@ -116,6 +116,7 @@ export class AdMetadata {
             }
         }
         //FIX issue 12 17 19
+        logDebug('AdMetadata - setMediaType', cm_AdType);
         this.cm.setMediaType(cm_AdType);
     }
 
@@ -124,6 +125,7 @@ export class AdMetadata {
      * @param {ContentMetadata} relatedContent , Comscore API: setRelatedContentMetadata(contentMetadataObject )
      */
     public setRelatedContentMetadata(relatedContent: ContentMetadata) {
+        logDebug('AdMetadata - setRelatedContentMetadata', relatedContent.getContentMetadata());
         this.cm.setRelatedContentMetadata(relatedContent.getContentMetadata());
     }
 
@@ -133,7 +135,9 @@ export class AdMetadata {
      * @memberof AdMetadata
      */
     public setId(uniqueId: string) {
-        this.cm.setUniqueId(uniqueId || '*null');
+        const id = uniqueId || '*null';
+        logDebug('AdMetadata - setId', id);
+        this.cm.setUniqueId(id);
     }
 
     /**
@@ -141,6 +145,7 @@ export class AdMetadata {
      * @memberof AdMetadata, Comscore API: setLength( int length )
      */
     public setLength(length: number) {
+        logDebug('AdMetadata - setLength', length);
         this.cm.setLength(length);
     }
 
@@ -154,6 +159,7 @@ export class AdMetadata {
         if (oce_skp) {
             customLabels.oce_skp = oce_skp;
         }
+        logDebug('AdMetadata - addCustomLabels', customLabels);
         this.cm.addCustomLabels(customLabels);
     }
 

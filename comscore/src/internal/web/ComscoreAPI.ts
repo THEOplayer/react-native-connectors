@@ -95,12 +95,12 @@ export class ComscoreAPI {
                 analytics.PlatformAPIs.Skeleton,
                 this.skeletonInterface
             );
-            logDebug('[COMSCORE] setPlatformAPI Skeleton');
+            logDebug('API - setPlatformAPI Skeleton');
         } else {
             analytics.PlatformApi.setPlatformAPI(
                 analytics.PlatformAPIs.WebBrowser
             );
-            logDebug('[COMSCORE] setPlatformAPI WebBrowser');
+            logDebug('API - setPlatformAPI WebBrowser');
         }
     }
 
@@ -113,7 +113,7 @@ export class ComscoreAPI {
             publisherId,
         });
         analytics.configuration.addClient(config);
-        logDebug('[COMSCORE] configurePublisher ', config);
+        logDebug('API - configurePublisher ', config);
     }
 
     /**
@@ -121,7 +121,7 @@ export class ComscoreAPI {
      */
     startsLibrary() {
         analytics.start();
-        logDebug('[COMSCORE] startsLibrary');
+        logDebug('API - startsLibrary');
     }
 
     /**
@@ -181,7 +181,7 @@ export class ComscoreAPI {
      */
     createPlaybackSession() {
         this.streamingAnalytics.createPlaybackSession();
-        logDebug('[COMSCORE] createPlaybackSession');
+        logDebug('API - createPlaybackSession');
     }
 
     /**
@@ -190,7 +190,7 @@ export class ComscoreAPI {
      */
     setMediaType(isDvr: boolean) {
         this.isDvr = isDvr;
-        logDebug('[COMSCORE] internal setMediaType: ' + isDvr);
+        logDebug('API - internal setMediaType: ' + isDvr);
     }
 
     /**
@@ -199,7 +199,7 @@ export class ComscoreAPI {
      */
     setMetadata(cm: any) {
         this.streamingAnalytics.setMetadata(cm);
-        logDebug('[COMSCORE] setMetadata ', cm);
+        logDebug('API - setMetadata ', cm);
     }
 
     /**
@@ -210,7 +210,7 @@ export class ComscoreAPI {
     notifyBufferStart(position: number) {
         this.markPosition(position);
         this.streamingAnalytics.notifyBufferStart();
-        logDebug('[COMSCORE] notifyBufferStart ', position);
+        logDebug('API - notifyBufferStart ', position);
     }
 
     /**
@@ -221,7 +221,7 @@ export class ComscoreAPI {
     notifyBufferStop(position: number) {
         this.markPosition(position);
         this.streamingAnalytics.notifyBufferStop();
-        logDebug('[COMSCORE] notifyBufferStop ', position);
+        logDebug('API - notifyBufferStop ', position);
     }
 
     /**
@@ -234,7 +234,7 @@ export class ComscoreAPI {
     notifyPlay(position: number) {
         this.markPosition(position);
         this.streamingAnalytics.notifyPlay();
-        logDebug('[COMSCORE] notifyPlay ', position);
+        logDebug('API - notifyPlay ', position);
     }
 
     /**
@@ -242,7 +242,7 @@ export class ComscoreAPI {
      */
     notifyPause() {
         this.streamingAnalytics.notifyPause();
-        logDebug('[COMSCORE] notifyPause');
+        logDebug('API - notifyPause');
     }
 
     /**
@@ -256,7 +256,7 @@ export class ComscoreAPI {
      */
     notifyEnd() {
         this.streamingAnalytics.notifyEnd();
-        logDebug('[COMSCORE] notifyEnd');
+        logDebug('API - notifyEnd');
     }
 
     /**
@@ -264,7 +264,7 @@ export class ComscoreAPI {
      */
     notifySeekStart() {
         this.streamingAnalytics.notifySeekStart();
-        logDebug('[COMSCORE] notifySeekStart');
+        logDebug('API - notifySeekStart');
     }
 
     /**
@@ -273,7 +273,7 @@ export class ComscoreAPI {
      */
     setDvrWindowLength(length: number) {
         this.streamingAnalytics.setDvrWindowLength(length);
-        logDebug('[COMSCORE] setDvrWindowLength ', length);
+        logDebug('API - setDvrWindowLength ', length);
     }
 
     /**
@@ -295,7 +295,7 @@ export class ComscoreAPI {
      */
     startFromPosition(position: number) {
         this.streamingAnalytics.startFromPosition(position);
-        logDebug('[COMSCORE] startFromPosition ', position);
+        logDebug('API - startFromPosition ', position);
     }
 
     /**
@@ -305,7 +305,7 @@ export class ComscoreAPI {
      */
     startFromDvrWindowOffset(position: number) {
         this.streamingAnalytics.startFromDvrWindowOffset(position);
-        logDebug('[COMSCORE] startFromDvrWindowOffset ', position);
+        logDebug('API - startFromDvrWindowOffset ', position);
     }
 
     /**
@@ -315,7 +315,7 @@ export class ComscoreAPI {
      */
     notifyChangePlaybackRate(rate: Float32Array) {
         this.streamingAnalytics.notifyChangePlaybackRate(rate);
-        logDebug('[COMSCORE] notifyChangePlaybackRate ', rate);
+        logDebug('API - notifyChangePlaybackRate ', rate);
     }
 }
 
