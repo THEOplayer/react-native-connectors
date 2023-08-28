@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { AD_TYPES } from './Utils';
 import type { ContentMetadata } from './ComscoreContentMetadata';
 import * as analytics from './sdk/comscore';
@@ -29,7 +30,7 @@ export class AdMetadata {
      * @param {Number} pixelsHigh Advertisement video height, Comscore API: setVideoDimensions( int pixelsWide, int pixelsHigh )
      */
     constructor(
-        isAudio = false,
+        isAudio: boolean = false,
         customLabels: string = null,
         deliveryType: string = null,
         owner: string = null,
@@ -40,8 +41,8 @@ export class AdMetadata {
         title: string = null,
         callToActionUrl: string = null,
         clipUrl: string = null,
-        pixelsWide = 0,
-        pixelsHigh = 0
+        pixelsWide: number = 0,
+        pixelsHigh: number = 0
     ) {
         const cm = new analytics.StreamingAnalytics.AdvertisementMetadata();
 
@@ -128,7 +129,7 @@ export class AdMetadata {
 
     /**
      * Sets a unique identifier of the advertisement
-     * @param ns_st_ami  a unique identifier of the advertisement Comscore API: setUniqueId( String id )
+     * @param uniqueId  a unique identifier of the advertisement Comscore API: setUniqueId( String id )
      * @memberof AdMetadata
      */
     public setId(uniqueId: string) {
@@ -166,7 +167,7 @@ export class AdMetadata {
     }
 
     public static clone(old: AdMetadata): AdMetadata {
-        const newmd: AdMetadata = new AdMetadata(
+        return new AdMetadata(
             old.cm.isAudio,
             old.cm.customLabels,
             old.cm.deliveryType,
@@ -181,6 +182,5 @@ export class AdMetadata {
             old.cm.pixelsWide,
             old.cm.pixelsHigh
         );
-        return newmd;
     }
 }
