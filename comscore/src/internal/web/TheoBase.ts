@@ -191,7 +191,7 @@ export abstract class TheoBase {
      * @param {String} adId ID of ad if exists, otherwise null
      * @param {AD_TYPES} adType type of add: preroll, midroll, postroll
      */
-    protected abstract notifyAdBegin(adI: string, adType: string, adObject: any): void;
+    protected abstract notifyAdBegin(adId: string, adType: string, adObject: any): void;
 
     /**
      * Tis method should be used to notify once the stream playout ends

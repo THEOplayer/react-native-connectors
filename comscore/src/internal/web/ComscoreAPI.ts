@@ -46,7 +46,7 @@ export class ComscoreAPI {
 
     /**
      * @param publisherId Publisher ID value. The Publisher ID is often also referred to as the Client ID or c2 value, Comscore API: setPublisherId
-     * @param implementationId, If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
+     * @param implementationId If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
      * @param projectId If Comscore provided you with an Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
      * @param playerName If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerName( "My Player" )
      * @param playerVersion If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerVersion( "1.2.3-a5f72c" )
@@ -126,7 +126,7 @@ export class ComscoreAPI {
 
     /**
      * creates an instance of the analytics.StreamingAnalytics class from the comScore library
-     * @param implementationId, If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
+     * @param implementationId If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
      * @param projectId If Comscore provided you with an Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
      * @param playerName If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerName( "My Player" )
      * @param playerVersion If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerVersion( "1.2.3-a5f72c" )
@@ -186,7 +186,7 @@ export class ComscoreAPI {
 
     /**
      * determines if the content is Live+DVR or not
-     * @param isDVR determines if the content is Live+DVR or not
+     * @param isDvr determines if the content is Live+DVR or not
      */
     setMediaType(isDvr: boolean) {
         this.isDvr = isDvr;

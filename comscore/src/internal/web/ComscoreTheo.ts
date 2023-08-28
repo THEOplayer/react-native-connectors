@@ -37,8 +37,8 @@ export class ComscoreTheo extends TheoBase {
      * @param player THEOplayer instance
      * @param contentMetada content metadata
      * @param adMetadata ad metadata
-     * @param implementationId, If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
-     * @param projectId If Comscore provided you with an Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
+     * @param implementationId If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
+     * @param projectId If Comscore provided you with a Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
      * @param playerName If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerName( "My Player" )
      * @param playerVersion If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerVersion( "1.2.3-a5f72c" )
      * @param skeleton If supplied PlatformAPI is set to Skeleton and Comscore will fetch certain values from this skeleton object for reporting. If undefined PlatformApi is set To WebBrowser
