@@ -1,13 +1,13 @@
 import { PlayerEventType, THEOplayer } from "react-native-theoplayer";
 import { RefObject, useEffect, useRef } from "react";
 import {
-  ComscoreConfiguration,
-  ComscoreConnector,
-  ComscoreMetadata
+    ComscoreConfiguration,
+    ComscoreConnector,
+    ComscoreMetadata
 } from "@theoplayer/react-native-analytics-comscore";
 
 export function useComscore(metadata: ComscoreMetadata,
-                             config: ComscoreConfiguration)
+                            config: ComscoreConfiguration)
     : [RefObject<ComscoreConnector | undefined>, (player: THEOplayer | undefined) => void] {
     const connector = useRef<ComscoreConnector | undefined>();
     const theoPlayer = useRef<THEOplayer | undefined>();
