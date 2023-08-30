@@ -74,7 +74,7 @@ repositories {
 }
 
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
-def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.8.10")
+def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.9.10")
 def mux_version = safeExtGet('THEOplayerMux_muxVersion', '0.2.0')
 def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
 def core_prefix = enabledV4 ? 'unified' : 'core'
