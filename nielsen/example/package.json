@@ -14,10 +14,10 @@
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.2",
-    "react-native-theoplayer": "^2.0.0",
-    "react-native-web": "^0.18.12",
-    "theoplayer": "^5.0.0"
+    "react-native": "^0.71.5",
+    "react-native-theoplayer": "latest",
+    "react-native-web": "^0.19.2",
+    "theoplayer": "^5.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
