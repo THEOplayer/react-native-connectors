@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import {
   PlayerConfiguration,
   THEOplayer,
@@ -23,6 +23,7 @@ import {
 import { useNielsen } from '@theoplayer/react-native-analytics-nielsen';
 import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
 import { SourceMenuButton, SOURCES } from "./custom/SourceMenuButton";
+import { AnalyticsMenuButton } from "./custom/AnalyticsMenuButton";
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -67,9 +68,9 @@ const App = () => {
   };
 
   return (
-    <View style={ styles.fullscreen }>
+    <View style={styles.fullscreen}>
 
-      <THEOplayerView config={ playerConfig } onPlayerReady={ onPlayerReady }>
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
         {player !== undefined && (
           <UiContainer
             theme={{...DEFAULT_THEOPLAYER_THEME}}
@@ -96,6 +97,12 @@ const App = () => {
                   <MuteButton/>
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
+                  <AnalyticsMenuButton options={[
+                    {
+                      title: 'Change Program',
+                      action: onCustomMetadata
+                    }
+                  ]}/>
                   <PipButton/>
                   <FullscreenButton/>
                 </ControlBar>
