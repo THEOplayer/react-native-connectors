@@ -19,7 +19,11 @@
         "album": "React-Native THEOplayer demos",
         "mediaUri": "https://theoplayer.com",
         "displayIconUri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
-        "artist": "THEOplayer"
+        "artist": "THEOplayer",
+        "mux": {
+          "video_id": "ID_1",
+          "video_title": "Big Buck Bunny"
+        }
       }
     }
   },
@@ -44,7 +48,11 @@
         "artist": "THEOplayer",
         "type": "tv-show",
         "releaseDate": "november 29th",
-        "releaseYear": 1997
+        "releaseYear": 1997,
+        "mux": {
+          "video_id": "ID_2",
+          "video_title": "The Venture Bros"
+        }
       }
     }
   }
