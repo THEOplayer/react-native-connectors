@@ -118,6 +118,6 @@
     ]
   },
   "dependencies": {
-    "@mux/mux-data-theoplayer": "^4.15.3"
+    "@mux/mux-data-theoplayer": "^4.17.1"
   }
 }
