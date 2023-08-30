@@ -1,15 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   PlayerConfiguration,
   SourceDescription,
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
-import { useMux } from '@theoplayer/react-native-analytics-mux';
-import SOURCES_ANDROID from "./res/sources_android.json"
-import SOURCES_IOS from "./res/sources_ios.json"
-import SOURCES_WEB from "./res/sources_web.json"
+import { MuxData, useMux } from '@theoplayer/react-native-analytics-mux';
 import {
   CenteredControlBar,
   CenteredDelayedActivityIndicator,
@@ -27,13 +24,8 @@ import {
   TimeLabel,
   UiContainer
 } from '@theoplayer/react-native-ui';
-import { MuxMenuButton } from "./custom/MuxMenuButton";
-
-const SOURCES = Platform.select({
-  "ios": SOURCES_IOS,
-  "android": SOURCES_ANDROID,
-  "web": SOURCES_WEB
-}) || SOURCES_WEB;
+import { SOURCES } from "./custom/SourceMenuButton";
+import { AnalyticsMenuButton } from "./custom/AnalyticsMenuButton";
 
 const muxOptions = {
   debug: true,
@@ -59,12 +51,12 @@ const playerConfig: PlayerConfiguration = {
 const App = () => {
   const [muxConnector, initMux] = useMux(muxOptions);
   const [player, setPlayer] = useState<THEOplayer | undefined>();
-  const [sourceIndex, setSourceIndex] = useState<number>(0);
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Initialize Mux connector
     initMux(player);
-    player.source = SOURCES[sourceIndex].source as SourceDescription;
+    player.source = SOURCES[0].source as SourceDescription;
+
     muxConnector.current?.changeVideo({
       // Video Metadata
       video_id: '', // ex: 'abcd123'
@@ -80,6 +72,21 @@ const App = () => {
     // Update theoPlayer reference.
     setPlayer(player);
   }, [player]);
+
+  const onChangeProgram = () => {
+    muxConnector.current?.changeProgram({
+        video_title: 'New video title'
+      } as MuxData
+    );
+  }
+
+  const onNotifyError = () => {
+    muxConnector.current?.notifyError(
+      100,
+      "Description of error",
+      'Additional context for the error'
+    );
+  }
 
   return (
     <View style={[StyleSheet.absoluteFill, {backgroundColor: '#000000'}]}>
@@ -110,7 +117,15 @@ const App = () => {
                   <MuteButton/>
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
-                  <MuxMenuButton muxConnector={muxConnector}/>
+                  <AnalyticsMenuButton
+                    menuTitle={'Nielsen'}
+                    options={[{
+                      title: 'Change Program',
+                      action: onChangeProgram
+                    }, {
+                      title: 'Notify Error',
+                      action: onNotifyError
+                    }]}/>
                 </ControlBar>
               </>
             }
