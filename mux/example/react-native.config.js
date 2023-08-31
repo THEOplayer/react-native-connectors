@@ -7,4 +7,6 @@ module.exports = {
       root: path.join(__dirname, '..'),
     },
   },
+  'react-native-svg': {},
+  '@react-native-community/slider': {},
 };
