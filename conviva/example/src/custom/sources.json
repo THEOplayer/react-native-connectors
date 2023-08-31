@@ -12,6 +12,21 @@
           "type": "application/dash+xml"
         }
       ],
+      "ads": [
+        {
+          "integration": "google-ima",
+          "sources": {
+            "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+          }
+        },
+        {
+          "integration": "google-ima",
+          "timeOffset": 20,
+          "sources": {
+            "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+          }
+        }
+      ],
       "poster": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
       "metadata": {
         "title": "Big Buck Bunny",
@@ -35,6 +50,21 @@
         "src": "https://cdn.theoplayer.com/video/adultswim/clip.m3u8",
         "type": "application/x-mpegurl"
       },
+      "ads": [
+        {
+          "integration": "google-ima",
+          "sources": {
+            "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+          }
+        },
+        {
+          "integration": "google-ima",
+          "timeOffset": 20,
+          "sources": {
+            "src": "https://cdn.theoplayer.com/demos/ads/vast/dfp-preroll-no-skip.xml"
+          }
+        }
+      ],
       "poster": "https://cdn.theoplayer.com/video/adultswim/poster.jpg",
       "metadata": {
         "title": "The Venture Bros",
