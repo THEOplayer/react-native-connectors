@@ -92,9 +92,23 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
     
     @objc(changeProgram:data:)
     func changeProgram(_ node: NSNumber, data: NSDictionary) -> Void {
-        log("[Mux] changeProgram triggered.")
+        log("[Mux] changeProgram not available.")
+        // Note: not available in iOS connector.
+    }
+    
+    @objc(changeVideo:data:)
+    func changeVideo(_ node: NSNumber, data: NSDictionary) -> Void {
+        log("[Mux] changeVideo triggered.")
         DispatchQueue.main.async {
             MUXSDKStatsTHEOplayer.videoChangeForPlayer(name: self.buildPlayerName(node), customerData: self.buildCustomerData(data))
+        }
+    }
+    
+    @objc(notifyError:code:message:context:)
+    func notifyError(_ node: NSNumber, code: NSNumber, message: NSString, context: NSString) -> Void {
+        log("[Mux] notifyError triggered.")
+        DispatchQueue.main.async {
+            MUXSDKStatsTHEOplayer.dispatchError(name: "ReactNativeTHEOplayer", code: code.stringValue, message: message as String)
         }
     }
     
