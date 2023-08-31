@@ -31,11 +31,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerConviva_compileSdkVersion", 31)
+  compileSdkVersion safeExtGet("THEOplayerConviva_compileSdkVersion", 33)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerConviva_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerConviva_targetSdkVersion", 31)
+    targetSdkVersion safeExtGet("THEOplayerConviva_targetSdkVersion", 33)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -75,7 +75,7 @@ repositories {
 
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
 def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "1.8.10")
-def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.30')
+def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.33')
 def enabledV4 = theoplayer_sdk_version.toString().startsWith("4.")
 def core_prefix = enabledV4 ? 'unified' : 'core'
 def integration_prefix = enabledV4 ? 'unified' : 'integration'
@@ -90,7 +90,7 @@ dependencies {
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
   // TODO: remove once published
 //  implementation "com.theoplayer.android-connector:conviva:$theoplayer_sdk_version"
-  implementation "com.theoplayer.android-connector:conviva:5.6.0-1"
+  implementation "com.theoplayer.android-connector:conviva:5.10.0-1"
 
   implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"

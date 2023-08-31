@@ -1,27 +1,29 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { View } from 'react-native';
 import {
   PlayerConfiguration,
-  PlayerError,
-  PlayerEventType,
-  PresentationMode,
-  SourceDescription,
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
+import {
+  CenteredControlBar,
+  CenteredDelayedActivityIndicator,
+  ControlBar,
+  DEFAULT_THEOPLAYER_THEME, FullscreenButton,
+  LanguageMenuButton,
+  MuteButton, PipButton,
+  PlaybackRateSubMenu, PlayButton,
+  QualitySubMenu,
+  SeekBar,
+  SettingsMenuButton,
+  SkipButton, Spacer,
+  TimeLabel,
+  UiContainer
+} from "@theoplayer/react-native-ui";
 import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-native-analytics-conviva';
 import { useConviva } from '@theoplayer/react-native-analytics-conviva';
-import { ForwardButton, PauseButton, PlayButton, RewindButton } from './res/images';
-import SOURCES_ANDROID from "./res/sources_android.json"
-import SOURCES_IOS from "./res/sources_ios.json"
-import SOURCES_WEB from "./res/sources_web.json"
-import { TestButton } from "./TestButton";
-
-const SOURCES = Platform.select({
-  "ios": SOURCES_IOS,
-  "android": SOURCES_ANDROID,
-  "web": SOURCES_WEB
-}) || SOURCES_WEB;
+import { SourceMenuButton, SOURCES } from "./custom/SourceMenuButton";
+import { AnalyticsMenuButton } from "./custom/AnalyticsMenuButton";
 
 // Insert correct config values here.
 const TEST_CUSTOMER_KEY = '<customer_key>';
@@ -47,10 +49,16 @@ const playerConfig: PlayerConfiguration = {
 
 const App = () => {
   const [conviva, initConviva] = useConviva(convivaMetadata, convivaConfig);
-  const theoPlayer = useRef<THEOplayer | undefined>();
-  const [sourceIndex, setSourceIndex] = useState<number>(0);
-  const [error, setError] = useState<PlayerError | undefined>();
-  const [paused, setPaused] = useState<boolean>(true);
+  const [player, setPlayer] = useState<THEOplayer | undefined>();
+
+  const onPlayerReady = useCallback((player: THEOplayer) => {
+    // Initialize Conviva connector
+    initConviva(player);
+    player.source = SOURCES[0].source;
+
+    // Update theoPlayer reference.
+    setPlayer(player);
+  }, [player]);
 
   const onCustomMetadata = () => {
     const metadata: ConvivaMetadata = {
@@ -60,128 +68,65 @@ const App = () => {
     conviva.current?.setContentInfo(metadata);
   };
 
-  const onPlayerReady = useCallback((player: THEOplayer) => {
-    // Initialize Conviva connector
-    initConviva(player);
-    player.autoplay = !paused;
-    player.source = SOURCES[sourceIndex].source as SourceDescription;
-    player.pipConfiguration = { startsAutomatically: true };
-    player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
-    player.addEventListener(PlayerEventType.PAUSE, () => setPaused(true));
-
-    // Update theoPlayer reference.
-    theoPlayer.current = player;
-  }, []);
-
-  const onTogglePlayPause = useCallback(() => {
-    const player = theoPlayer.current;
-    if (player) {
-      player.paused ? player.play() : player.pause();
-      setPaused((paused) => !paused);
-    }
-  }, [theoPlayer])
-
   const onStopAndStartNewSession = useCallback(() => {
     conviva.current?.stopAndStartNewSession({
       ['Conviva.assetName']: 'New session title'
     });
-  }, [theoPlayer])
+  }, [player])
 
   return (
     <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
 
-      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
+        {player !== undefined && (
+          <UiContainer
+            theme={{...DEFAULT_THEOPLAYER_THEME}}
+            player={player}
+            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            top={
+              <ControlBar>
+                <SourceMenuButton/>
+                <LanguageMenuButton/>
+                <SettingsMenuButton>
+                  <QualitySubMenu/>
+                  <PlaybackRateSubMenu/>
+                </SettingsMenuButton>
+              </ControlBar>
+            }
+            center={<CenteredControlBar left={<SkipButton skip={-10}/>} middle={<PlayButton/>}
+                                        right={<SkipButton skip={30}/>}/>}
+            bottom={
+              <>
+                <ControlBar>
+                  <SeekBar/>
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton/>
+                  <TimeLabel showDuration={true}/>
+                  <Spacer/>
+                  <AnalyticsMenuButton
+                    menuTitle={"Conviva Connector"}
+                    options={[
+                      {
+                        title: 'Change Program',
+                        action: onCustomMetadata
+                      },
+                      {
+                        title: 'Stop and Start New Session',
+                        action: onStopAndStartNewSession
+                      }
+                    ]}/>
+                  <PipButton/>
+                  <FullscreenButton/>
+                </ControlBar>
+              </>
+            }
+          />
+        )}
+      </THEOplayerView>
 
-      {!error && (
-        <View style={styles.fullscreenCenter}>
-          <View style={styles.controlsContainer}>
-            {/*Play/pause & trick-play buttons*/}
-            <View style={styles.controlsRow}>
-              <TestButton onPress={() => skip(theoPlayer.current, -15000)} image={RewindButton} />
-              <TestButton onPress={onTogglePlayPause} image={paused ? PlayButton : PauseButton } />
-              <TestButton onPress={() => skip(theoPlayer.current, 15000)} image={ForwardButton} />
-            </View>
-            <Text style={styles.infoText}>{`Source: ${SOURCES[sourceIndex].name}`}</Text>
-            <TestButton onPress={() => seekToBeforeEnd(theoPlayer.current)} title={"Seek to end -5sec"} />
-            <TestButton onPress={() => toPip(theoPlayer.current)} title={"Picture-in-Picture"} />
-            <TestButton onPress={() => {
-              const nextSourceIndex = (sourceIndex + 1) % SOURCES.length;
-              setSourceIndex(nextSourceIndex);
-              setSource(theoPlayer.current, SOURCES[nextSourceIndex].source as SourceDescription);
-              setPaused(true);
-            }} title={"Next source"} />
-            <TestButton onPress={onCustomMetadata} title={"Set custom metadata"} />
-            <TestButton onPress={onStopAndStartNewSession} title={"Stop & start new session"} />
-          </View>
-        </View>
-      )}
-
-      {/*Error message*/}
-      {error && <View style={styles.fullscreenCenter}><Text style={styles.message}>{error.errorMessage}</Text></View>}
     </View>
   );
 };
-
-function setSource(player: THEOplayer | undefined, source: SourceDescription) {
-  if (player) {
-    player.source = source;
-  }
-}
-
-function skip(player: THEOplayer | undefined, skipTime: number) {
-  if (player) {
-    player.currentTime = player.currentTime + skipTime;
-  }
-}
-
-function seekToBeforeEnd(player: THEOplayer | undefined) {
-  if (player && !isNaN(player.duration)) {
-    player.currentTime = player.duration - 5000;
-  }
-}
-
-function toPip(player: THEOplayer | undefined) {
-  if (player) {
-    player.presentationMode = PresentationMode.pip;
-  }
-}
-
-const styles = StyleSheet.create({
-  fullscreenCenter: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  controlsContainer: {
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'column'
-  },
-  controlsRow: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
-  infoText: {
-    fontSize: 18,
-    marginVertical: 2,
-    color: '#ffc50f',
-    padding: 3,
-    backgroundColor: 'black',
-  },
-  message: {
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    fontSize: 16,
-    paddingLeft: 50,
-    paddingRight: 50,
-    color: 'white',
-    backgroundColor: 'black',
-  }
-});
 
 export default App;

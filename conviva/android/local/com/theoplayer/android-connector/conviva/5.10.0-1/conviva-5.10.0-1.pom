@@ -3,18 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.theoplayer.android-connector</groupId>
   <artifactId>conviva</artifactId>
-  <version>5.6.0-1</version>
+  <version>5.10.0-1</version>
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
       <groupId>com.conviva.sdk</groupId>
       <artifactId>conviva-core-sdk</artifactId>
-      <version>4.0.30</version>
+      <version>4.0.33</version>
     </dependency>
     <dependency>
       <groupId>androidx.lifecycle</groupId>
       <artifactId>lifecycle-process</artifactId>
-      <version>2.5.1</version>
+      <version>2.6.1</version>
     </dependency>
   </dependencies>
 </project>
