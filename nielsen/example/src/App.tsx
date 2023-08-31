@@ -97,7 +97,9 @@ const App = () => {
                   <MuteButton/>
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
-                  <AnalyticsMenuButton options={[
+                  <AnalyticsMenuButton
+                    menuTitle={"Nielsen Connector"}
+                    options={[
                     {
                       title: 'Change Program',
                       action: onCustomMetadata
