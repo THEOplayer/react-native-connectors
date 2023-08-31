@@ -73,6 +73,13 @@ const App = () => {
     setPlayer(player);
   }, [player]);
 
+  const onChangeVideo = () => {
+    muxConnector.current?.changeVideo({
+        video_title: 'New video title'
+      } as MuxData
+    );
+  }
+
   const onChangeProgram = () => {
     muxConnector.current?.changeProgram({
         video_title: 'New video title'
@@ -119,13 +126,19 @@ const App = () => {
                   <Spacer/>
                   <AnalyticsMenuButton
                     menuTitle={'Nielsen'}
-                    options={[{
-                      title: 'Change Program',
-                      action: onChangeProgram
-                    }, {
-                      title: 'Notify Error',
-                      action: onNotifyError
-                    }]}/>
+                    options={[
+                      {
+                        title: 'Change Video',
+                        action: onChangeVideo
+                      },
+                      {
+                        title: 'Change Program',
+                        action: onChangeProgram
+                      },
+                      {
+                        title: 'Notify Error',
+                        action: onNotifyError
+                      }]}/>
                 </ControlBar>
               </>
             }
