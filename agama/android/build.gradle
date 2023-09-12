@@ -1,0 +1,82 @@
+buildscript {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.9.10"
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:7.2.2"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+  compileSdkVersion safeExtGet("THEOplayerAgama_compileSdkVersion", 33)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("THEOplayerAgama_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerAgama_targetSdkVersion", 33)
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+repositories {
+  mavenLocal()
+  google()
+  mavenCentral()
+  maven { url 'https://jitpack.io' }
+}
+
+// The Agama connector requires at least THEOplayer SDK v5.11.0, (6.+ version are included as well).
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0,)')
+def kotlin_version = safeExtGet("THEOplayerAgama_kotlinVersion", "1.9.10")
+
+dependencies {
+  // For < 0.71, this will be from the local maven repo
+  // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
+  implementation project(':react-native-theoplayer')
+
+  // Align the Kotlin SDK libraries with the same version.
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
+}

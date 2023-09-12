@@ -20,12 +20,14 @@ jobs:
 
       - name: Run npm
         run: npm ci --prefix adobe &&
+          npm ci --prefix agama &&
           npm ci --prefix conviva &&
           npm ci --prefix comscore &&
           npm ci --prefix nielsen
 
       - name: Check lint
         run: npm run lint --prefix adobe &&
+          npm run lint --prefix agama &&
           npm run lint --prefix conviva &&
           npm run lint --prefix comscore &&
           npm run lint --prefix nielsen
