@@ -1,5 +1,7 @@
 import { Buffer } from "buffer";
 
+__DEBUG__ = false;
+
 export class AgamaPolyfills {
   static install() {
     if (__DEBUG__) {
