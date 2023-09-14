@@ -52,3 +52,4 @@ In this section you will find step-by-step instructions on setting up an analyti
 - [Comscore](./comscore/README.md)
 - [Conviva](./conviva/README.md)
 - [Nielsen](./nielsen/README.md)
+- [Youbora](./youbora/README.md)
