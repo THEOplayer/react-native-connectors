@@ -73,7 +73,7 @@ rootProject.allprojects {
   }
 }
 
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '+')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.10.0,6.0)')
 def kotlin_version = safeExtGet("THEOplayerYoubora_kotlinVersion", "1.8.10")
 def youbora_version = safeExtGet("THEOplayerYoubora_youboraVersion", "+")
 def youbora_config_version = safeExtGet("THEOplayerYoubora_youboraConfigVersion", "0.4.7")
