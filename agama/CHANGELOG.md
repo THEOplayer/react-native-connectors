@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 - Fixed the keywords list in `package.json`.
+- Fixed missing `manifest` script in npm package.
 
 ## [1.0.0] - 2023-09-12
 
