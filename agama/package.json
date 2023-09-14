@@ -16,6 +16,7 @@
     "*.podspec",
     "*.tgz",
     "CHANGELOG.md",
+    "scripts/update_manifest.js",
     "!lib/typescript/example",
     "!ios/build",
     "!android/build",
