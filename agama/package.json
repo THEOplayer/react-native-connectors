@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-agama",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Agama analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
