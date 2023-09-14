@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.0.3] - 2023-09-14
 
+### Changed
+
+- Set upper boundary on THEOplayer's Android SDK version.
+
+## [1.0.3] - 2023-09-14
+
 ### Fixed
 
 - Fixed an issue where creating a build manifest would fail due to a missing dependency.

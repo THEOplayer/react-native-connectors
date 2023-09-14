@@ -63,8 +63,8 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-// The Agama connector requires at least THEOplayer SDK v5.11.0, (6.+ version are included as well).
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0,)')
+// The Agama connector requires at least THEOplayer SDK v5.11.0.
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0,6.0)')
 def kotlin_version = safeExtGet("THEOplayerAgama_kotlinVersion", "1.9.10")
 
 dependencies {
