@@ -74,7 +74,6 @@
     "react-native-builder-bob": "^0.20.0",
     "react-native-theoplayer": "^2.12.0",
     "release-it": "^15.0.0",
-    "strftime": "^0.10.2",
     "typescript": "^4.5.2"
   },
   "resolutions": {
@@ -129,6 +128,7 @@
     ]
   },
   "dependencies": {
-    "react-native-uuid": "^2.0.1"
+    "react-native-uuid": "^2.0.1",
+    "strftime": "^0.10.2"
   }
 }
