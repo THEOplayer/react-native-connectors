@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerMux_compileSdkVersion", 31)
+  compileSdkVersion safeExtGet("THEOplayerMux_compileSdkVersion", 33)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerMux_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerMux_targetSdkVersion", 31)
+    targetSdkVersion safeExtGet("THEOplayerMux_targetSdkVersion", 33)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -87,7 +87,7 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_unified:$mux_version"
+  implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_v5:$mux_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$core_prefix:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:$integration_prefix-ads-ima:$theoplayer_sdk_version"
