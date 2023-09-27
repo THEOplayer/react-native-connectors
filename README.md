@@ -28,6 +28,7 @@ Currently, the following analytics connectors are available:
 | [`@theoplayer/react-native-analytics-agama`](https://github.com/THEOplayer/react-native-theoplayer-analytics)    | Agama analytics connector                                        | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-agama)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-agama)       |
 | [`@theoplayer/react-native-analytics-comscore`](https://github.com/THEOplayer/react-native-theoplayer-analytics) | Comscore analytics connector                                     | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-comscore)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-comscore) |
 | [`@theoplayer/react-native-analytics-conviva`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Conviva analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-conviva)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-conviva)   |
+| [`@theoplayer/react-native-analytics-mux`](https://github.com/THEOplayer/react-native-theoplayer-analytics)      | Mux analytics connector                                          | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-mux)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-mux)           |
 | [`@theoplayer/react-native-analytics-nielsen`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Nielsen analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-nielsen)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-nielsen)   |
 | [`@theoplayer/react-native-analytics-youbora`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Youbora analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-youbora)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-youbora)   |
 
@@ -51,5 +52,6 @@ In this section you will find step-by-step instructions on setting up an analyti
 - [Agama](./agama/README.md)
 - [Comscore](./comscore/README.md)
 - [Conviva](./conviva/README.md)
+- [Mux](./mux/README.md)
 - [Nielsen](./nielsen/README.md)
 - [Youbora](./youbora/README.md)

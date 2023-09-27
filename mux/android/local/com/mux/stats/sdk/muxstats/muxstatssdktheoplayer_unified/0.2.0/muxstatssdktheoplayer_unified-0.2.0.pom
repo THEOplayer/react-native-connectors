@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mux.stats.sdk.muxstats</groupId>
+  <artifactId>muxstatssdktheoplayer_unified</artifactId>
+  <version>0.2.0</version>
+  <packaging>aar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>com.mux</groupId>
+      <artifactId>stats.muxcore</artifactId>
+      <version>7.0.11</version>
+    </dependency>
+  </dependencies>
+</project>
