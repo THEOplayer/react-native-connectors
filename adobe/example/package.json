@@ -17,7 +17,8 @@
     "react-native": "0.71.2",
     "react-native-device-info": "^10.6.0",
     "react-native-theoplayer": ">=2.2.0",
-    "react-native-web": "^0.18.12"
+    "react-native-web": "^0.18.12",
+    "theoplayer": "^6.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
