@@ -24,6 +24,7 @@ import type { ConvivaConfiguration, ConvivaMetadata } from '@theoplayer/react-na
 import { useConviva } from '@theoplayer/react-native-analytics-conviva';
 import { SourceMenuButton, SOURCES } from "./custom/SourceMenuButton";
 import { AnalyticsMenuButton } from "./custom/AnalyticsMenuButton";
+import { installVPFInterceptor } from "./vpf/VPFInterceptor";
 
 // Insert correct config values here.
 const TEST_CUSTOMER_KEY = '<customer_key>';
@@ -44,7 +45,10 @@ const convivaConfig: ConvivaConfiguration = {
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
-  libraryLocation: 'theoplayer'
+  libraryLocation: 'theoplayer',
+  retryConfiguration: {
+    maxRetries: 3
+  }
 };
 
 const App = () => {
@@ -73,6 +77,10 @@ const App = () => {
       ['Conviva.assetName']: 'New session title'
     });
   }, [player])
+
+  const onVPF = useCallback(() => {
+    installVPFInterceptor(player);
+  }, [player]);
 
   return (
     <View style={{position: 'absolute', top: 0, left: 0, bottom: 0, right: 0}}>
@@ -114,6 +122,10 @@ const App = () => {
                       {
                         title: 'Stop and Start New Session',
                         action: onStopAndStartNewSession
+                      },
+                      {
+                        title: 'Simulate VPF (web)',
+                        action: onVPF
                       }
                     ]}/>
                   <PipButton/>
