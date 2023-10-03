@@ -20,7 +20,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-theoplayer": "^2.0.0",
     "react-native-web": "^0.18.12",
-    "theoplayer": "^5.0.0"
+    "theoplayer": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
