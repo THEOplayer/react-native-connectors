@@ -10,8 +10,10 @@ const jsonData = {
 // Convert the JSON object to a string
 const jsonString = JSON.stringify(jsonData, null, 2);
 
+const targetFolder = './src/static';
+
 // Write the JSON string to a file
-fs.writeFile('manifest.json', jsonString, 'utf8', (err) => {
+fs.writeFile(`${targetFolder}/manifest.json`, jsonString, 'utf8', (err) => {
   if (err) {
     console.error('Error writing JSON file:', err);
   } else {

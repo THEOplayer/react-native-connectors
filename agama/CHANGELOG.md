@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Added `SourceConfiguration` and `AgamaConfiguration` types to package exports.
 
+### Fixed
+
+- Fixed the location of `manifest.json` in order to make it discoverable for web platforms.
+
 ## [1.1.0] - 2023-09-14
 
 ### Changed
