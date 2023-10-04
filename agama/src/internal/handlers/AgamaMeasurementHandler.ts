@@ -24,7 +24,7 @@ export class AgamaMeasurementHandler extends AbstractAgamaHandler {
   private _metricsAgamaMetrics: AgamaMetrics;
   private _droppedFramesFromPreviousSessions = 0;
   private _decodedFramesFromPreviousSessions = 0;
-  private _loopIds: NodeJS.Timer[] = [];
+  private _loopIds: ReturnType<typeof setInterval>[] = [];
 
   constructor(player: THEOplayer, agamaClient: AgamaClient, metrics: AgamaMetrics) {
     super(player, agamaClient);
