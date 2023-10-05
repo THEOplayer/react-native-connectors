@@ -75,7 +75,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": ">=2.12.0"
+    "react-native-theoplayer": "*"
   },
   "commitlint": {
     "extends": [

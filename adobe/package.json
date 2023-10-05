@@ -77,7 +77,7 @@
     "react": "*",
     "react-native": "*",
     "react-native-device-info": "*",
-    "react-native-theoplayer": ">=2.0.0"
+    "react-native-theoplayer": "*"
   },
   "commitlint": {
     "extends": [
