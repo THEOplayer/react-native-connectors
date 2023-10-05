@@ -1,6 +1,10 @@
 import { Buffer } from "buffer";
 
-__DEBUG__ = false;
+try {
+  __DEBUG__ = false;
+} catch (ignored) {
+  /*ignore*/
+}
 
 export class AgamaPolyfills {
   static install() {
