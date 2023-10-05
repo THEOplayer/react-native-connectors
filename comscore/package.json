@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-comscore",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Comscore analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
