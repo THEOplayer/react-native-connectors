@@ -1,36 +1,32 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
-  AdIntegrationKind,
   PlayerConfiguration,
-  PlayerError,
-  PlayerEventType,
-  SourceDescription,
   THEOplayer,
   THEOplayerView
 } from 'react-native-theoplayer';
-import { PlayButton } from './res/images';
 import { useAdobe } from "@theoplayer/react-native-analytics-adobe";
+import {
+  CenteredControlBar,
+  CenteredDelayedActivityIndicator,
+  ControlBar,
+  DEFAULT_THEOPLAYER_THEME, FullscreenButton,
+  LanguageMenuButton,
+  MuteButton, PipButton,
+  PlaybackRateSubMenu, PlayButton,
+  QualitySubMenu,
+  SeekBar,
+  SettingsMenuButton,
+  SkipButton, Spacer,
+  TimeLabel,
+  UiContainer
+} from "@theoplayer/react-native-ui";
+import { SourceMenuButton, SOURCES } from "./custom/SourceMenuButton";
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
   license: undefined,
   libraryLocation: 'theoplayer',
-};
-
-const source_hls: SourceDescription = {
-  sources: [
-    {
-      src: 'https://cdn.theoplayer.com/video/big_buck_bunny/big_buck_bunny.m3u8',
-      type: 'application/x-mpegurl',
-    },
-  ],
-  ads: [
-    {
-      sources: 'https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/vmap_ad_samples&sz=640x480&cust_params=sample_ar%3Dpreonly&ciu_szs=300x250%2C728x90&gdfp_req=1&ad_rule=1&output=vmap&unviewed_position_start=1&env=vp&impl=s&correlator=',
-      integration: 'google-ima' as AdIntegrationKind,
-    }
-  ]
 };
 
 // Insert correct config values here.
@@ -40,46 +36,56 @@ const sid = "<suite_id>" // "<Report Suite ID>";
 const trackingUrl = "<tracking_url>" // "<Tracking Server URL>";
 
 const App = () => {
-  const [_adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
-  const theoPlayer = useRef<THEOplayer | null>();
-  const [error, setError] = useState<PlayerError | null>();
-  const [paused, setPaused] = useState<boolean>(true);
+  const [, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
+  const [player, setPlayer] = useState<THEOplayer | undefined>();
 
   const onPlayerReady = useCallback((player: THEOplayer) => {
     // Initialize Adobe connector
     initAdobe(player);
-    player.source = source_hls;
-    player.addEventListener(PlayerEventType.ERROR, (event) => setError(event.error));
+    player.source = SOURCES[0].source;
 
     // Update theoPlayer reference.
-    theoPlayer.current = player;
+    setPlayer(player);
   }, []);
 
-  const onTogglePlayPause = useCallback(() => {
-    const player = theoPlayer.current;
-    if (player) {
-      player.paused ? player.play() : player.pause();
-      setPaused((paused) => !paused);
-    }
-  }, [theoPlayer]);
 
   return (
     <View style={styles.fullscreen}>
-      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>
-
-      {/*Play/pause button*/}
-      {!error && (
-        <TouchableOpacity style={styles.fullscreen} onPress={onTogglePlayPause}>
-          {paused && <Image style={styles.image} source={PlayButton}/>}
-        </TouchableOpacity>
-      )}
-
-      {/*Error message*/}
-      {error && (
-        <View style={styles.fullscreen}>
-          <Text style={styles.message}>{error.errorMessage}</Text>
-        </View>
-      )}
+      <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}>
+        {player !== undefined && (
+          <UiContainer
+            theme={{...DEFAULT_THEOPLAYER_THEME}}
+            player={player}
+            behind={<CenteredDelayedActivityIndicator size={50}/>}
+            top={
+              <ControlBar>
+                <SourceMenuButton/>
+                <LanguageMenuButton/>
+                <SettingsMenuButton>
+                  <QualitySubMenu/>
+                  <PlaybackRateSubMenu/>
+                </SettingsMenuButton>
+              </ControlBar>
+            }
+            center={<CenteredControlBar left={<SkipButton skip={-10}/>} middle={<PlayButton/>}
+                                        right={<SkipButton skip={30}/>}/>}
+            bottom={
+              <>
+                <ControlBar>
+                  <SeekBar/>
+                </ControlBar>
+                <ControlBar>
+                  <MuteButton/>
+                  <TimeLabel showDuration={true}/>
+                  <Spacer/>
+                  <PipButton/>
+                  <FullscreenButton/>
+                </ControlBar>
+              </>
+            }
+          />
+        )}
+      </THEOplayerView>
     </View>
   );
 };
@@ -93,27 +99,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  message: {
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    fontSize: 16,
-    paddingLeft: 50,
-    paddingRight: 50,
-    color: 'white',
-    backgroundColor: 'black',
-  },
-  image: {
-    resizeMode: 'contain',
-    width: 75,
-    height: 75,
-    tintColor: '#ffc50f',
-  },
-  playButton: {
-    width: 90,
-    height: 90,
-    tintColor: '#ffc50f',
-  },
+  }
 });
 
 export default App;
