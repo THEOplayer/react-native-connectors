@@ -58,8 +58,7 @@ android {
 
 rootProject.allprojects {
   repositories {
-    // Any project depending on this module through npm should be able to find the local Maven repo.
-    maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-mux/android/local") }
+    maven { url 'https://muxinc.jfrog.io/artifactory/default-maven-release-local' }
   }
 }
 
@@ -70,7 +69,6 @@ repositories {
   // Local Maven repo
   maven { url 'local' }
   maven { url 'https://jitpack.io' }
-  maven { url 'https://muxinc.jfrog.io/artifactory/default-maven-release-local' }
 }
 
 // The Mux connector requires at least THEOplayer SDK v5.11.0.
