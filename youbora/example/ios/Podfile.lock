@@ -331,9 +331,9 @@ PODS:
     - glog
   - react-native-slider (4.4.2):
     - React-Core
-  - react-native-theoplayer (2.9.0):
+  - react-native-theoplayer (2.16.1):
     - React-Core
-    - THEOplayerSDK-core (>= 5.4.1, ~> 5.4)
+    - THEOplayerSDK-core (~> 5.11)
   - react-native-theoplayer-youbora (1.0.0):
     - React-Core
     - react-native-theoplayer
@@ -425,11 +425,11 @@ PODS:
   - RNSVG (13.9.0):
     - React-Core
   - SocketRocket (0.6.1)
-  - THEOplayerSDK-core (5.5.1)
+  - THEOplayerSDK-core (5.11.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
-  - YouboraLib (6.7.4)
+  - YouboraLib (6.7.6)
   - YouboraTHEOPlayerAdapter (6.7.0):
     - YouboraLib (~> 6.5)
 
@@ -632,7 +632,7 @@ SPEC CHECKSUMS:
   React-jsinspector: ea8101acf525ec08b2d87ddf0637d45f8e3b4148
   React-logger: 97987f46779d8dd24656474ad0c43a5b459f31d6
   react-native-slider: 33b8d190b59d4f67a541061bb91775d53d617d9d
-  react-native-theoplayer: ecf48692ea74438c0954772ae1e14f7fd549ca49
+  react-native-theoplayer: 6807a8dec6725252ac6d0c1fb77912e0090a2091
   react-native-theoplayer-youbora: a20d68ef2995e80033086c8605870b67fc3c7889
   React-perflogger: c7ccda3d1d1da837f7ff4e54e816022a6803ee87
   React-RCTActionSheet: 01c125aebbad462a24228f68c584c7a921d6c28e
@@ -649,12 +649,12 @@ SPEC CHECKSUMS:
   ReactCommon: f697c0ac52e999aa818e43e2b6f277787c735e2d
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  THEOplayerSDK-core: a686d6179d697696aa1e4d55310c01470f6a1666
+  THEOplayerSDK-core: a8ff165aec1f7dfb825cd93b8fc2c0a358cd8f6e
   Yoga: 5b0304b3dbef2b52e078052138e23a19c7dacaef
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
-  YouboraLib: 86bfabe1b909bee7b1f2707821ba6cb1b6398da8
+  YouboraLib: 71d3ce91b8eb68bef9d449bf93a7c97984d03590
   YouboraTHEOPlayerAdapter: 9240bf627e9a0963650b7afb84d4c929daf3ecfd
 
-PODFILE CHECKSUM: 47a33ccbbd6154251a2c5849ad0a8d1e7dd40d5c
+PODFILE CHECKSUM: 5b7ab15331d1e38f42c9894b27b2548b8eb46eb6
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.0
