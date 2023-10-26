@@ -67,15 +67,23 @@ As outlined on the native iOS connector's [git repository](https://bitbucket.org
 the app's Podfile still needs to include a dependency to the THEOplayerSDK by adding a pre-install script:
 
 ```ruby
-pre_install do |installer|
-  adapter_target_name = "YouboraTHEOPlayerAdapter"
-  puts "Patching dependencies of #{adapter_target_name}"
-  def target_by_name(installer, name)
-    target = installer.pod_targets.filter { |t| t.name == name }.first
-    raise "No target '#{name}'" unless target
-    target
+  pre_install do |installer|
+    ios_youbora_target = installer.pod_targets.find { |t| t.name == "YouboraTHEOPlayerAdapter-iOS" }
+    ios_theoplayer_target = installer.pod_targets.find { |t| t.name == "THEOplayerSDK-core-iOS"}
+    puts "Adding THEOplayerSDK-core-iOS as a target dependency to YouboraTHEOPlayerAdapter-iOS"
+    ios_youbora_target.dependent_targets <<= ios_theoplayer_target
+    tvos_youbora_target = installer.pod_targets.find { |t| t.name == "YouboraTHEOPlayerAdapter-tvOS"}
+    tvos_theoplayer_target = installer.pod_targets.find { |t| t.name == "THEOplayerSDK-core-tvOS"}
+    puts "Adding THEOplayerSDK-core-tvOS as a target dependency to YouboraTHEOPlayerAdapter-tvOS"
+    tvos_youbora_target.dependent_targets <<= tvos_theoplayer_target
   end
-  adapter_target = target_by_name(installer, adapter_target_name)
-  adapter_target.dependent_targets <<= target_by_name(installer, "THEOplayerSDK-core")
-end
+```
+If you are using a single target project this reduces to 
+```ruby
+  pre_install do |installer|
+    youbora_target = installer.pod_targets.find { |t| t.name == "YouboraTHEOPlayerAdapter" }
+    theoplayer_target = installer.pod_targets.find { |t| t.name == "THEOplayerSDK-core"}
+    puts "Adding THEOplayerSDK-core as a target dependency to YouboraTHEOPlayerAdapter"
+    youbora_target.dependent_targets <<= theoplayer_target
+  end
 ```
