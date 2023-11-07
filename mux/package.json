@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-mux",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Mux analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -53,29 +53,29 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@react-native-community/eslint-config": "^3.0.2",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@react-native-community/eslint-config": "^3.2.0",
     "@release-it/conventional-changelog": "^5.1.1",
-    "@types/react": "^18.0.31",
-    "@types/react-native": "^0.71.5",
-    "commitlint": "^17.0.2",
-    "del-cli": "^5.0.0",
-    "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "pod-install": "^0.1.0",
-    "prettier": "^2.0.5",
+    "@types/react": "^18.2.24",
+    "@types/react-native": "^0.72.3",
+    "commitlint": "^17.7.2",
+    "del-cli": "^5.1.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "pod-install": "^0.1.39",
+    "prettier": "^2.8.8",
     "react": "^18.2.0",
-    "react-native": "^0.71.5",
-    "react-native-builder-bob": "^0.20.0",
-    "react-native-theoplayer": "^2.0.0",
-    "release-it": "^15.0.0",
-    "typescript": "^4.5.2"
+    "react-native": "^0.72.5",
+    "react-native-builder-bob": "^0.20.4",
+    "react-native-theoplayer": "latest",
+    "release-it": "^15.11.0",
+    "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": ">=2.12.0"
+    "react-native-theoplayer": "*"
   },
   "commitlint": {
     "extends": [

@@ -37,7 +37,7 @@ export class AdobeConnectorAdapter {
   private eventQueue: AdobeEventRequestBody[] = [];
 
   /** Timer handling the ping event request */
-  private pingInterval: NodeJS.Timer | undefined;
+  private pingInterval: ReturnType<typeof setInterval> | undefined;
 
   /** Whether we are in a current session or not */
   private sessionInProgress = false;

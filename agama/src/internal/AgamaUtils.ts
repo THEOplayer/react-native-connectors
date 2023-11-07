@@ -9,7 +9,7 @@ import { isString } from "./utils/TypeUtils";
 import uuid from 'react-native-uuid';
 import { isHLSSourceType_ } from "./utils/SourceDescriptionUtils";
 import type { NetInfoCellularGeneration } from "@react-native-community/netinfo";
-import * as manifest from "../../manifest.json";
+import * as manifest from "../static/manifest.json";
 import type { AgamaServiceName, AgamaSourceConfiguration, AgamaStreamType } from "../api/AgamaSourceConfiguration";
 import type { AgamaAnalyticsIntegrationID } from "../api/AgamaSourceConfiguration";
 

@@ -125,7 +125,7 @@ const App = () => {
                   <TimeLabel showDuration={true}/>
                   <Spacer/>
                   <AnalyticsMenuButton
-                    menuTitle={'Nielsen'}
+                    menuTitle={'Mux'}
                     options={[
                       {
                         title: 'Change Video',
