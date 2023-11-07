@@ -52,15 +52,10 @@ target 'TheoplayerYouboraExample' do
   end
 
   pre_install do |installer|
-    adapter_target_name = "YouboraTHEOPlayerAdapter"
-    puts "Patching dependencies of #{adapter_target_name}"
-    def target_by_name(installer, name)
-      target = installer.pod_targets.filter { |t| t.name == name }.first
-      raise "No target '#{name}'" unless target
-      target
-    end
-    adapter_target = target_by_name(installer, adapter_target_name)
-    adapter_target.dependent_targets <<= target_by_name(installer, "THEOplayerSDK-core")
+     youbora_target = installer.pod_targets.find { |t| t.name == "YouboraTHEOPlayerAdapter" }
+     theoplayer_target = installer.pod_targets.find { |t| t.name == "THEOplayerSDK-core"}
+     puts "Adding THEOplayerSDK-core as a target dependency to YouboraTHEOPlayerAdapter"
+     youbora_target.dependent_targets <<= theoplayer_target
   end
 
   post_install do |installer|
