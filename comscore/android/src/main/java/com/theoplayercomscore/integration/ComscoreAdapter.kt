@@ -374,6 +374,12 @@ class ComscoreAdapter(
         Log.i(TAG, "DEBUG: notifyBufferStop")
       }
       streamingAnalytics.notifyBufferStop()
+      if (comScoreState == ComscoreState.VIDEO) {
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: notifyPlay")
+        }
+        streamingAnalytics.notifyPlay()
+      }
     }
     if (inAd) {
       transitionToAdvertisement() // will set ad metadata and notify play if not done already
