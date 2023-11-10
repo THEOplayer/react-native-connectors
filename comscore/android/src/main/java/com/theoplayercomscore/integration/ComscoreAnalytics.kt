@@ -34,7 +34,7 @@ class ComscoreAnalytics {
       addClient(PublisherConfiguration.Builder()
         .publisherId(configuration.publisherId)
         .secureTransmission(configuration.secureTransmission).apply {
-          if (configuration.userConsent === "1" || configuration.userConsent === "0") {
+          if (configuration.userConsent == "1" || configuration.userConsent == "0") {
             persistentLabels(hashMapOf("cs_ucfr" to configuration.userConsent))
           }
         }
