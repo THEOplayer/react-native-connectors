@@ -284,6 +284,9 @@ class ComscoreAdapter(
         }
         comScoreState = ComscoreState.VIDEO
         setContentMetadata()
+        if (BuildConfig.DEBUG) {
+          Log.i(TAG, "DEBUG: notifyPlay")
+        }
         streamingAnalytics.notifyPlay()
       }
       ComscoreState.VIDEO -> {}
