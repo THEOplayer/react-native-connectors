@@ -281,10 +281,11 @@ export class ComscoreAPI {
      * @param position
      */
     markPosition(position: number) {
+        const positionFloor = Math.floor(position)
         if (this.isDvr) {
-            this.startFromDvrWindowOffset(position);
+            this.startFromDvrWindowOffset(positionFloor);
         } else {
-            this.startFromPosition(position);
+            this.startFromPosition(positionFloor);
         }
     }
 
