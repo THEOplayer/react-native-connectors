@@ -37,6 +37,7 @@ export class ComscoreTheo extends TheoBase {
      * @param player THEOplayer instance
      * @param contentMetada content metadata
      * @param adMetadata ad metadata
+     * @param usagePropertiesAutoUpdateMode Indicates whether usage should be tracked when in foreground only, when back- and foreground or never, Comscore API: analytics.configuration.setUsagePropertiesAutoUpdateMode(0)
      * @param implementationId If Comscore provided you with an Implementation ID for your implementation, Comscore API: sa.setImplementationId( "1234567890" )
      * @param projectId If Comscore provided you with a Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
      * @param playerName If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerName( "My Player" )
@@ -48,6 +49,7 @@ export class ComscoreTheo extends TheoBase {
         player: THEOplayer,
         contentMetada: ContentMetadata,
         adMetadata: AdMetadata,
+        usagePropertiesAutoUpdateMode: string = null,
         implementationId: string = null,
         projectId: string = null,
         playerName: string = null,
@@ -67,6 +69,7 @@ export class ComscoreTheo extends TheoBase {
             projectId,
             playerName,
             playerVersion,
+            usagePropertiesAutoUpdateMode,
             skeleton
         );
         this.bindListeners();

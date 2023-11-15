@@ -20,36 +20,37 @@ Create the connector by providing the `THEOplayer` instance, a ComscoreConfigura
 import { useComscore } from '@theoplayer/react-native-analytics-comscore';
 
 export const comscoreMetadata: ComscoreMetadata = {
-  mediaType: ComscoreMediaType.longFormOnDemand,
-  uniqueId: "testuniqueId",
-  length: 634.566,
-  stationTitle: "THEOTV",
-  programTitle: "Big Buck Bunny",
-  episodeTitle: "Intro",
-  genreName: "Animation",
-  classifyAsAudioStream: false,
-  customLabels: {
-    "testcustomlabel": "testcustomvalue"
-  }
+    mediaType: ComscoreMediaType.longFormOnDemand,
+    uniqueId: 'testuniqueId',
+    length: 634.566,
+    stationTitle: 'THEOTV',
+    programTitle: 'Big Buck Bunny',
+    episodeTitle: 'Intro',
+    genreName: 'Animation',
+    classifyAsAudioStream: false,
+    customLabels: {
+        testcustomlabel: 'testcustomvalue'
+    }
 };
 
 const comscoreConfig: ComscoreConfiguration = {
-    publisherId: "<your publisher id (aka c2 id)",
-    applicationName: "<your app name>",
+    publisherId: '<your publisher id (aka c2 id)',
+    applicationName: '<your app name>',
     userConsent: ComscoreUserConsent.granted,
-    debug: true,
-  };
+    usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode.foregroundOnly,
+    debug: true
+};
 
 const App = () => {
-  const [comscore, initComscore] = useComscore(COMSCORE_METADATA, comscoreConfig);
+    const [comscore, initComscore] = useComscore(COMSCORE_METADATA, comscoreConfig);
 
-  const onPlayerReady = (player: THEOplayer) => {
-    // Initialize Comscore connector
-    initComscore(player);
-  }
+    const onPlayerReady = (player: THEOplayer) => {
+        // Initialize Comscore connector
+        initComscore(player);
+    };
 
-  return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
-}
+    return <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady} />;
+};
 ```
 
 ### Passing metadata dynamically
@@ -58,19 +59,19 @@ The connector allows passing or updating the current asset's metadata at any tim
 
 ```typescript
 const onUpdateMetadata = () => {
-  comscore.current.update({
-      mediaType: ComscoreMediaType.longFormOnDemand,
-      uniqueId: 'testuniqueId',
-      length: 634.566,
-      stationTitle: 'THEOTV',
-      programTitle: 'Big Buck Bunny',
-      episodeTitle: 'Intro',
-      genreName: 'Animation',
-      classifyAsAudioStream: false,
-      customLabels: {
-          testcustomlabel: 'testcustomvalue'
-      }
-  });
+    comscore.current.update({
+        mediaType: ComscoreMediaType.longFormOnDemand,
+        uniqueId: 'testuniqueId',
+        length: 634.566,
+        stationTitle: 'THEOTV',
+        programTitle: 'Big Buck Bunny',
+        episodeTitle: 'Intro',
+        genreName: 'Animation',
+        classifyAsAudioStream: false,
+        customLabels: {
+            testcustomlabel: 'testcustomvalue'
+        }
+    });
 };
 ```
 

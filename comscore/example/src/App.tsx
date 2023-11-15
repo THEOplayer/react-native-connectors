@@ -21,7 +21,7 @@ import {
   UiContainer
 } from "@theoplayer/react-native-ui";
 import { useComscore } from '@theoplayer/react-native-analytics-comscore';
-import { ComscoreConfiguration, ComscoreMetadata, ComscoreMediaType, ComscoreUserConsent } from '@theoplayer/react-native-analytics-comscore';
+import { ComscoreConfiguration, ComscoreMetadata, ComscoreMediaType, ComscoreUserConsent, ComscoreUsagePropertiesAutoUpdateMode } from '@theoplayer/react-native-analytics-comscore';
 import { SourceMenuButton, SOURCES } from "./custom/SourceMenuButton";
 
 if (Platform.OS === 'web') {
@@ -45,12 +45,16 @@ const comscoreMetadata: ComscoreMetadata = {
   classifyAsAudioStream: false,
   customLabels: {
     "testcustomlabel": "testcustomvalue"
-  }
+  },
+  c3: "c3value",
+  c4: "c4value",
+  c6: "c6value"
 };
 
 const comscoreConfig: ComscoreConfiguration = {
   publisherId: "<publisherId>", // Can be a test or production key.
   applicationName: "ReactNativeTHEOplayer",
+  usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode.foregroundAndBackground,
   userConsent: ComscoreUserConsent.granted,
   debug: true,
 };

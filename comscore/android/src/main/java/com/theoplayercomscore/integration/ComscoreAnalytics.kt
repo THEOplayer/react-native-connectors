@@ -40,7 +40,7 @@ class ComscoreAnalytics {
         }
         .build()
       )
-      setUsagePropertiesAutoUpdateMode(UsagePropertiesAutoUpdateMode.FOREGROUND_AND_BACKGROUND)
+      setUsagePropertiesAutoUpdateMode(configuration.usagePropertiesAutoUpdateMode)
       setApplicationName(configuration.applicationName)
       if (configuration.childDirected) {
         enableChildDirectedApplicationMode()

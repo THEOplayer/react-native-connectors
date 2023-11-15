@@ -1,6 +1,6 @@
 export { ComscoreConnector } from './api/ComscoreConnector';
 export type { ComscoreConfiguration } from './api/ComscoreConfiguration';
-export { ComscoreUserConsent } from './api/ComscoreConfiguration';
+export { ComscoreUserConsent, ComscoreUsagePropertiesAutoUpdateMode } from './api/ComscoreConfiguration';
 export {
     ComscoreMediaType,
     ComscoreFeedType,
