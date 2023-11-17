@@ -16,6 +16,7 @@ export class ComscoreConnectorAdapter {
             player,
             new ContentMetadata(ComscoreMetadata),
             new AdMetadata(),
+            ComscoreConfig.usagePropertiesAutoUpdateMode
         );
     }
 

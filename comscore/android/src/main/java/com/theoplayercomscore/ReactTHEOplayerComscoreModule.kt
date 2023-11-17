@@ -1,6 +1,7 @@
 package com.theoplayercomscore
 
 import android.util.Log
+import com.comscore.UsagePropertiesAutoUpdateMode
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.util.ViewResolver
@@ -72,11 +73,21 @@ class ReactTHEOplayerComscoreModule(context: ReactApplicationContext) :
     return ComscoreConfiguration(
       config.getString("publisherId") ?: "",
       config.getString("applicationName") ?: "",
+      mapUsagePropertiesAutoUpdateMode(config.getString("usagePropertiesAutoUpdateMode") ?: "foregroundOnly"),
       config.getString("userConsent") ?: "0",
       secureTransmission = false, // TODO: bring in line with other platforms
       childDirected = false, // TODO: bring in line with other platforms
       debug = config.getBoolean("debug")
     )
+  }
+
+  private fun mapUsagePropertiesAutoUpdateMode(usagePropertiesAutoUpdateMode: String): Int {
+    return when(usagePropertiesAutoUpdateMode) {
+      "foregroundOnly" -> UsagePropertiesAutoUpdateMode.FOREGROUND_ONLY
+      "foregroundAndBackground" -> UsagePropertiesAutoUpdateMode.FOREGROUND_AND_BACKGROUND
+      "disabled" -> UsagePropertiesAutoUpdateMode.DISABLED
+      else -> UsagePropertiesAutoUpdateMode.FOREGROUND_ONLY
+    }
   }
 
   private fun mapDate(date: ReadableMap?): ComscoreDate? {

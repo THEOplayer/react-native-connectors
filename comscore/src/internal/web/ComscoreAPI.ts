@@ -50,6 +50,7 @@ export class ComscoreAPI {
      * @param projectId If Comscore provided you with an Project ID for your implementation, Comscore API: sa.setProjectId( "1234567890" )
      * @param playerName If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerName( "My Player" )
      * @param playerVersion If Comscore instructed you to identify your players by name and version, Comscore API: sa.setMediaPlayerVersion( "1.2.3-a5f72c" )
+     * @param usagePropertiesAutoUpdateMode Indicates whether usage should be tracked when in foreground only, when back- and foreground or never, Comscore API: analytics.configuration.setUsagePropertiesAutoUpdateMode(0)
      */
     constructor(
         publisherId: string,
@@ -57,6 +58,7 @@ export class ComscoreAPI {
         projectId: string,
         playerName: string,
         playerVersion: string,
+        usagePropertiesAutoUpdateMode: string | undefined,
         skeleton: CustomSkeletonAPI | undefined
     ) {
         if (!publisherId) {
@@ -65,7 +67,7 @@ export class ComscoreAPI {
         // analytics = (window as any).ns_.analytics;
 
 
-        this.setupLibrary(publisherId);
+        this.setupLibrary(publisherId, usagePropertiesAutoUpdateMode);
         this.setStreamingAnalytics(
             implementationId,
             projectId,
@@ -78,10 +80,12 @@ export class ComscoreAPI {
      * setups library
      * see Comscore_Library-JavaScript-Implementation_Guide-International.pdf
      * @param {String} publisherId  Publisher ID value. The Publisher ID is often also referred to as the Client ID or c2 value.
+     * @param {String} usagePropertiesAutoUpdateMode Indicates whether usage should be tracked when in foreground only, when back- and foreground or never.
      */
-    setupLibrary(publisherId: string) {
+    setupLibrary(publisherId: string, usagePropertiesAutoUpdateMode: string) {
         this.setPlatformAPI();
         this.configurePublisher(publisherId);
+        this.configureUsagePropertiesAutoUpdateMode(usagePropertiesAutoUpdateMode);
         this.startsLibrary();
     }
 
@@ -114,6 +118,36 @@ export class ComscoreAPI {
         });
         analytics.configuration.addClient(config);
         logDebug('API - configurePublisher ', config);
+    }
+
+    /**
+     * Configures the application tracking to send usage data when the app is in foreground only, in back- and foreground or never.
+     * 
+     * @param mode 
+     */
+    configureUsagePropertiesAutoUpdateMode(mode: string) {
+        logDebug('API - setUsagePropertiesAutoUpdateMode to', mode);
+        switch (mode) {
+            case "foregroundOnly":
+                analytics.configuration.setUsagePropertiesAutoUpdateMode(
+                    analytics.configuration.UsagePropertiesAutoUpdateMode.FOREGROUND_ONLY
+                );
+                break;
+            case "foregroundAndBackground":
+                analytics.configuration.setUsagePropertiesAutoUpdateMode(
+                    analytics.configuration.UsagePropertiesAutoUpdateMode.FOREGROUND_AND_BACKGROUND
+                );
+                break;
+            case "disabled":
+                analytics.configuration.setUsagePropertiesAutoUpdateMode(
+                    analytics.configuration.UsagePropertiesAutoUpdateMode.DISABLED
+                );
+                break;
+            default:
+                analytics.configuration.setUsagePropertiesAutoUpdateMode(
+                    analytics.configuration.UsagePropertiesAutoUpdateMode.FOREGROUND_ONLY
+                );
+        }
     }
 
     /**
@@ -281,10 +315,11 @@ export class ComscoreAPI {
      * @param position
      */
     markPosition(position: number) {
+        const positionFloor = Math.floor(position)
         if (this.isDvr) {
-            this.startFromDvrWindowOffset(position);
+            this.startFromDvrWindowOffset(positionFloor);
         } else {
-            this.startFromPosition(position);
+            this.startFromPosition(positionFloor);
         }
     }
 

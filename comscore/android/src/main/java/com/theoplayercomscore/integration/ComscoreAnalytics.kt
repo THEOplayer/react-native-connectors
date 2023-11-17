@@ -34,13 +34,13 @@ class ComscoreAnalytics {
       addClient(PublisherConfiguration.Builder()
         .publisherId(configuration.publisherId)
         .secureTransmission(configuration.secureTransmission).apply {
-          if (configuration.userConsent === "1" || configuration.userConsent === "0") {
+          if (configuration.userConsent == "1" || configuration.userConsent == "0") {
             persistentLabels(hashMapOf("cs_ucfr" to configuration.userConsent))
           }
         }
         .build()
       )
-      setUsagePropertiesAutoUpdateMode(UsagePropertiesAutoUpdateMode.FOREGROUND_AND_BACKGROUND)
+      setUsagePropertiesAutoUpdateMode(configuration.usagePropertiesAutoUpdateMode)
       setApplicationName(configuration.applicationName)
       if (configuration.childDirected) {
         enableChildDirectedApplicationMode()
