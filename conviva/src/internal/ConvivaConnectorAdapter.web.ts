@@ -4,31 +4,28 @@ import type { ConvivaMetadata as NativeConvivaMetadata } from '@convivainc/convi
 import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
 import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import type { ChromelessPlayer } from 'theoplayer';
-import { BroadcastReceiver } from "react-native-theoplayer/lib/typescript/internal/adapter/event/BroadcastAdapter.web";
 
 /**
  * Extend player.ads with a BroadcastReceiver that will dispatch all broadcast ad events to the conviva connector,
  * in addition to the ad events originating from the player.
  */
-function extendPlayer(player: THEOplayer, receiver: BroadcastReceiver): ChromelessPlayer {
+function extendPlayer(player: THEOplayer): ChromelessPlayer {
     const nativePlayer = player.nativeHandle as ChromelessPlayer;
     if (nativePlayer.ads) {
         // Route broadcast events towards convivaAdEventsExtension
-        Object.assign(nativePlayer.ads, {convivaAdEventsExtension: receiver});
+        Object.assign(nativePlayer.ads, {convivaAdEventsExtension: player.broadcast});
     }
     return nativePlayer;
 }
 
-export class ConvivaConnectorAdapter extends BroadcastReceiver {
+export class ConvivaConnectorAdapter {
 
     private integration: THEOplayerConvivaConnector.ConvivaConnector;
 
     constructor(player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
-        super(player);
-
         // Use AdEventsExtension
         this.integration = new THEOplayerConvivaConnector.ConvivaConnector(
-            extendPlayer(player, this),
+            extendPlayer(player),
             convivaMetadata as NativeConvivaMetadata,
             convivaConfig
         );
@@ -51,7 +48,6 @@ export class ConvivaConnectorAdapter extends BroadcastReceiver {
     }
 
     destroy() {
-        super.destroy();
         this.integration.destroy();
     }
 }
