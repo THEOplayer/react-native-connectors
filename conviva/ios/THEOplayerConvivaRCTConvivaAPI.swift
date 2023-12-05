@@ -52,6 +52,16 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
+	
+	@objc(onEventBroadcasted:event:)
+	    func onEventBroadcasted(_ node: NSNumber, event: EventProtocol?) -> Void {
+	        DispatchQueue.main.async {
+	            if let view = self.view(for: node), let player = view.player, let receivedEvent = event {
+	                print("ConvivaModule just received an event with type \(receivedEvent.type)")
+	                player.convivaAdEventsExtension().dispatchEvent(event: receivedEvent)
+	            }
+	        }
+	    }
     
     @objc(setContentInfo:metadata:)
     func setContentInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
