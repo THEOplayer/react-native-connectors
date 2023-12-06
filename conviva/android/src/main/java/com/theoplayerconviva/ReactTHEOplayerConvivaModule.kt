@@ -3,8 +3,11 @@ package com.theoplayerconviva
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
+import com.theoplayer.android.api.event.EventDispatcher
+import com.theoplayer.android.api.event.ads.AdEvent
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConfiguration
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConnector
+import com.theoplayer.android.connector.analytics.conviva.extension.setConvivaAdEventsExtension
 import com.theoplayer.util.ViewResolver
 
 private const val TAG = "ConvivaModule"
@@ -43,6 +46,10 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
           convivaConnectors[tag] =
             ConvivaConnector(reactApplicationContext, player, convivaMetadata.toHashMap(), config)
           convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+
+          // Install broadcast as ad event extension
+          @Suppress("UNCHECKED_CAST")
+          player.setConvivaAdEventsExtension(view.broadcast as? EventDispatcher<AdEvent<*>>)
         }
       }
     }
