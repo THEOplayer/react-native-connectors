@@ -34,7 +34,8 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                 )
                 if let connector = ConvivaConnector(
                     configuration: configuration,
-                    player: player
+                    player: player,
+                    externalEventDispatcher: view.broadcastEventHandler
                 ) {
                     let extendedConnector = ConnectorWithVpfHandler(connector: connector, sendError: sendError) // TODO: Remove when THEOplayer correctly handles VPFs
                     self.connectors[node] = extendedConnector
@@ -42,7 +43,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                     if let contentInfo = convivaMetadata as? [String: Any] {
                         connector.videoAnalytics.setContentInfo(contentInfo)
                     } else {
-                        log("Received metada in wrong format. Received \(convivaMetadata), expected [String: Any]")
+                        log("Received metadata in wrong format. Received \(convivaMetadata), expected [String: Any]")
                     }
                 } else {
                     log("Cannot create Conviva connector for node \(node)")
@@ -52,16 +53,6 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-	
-	@objc(onEventBroadcasted:event:)
-	    func onEventBroadcasted(_ node: NSNumber, event: EventProtocol?) -> Void {
-	        DispatchQueue.main.async {
-	            if let view = self.view(for: node), let player = view.player, let receivedEvent = event {
-	                print("ConvivaModule just received an event with type \(receivedEvent.type)")
-	                player.convivaAdEventsExtension().dispatchEvent(event: receivedEvent)
-	            }
-	        }
-	    }
     
     @objc(setContentInfo:metadata:)
     func setContentInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
