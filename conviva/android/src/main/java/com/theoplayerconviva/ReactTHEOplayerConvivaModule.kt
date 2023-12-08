@@ -7,6 +7,7 @@ import com.theoplayer.android.api.event.EventDispatcher
 import com.theoplayer.android.api.event.ads.AdEvent
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConfiguration
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConnector
+import com.theoplayer.android.connector.analytics.conviva.extension.removeConvivaAdEventsExtension
 import com.theoplayer.android.connector.analytics.conviva.extension.setConvivaAdEventsExtension
 import com.theoplayer.util.ViewResolver
 
@@ -38,6 +39,9 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
         if (customerKey.isEmpty()) {
           Log.e(TAG, "Invalid $PROP_CUSTOMER_KEY")
         } else {
+          // Install broadcast as ad event extension
+          player.setConvivaAdEventsExtension(player, view.broadcast as EventDispatcher<AdEvent<*>>)
+
           val config = ConvivaConfiguration(
             customerKey,
             convivaConfig.getBoolean(PROP_DEBUG),
@@ -46,10 +50,6 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
           convivaConnectors[tag] =
             ConvivaConnector(reactApplicationContext, player, convivaMetadata.toHashMap(), config)
           convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
-
-          // Install broadcast as ad event extension
-          @Suppress("UNCHECKED_CAST")
-          player.setConvivaAdEventsExtension(view.broadcast as? EventDispatcher<AdEvent<*>>)
         }
       }
     }
@@ -77,6 +77,14 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun destroy(tag: Int) {
+    viewResolver.resolveViewByTag(tag) { view ->
+      view?.player?.let { player ->
+        // Remove ad event extension
+        player.removeConvivaAdEventsExtension(player)
+      }
+    }
+
+    // Destroy connector
     convivaConnectors[tag]?.destroy()
     convivaConnectors.remove(tag)
   }
