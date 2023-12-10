@@ -6,7 +6,7 @@
 //
 
 import THEOplayerSDK
-import THEOplayerConnectorUtilities
+// import THEOplayerConnectorUtilities
 import AVFoundation
 
 /// A handle that registers basic playback listeners on a theoplayer and removes them on deinit
