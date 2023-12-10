@@ -6,8 +6,8 @@
 //
 
 import THEOplayerSDK
-import THEOplayerConnectorConviva
-import THEOplayerConnectorUtilities
+// import THEOplayerConnectorConviva
+// import THEOplayerConnectorUtilities
 import react_native_theoplayer
 
 // TODO: Remove when THEOplayer correctly handles Video Playback Failures (VPF)
@@ -59,8 +59,8 @@ struct ConnectorWithVpfHandler {
 
 import AVFoundation
 
-extension THEOplayer {
+/*extension THEOplayer {
     var currentItem: AVPlayerItem? {
         ((Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map {Mirror(reflecting: $0).superclassMirror?.descendant("mainContentPlayer", "avPlayer")} as? AVPlayer)?.currentItem
     }
-}
+}*/

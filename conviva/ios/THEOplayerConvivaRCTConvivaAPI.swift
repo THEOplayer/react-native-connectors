@@ -2,7 +2,7 @@
 import Foundation
 import UIKit
 import react_native_theoplayer
-import THEOplayerConnectorConviva
+// import THEOplayerConnectorConviva
 import THEOplayerSDK
 import ConvivaSDK
 
