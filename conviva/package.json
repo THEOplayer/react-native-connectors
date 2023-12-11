@@ -68,7 +68,7 @@
     "react": "^18.2.0",
     "react-native": "^0.72.5",
     "react-native-builder-bob": "^0.20.4",
-    "react-native-theoplayer": "latest",
+    "react-native-theoplayer": "^3.3.0",
     "release-it": "^15.11.0",
     "typescript": "^4.9.5"
   },
