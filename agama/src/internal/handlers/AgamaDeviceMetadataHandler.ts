@@ -59,7 +59,7 @@ export class AgamaDeviceMetadataHandler {
   }
 
   private async reportDeviceInfo_(configuration: AgamaConfiguration): Promise<void> {
-    this.reportDeviceType_();
+    this.reportDeviceType_(configuration);
     const manufacturer = configuration.deviceManufacturer || await getDeviceManufacturer();
     if (manufacturer) {
       if (__DEBUG__) {
@@ -80,9 +80,12 @@ export class AgamaDeviceMetadataHandler {
     }
   }
 
-  private reportDeviceType_(): void {
-    const agamaDeviceType = getAgamaDeviceType();
+  private reportDeviceType_(configuration: AgamaConfiguration): void {
+    const agamaDeviceType = configuration.deviceType || getAgamaDeviceType();
     if (agamaDeviceType) {
+      if (__DEBUG__) {
+        console.log(`[AGAMA] Device type: ${agamaDeviceType}`)
+      }
       this.empClient.setDeviceMetadata(this.agama.DeviceMetadata.DEVICE_TYPE, agamaDeviceType);
     }
   }
