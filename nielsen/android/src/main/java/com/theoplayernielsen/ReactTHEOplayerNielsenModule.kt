@@ -29,6 +29,9 @@ class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.player?.let { player ->
         val debug = if (options.hasKey(PROP_DEBUG)) options.getString(PROP_DEBUG) == "debug" else false
+
+        // Optionally destroy any existing connector for this player.
+        nielsenConnectors[tag]?.destroy()
         nielsenConnectors[tag] = NielsenConnector(view.context, player, appId, debug)
       }
     }
