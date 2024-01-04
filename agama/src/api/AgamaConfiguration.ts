@@ -80,4 +80,13 @@ export interface AgamaConfiguration {
    * The model name of the Device, including the "submodel". Use the spelling set by the manufacturer.
    */
   deviceModel?: string;
+
+  /**
+     * A string describing the physical Device type
+     *
+     * @remarks
+     * <br/> - These pre-defined Device type values must be used if the Device matches one of following: `'tablet'`, `'mobile'`, `'pc'`, `'media-streamer'` (used for Chromecast, Apple TV), `'game-console'`, `'tv'`.
+     * <br/> - If no value is passed, the player will determine this based on the user agent.
+     */
+  deviceType?: string;
 }
