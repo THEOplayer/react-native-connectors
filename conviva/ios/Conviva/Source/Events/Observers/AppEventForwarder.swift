@@ -11,7 +11,7 @@ import AVFoundation
 
 fileprivate let willEnterForeground = UIApplication.willEnterForegroundNotification
 fileprivate let didEnterBackground = UIApplication.didEnterBackgroundNotification
-fileprivate let newAccessLogEntry = NSNotification.Name.AVPlayerItemNewAccessLogEntry
+fileprivate let newAccessLogEntry = AVPlayerItem.newAccessLogEntryNotification
 
 class AppEventForwarder {
     let center = NotificationCenter.default
