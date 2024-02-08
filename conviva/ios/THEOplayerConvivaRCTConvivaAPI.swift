@@ -2,28 +2,28 @@
 import Foundation
 import UIKit
 import react_native_theoplayer
-// import THEOplayerConnectorConviva
+import THEOplayerConnectorConviva
 import THEOplayerSDK
 import ConvivaSDK
 
 @objc(THEOplayerConvivaRCTConvivaAPI)
 class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
-    
+
     var connectors = [NSNumber: ConnectorWithVpfHandler]()
-    
+
     static func moduleName() -> String! {
         return "ConvivaModule"
     }
-    
+
     static func requiresMainQueueSetup() -> Bool {
         return false
     }
-    
+
     @objc(initialize:convivaMetadata:convivaConfig:)
     func initialize(_ node: NSNumber, convivaMetadata: NSDictionary, convivaConfig: NSDictionary) -> Void {
         log("initialize triggered.")
-        
+
         DispatchQueue.main.async {
             log(convivaConfig.debugDescription)
             if let view = self.view(for: node), let player = view.player, let sendError = view.mainEventHandler.onNativeError {
@@ -53,7 +53,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-    
+
     @objc(setContentInfo:metadata:)
     func setContentInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("setContentInfo triggered.")
@@ -66,7 +66,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-    
+
     @objc(setAdInfo:metadata:)
     func setAdInfo(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("setAdInfo triggered.")
@@ -76,7 +76,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-    
+
     @objc(stopAndStartNewSession:metadata:)
     func stopAndStartNewSession(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("stopAndStartNewSession triggered")
@@ -92,7 +92,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-    
+
     @objc(reportPlaybackFailed:errorDescription:)
     func reportPlaybackFailed(node: NSNumber, errorDescription: NSString) {
         log("reportPlaybackFailed triggered")
@@ -103,7 +103,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-    
+
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
         log("destroy triggered.")
@@ -111,11 +111,11 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             self.connectors.removeValue(forKey: node)
         }
     }
-    
+
     func view(for node: NSNumber) -> THEOplayerRCTView? {
         self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
     }
-    
+
     func player(for node: NSNumber) -> THEOplayer? {
         view(for: node)?.player
     }

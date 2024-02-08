@@ -6,8 +6,8 @@
 //
 
 import THEOplayerSDK
-// import THEOplayerConnectorConviva
-// import THEOplayerConnectorUtilities
+import THEOplayerConnectorConviva
+import THEOplayerConnectorUtilities
 import react_native_theoplayer
 
 // TODO: Remove when THEOplayer correctly handles Video Playback Failures (VPF)
@@ -15,7 +15,7 @@ struct ConnectorWithVpfHandler {
     let base: ConvivaConnector
     let vpfDetector: VpfDetector
     let playerObserver: DispatchObserver
-    
+
     init(connector: ConvivaConnector, sendError: @escaping RCTDirectEventBlock) {
         let detector = VpfDetector()
 
@@ -26,7 +26,7 @@ struct ConnectorWithVpfHandler {
             eventListeners: Self.errorListeners(for: connector.player, vpfDetector: detector, sendError: sendError, conviva: connector.conviva)
         )
     }
-    
+
     static func errorListeners(for player: THEOplayer, vpfDetector: VpfDetector, sendError: @escaping RCTDirectEventBlock, conviva: ConvivaEndpoints) -> [RemovableEventListenerProtocol] {
         [
             player.addRemovableEventListener(type: PlayerEventTypes.WAITING) { event in
@@ -47,7 +47,7 @@ struct ConnectorWithVpfHandler {
             }
         ]
     }
-    
+
     static let vpfMessage = "Network Timeout"
     static let vpfDictionary = [
         "error": [
@@ -59,8 +59,8 @@ struct ConnectorWithVpfHandler {
 
 import AVFoundation
 
-/*extension THEOplayer {
+extension THEOplayer {
     var currentItem: AVPlayerItem? {
         ((Mirror(reflecting: self).descendant("theoplayer") as? NSObject).map {Mirror(reflecting: $0).superclassMirror?.descendant("mainContentPlayer", "avPlayer")} as? AVPlayer)?.currentItem
     }
-}*/
+}
