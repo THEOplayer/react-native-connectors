@@ -1,4 +1,14 @@
-import type { Ad, AdBreak, AdEvent, ErrorEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from "react-native-theoplayer";
+import type {
+  Ad,
+  AdBreak,
+  AdEvent,
+  ErrorEvent,
+  LoadedMetadataEvent,
+  MediaTrackEvent,
+  TextTrackCue,
+  TextTrackEvent,
+  THEOplayer
+} from "react-native-theoplayer";
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
@@ -96,7 +106,7 @@ export class AdobeConnectorAdapter {
     this.player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.addEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
-    this.player.addEventListener(PlayerEventType.DURATION_CHANGE, this.onDurationChange);
+    this.player.addEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
 
     this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
@@ -114,7 +124,7 @@ export class AdobeConnectorAdapter {
     this.player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.removeEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
-    this.player.removeEventListener(PlayerEventType.DURATION_CHANGE, this.onDurationChange);
+    this.player.removeEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
 
     this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
@@ -124,14 +134,11 @@ export class AdobeConnectorAdapter {
     }
   }
 
-  private onDurationChange = () => {
-    void this.startSession();
+  private onLoadedMetadata = (e: LoadedMetadataEvent) => {
+    void this.startSession(e.duration);
   }
 
   private onPlaying = () => {
-    if (!this.sessionInProgress) {
-      void this.startSession();
-    }
     void this.sendEventRequest(AdobeEventTypes.PLAY);
   }
 
@@ -263,7 +270,7 @@ export class AdobeConnectorAdapter {
     return this.player.currentTime/1000;
   }
 
-  private async startSession(): Promise<void> {
+  private async startSession(mediaLength?: number): Promise<void> {
     if (this.sessionInProgress || !this.player.source) {
       return;
     }
@@ -281,7 +288,7 @@ export class AdobeConnectorAdapter {
       "media.channel": "N/A",
       "media.contentType": this.getContentType(),
       "media.id": "N/A",
-      "media.length": this.getContentLength(),
+      "media.length": mediaLength ?? this.getContentLength(),
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid,
       ...friendlyName,
