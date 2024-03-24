@@ -270,7 +270,7 @@ export class AdobeConnectorAdapter {
     return this.player.currentTime/1000;
   }
 
-  private async startSession(mediaLength?: number): Promise<void> {
+  private async startSession(mediaLengthMsec?: number): Promise<void> {
     if (this.sessionInProgress || !this.player.source) {
       return;
     }
@@ -288,7 +288,7 @@ export class AdobeConnectorAdapter {
       "media.channel": "N/A",
       "media.contentType": this.getContentType(),
       "media.id": "N/A",
-      "media.length": mediaLength ?? this.getContentLength(),
+      "media.length": this.getContentLength(mediaLengthMsec),
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid,
       ...friendlyName,
@@ -408,8 +408,19 @@ export class AdobeConnectorAdapter {
     })
   }
 
-  private getContentLength(): number {
-    return this.player.duration === Infinity ? 86400 : this.player.duration / 1000; // In case of a live stream, set it to 24h
+  /**
+   * Get the current media length in seconds.
+   *
+   * - In case of a live stream, set it to 24h.
+   *
+   * @param mediaLengthMsec optional mediaLengthMsec provided by a player event.
+   * @private
+   */
+  private getContentLength(mediaLengthMsec?: number): number {
+    if (mediaLengthMsec !== undefined) {
+      return mediaLengthMsec === Infinity ? 86400 : 1e-3 * mediaLengthMsec;
+    }
+    return this.player.duration === Infinity ? 86400 : 1e-3 * this.player.duration;
   }
 
   private getContentType(): ContentType {
