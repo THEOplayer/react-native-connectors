@@ -9,9 +9,9 @@ import ConvivaSDK
 @objc(THEOplayerConvivaRCTConvivaAPI)
 class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
-    
+
     var connectors = [NSNumber: ConvivaConnector]()
-    
+
     static func moduleName() -> String! {
         return "ConvivaModule"
     }
@@ -95,6 +95,18 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
+
+    @objc(reportCustomPlaybackEvent:eventName:attributes:)
+        func reportPlaybackFailed(node: NSNumber, eventName: NSString, attributesDict: NSDictionary) {
+            log("reportCustomPlaybackEvent triggered")
+            DispatchQueue.main.async {
+                if let connector = self.connectors[node],
+                   let attributes = attributesDict as? [String:Any] {
+                    log("reporting custom playback event")
+                    connector.reportCustomPlaybackEvent(eventName: eventName as String, attributes: attributes)
+                }
+            }
+        }
 
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
