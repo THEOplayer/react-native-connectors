@@ -19,7 +19,7 @@ export class ConvivaConnectorAdapter {
   }
 
   reportCustomPlaybackEvent(eventName: string, attributes: ConvivaEventAttributes): void {
-    NativeModules.ConvivaModule.reportPlaybackFailed(this.player.nativeHandle, eventName, attributes);
+    NativeModules.ConvivaModule.reportCustomPlaybackEvent(this.player.nativeHandle, eventName, attributes);
   }
 
   setContentInfo(metadata: ConvivaMetadata): void {

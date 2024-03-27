@@ -58,7 +58,7 @@ export class ConvivaConnector {
   reportPlaybackFailed(errorMessage: string): void {
     this.connectorAdapter.reportPlaybackFailed(errorMessage);
   }
-  
+
   /**
    * Reports a custom event to Conviva.
    *
