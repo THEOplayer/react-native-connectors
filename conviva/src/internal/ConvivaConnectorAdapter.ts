@@ -2,7 +2,7 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
 import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import { NativeModules } from 'react-native';
-import type {ConvivaEventAttributes} from "../api/ConvivaEventAttributes";
+import type { ConvivaEventDetail } from "../api/ConvivaEventDetail";
 
 export class ConvivaConnectorAdapter {
 
@@ -18,8 +18,8 @@ export class ConvivaConnectorAdapter {
     NativeModules.ConvivaModule.reportPlaybackFailed(this.player.nativeHandle, errorMessage);
   }
 
-  reportCustomPlaybackEvent(eventName: string, attributes: ConvivaEventAttributes): void {
-    NativeModules.ConvivaModule.reportCustomPlaybackEvent(this.player.nativeHandle, eventName, attributes);
+  reportPlaybackEvent(eventName: string, eventDetail: ConvivaEventDetail): void {
+    NativeModules.ConvivaModule.reportPlaybackEvent(this.player.nativeHandle, eventName, eventDetail);
   }
 
   setContentInfo(metadata: ConvivaMetadata): void {

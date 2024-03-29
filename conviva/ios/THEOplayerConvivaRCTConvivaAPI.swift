@@ -95,18 +95,18 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             }
         }
     }
-
-    @objc(reportCustomPlaybackEvent:eventName:attributes:)
-        func reportPlaybackFailed(node: NSNumber, eventName: NSString, attributesDict: NSDictionary) {
-            log("reportCustomPlaybackEvent triggered")
-            DispatchQueue.main.async {
-                if let connector = self.connectors[node],
-                   let attributes = attributesDict as? [String:Any] {
-                    log("reporting custom playback event")
-                    connector.reportCustomPlaybackEvent(eventName: eventName as String, attributes: attributes)
-                }
+    
+    @objc(reportPlaybackEvent:eventType:eventDetail:)
+    func reportPlaybackEvent(node: NSNumber, eventType: NSString, eventDetailDict: NSDictionary) {
+        log("reportPlaybackEvent triggered")
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node],
+               let eventDetail = eventDetailDict as? [String:Any] {
+                log("reporting custom playback event")
+                connector.reportPlaybackEvent(eventName: eventType as String, attributes: eventDetail)
             }
         }
+    }
 
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
