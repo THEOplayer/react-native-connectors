@@ -23,6 +23,10 @@ RCT_EXTERN_METHOD(stopAndStartNewSession:(nonnull NSNumber *)node
 RCT_EXTERN_METHOD(reportPlaybackFailed:(nonnull NSNumber *)node
                   errorDescription:(NSString)errorDescription)
 
+RCT_EXTERN_METHOD(reportCustomPlaybackEvent:(nonnull NSNumber *)node
+                  eventName:(NSString)eventName
+                  attributes:(NSDictionary)attributes)
+
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 
 @end
