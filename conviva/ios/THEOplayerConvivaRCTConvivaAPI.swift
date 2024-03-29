@@ -103,7 +103,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             if let connector = self.connectors[node],
                let eventDetail = eventDetailDict as? [String:Any] {
                 log("reporting custom playback event")
-                connector.reportPlaybackEvent(eventName: eventType as String, attributes: eventDetail)
+                connector.reportPlaybackEvent(eventType: eventType as String, eventDetail: eventDetail)
             }
         }
     }
