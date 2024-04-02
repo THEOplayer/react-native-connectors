@@ -4,6 +4,7 @@ import type { ConvivaMetadata as NativeConvivaMetadata } from '@convivainc/convi
 import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
 import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import type { ChromelessPlayer } from 'theoplayer';
+import type { ConvivaEventDetail } from "../api/ConvivaEventDetail";
 
 /**
  * Extend player.ads with a BroadcastReceiver that will dispatch all broadcast ad events to the conviva connector,
@@ -37,6 +38,10 @@ export class ConvivaConnectorAdapter {
 
     reportPlaybackFailed(errorMessage: string): void {
         this.integration.reportPlaybackFailed(errorMessage);
+    }
+
+    reportPlaybackEvent(eventName: string, eventDetail: ConvivaEventDetail): void {
+        this.integration.reportPlaybackEvent(eventName, eventDetail);
     }
 
     setContentInfo(metadata: ConvivaMetadata): void {
