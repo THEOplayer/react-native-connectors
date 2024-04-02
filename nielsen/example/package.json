@@ -7,18 +7,17 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "webpack-dev-server --config ./web/webpack.config.js --mode development",
-    "pods": "pod-install --quiet",
-    "postinstall": "npm update react-native-theoplayer react-native-ui theoplayer"
+    "pods": "pod-install --quiet"
   },
   "dependencies": {
-    "@theoplayer/react-native-ui": "^0.4.0",
+    "@theoplayer/react-native-ui": "^0.6.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react": "^18.2.0",
     "react-dom": "18.2.0",
     "react-native": "^0.73.5",
     "react-native-theoplayer": "^3.8.0",
     "react-native-web": "^0.19.10",
-    "theoplayer": "^6.10.1"
+    "theoplayer": "^6.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
@@ -37,8 +36,5 @@
     "webpack": "^5.90.3",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1"
-  },
-  "overrides": {
-    "@react-native-community/slider": "4.4.2"
   }
 }
