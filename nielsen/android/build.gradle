@@ -1,7 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") :
-    project.properties["THEOplayerNielsen_kotlinVersion"]
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
 
   repositories {
     google()
@@ -93,8 +92,7 @@ dependencies {
   implementation project(':react-native-theoplayer')
 
   // Local maven dependency: remove once published.
-  implementation "com.theoplayer.android-connector:nielsen:5.0.3-pre"
-//  implementation "com.theoplayer.android-connector:nielsen:$theoplayer_sdk_version"
+  implementation "com.theoplayer.android-connector:nielsen:$theoplayer_sdk_version"
 
   implementation "com.nielsenappsdk.global:ad:$nielsen_version"
 
