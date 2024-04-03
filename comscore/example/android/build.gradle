@@ -43,10 +43,6 @@ allprojects {
         excludeGroup "com.facebook.react"
       }
     }
-    maven {
-      // Custom path to @theoplayer/react-native-analytics-comscore local Maven folder
-      url("$rootDir/../../android/local")
-    }
     google()
     maven { url 'https://www.jitpack.io' }
   }
