@@ -1,7 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") :
-    project.properties["THEOplayerComscore_kotlinVersion"]
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.9.10"
 
   repositories {
     google()
@@ -31,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerComscore_compileSdkVersion", 33)
+  compileSdkVersion safeExtGet("THEOplayerComscore_compileSdkVersion", 34)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerComscore_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerComscore_targetSdkVersion", 33)
+    targetSdkVersion safeExtGet("THEOplayerComscore_targetSdkVersion", 34)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -70,7 +69,7 @@ repositories {
 }
 
 // The Comscore connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11, 7.0[')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 8.0.0)')
 
 def kotlin_version = safeExtGet("THEOplayerComscore_kotlinVersion", "1.9.10")
 def comscore_version = safeExtGet("THEOplayerComscore_comscoreVersion", "6.+")

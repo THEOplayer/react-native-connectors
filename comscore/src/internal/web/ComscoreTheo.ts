@@ -4,7 +4,7 @@ import type { ContentMetadata } from './ComscoreContentMetadata';
 import { AdMetadata } from './ComscoreAdMetadata';
 import { AD_TYPES } from './Utils';
 import type { CustomSkeletonAPI } from './SkeletonApi';
-import type { AdBreak, THEOplayer } from 'react-native-theoplayer'
+import type { AdBreak, THEOplayer, Ad } from 'react-native-theoplayer'
 
 /**
  * Comscore theo analytics integration
@@ -181,7 +181,7 @@ export class ComscoreTheo extends TheoBase {
     /**
      * set ad metadata once ad begin
      */
-    protected notifyAdBegin(adId: string, adType: string, ad: THEOplayer.Ad) {
+    protected notifyAdBegin(adId: string, adType: string, ad: Ad) {
         if (adType === AD_TYPES.PREROLL) {
             // console.log('[ADBEGIN] FIRST PREROLL:');
         }
