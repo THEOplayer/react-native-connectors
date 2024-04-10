@@ -11,14 +11,14 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "12.0", :tvos => "12.0" }
+  s.platforms    = { :ios => "13.4", :tvos => "13.4" }
   s.source       = { :git => "https://github.com/theoplayer/react-native-theoplayer-analytics.git", :tag => "conviva_v#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.dependency "React-Core"
   s.dependency "react-native-theoplayer"
-  s.dependency "THEOplayer-Connector-Conviva", "~> 6.1"
+  s.dependency "THEOplayer-Connector-Conviva", ">= 7.0"
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then

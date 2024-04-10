@@ -2,6 +2,7 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import { ConvivaConnectorAdapter } from '../internal/ConvivaConnectorAdapter';
 import type { ConvivaConfiguration } from './ConvivaConfiguration';
 import type { ConvivaMetadata } from './ConvivaMetadata';
+import type { ConvivaEventDetail } from "./ConvivaEventDetail";
 
 export class ConvivaConnector {
 
@@ -56,6 +57,16 @@ export class ConvivaConnector {
    */
   reportPlaybackFailed(errorMessage: string): void {
     this.connectorAdapter.reportPlaybackFailed(errorMessage);
+  }
+
+  /**
+   * Reports a custom event to Conviva.
+   *
+   * @param eventType string explaining what kind of event it is.
+   * @param eventDetail object of key value pairs.
+   */
+  reportPlaybackEvent(eventType: string, eventDetail: ConvivaEventDetail): void {
+    this.connectorAdapter.reportPlaybackEvent(eventType, eventDetail);
   }
 
   /**

@@ -3,6 +3,8 @@ package com.theoplayerconviva
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
+import com.theoplayer.android.api.event.EventDispatcher
+import com.theoplayer.android.api.event.ads.AdEvent
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConfiguration
 import com.theoplayer.android.connector.analytics.conviva.ConvivaConnector
 import com.theoplayer.util.ViewResolver
@@ -35,13 +37,21 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
         if (customerKey.isEmpty()) {
           Log.e(TAG, "Invalid $PROP_CUSTOMER_KEY")
         } else {
+          // Install broadcast as ad event extension
+
           val config = ConvivaConfiguration(
             customerKey,
             convivaConfig.getBoolean(PROP_DEBUG),
             convivaConfig.getString(PROP_GATEWAY_URL),
           )
           convivaConnectors[tag] =
-            ConvivaConnector(reactApplicationContext, player, convivaMetadata.toHashMap(), config)
+            ConvivaConnector(
+              reactApplicationContext,
+              player,
+              convivaMetadata.toHashMap(),
+              config,
+              view.broadcast as EventDispatcher<AdEvent<*>>
+            )
           convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
         }
       }
@@ -59,6 +69,11 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun reportPlaybackEvent(tag: Int, eventName: String, eventDetail: ReadableMap) {
+    convivaConnectors[tag]?.reportPlaybackEvent(eventName, eventDetail.toHashMap())
+  }
+
+  @ReactMethod
   fun setContentInfo(tag: Int, convivaMetadata: ReadableMap) {
     convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
   }
@@ -70,6 +85,7 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun destroy(tag: Int) {
+    // Destroy connector
     convivaConnectors[tag]?.destroy()
     convivaConnectors.remove(tag)
   }

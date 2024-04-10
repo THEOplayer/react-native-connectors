@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-conviva",
-  "version": "1.5.1",
+  "version": "1.6.0-pre2",
   "description": "Conviva analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -53,12 +53,9 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.7.0",
     "@react-native-community/eslint-config": "^3.2.0",
-    "@release-it/conventional-changelog": "^5.1.1",
     "@types/react": "^18.2.24",
     "@types/react-native": "^0.72.3",
-    "commitlint": "^17.7.2",
     "del-cli": "^5.1.0",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^8.10.0",
@@ -67,36 +64,20 @@
     "prettier": "^2.8.8",
     "react": "^18.2.0",
     "react-native": "^0.72.5",
-    "react-native-builder-bob": "^0.20.4",
-    "react-native-theoplayer": "latest",
-    "release-it": "^15.11.0",
+    "react-native-builder-bob": "^0.23.2",
+    "react-native-theoplayer": "^7.0.0",
+    "theoplayer": "^7.0.0",
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "*"
+    "react-native-theoplayer": "^3.0.0 || ^7.0.0",
+    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
+  "peerDependenciesMeta": {
+    "theoplayer": {
+      "optional": true
     }
   },
   "eslintIgnore": [
@@ -118,7 +99,7 @@
     ]
   },
   "dependencies": {
-    "@convivainc/conviva-js-coresdk": "^4.5.13",
-    "@theoplayer/conviva-connector-web": "^1.2.0"
+    "@convivainc/conviva-js-coresdk": "^4.7.2",
+    "@theoplayer/conviva-connector-web": "^2.0.1"
   }
 }
