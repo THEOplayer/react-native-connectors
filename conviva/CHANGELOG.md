@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Fixed an issue where on iOS (^17.2) bitrate reporting was broken due to a depricated iOS notification name.
+- Fixed an issue where on iOS (^17.2) bitrate reporting was broken due to a deprecated iOS notification name.
 
 ## [1.5.1] - 2023-10-05
 
