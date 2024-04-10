@@ -7,8 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "webpack-dev-server --config ./web/webpack.config.js --mode development",
-    "pods": "pod-install --quiet",
-    "postinstall": "npm update react-native-theoplayer react-native-ui theoplayer"
+    "pods": "pod-install --quiet"
   },
   "dependencies": {
     "@theoplayer/react-native-ui": "^0.6.0",
