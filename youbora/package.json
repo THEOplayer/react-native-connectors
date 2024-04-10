@@ -52,29 +52,16 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "devDependencies": {
-    "@react-native-community/eslint-config": "^3.2.0",
-    "@types/react": "^18.2.74",
-    "@types/react-native": "^0.72.8",
-    "del-cli": "^5.1.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "pod-install": "^0.1.39",
-    "prettier": "^2.8.8",
-    "react": "^18.2.0",
-    "react-native": "^0.73.6",
-    "react-native-builder-bob": "^0.23.2",
-    "react-native-theoplayer": "^7.0.0",
-    "theoplayer": "^7.0.0",
-    "typescript": "^4.9.5",
-    "youboralib-util": "^1.4.3"
+  "dependencies": {
+    "youbora-adapter-theoplayer2": "^6.8.10",
+    "youboralib": "^6.8.54"
   },
-  "peerDependencies": {
+  "devDependencies": {
     "react": "*",
     "react-native": "*",
     "react-native-theoplayer": "^3.0.0 || ^7.0.0",
-    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
+    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "youboralib-util": "^1.4.3"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
@@ -98,9 +85,5 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "youbora-adapter-theoplayer2": "^6.8.10",
-    "youboralib": "^6.8.54"
   }
 }
