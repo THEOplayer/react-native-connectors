@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-youbora",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Youbora analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
