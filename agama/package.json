@@ -33,7 +33,6 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it ",
     "postinstall": "npm run update_manifest",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
     "update_manifest": "node scripts/update_manifest.js"
@@ -56,54 +55,35 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.7.0",
     "@react-native-community/eslint-config": "^3.2.0",
-    "@release-it/conventional-changelog": "^5.1.1",
     "@release-it/keep-a-changelog": "^3.1.0",
-    "@types/react": "^18.2.24",
-    "@types/react-native": "^0.72.3",
-    "commitlint": "^17.7.2",
+    "@types/react": "^18.2.74",
+    "@types/react-native": "^0.73.0",
     "del-cli": "^5.1.0",
-    "eslint": "^8.50.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
     "pod-install": "^0.1.39",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
-    "react-native": "^0.72.5",
-    "react-native-builder-bob": "^0.20.4",
-    "react-native-theoplayer": "latest",
-    "release-it": "^15.11.0",
+    "react-native": "^0.73.6",
+    "react-native-builder-bob": "^0.23.2",
+    "react-native-theoplayer": "^7.0.0",
+    "theoplayer": "^7.0.0",
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@react-native-async-storage/async-storage": "^1.18.2",
-    "@react-native-community/netinfo": "^9.3.10",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-community/netinfo": "^9.5.0",
     "react": "*",
     "react-native": "*",
-    "react-native-device-info": "^10.6.0",
-    "react-native-theoplayer": "*"
+    "react-native-device-info": "^10.13.1",
+    "react-native-theoplayer": "^3.0.0 || ^7.0.0",
+    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "adobe_v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/keep-a-changelog": {
-        "filename": "CHANGELOG.md"
-      }
+  "peerDependenciesMeta": {
+    "theoplayer": {
+      "optional": true
     }
   },
   "eslintIgnore": [
@@ -125,7 +105,7 @@
     ]
   },
   "dependencies": {
-    "react-native-uuid": "^2.0.1",
+    "react-native-uuid": "^2.0.2",
     "strftime": "^0.10.2"
   }
 }

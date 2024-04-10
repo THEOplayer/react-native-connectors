@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerAgama_compileSdkVersion", 33)
+  compileSdkVersion safeExtGet("THEOplayerAgama_compileSdkVersion", 34)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerAgama_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerAgama_targetSdkVersion", 33)
+    targetSdkVersion safeExtGet("THEOplayerAgama_targetSdkVersion", 34)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -63,9 +63,7 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-// The Agama connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11, 7.0[')
-
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[6.0.0, 8.0.0)')
 def kotlin_version = safeExtGet("THEOplayerAgama_kotlinVersion", "1.9.10")
 
 dependencies {
