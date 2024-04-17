@@ -34,7 +34,7 @@
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
     "postinstall": "npm run update_manifest",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build",
+    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build",
     "update_manifest": "node scripts/update_manifest.js"
   },
   "keywords": [

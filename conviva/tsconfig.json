@@ -1,6 +1,11 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "paths": { "@theoplayer/react-native-analytics-conviva": ["./src/index"] }
+    "baseUrl": "./",
+    "paths": {
+      "@theoplayer/react-native-analytics-conviva": [
+        "./src/index"
+      ]
+    }
   }
 }

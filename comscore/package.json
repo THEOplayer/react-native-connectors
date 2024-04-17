@@ -31,7 +31,7 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepare": "bob build",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build"
+    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",
