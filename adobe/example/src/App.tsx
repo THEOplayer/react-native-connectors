@@ -36,7 +36,8 @@ const sid = "<suite_id>" // "<Report Suite ID>";
 const trackingUrl = "<tracking_url>" // "<Tracking Server URL>";
 
 const App = () => {
-  const [, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl);
+  const [, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, undefined,
+    undefined, true);
   const [player, setPlayer] = useState<THEOplayer | undefined>();
 
   const onPlayerReady = useCallback((player: THEOplayer) => {

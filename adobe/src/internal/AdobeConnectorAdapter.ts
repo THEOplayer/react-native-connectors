@@ -13,9 +13,10 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
-  import { NativeModules, Platform } from "react-native";
+import { NativeModules, Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
+const TAG = "AdobeConnector";
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 const USER_AGENT_PREFIX = 'Mozilla/5.0';
@@ -64,20 +65,30 @@ export class AdobeConnectorAdapter {
 
   private readonly customUserAgent: string | undefined;
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData, userAgent?: string) {
+  private debug = false;
+
+  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
+              userAgent?: string, debug = false) {
     this.player = player
-    this.uri = `https://${ uri }/api/v1/sessions`;
+    this.uri = `https://${uri}/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
+    this.debug = debug;
     this.trackingUrl = trackingUrl;
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.customMetadata = {...this.customMetadata, ...metadata};
     this.customUserAgent = userAgent || this.buildUserAgent();
 
     this.addEventListeners();
+
+    this.logDebug('Initialized connector');
+  }
+
+  setDebug(debug: boolean) {
+    this.debug = debug;
   }
 
   updateMetadata(metadata: AdobeMetaData): void {
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.customMetadata = {...this.customMetadata, ...metadata};
   }
 
   setError(metadata: AdobeMetaData): void {
@@ -89,7 +100,7 @@ export class AdobeConnectorAdapter {
     if (metadata !== undefined) {
       this.updateMetadata(metadata);
     }
-    await this.startSession();
+    await this.maybeStartSession();
 
     if (this.player.paused) {
       this.onPause();
@@ -135,28 +146,38 @@ export class AdobeConnectorAdapter {
   }
 
   private onLoadedMetadata = (e: LoadedMetadataEvent) => {
-    void this.startSession(e.duration);
+    this.logDebug('onLoadedMetadata');
+
+    // NOTE: In case of a pre-roll ad:
+    // - on Android & iOS, the onLoadedMetadata is sent *after* a pre-roll has finished;
+    // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
+    //   and again after the pre-roll with a correct duration.
+    void this.maybeStartSession(e.duration);
   }
 
   private onPlaying = () => {
+    this.logDebug('onPlaying');
     void this.sendEventRequest(AdobeEventTypes.PLAY);
   }
 
   private onPause = () => {
+    this.logDebug('onPause');
     void this.sendEventRequest(AdobeEventTypes.PAUSE_START);
   }
 
   private onWaiting = () => {
+    this.logDebug('onWaiting');
     void this.sendEventRequest(AdobeEventTypes.BUFFER_START);
   }
 
-  private onEnded = () => {
-    this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE).then(() => {
-      this.reset();
-    });
+  private onEnded = async () => {
+    this.logDebug('onEnded');
+    await this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE);
+    this.reset();
   }
 
   private onSourceChange = () => {
+    this.logDebug('onSourceChange');
     void this.maybeEndSession();
   }
 
@@ -207,7 +228,7 @@ export class AdobeConnectorAdapter {
         const adBreak = event.ad as AdBreak;
         const metadata = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        if (( metadata.params as any )[ "media.ad.podIndex" ] > this.adBreakPodIndex) { // TODO fix!
+        if ((metadata.params as any)["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
           this.adBreakPodIndex++;
         }
         break;
@@ -242,11 +263,11 @@ export class AdobeConnectorAdapter {
   }
 
   private async maybeEndSession(): Promise<void> {
+    this.logDebug(`maybeEndSession - sessionId: '${this.sessionId}'`);
     if (this.sessionId !== '') {
-      return this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
-        this.reset();
-      });
+      await this.sendEventRequest(AdobeEventTypes.SESSION_END);
     }
+    this.reset();
     return Promise.resolve();
   }
 
@@ -267,17 +288,38 @@ export class AdobeConnectorAdapter {
       const date = new Date();
       return date.getSeconds() + (60 * (date.getMinutes() + (60 * date.getHours())));
     }
-    return this.player.currentTime/1000;
+    return this.player.currentTime / 1000;
   }
 
-  private async startSession(mediaLengthMsec?: number): Promise<void> {
-    if (this.sessionInProgress || !this.player.source) {
+  /**
+   * Start a new session, but only if:
+   * - no existing session has is in progress;
+   * - the player has a valid source;
+   * - no ad is playing, otherwise the ad's media duration will be picked up;
+   * - the player's content media duration is known.
+   *
+   * @param mediaLengthMsec
+   * @private
+   */
+  private async maybeStartSession(mediaLengthMsec?: number): Promise<void> {
+    const mediaLength = this.getContentLength(mediaLengthMsec);
+    const hasValidSource = this.player.source !== undefined;
+    const hasValidDuration = isValidDuration(mediaLength);
+    const isPlayingAd = await this.player.ads.playing();
+
+    this.logDebug(`maybeStartSession -`,
+      `mediaLength: ${mediaLength},`,
+      `hasValidSource: ${hasValidSource},`,
+      `hasValidDuration: ${hasValidDuration},`,
+      `isPlayingAd: ${isPlayingAd}`);
+
+    if (this.sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
+      this.logDebug('maybeStartSession - NOT started');
       return;
     }
-    this.sessionInProgress = true;
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
     let friendlyName = {};
-    if (this.player.source.metadata?.title) {
+    if (this.player?.source?.metadata?.title) {
       friendlyName = {
         "media.name": this.player.source.metadata.title
       };
@@ -288,7 +330,7 @@ export class AdobeConnectorAdapter {
       "media.channel": "N/A",
       "media.contentType": this.getContentType(),
       "media.id": "N/A",
-      "media.length": this.getContentLength(mediaLengthMsec),
+      "media.length": mediaLength,
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid,
       ...friendlyName,
@@ -298,20 +340,23 @@ export class AdobeConnectorAdapter {
 
     const response = await this.sendRequest(this.uri, body);
 
-    if (response.status !== 201) {
-      console.error('ERROR DURING SESSION CREATION', response);
+    if (response?.status !== 201) {
+      console.error(TAG, 'Error during session creation', response);
       return;
     }
+    this.sessionInProgress = true;
+    this.logDebug('maybeStartSession - sessionInProgress');
 
     const splitResponseUrl = response.headers.get('location')?.split('/sessions/');
     if (splitResponseUrl === undefined) {
-      console.error('NO LOCATION HEADER PRESENT');
+      console.error(TAG, 'No location header present');
       return;
     }
-    this.sessionId = splitResponseUrl[ splitResponseUrl.length - 1 ];
+    this.sessionId = splitResponseUrl[splitResponseUrl.length - 1];
+    this.logDebug('maybeStartSession - STARTED', `sessionId: ${this.sessionId}`);
 
     if (this.eventQueue.length !== 0) {
-      const url = `${ this.uri }/${ this.sessionId }/events`;
+      const url = `${this.uri}/${this.sessionId}/events`;
       for (const body of this.eventQueue) {
         await this.sendRequest(url, body); // TODO another fallback necessary on top?
       }
@@ -340,24 +385,24 @@ export class AdobeConnectorAdapter {
   }
 
   private async sendEventRequest(eventType: AdobeEventTypes, metadata?: AdobeEventRequestBody): Promise<void> {
-    const initialBody: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata};
+    const initialBody: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata};
     const body = this.addCustomMetadata(eventType, initialBody);
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
       return;
     }
-    const url = `${ this.uri }/${ this.sessionId }/events`;
+    const url = `${this.uri}/${this.sessionId}/events`;
     const response = await this.sendRequest(url, body);
 
-    if (response.status === 404 || response.status === 410) {
+    if (response?.status === 404 || response?.status === 410) {
       // Faulty session id, store in queue and remake session
       this.eventQueue.push(body);
       if (this.sessionId !== '' && this.sessionInProgress) {
         // avoid calling multiple startSessions close together
         this.sessionId = '';
         this.sessionInProgress = false;
-        await this.startSession();
+        await this.maybeStartSession();
       }
     }
   }
@@ -395,17 +440,22 @@ export class AdobeConnectorAdapter {
     }
   }
 
-  private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
-    return await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
+  private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response | undefined> {
+    try {
+      return await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
 
-        // Override User-Agent with provided value.
-        ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
-      }
-    })
+          // Override User-Agent with provided value.
+          ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
+        }
+      });
+    } catch (e) {
+      console.error(TAG, "Failed to send request");
+      return undefined;
+    }
   }
 
   /**
@@ -428,8 +478,10 @@ export class AdobeConnectorAdapter {
   }
 
   reset(): void {
+    this.logDebug('reset');
     this.adBreakPodIndex = 0;
     this.adPodPosition = 1;
+    this.isPlayingAd = false;
     this.sessionId = '';
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
@@ -441,4 +493,14 @@ export class AdobeConnectorAdapter {
     await this.maybeEndSession();
     this.removeEventListeners();
   }
+
+  private logDebug(message?: any, ...optionalParams: any[]) {
+    if (this.debug) {
+      console.debug(TAG, message, ...optionalParams);
+    }
+  }
+}
+
+function isValidDuration(v: number | undefined): boolean {
+  return v !== undefined && !Number.isNaN(v);
 }

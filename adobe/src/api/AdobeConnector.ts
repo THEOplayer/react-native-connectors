@@ -6,8 +6,9 @@ export class AdobeConnector {
 
   private connectorAdapter: AdobeConnectorAdapter
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData, userAgent?: string) {
-    this.connectorAdapter = new AdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent);
+  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
+              userAgent?: string, useDebug?: boolean) {
+    this.connectorAdapter = new AdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
   }
 
   /**
@@ -23,6 +24,14 @@ export class AdobeConnector {
    */
   setError(metadata: AdobeMetaData): void {
     this.connectorAdapter.setError(metadata);
+  }
+
+  /**
+   * Set debug flag.
+   * @param debug whether to write debug info or not.
+   */
+  setDebug(debug: boolean) {
+    this.connectorAdapter.setDebug(debug);
   }
 
   /**
