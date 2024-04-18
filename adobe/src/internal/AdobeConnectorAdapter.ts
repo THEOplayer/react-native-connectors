@@ -313,7 +313,7 @@ export class AdobeConnectorAdapter {
 
     const response = await this.sendRequest(this.uri, body);
 
-    if (response.status !== 201) {
+    if (response?.status !== 201) {
       console.error(TAG, 'Error during session creation', response);
       return;
     }
@@ -365,7 +365,7 @@ export class AdobeConnectorAdapter {
     const url = `${ this.uri }/${ this.sessionId }/events`;
     const response = await this.sendRequest(url, body);
 
-    if (response.status === 404 || response.status === 410) {
+    if (response?.status === 404 || response?.status === 410) {
       // Faulty session id, store in queue and remake session
       this.eventQueue.push(body);
       if (this.sessionId !== '' && this.sessionInProgress) {
@@ -410,17 +410,22 @@ export class AdobeConnectorAdapter {
     }
   }
 
-  private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response> {
-    return await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
+  private async sendRequest(url: string, body: AdobeEventRequestBody): Promise<Response | undefined> {
+    try {
+      return await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type': 'application/json',
 
-        // Override User-Agent with provided value.
-        ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
-      }
-    })
+          // Override User-Agent with provided value.
+          ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
+        }
+      });
+    } catch (e) {
+      console.error(TAG, "Failed to send request");
+      return undefined;
+    }
   }
 
   /**
