@@ -289,7 +289,6 @@ export class AdobeConnectorAdapter {
     if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
       return;
     }
-    this.sessionInProgress = true;
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
     let friendlyName = {};
     if (this.player.source.metadata?.title) {
@@ -317,6 +316,7 @@ export class AdobeConnectorAdapter {
       console.error(TAG, 'Error during session creation', response);
       return;
     }
+    this.sessionInProgress = true;
 
     const splitResponseUrl = response.headers.get('location')?.split('/sessions/');
     if (splitResponseUrl === undefined) {
