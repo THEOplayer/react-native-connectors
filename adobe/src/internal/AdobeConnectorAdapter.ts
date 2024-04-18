@@ -13,7 +13,7 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
 import { AdobeEventTypes } from "./Types";
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
-  import { NativeModules, Platform } from "react-native";
+import { NativeModules, Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
 const TAG = "AdobeConnector";
@@ -70,12 +70,12 @@ export class AdobeConnectorAdapter {
   constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
               userAgent?: string, debug = false) {
     this.player = player
-    this.uri = `https://${ uri }/api/v1/sessions`;
+    this.uri = `https://${uri}/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
     this.debug = debug;
     this.trackingUrl = trackingUrl;
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.customMetadata = {...this.customMetadata, ...metadata};
     this.customUserAgent = userAgent || this.buildUserAgent();
 
     this.addEventListeners();
@@ -88,7 +88,7 @@ export class AdobeConnectorAdapter {
   }
 
   updateMetadata(metadata: AdobeMetaData): void {
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.customMetadata = {...this.customMetadata, ...metadata};
   }
 
   setError(metadata: AdobeMetaData): void {
@@ -229,7 +229,7 @@ export class AdobeConnectorAdapter {
         const adBreak = event.ad as AdBreak;
         const metadata = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        if (( metadata.params as any )[ "media.ad.podIndex" ] > this.adBreakPodIndex) { // TODO fix!
+        if ((metadata.params as any)["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
           this.adBreakPodIndex++;
         }
         break;
@@ -343,10 +343,10 @@ export class AdobeConnectorAdapter {
       console.error(TAG, 'No location header present');
       return;
     }
-    this.sessionId = splitResponseUrl[ splitResponseUrl.length - 1 ];
+    this.sessionId = splitResponseUrl[splitResponseUrl.length - 1];
 
     if (this.eventQueue.length !== 0) {
-      const url = `${ this.uri }/${ this.sessionId }/events`;
+      const url = `${this.uri}/${this.sessionId}/events`;
       for (const body of this.eventQueue) {
         await this.sendRequest(url, body); // TODO another fallback necessary on top?
       }
@@ -375,14 +375,14 @@ export class AdobeConnectorAdapter {
   }
 
   private async sendEventRequest(eventType: AdobeEventTypes, metadata?: AdobeEventRequestBody): Promise<void> {
-    const initialBody: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata};
+    const initialBody: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata};
     const body = this.addCustomMetadata(eventType, initialBody);
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
       return;
     }
-    const url = `${ this.uri }/${ this.sessionId }/events`;
+    const url = `${this.uri}/${this.sessionId}/events`;
     const response = await this.sendRequest(url, body);
 
     if (response?.status === 404 || response?.status === 410) {
