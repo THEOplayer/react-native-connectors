@@ -248,10 +248,9 @@ export class AdobeConnectorAdapter {
 
   private async maybeEndSession(): Promise<void> {
     if (this.sessionId !== '') {
-      return this.sendEventRequest(AdobeEventTypes.SESSION_END).then(() => {
-        this.reset();
-      });
+      await this.sendEventRequest(AdobeEventTypes.SESSION_END);
     }
+    this.reset();
     return Promise.resolve();
   }
 
