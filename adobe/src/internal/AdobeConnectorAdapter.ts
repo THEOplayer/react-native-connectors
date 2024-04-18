@@ -16,6 +16,7 @@ import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapt
   import { NativeModules, Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 
+const TAG = "AdobeConnector";
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 const USER_AGENT_PREFIX = 'Mozilla/5.0';
@@ -313,13 +314,13 @@ export class AdobeConnectorAdapter {
     const response = await this.sendRequest(this.uri, body);
 
     if (response.status !== 201) {
-      console.error('ERROR DURING SESSION CREATION', response);
+      console.error(TAG, 'Error during session creation', response);
       return;
     }
 
     const splitResponseUrl = response.headers.get('location')?.split('/sessions/');
     if (splitResponseUrl === undefined) {
-      console.error('NO LOCATION HEADER PRESENT');
+      console.error(TAG, 'No location header present');
       return;
     }
     this.sessionId = splitResponseUrl[ splitResponseUrl.length - 1 ];
