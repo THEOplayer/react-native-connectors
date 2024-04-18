@@ -271,7 +271,8 @@ export class AdobeConnectorAdapter {
   }
 
   private async startSession(mediaLengthMsec?: number): Promise<void> {
-    if (this.sessionInProgress || !this.player.source) {
+    const mediaLength = this.getContentLength(mediaLengthMsec);
+    if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
       return;
     }
     this.sessionInProgress = true;
@@ -288,7 +289,7 @@ export class AdobeConnectorAdapter {
       "media.channel": "N/A",
       "media.contentType": this.getContentType(),
       "media.id": "N/A",
-      "media.length": this.getContentLength(mediaLengthMsec),
+      "media.length": mediaLength,
       "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
       "visitor.marketingCloudOrgId": this.ecid,
       ...friendlyName,
@@ -441,4 +442,8 @@ export class AdobeConnectorAdapter {
     await this.maybeEndSession();
     this.removeEventListeners();
   }
+}
+
+function isValidDuration(v: number | undefined): boolean {
+  return v !== undefined && !Number.isNaN(v);
 }
