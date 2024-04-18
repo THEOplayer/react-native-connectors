@@ -304,7 +304,10 @@ export class AdobeConnectorAdapter {
     const mediaLength = this.getContentLength(mediaLengthMsec);
     this.logDebug(`maybeStartSession - mediaLength: ${mediaLength}`);
     if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
-      this.logDebug(`maybeStartSession - sessionInProgress: ${this.sessionInProgress}, hasSource: ${this.player.source !== undefined}, isValidDuration: ${isValidDuration(mediaLength)}`);
+      this.logDebug('maybeStartSession - NOT started',
+        `sessionInProgress: ${this.sessionInProgress}`,
+        `hasSource: ${this.player.source !== undefined}`,
+        `isValidDuration: ${isValidDuration(mediaLength)}`);
       return;
     }
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
@@ -343,6 +346,7 @@ export class AdobeConnectorAdapter {
       return;
     }
     this.sessionId = splitResponseUrl[splitResponseUrl.length - 1];
+    this.logDebug('maybeStartSession - STARTED', `sessionId: ${this.sessionId}`);
 
     if (this.eventQueue.length !== 0) {
       const url = `${this.uri}/${this.sessionId}/events`;
