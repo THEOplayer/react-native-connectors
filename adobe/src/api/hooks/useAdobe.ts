@@ -8,7 +8,8 @@ export function useAdobe(uri: string,
                          sid: string,
                          trackingUrl: string,
                          metadata?: AdobeMetaData,
-                         userAgent?: string)
+                         userAgent?: string,
+                         useDebug?: boolean)
     : [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
     const connector = useRef<AdobeConnector | undefined>();
     const theoPlayer = useRef<THEOplayer | undefined>();
@@ -19,7 +20,7 @@ export function useAdobe(uri: string,
 
         theoPlayer.current = player;
         if (player) {
-            connector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl, metadata, userAgent);
+            connector.current = new AdobeConnector(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
             player.addEventListener(PlayerEventType.DESTROY, onDestroy);
         } else {
             throw new Error("Invalid THEOplayer instance");

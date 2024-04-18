@@ -65,16 +65,26 @@ export class AdobeConnectorAdapter {
 
   private readonly customUserAgent: string | undefined;
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData, userAgent?: string) {
+  private debug = false;
+
+  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
+              userAgent?: string, debug = false) {
     this.player = player
     this.uri = `https://${ uri }/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
+    this.debug = debug;
     this.trackingUrl = trackingUrl;
     this.customMetadata = { ...this.customMetadata, ...metadata };
     this.customUserAgent = userAgent || this.buildUserAgent();
 
     this.addEventListeners();
+
+    this.logDebug('Initialized connector');
+  }
+
+  setDebug(debug: boolean) {
+    this.debug = debug;
   }
 
   updateMetadata(metadata: AdobeMetaData): void {
@@ -136,6 +146,8 @@ export class AdobeConnectorAdapter {
   }
 
   private onLoadedMetadata = (e: LoadedMetadataEvent) => {
+    this.logDebug('onLoadedMetadata');
+
     // NOTE: In case of a pre-roll ad:
     // - on Android & iOS, the onLoadedMetadata is sent *after* a pre-roll has finished;
     // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
@@ -144,24 +156,29 @@ export class AdobeConnectorAdapter {
   }
 
   private onPlaying = () => {
+    this.logDebug('onPlaying');
     void this.sendEventRequest(AdobeEventTypes.PLAY);
   }
 
   private onPause = () => {
+    this.logDebug('onPause');
     void this.sendEventRequest(AdobeEventTypes.PAUSE_START);
   }
 
   private onWaiting = () => {
+    this.logDebug('onWaiting');
     void this.sendEventRequest(AdobeEventTypes.BUFFER_START);
   }
 
   private onEnded = () => {
+    this.logDebug('onEnded');
     this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE).then(() => {
       this.reset();
     });
   }
 
   private onSourceChange = () => {
+    this.logDebug('onSourceChange');
     void this.maybeEndSession();
   }
 
@@ -247,6 +264,7 @@ export class AdobeConnectorAdapter {
   }
 
   private async maybeEndSession(): Promise<void> {
+    this.logDebug(`maybeEndSession - sessionId: '${this.sessionId}'`);
     if (this.sessionId !== '') {
       await this.sendEventRequest(AdobeEventTypes.SESSION_END);
     }
@@ -285,7 +303,9 @@ export class AdobeConnectorAdapter {
    */
   private async maybeStartSession(mediaLengthMsec?: number): Promise<void> {
     const mediaLength = this.getContentLength(mediaLengthMsec);
+    this.logDebug(`maybeStartSession - mediaLength: ${mediaLength}`);
     if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
+      this.logDebug(`maybeStartSession - sessionInProgress: ${this.sessionInProgress}, hasSource: ${this.player.source !== undefined}, isValidDuration: ${isValidDuration(mediaLength)}`);
       return;
     }
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
@@ -316,6 +336,7 @@ export class AdobeConnectorAdapter {
       return;
     }
     this.sessionInProgress = true;
+    this.logDebug('maybeStartSession - sessionInProgress');
 
     const splitResponseUrl = response.headers.get('location')?.split('/sessions/');
     if (splitResponseUrl === undefined) {
@@ -447,6 +468,7 @@ export class AdobeConnectorAdapter {
   }
 
   reset(): void {
+    this.logDebug('reset');
     this.adBreakPodIndex = 0;
     this.adPodPosition = 1;
     this.isPlayingAd = false;
@@ -460,6 +482,12 @@ export class AdobeConnectorAdapter {
   async destroy(): Promise<void> {
     await this.maybeEndSession();
     this.removeEventListeners();
+  }
+
+  private logDebug(message?: any, ...optionalParams: any[]) {
+    if (this.debug) {
+      console.debug(TAG, message, ...optionalParams);
+    }
   }
 }
 
