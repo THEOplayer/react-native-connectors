@@ -295,24 +295,31 @@ export class AdobeConnectorAdapter {
    * Start a new session, but only if:
    * - no existing session has is in progress;
    * - the player has a valid source;
-   * - the player's content media duration is known;
+   * - no ad is playing, otherwise the ad's media duration will be picked up;
+   * - the player's content media duration is known.
    *
    * @param mediaLengthMsec
    * @private
    */
   private async maybeStartSession(mediaLengthMsec?: number): Promise<void> {
     const mediaLength = this.getContentLength(mediaLengthMsec);
-    this.logDebug(`maybeStartSession - mediaLength: ${mediaLength}`);
-    if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
-      this.logDebug('maybeStartSession - NOT started',
-        `sessionInProgress: ${this.sessionInProgress}`,
-        `hasSource: ${this.player.source !== undefined}`,
-        `isValidDuration: ${isValidDuration(mediaLength)}`);
+    const hasValidSource = this.player.source !== undefined;
+    const hasValidDuration = isValidDuration(mediaLength);
+    const isPlayingAd = await this.player.ads.playing();
+
+    this.logDebug(`maybeStartSession -`,
+      `mediaLength: ${mediaLength},`,
+      `hasValidSource: ${hasValidSource},`,
+      `hasValidDuration: ${hasValidDuration},`,
+      `isPlayingAd: ${isPlayingAd}`);
+
+    if (this.sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
+      this.logDebug('maybeStartSession - NOT started');
       return;
     }
     const initialBody = this.createBaseRequest(AdobeEventTypes.SESSION_START);
     let friendlyName = {};
-    if (this.player.source.metadata?.title) {
+    if (this.player?.source?.metadata?.title) {
       friendlyName = {
         "media.name": this.player.source.metadata.title
       };
