@@ -89,7 +89,7 @@ export class AdobeConnectorAdapter {
     if (metadata !== undefined) {
       this.updateMetadata(metadata);
     }
-    await this.startSession();
+    await this.maybeStartSession();
 
     if (this.player.paused) {
       this.onPause();
@@ -135,7 +135,11 @@ export class AdobeConnectorAdapter {
   }
 
   private onLoadedMetadata = (e: LoadedMetadataEvent) => {
-    void this.startSession(e.duration);
+    // NOTE: In case of a pre-roll ad:
+    // - on Android & iOS, the onLoadedMetadata is sent *after* a pre-roll has finished;
+    // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
+    //   and again after the pre-roll with a correct duration.
+    void this.maybeStartSession(e.duration);
   }
 
   private onPlaying = () => {
@@ -267,10 +271,19 @@ export class AdobeConnectorAdapter {
       const date = new Date();
       return date.getSeconds() + (60 * (date.getMinutes() + (60 * date.getHours())));
     }
-    return this.player.currentTime/1000;
+    return this.player.currentTime / 1000;
   }
 
-  private async startSession(mediaLengthMsec?: number): Promise<void> {
+  /**
+   * Start a new session, but only if:
+   * - no existing session has is in progress;
+   * - the player has a valid source;
+   * - the player's content media duration is known;
+   *
+   * @param mediaLengthMsec
+   * @private
+   */
+  private async maybeStartSession(mediaLengthMsec?: number): Promise<void> {
     const mediaLength = this.getContentLength(mediaLengthMsec);
     if (this.sessionInProgress || !this.player.source || !isValidDuration(mediaLength)) {
       return;
@@ -358,7 +371,7 @@ export class AdobeConnectorAdapter {
         // avoid calling multiple startSessions close together
         this.sessionId = '';
         this.sessionInProgress = false;
-        await this.startSession();
+        await this.maybeStartSession();
       }
     }
   }
