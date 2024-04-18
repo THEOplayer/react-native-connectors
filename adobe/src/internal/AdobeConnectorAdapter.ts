@@ -170,11 +170,10 @@ export class AdobeConnectorAdapter {
     void this.sendEventRequest(AdobeEventTypes.BUFFER_START);
   }
 
-  private onEnded = () => {
+  private onEnded = async () => {
     this.logDebug('onEnded');
-    this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE).then(() => {
-      this.reset();
-    });
+    await this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE);
+    this.reset();
   }
 
   private onSourceChange = () => {
