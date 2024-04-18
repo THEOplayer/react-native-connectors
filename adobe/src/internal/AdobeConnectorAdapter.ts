@@ -450,6 +450,7 @@ export class AdobeConnectorAdapter {
   reset(): void {
     this.adBreakPodIndex = 0;
     this.adPodPosition = 1;
+    this.isPlayingAd = false;
     this.sessionId = '';
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
