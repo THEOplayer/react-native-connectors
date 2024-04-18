@@ -30,9 +30,10 @@ const sid = "<Report Suite ID>";
 const trackingUrl = "<Tracking Server URL>";
 const metadata = {}; // Optionally provide initial metadata
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
+const debug = true; // Optionally provide a debug flag for extra logging.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, metadata, userAgent);
+  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, metadata, userAgent, debug);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
