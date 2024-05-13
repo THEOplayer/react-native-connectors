@@ -19,6 +19,7 @@
     "react-native": "^0.71.17",
     "react-native-device-info": "^10.13.1",
     "react-native-theoplayer": "^7.0.0",
+    "react-native-uuid": "^2.0.2",
     "react-native-web": "^0.18.12",
     "theoplayer": "^7.0.0"
   },
