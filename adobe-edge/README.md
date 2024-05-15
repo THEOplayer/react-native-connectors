@@ -1,6 +1,17 @@
 # THEOplayer React-Native Adobe Edge Connector
 
-An Adobe analytics connector for `@theoplayer/react-native`.
+An Adobe analytics connector for `@theoplayer/react-native` using the
+[Media Edge API](https://developer.adobe.com/client-sdks/edge/media-for-edge-network/).
+
+Media Edge API is the third generation of solution for tracking Media Events.
+It features more analytics data, and the delay before the data can be analysed is much shorter: ~15 minutes
+compared to ~45 minutes with Media Heartbeats.
+
+To set up terminology, in chronological order, media tracking solutions were:
+
+1. Media Heartbeats solution
+2. Media Collection API
+3. Media Edge API
 
 ## Installation
 
@@ -9,7 +20,7 @@ The `@theoplayer/react-native` package has a peer dependency on `react-native-de
 ```sh
 npm install \
   react-native-device-info \
-  @theoplayer/react-native-analytics-adobe
+  @theoplayer/react-native-analytics-adobe-edge
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
@@ -24,15 +35,12 @@ Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tra
 ```jsx
 import { useAdobe } from '@theoplayer/react-native-analytics-adobe';
 
-const uri = "<Media Collection API's end point>";
-const ecid = "<Visitor Experience Cloud Org ID>";
-const sid = "<Report Suite ID>";
-const trackingUrl = "<Tracking Server URL>";
-const metadata = {}; // Optionally provide initial metadata
+const baseUrl = "<Media Collection API's end point>";
+const dataStreamId = "<dataStreamId or configId>";
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, metadata, userAgent);
+  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
@@ -51,19 +59,13 @@ such as duration or whether it is a live or vod.
 The connector allows passing or updating the current asset's metadata at any time:
 
 ```typescript
-import { AdobeMetaData } from "./Types";
+import { AdobeCustomMetadataDetails } from "@theoplayer/react-native-analytics-adobe-edge";
 
 const onUpdateMetadata = () => {
-  const metadata: AdobeMetaData = {
-    "params": {
-      "media.channelName": "channelName",
-      "media.id": "mediaId"
-    },
-    "customMetadata": {
-      "customTag1": "customValue1",
-      "customTag2": "customValue2"
-    }
-  };
+  const metadata: AdobeCustomMetadataDetails[] = [
+      { "customTag1": "customValue1" },
+      { "customTag2": "customValue2" }
+    ]
   adobe.current?.updateMetadata(metadata);
 };
 ```
