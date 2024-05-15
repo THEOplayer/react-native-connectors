@@ -25,18 +25,30 @@ export class MediaEdgeAPI {
   private readonly _client: MediaEdgeClient<paths, 'application/json'>;
   private readonly _configId: string;
   private _sessionID: string | undefined;
+  private _hasSessionFailed: boolean;
   private _eventQueue: (() => Promise<void>)[] = [];
 
   constructor(baseUrl: string, configId: string, userAgent?: string) {
     this._configId = configId;
+    this._hasSessionFailed = false;
     this._client = createClient<paths, 'application/json'>({
       baseUrl,
       headers: {'User-Agent': userAgent || buildUserAgent()}
     });
   }
 
-  isSessionStarted(): boolean {
+  hasSessionStarted(): boolean {
     return !!this._sessionID;
+  }
+
+  hasSessionFailed(): boolean {
+    return this._hasSessionFailed;
+  }
+
+  reset() {
+    this._sessionID = undefined;
+    this._hasSessionFailed = false;
+    this._eventQueue = [];
   }
 
   async play(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
@@ -52,7 +64,8 @@ export class MediaEdgeAPI {
   }
 
   async ping(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    if (this.isSessionStarted()) {
+    // Only send pings if the session has started, never queue them.
+    if (this.hasSessionStarted()) {
       void this.postEvent('/ping', {playhead, qoeDataDetails});
     }
   }
@@ -168,6 +181,7 @@ export class MediaEdgeAPI {
     const error = result.error || result.data.errors
     if (error) {
       console.error('Failed to start session', error);
+      this._hasSessionFailed = true;
       return;
     }
     // @ts-ignore
@@ -183,10 +197,16 @@ export class MediaEdgeAPI {
   }
 
   async maybeQueueEvent(path: keyof paths, mediaDetails: AdobeMediaDetails) {
+    // Do not bother queueing the event in case starting the session has failed
+    if (this.hasSessionFailed()) {
+      return;
+    }
     const doPostEvent = () => {
       return this.postEvent(path, mediaDetails);
     };
-    if (!this.isSessionStarted()) {
+
+    // If the session has already started, do not queue but send it directly.
+    if (!this.hasSessionStarted()) {
       this._eventQueue.push(doPostEvent);
     } else {
       return doPostEvent();

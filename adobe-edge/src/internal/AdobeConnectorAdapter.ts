@@ -238,7 +238,7 @@ export class AdobeConnectorAdapter {
 
   private async maybeEndSession(): Promise<void> {
     this.logDebug(`maybeEndSession`);
-    if (this.mediaApi.isSessionStarted()) {
+    if (this.mediaApi.hasSessionStarted()) {
       await this.mediaApi.sessionEnd(this.player.currentTime);
     }
     this.reset();
@@ -282,7 +282,7 @@ export class AdobeConnectorAdapter {
     };
 
     await this.mediaApi.startSession(sessionDetails, this.customMetadata);
-    if (!this.mediaApi.isSessionStarted()) {
+    if (!this.mediaApi.hasSessionStarted()) {
       return;
     }
 
@@ -315,6 +315,7 @@ export class AdobeConnectorAdapter {
 
   reset(): void {
     this.logDebug('reset');
+    this.mediaApi.reset();
     this.adBreakPodIndex = 0;
     this.adPodPosition = 1;
     this.isPlayingAd = false;
