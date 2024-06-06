@@ -15,7 +15,18 @@
     "nielsen",
     "youbora"
   ],
+  "scripts": {
+    "changeset:version": "changeset version && node .changeset/post-process.js",
+    "build": "npm run build --workspaces",
+    "clean": "npm run clean --workspaces",
+    "prettier": "prettier --check \"*/(src|test)/**/*\"",
+    "prettier:fix": "prettier --write \"*/(src|test)/**/*\"",
+    "lint": "eslint \"*/src/**/*.ts\" \"*/test*/**/*.ts\"",
+    "lint:fix": "npm run lint -- --fix"
+  },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@changesets/types": "^6.0.0",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-community/netinfo": "^11.3.1",
     "@react-native/eslint-config": "^0.74.84",
