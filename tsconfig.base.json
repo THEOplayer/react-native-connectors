@@ -58,7 +58,6 @@
     "resolveJsonModule": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
