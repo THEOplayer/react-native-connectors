@@ -2,6 +2,8 @@ import type { THEOplayer } from "react-native-theoplayer";
 import type { AdobeMetaData } from "../internal/Types";
 import { AdobeConnectorAdapter } from "../internal/AdobeConnectorAdapter";
 
+export { type AdobeMetaData };
+
 export class AdobeConnector {
 
   private connectorAdapter: AdobeConnectorAdapter
