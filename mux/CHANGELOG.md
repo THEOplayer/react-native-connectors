@@ -1,34 +1,31 @@
-# Changelog
+# @theoplayer/react-native-analytics-mux
 
-All notable changes to this project will be documented in this file.
+## 1.3.0
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-## [1.3.0] - 2024-04-10
-
-### Added
+### 📦 Dependency Updates
 
 - Added support for `react-native-theoplayer` v7.0.0 and native player SDK v7.0.0.
 
-## [1.2.0] - 2023-10-25
+## 1.2.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed and issue on Android where Mux's Maven repository was not included in the root repository list.
 
-## [1.1.1] - 2023-10-05
+## 1.1.1
 
-### Changed
+### 📦 Dependency Updates
 
 - Relax restriction on `react-native-theoplayer` peer dependency versions.
 
-## [1.1.0] - 2023-10-05
+## 1.1.0
 
-### Added
+### 📦 Dependency Updates
 
 - Added support for `react-native-theoplayer` v3.0 and THEOplayer 6.0.
 
-## [1.0.0] - 2023-09-27
+## 1.0.0
 
-Initial release
+### ✨ Features
+
+- Initial release

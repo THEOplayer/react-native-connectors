@@ -1,114 +1,108 @@
-# Changelog
+# @theoplayer/react-native-analytics-adobe
 
-All notable changes to this project will be documented in this file.
+## 1.5.0
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-## [1.5.0] - 2024-04-18
-
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue on Web where an asset with a pre-roll ad would report an invalid media duration.
 
-### Added
+### ✨ Features
 
 - Added `debug` flag for extra logging.
 
-## [1.4.0] - 2024-04-10
+## 1.4.0
 
-### Added
+### 📦 Dependency Updates
 
 - Added support for `react-native-theoplayer` v7.0.0 and native player SDK v7.0.0.
 
-## [1.3.1] - 2024-03-24
+## 1.3.1
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the `media.length` would be not be correctly converted to seconds for VOD and Live streams.
 
-## [1.3.0] - 2024-03-22
+## 1.3.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue where the `media.length` would be wrong when starting a session for a stream with a pre-roll ad.
 
-## [1.2.1] - 2023-10-05
+## 1.2.1
 
-### Changed
+### 📦 Dependency Updates
 
 - Relax restriction on `react-native-theoplayer` peer dependency versions.
 
-## [1.2.0] - 2023-10-05
+## 1.2.0
 
-### Added
+### 📦 Dependency Updates
 
 - Added support for `react-native-theoplayer` v3.0 and THEOplayer 6.0.
 
-## [1.1.0] - 2023-05-08
+## 1.1.0
 
-### Added
+### ✨ Features
 
 - Added a `userAgent` property to the connector's constructor to allow setting a custom `User-Agent` header value when doing requests.
-
-### Changed
-
 - Changed the default `User-Agent` header value on Android to custom value that contains `Mozilla/5.0 (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`.
 - Changed the default `User-Agent` header value on iOS to custom value that contains `Mozilla/5.0 (${model}; CPU OS ${osVersion} like Mac OS X; ${localeIdentifier})`.
 
-## [1.0.0] - 2023-05-03
+## 1.0.0
 
-### Added
+### ✨ Features
 
 - Added `useAdobe` hook to create and initialize an Adobe connector. See README.md for usage.
 
-## [0.7.0] - 2023-04-14
+## 0.7.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed sending play/pause on program boundaries.
 - Fixed sending ad ping events if a program boundary occurs mid ad.
 
-## [0.6.0] - 2023-04-05
+## 0.6.0
 
-### Added
+### ✨ Features
 
 - Add `media.name` to `sessionStart` request if `player.source.metadata.title` is set.
 - Add functionality to stop the current session and start a new one.
 
-## [0.5.0] - 2023-03-21
+## 0.5.0
 
-### Changed
+### ✨ Features
 
 - Removed numeric separators for constants.
 
-## [0.4.0] - 2023-03-21
+## 0.4.0
 
-### Added
+### ✨ Features
 
 - Optional metadata field to the constructor.
 
-## [0.3.0] - 2023-03-20
+## 0.3.0
 
-### Fixed
+### 🐛 Issues
 
 - Fixed correctly passing the `playHead` property.
 - Fixed correctly passing custom metadata to the session request.
 - Fixed an issue where the `chapterStart` parameters would be missing.
 - Fixed some http issues during `sendEventRequest`.
 
-### Changed
+### ✨ Features
 
 - Improved sending error event.
 - Improved property typing.
 
-## [0.2.0] - 2023-03-16
+## 0.2.0
 
-### Fixed
+### 🐛 Issues
 
 - Removed a `postinstall` script from package.json.
 - Fixed an issue where the session would not be ended when destroying the connector.
 
-## [0.1.0] - 2023-03-16
+## 0.1.0
 
-Initial release
+### ✨ Features
+
+- Initial release
