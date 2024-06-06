@@ -85,7 +85,7 @@ declare module 'youboralib' {
     public dispose();
 
     /**
-     * Creates a new {@link PlayheadMonitor} at this.monitor.
+     * Creates a new PlayheadMonitor at this.monitor.
      *
      * @param {bool} monitorBuffers If true, it will monitor buffers.
      * @param {bool} monitorSeeks If true, it will monitor seeks.
