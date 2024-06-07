@@ -1,12 +1,12 @@
 import { AgamaClient, AgamaMeasurement } from '../AgamaClient';
 import { AbstractAgamaHandler } from './AbstractAgamaHandler';
-import { emptyArray } from "../utils/ArrayUtils";
-import type { THEOplayer } from "react-native-theoplayer";
-import { findMediaTrackByUid } from "react-native-theoplayer";
-import { NumberTimeRanges } from "../utils/NumberTimeRanges";
-import { toKiloBitsPerSecond } from "../utils/ByteUtils";
-import type { AgamaMetrics } from "../metrics/AgamaMetrics";
-import { AgamaMetricsEventType, AgamaMetricsSegmentResponseEvent } from "../metrics/AgamaMetrics";
+import { emptyArray } from '../utils/ArrayUtils';
+import type { THEOplayer } from 'react-native-theoplayer';
+import { findMediaTrackByUid } from 'react-native-theoplayer';
+import { NumberTimeRanges } from '../utils/NumberTimeRanges';
+import { toKiloBitsPerSecond } from '../utils/ByteUtils';
+import type { AgamaMetrics } from '../metrics/AgamaMetrics';
+import { AgamaMetricsEventType, AgamaMetricsSegmentResponseEvent } from '../metrics/AgamaMetrics';
 
 /**
  * AgamaMeasurementHandler monitors the following attributes:
@@ -55,11 +55,11 @@ export class AgamaMeasurementHandler extends AbstractAgamaHandler {
   }
 
   private attachReportingListeners_(): void {
-    this._metricsAgamaMetrics.addEventListener(AgamaMetricsEventType.SEGMENT_RESPONSE_, this.handleSegmentResponse)
+    this._metricsAgamaMetrics.addEventListener(AgamaMetricsEventType.SEGMENT_RESPONSE_, this.handleSegmentResponse);
   }
 
   private removeReportingListeners_(): void {
-    this._metricsAgamaMetrics.removeEventListener(AgamaMetricsEventType.SEGMENT_RESPONSE_, this.handleSegmentResponse)
+    this._metricsAgamaMetrics.removeEventListener(AgamaMetricsEventType.SEGMENT_RESPONSE_, this.handleSegmentResponse);
   }
 
   onViewStateChange_(): void {
@@ -119,10 +119,8 @@ export class AgamaMeasurementHandler extends AbstractAgamaHandler {
     const activeVideoTrack = findMediaTrackByUid(this._player.videoTracks, this._player.selectedVideoTrack);
     if (activeVideoTrack?.activeQuality) {
       const bandwidth = activeVideoTrack.activeQuality.bandwidth;
-      this.reportMeasurement_(
-        AgamaMeasurement.SEGMENT_PROFILE_BITRATE_, toKiloBitsPerSecond(bandwidth));
-      this.reportMeasurement_(
-        AgamaMeasurement.VIDEO_PROFILE_BITRATE_, toKiloBitsPerSecond(bandwidth));
+      this.reportMeasurement_(AgamaMeasurement.SEGMENT_PROFILE_BITRATE_, toKiloBitsPerSecond(bandwidth));
+      this.reportMeasurement_(AgamaMeasurement.VIDEO_PROFILE_BITRATE_, toKiloBitsPerSecond(bandwidth));
     }
   }
 
@@ -139,7 +137,7 @@ export class AgamaMeasurementHandler extends AbstractAgamaHandler {
     const currentTime = this._player.currentTime;
     const activeBuffer = buffered.subRangeAtTimestamp_(currentTime);
     const totalForwardBuffer = activeBuffer ? activeBuffer.end_(0) - currentTime : 0;
-    this.reportMeasurement_(AgamaMeasurement.BUFFER_LENGTH_, totalForwardBuffer)
+    this.reportMeasurement_(AgamaMeasurement.BUFFER_LENGTH_, totalForwardBuffer);
   }
 
   private reportMeasurement_(deviceMetadataType: AgamaMeasurement, metadata: number): void {

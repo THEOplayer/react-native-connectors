@@ -1,14 +1,14 @@
 import type { AgamaConfiguration } from '../api/AgamaConfiguration';
 import type { AgamaClientEventMap } from './AgamaClientEvent';
-import type { TypedSource } from "react-native-theoplayer";
-import { DefaultEventDispatcher } from "./event/DefaultEventDispatcher";
-import type { AgamaSourceConfiguration } from "../api/AgamaSourceConfiguration";
+import type { TypedSource } from 'react-native-theoplayer';
+import { DefaultEventDispatcher } from './event/DefaultEventDispatcher';
+import type { AgamaSourceConfiguration } from '../api/AgamaSourceConfiguration';
 
 /*
  * The enums in this file are the internal equivalent of the enums defined in
  * web\src\integrations\agama\Agama.ts (under namespace Agama)
  * If the enums in the Agama namespace change, the corresponding changes should be made here.
-*/
+ */
 
 /**
  * Reporting the view state changes to the EMP client
@@ -20,7 +20,7 @@ export enum AgamaViewState {
   STALLED_ = 'STALLED',
   FAILED_ = 'FAILED',
   INITIAL_BUFFERING_ = 'INITIAL_BUFFERING',
-  NO_ACCESS_ = 'NO_ACCESS'
+  NO_ACCESS_ = 'NO_ACCESS',
 }
 
 export enum AgamaMeasurement {
@@ -39,7 +39,7 @@ export enum AgamaMeasurement {
   NUMBER_OF_FRAMES_DECODED_ = 'NUMBER_OF_FRAMES_DECODED',
   PLAYBACK_DELTA_TO_ORIGIN_ = 'PLAYBACK_DELTA_TO_ORIGIN',
   STREAM_DELTA_TO_ORIGIN_ = 'STREAM_DELTA_TO_ORIGIN',
-  ORIGIN_TIMESTAMP_ = 'ORIGIN_TIMESTAMP'
+  ORIGIN_TIMESTAMP_ = 'ORIGIN_TIMESTAMP',
 }
 
 export enum AgamaSessionMetadata {
@@ -50,11 +50,11 @@ export enum AgamaSessionMetadata {
   CONTENT_TITLE_ = 'CONTENT_TITLE',
   SERVICE_NAME_ = 'SERVICE_NAME',
   CONTENT_TYPE_ = 'CONTENT_TYPE',
-  CONTENT_DESCRIPTION_ = 'CONTENT_DESCRIPTION'
+  CONTENT_DESCRIPTION_ = 'CONTENT_DESCRIPTION',
 }
 
 export enum AgamaShutdownType {
-  NORMAL_SHUTDOWN_ = 'shutdown_normal_shutdown'
+  NORMAL_SHUTDOWN_ = 'shutdown_normal_shutdown',
 }
 
 export enum AgamaStatusCodeCategory {
@@ -63,12 +63,14 @@ export enum AgamaStatusCodeCategory {
   INTERNAL_ERROR_ = 'internalError/',
   DRM_ERROR_ = 'drmError/',
   CA_ERROR_ = 'caError/',
-  NETWORK_ERROR_ = 'networkError/'
+  NETWORK_ERROR_ = 'networkError/',
 }
 
 export class AgamaStatusCode {
-  constructor(private category: AgamaStatusCodeCategory, private statusCode: string) {
-  }
+  constructor(
+    private category: AgamaStatusCodeCategory,
+    private statusCode: string,
+  ) {}
 
   get code(): string {
     return this.category + this.statusCode;
@@ -77,7 +79,7 @@ export class AgamaStatusCode {
 
 export enum AgamaSessionStatusCodes {
   USER_ACTION_ = 'userAction',
-  END_OF_STREAM_ = 'endOfStreamReached'
+  END_OF_STREAM_ = 'endOfStreamReached',
 }
 
 export interface AgamaPlayerDescription {
@@ -86,8 +88,7 @@ export interface AgamaPlayerDescription {
 }
 
 export abstract class AgamaClient extends DefaultEventDispatcher<AgamaClientEventMap> {
-  abstract abrSession_(agamaSource: TypedSource,
-                       agamaSourceConfiguration: AgamaSourceConfiguration): void;
+  abstract abrSession_(agamaSource: TypedSource, agamaSourceConfiguration: AgamaSourceConfiguration): void;
 
   abstract event_(statusCode: AgamaStatusCode, statusMessage: string): void;
 
@@ -112,5 +113,4 @@ export abstract class AgamaClient extends DefaultEventDispatcher<AgamaClientEven
   abstract viewStateExtended_(viewStateType: AgamaViewState, statusCode: AgamaStatusCode, statusMessage: string): void;
 
   abstract unload_(): void;
-
 }

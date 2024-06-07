@@ -1,6 +1,5 @@
 declare module 'youboralib' {
-
-  import type { THEOplayer } from "react-native-theoplayer";
+  import type { THEOplayer } from 'react-native-theoplayer';
 
   export declare namespace Log {
     export declare class Level {
@@ -21,9 +20,7 @@ declare module 'youboralib' {
     public setAdapter(adapter: Adapter): void;
   }
 
-  export declare class Emitter {
-
-  }
+  export declare class Emitter {}
 
   /**
    * Main Adapter class. All specific player adapters should extend this class specifying a player

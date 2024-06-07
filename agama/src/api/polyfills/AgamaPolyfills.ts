@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from 'buffer';
 
 try {
   __DEBUG__ = false;
@@ -9,11 +9,11 @@ try {
 export class AgamaPolyfills {
   static install() {
     if (__DEBUG__) {
-      console.log("Installing Agama polyfills.");
+      console.log('Installing Agama polyfills.');
     }
     _global = globalThis;
     _global.btoa = function (data: string) {
-      return Buffer.from(data, "binary").toString("base64")
+      return Buffer.from(data, 'binary').toString('base64');
     };
   }
 

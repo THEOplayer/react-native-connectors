@@ -1,4 +1,4 @@
-import type { MuxData } from "./MuxData";
+import type { MuxData } from './MuxData';
 
 export interface MuxOptions {
   debug?: boolean;

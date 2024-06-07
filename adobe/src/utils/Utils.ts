@@ -1,5 +1,5 @@
-import type { Ad, AdBreak, TextTrackCue } from "react-native-theoplayer";
-import type { AdobeMetaData } from "../internal/Types";
+import type { Ad, AdBreak, TextTrackCue } from 'react-native-theoplayer';
+import type { AdobeMetaData } from '../internal/Types';
 
 export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: number): AdobeMetaData {
   const currentAdBreakTimeOffset = adBreak.timeOffset;
@@ -15,8 +15,8 @@ export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: nu
   return {
     params: {
       'media.ad.podIndex': podIndex,
-      'media.ad.podSecond': adBreak.maxDuration
-    }
+      'media.ad.podSecond': adBreak.maxDuration,
+    },
   };
 }
 
@@ -26,9 +26,9 @@ export function calculateAdBeginMetadata(ad: Ad, adPodPosition: number): AdobeMe
       'media.ad.podPosition': adPodPosition,
       'media.ad.id': ad.id,
       'media.ad.length': ad.duration,
-      'media.ad.playerName': 'THEOplayer'
-    }
-  }
+      'media.ad.playerName': 'THEOplayer',
+    },
+  };
 }
 
 export function calculateChapterStartMetadata(cue: TextTrackCue): AdobeMetaData {
@@ -36,9 +36,9 @@ export function calculateChapterStartMetadata(cue: TextTrackCue): AdobeMetaData 
   const index = isNaN(id) ? 0 : id;
   return {
     params: {
-      'media.chapter.length': (cue.endTime-cue.startTime)/1000,
-      'media.chapter.offset': cue.startTime/1000,
-      'media.chapter.index': index
-    }
-  }
+      'media.chapter.length': (cue.endTime - cue.startTime) / 1000,
+      'media.chapter.offset': cue.startTime / 1000,
+      'media.chapter.index': index,
+    },
+  };
 }

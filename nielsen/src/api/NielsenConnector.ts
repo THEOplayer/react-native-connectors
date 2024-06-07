@@ -1,10 +1,9 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NielsenConnectorAdapter } from '../internal/NielsenConnectorAdapter';
-import type { NielsenOptions } from "@theoplayer/nielsen-connector-web";
+import type { NielsenOptions } from '@theoplayer/nielsen-connector-web';
 
 export class NielsenConnector {
-
-  private connectorAdapter: NielsenConnectorAdapter
+  private connectorAdapter: NielsenConnectorAdapter;
 
   /**
    * Create NielsenConnector
@@ -22,7 +21,7 @@ export class NielsenConnector {
    * Adds metadata which will be sent on Nielsen requests.
    * @param metadata contains the key value pairs with data.
    */
-  updateMetadata(metadata: {[key: string]: string}): void {
+  updateMetadata(metadata: { [key: string]: string }): void {
     this.connectorAdapter.updateMetadata(metadata);
   }
 

@@ -1,15 +1,14 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { MuxConnectorAdapter } from '../internal/MuxConnectorAdapter';
-import type { MuxOptions } from "./MuxOptions";
-import type { MuxData } from "./MuxData";
+import type { MuxOptions } from './MuxOptions';
+import type { MuxData } from './MuxData';
 
 export enum MuxPresentation {
-  FULLSCREEN = "FULLSCREEN",
-  NORMAL = "NORMAL"
+  FULLSCREEN = 'FULLSCREEN',
+  NORMAL = 'NORMAL',
 }
 
 export class MuxConnector {
-
   private connectorAdapter: MuxConnectorAdapter;
 
   /**

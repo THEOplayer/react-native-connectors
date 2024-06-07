@@ -1,5 +1,5 @@
-import { DefaultEventDispatcher } from "../event/DefaultEventDispatcher";
-import { BaseEvent } from "../event/BaseEvent";
+import { DefaultEventDispatcher } from '../event/DefaultEventDispatcher';
+import { BaseEvent } from '../event/BaseEvent';
 
 export interface VideoFramesMetrics {
   droppedVideoFrames: number;
@@ -8,7 +8,7 @@ export interface VideoFramesMetrics {
 
 export enum AgamaMetricsEventType {
   SEGMENT_RESPONSE_ = 'segmentresponse',
-  MANIFEST_RESPONSE_ = 'manifestresponse'
+  MANIFEST_RESPONSE_ = 'manifestresponse',
 }
 
 export interface AgamaMetricsEventMap {
@@ -24,7 +24,11 @@ export interface AgamaMetricsEventMap {
  * - totalBytesLoaded: segment size, in bytes;
  */
 export class AgamaMetricsSegmentResponseEvent extends BaseEvent<AgamaMetricsEventType.SEGMENT_RESPONSE_> {
-  constructor(public status: number, public mediaType: MediaType, public totalBytesLoaded: number) {
+  constructor(
+    public status: number,
+    public mediaType: MediaType,
+    public totalBytesLoaded: number,
+  ) {
     super(AgamaMetricsEventType.SEGMENT_RESPONSE_);
   }
 }
@@ -36,18 +40,17 @@ export class AgamaMetricsManifestResponseEvent extends BaseEvent<AgamaMetricsEve
 }
 
 export enum MediaType {
-  AUDIO = "audio",
-  VIDEO = "video"
+  AUDIO = 'audio',
+  VIDEO = 'video',
 }
 
 /**
  * AgamaMetrics bridges Metrics and SegmentResponse functionality.
  */
 export abstract class AgamaMetrics extends DefaultEventDispatcher<AgamaMetricsEventMap> {
-
   abstract destroy(): void;
 
-  abstract videoFrames(): Promise<VideoFramesMetrics> ;
+  abstract videoFrames(): Promise<VideoFramesMetrics>;
 
   /**
    * Returns player.metrics.currentBandwidthEstimate; in bits per second.

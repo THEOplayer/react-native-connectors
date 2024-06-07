@@ -1,6 +1,6 @@
 import { AgamaStatusCode, AgamaStatusCodeCategory, AgamaViewState } from '../AgamaClient';
 import { AbstractAgamaHandler, AgamaViewStateChangeEvent } from './AbstractAgamaHandler';
-import { PlayerError, PlayerEventType } from "react-native-theoplayer";
+import { PlayerError, PlayerEventType } from 'react-native-theoplayer';
 
 /**
  * AgamaViewStateHandler monitors the following ViewState-related attributes:
@@ -54,13 +54,12 @@ export class AgamaViewStateHandler extends AbstractAgamaHandler {
     if (this._initialBufferingIsComplete && !this._isSeeking) {
       this.reportViewStateChanged_(AgamaViewState.STALLED_);
     }
-
   };
 
   private readonly onPlaying_ = (): void => {
     if (!this._player.paused) {
       if (!this._initialBufferingIsComplete) {
-        this.reportEvent_(new AgamaStatusCode(AgamaStatusCodeCategory.CONTENT_, "firstFrameDisplayed"), "now")
+        this.reportEvent_(new AgamaStatusCode(AgamaStatusCodeCategory.CONTENT_, 'firstFrameDisplayed'), 'now');
       }
       this._initialBufferingIsComplete = true;
       this.reportViewStateChanged_(AgamaViewState.PLAYING_);
@@ -96,16 +95,12 @@ export class AgamaViewStateHandler extends AbstractAgamaHandler {
     }
   }
 
-  private reportViewStateExtended_(
-    viewStateType: AgamaViewState,
-    statusCode: AgamaStatusCode,
-    statusMessage: string
-  ): void {
+  private reportViewStateExtended_(viewStateType: AgamaViewState, statusCode: AgamaStatusCode, statusMessage: string): void {
     this._agamaClient.viewStateExtended_(viewStateType, statusCode, statusMessage);
     this.dispatchEvent(new AgamaViewStateChangeEvent());
   }
 
   private reportEvent_(code: AgamaStatusCode, value: string): void {
-    this._agamaClient.event_(code, value)
+    this._agamaClient.event_(code, value);
   }
 }

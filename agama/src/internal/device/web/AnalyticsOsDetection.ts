@@ -15,7 +15,7 @@ export enum DetectableOs {
   IOS_ = 'iOS',
   UBUNTU_ = 'Ubuntu',
   LINUX_ = 'Linux',
-  CHROME_OS_ = 'Chrome OS'
+  CHROME_OS_ = 'Chrome OS',
 }
 
 /*
@@ -36,7 +36,7 @@ const osNameRegexpMap: DetectionRegexpMap = {
   [DetectableOs.IOS_]: /(iPhone|iPad|iPod)/i,
   [DetectableOs.MAC_OS_X_]: /Mac OS X/i,
   [DetectableOs.MAC_OS_]: /(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/i,
-  [DetectableOs.CHROME_OS_]: /CrOS/i
+  [DetectableOs.CHROME_OS_]: /CrOS/i,
 };
 
 function matchOsName(odWindow: DetectionWindow, os: DetectableOs): boolean {
@@ -132,7 +132,7 @@ const osVersionRegexpMap: DetectionRegexpMap = {
   [DetectableOs.IOS_]: /(iPad|iPhone|iPod).*?(OS |os |OS_)(\d+(([_.])\d+)?(([_.])\d+)?)/i,
   [DetectableOs.MAC_OS_X_]: MAC_VERSION_REGEXP,
   [DetectableOs.MAC_OS_]: MAC_VERSION_REGEXP,
-  [DetectableOs.CHROME_OS_]: undefined
+  [DetectableOs.CHROME_OS_]: undefined,
 };
 
 function matchOsVersion(odWindow: DetectionWindow, os: DetectableOs): RegExpMatchArray | null {

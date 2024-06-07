@@ -27,14 +27,13 @@ declare global {
 }
 
 declare namespace Agama {
-
   /**
    * Setting the playlist type
    */
   export enum DsPlaylistType {
     EVENT = 'EVENT',
     LIVE = 'LIVE',
-    VOD = 'VOD'
+    VOD = 'VOD',
   }
 
   /**
@@ -44,7 +43,7 @@ declare namespace Agama {
     APPLE_HLS = 'APPLE_HLS',
     // MS_SMOOTH = 'MS_SMOOTH',
     // ADOBE_HDS = 'ADOBE_HDS',
-    MPEG_DASH = 'MPEG_DASH'
+    MPEG_DASH = 'MPEG_DASH',
   }
 
   /**
@@ -55,7 +54,7 @@ declare namespace Agama {
     ERROR = 'ERROR',
     WARNING = 'WARNING',
     INFO = 'INFO',
-    DEBUG = 'DEBUG'
+    DEBUG = 'DEBUG',
   }
 
   /**
@@ -80,7 +79,7 @@ declare namespace Agama {
     DATA_CONNECTION_TYPE = 'DATA_CONNECTION_TYPE',
     APPLICATION = 'APPLICATION',
     APPLICATION_VERSION = 'APPLICATION_VERSION',
-    USER_ACCOUNT_ID = 'USER_ACCOUNT_ID'
+    USER_ACCOUNT_ID = 'USER_ACCOUNT_ID',
   }
 
   /**
@@ -93,7 +92,7 @@ declare namespace Agama {
     STALLED = 'STALLED',
     FAILED = 'FAILED',
     INITIAL_BUFFERING = 'INITIAL_BUFFERING',
-    NO_ACCESS = 'NO_ACCESS'
+    NO_ACCESS = 'NO_ACCESS',
   }
 
   export enum Measurement {
@@ -112,7 +111,7 @@ declare namespace Agama {
     NUMBER_OF_FRAMES_DECODED = 'NUMBER_OF_FRAMES_DECODED',
     PLAYBACK_DELTA_TO_ORIGIN = 'PLAYBACK_DELTA_TO_ORIGIN',
     STREAM_DELTA_TO_ORIGIN = 'STREAM_DELTA_TO_ORIGIN',
-    ORIGIN_TIMESTAMP = 'ORIGIN_TIMESTAMP'
+    ORIGIN_TIMESTAMP = 'ORIGIN_TIMESTAMP',
   }
 
   export enum SessionMetadata {
@@ -123,11 +122,11 @@ declare namespace Agama {
     CONTENT_TITLE = 'CONTENT_TITLE',
     SERVICE_NAME = 'SERVICE_NAME',
     CONTENT_TYPE = 'CONTENT_TYPE',
-    CONTENT_DESCRIPTION = 'CONTENT_DESCRIPTION'
+    CONTENT_DESCRIPTION = 'CONTENT_DESCRIPTION',
   }
 
   export enum ShutdownType {
-    NORMAL_SHUTDOWN = 'shutdown_normal_shutdown'
+    NORMAL_SHUTDOWN = 'shutdown_normal_shutdown',
   }
 
   /**
@@ -187,7 +186,6 @@ declare namespace Agama {
      * Report view state with accompanying status code and status message to the EMP client
      */
     viewStateExtended(viewStateType: ViewState, statusCode: string, statusMessage: string): void;
-
   }
 
   /**

@@ -1,9 +1,9 @@
 import { AgamaClient, AgamaSessionMetadata } from '../AgamaClient';
 import { AbstractAgamaHandler } from './AbstractAgamaHandler';
-import { PlayerEventType, THEOplayer } from "react-native-theoplayer";
-import type { AgamaSourceConfiguration } from "../../api/AgamaSourceConfiguration";
-import type { AgamaMetrics } from "../metrics/AgamaMetrics";
-import { AgamaMetricsEventType, AgamaMetricsManifestResponseEvent } from "../metrics/AgamaMetrics";
+import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
+import type { AgamaSourceConfiguration } from '../../api/AgamaSourceConfiguration';
+import type { AgamaMetrics } from '../metrics/AgamaMetrics';
+import { AgamaMetricsEventType, AgamaMetricsManifestResponseEvent } from '../metrics/AgamaMetrics';
 
 /**
  * AgamaSessionMetadataHandler handles the following session-related attributes:
@@ -12,7 +12,6 @@ import { AgamaMetricsEventType, AgamaMetricsManifestResponseEvent } from "../met
  * - asset duration (gamaSessionMetadata.ASSET_DURATION_).
  */
 export class AgamaSessionMetadataHandler extends AbstractAgamaHandler {
-
   private _metricsAgamaMetrics: AgamaMetrics;
 
   constructor(player: THEOplayer, agamaClient: AgamaClient, metrics: AgamaMetrics) {
@@ -34,7 +33,7 @@ export class AgamaSessionMetadataHandler extends AbstractAgamaHandler {
   private attachReportingListeners_(): void {
     this._player.addEventListener(PlayerEventType.MEDIA_TRACK_LIST, this.reportNumberOfContentProfiles_);
     this._player.addEventListener(PlayerEventType.DURATION_CHANGE, this.handleDurationChange_);
-    this._metricsAgamaMetrics.addEventListener(AgamaMetricsEventType.MANIFEST_RESPONSE_, this.handleManifestResponse_)
+    this._metricsAgamaMetrics.addEventListener(AgamaMetricsEventType.MANIFEST_RESPONSE_, this.handleManifestResponse_);
   }
 
   private removeReportingListeners_(): void {
@@ -57,8 +56,7 @@ export class AgamaSessionMetadataHandler extends AbstractAgamaHandler {
       this.reportSessionMetadata_(AgamaSessionMetadata.CONTENT_TYPE_, agamaSourceConfig.contentType);
     }
     if (agamaSourceConfig.contentDescription) {
-      this.reportSessionMetadata_(AgamaSessionMetadata.CONTENT_DESCRIPTION_,
-        agamaSourceConfig.contentDescription);
+      this.reportSessionMetadata_(AgamaSessionMetadata.CONTENT_DESCRIPTION_, agamaSourceConfig.contentDescription);
     }
   }
 
@@ -75,8 +73,7 @@ export class AgamaSessionMetadataHandler extends AbstractAgamaHandler {
   private readonly reportNumberOfContentProfiles_ = (): void => {
     const activeVideoTrack = this._player.videoTracks.find((track) => track.uid === this._player.selectedVideoTrack);
     if (activeVideoTrack) {
-      this.reportSessionMetadata_(AgamaSessionMetadata.NUMBER_OF_CONTENT_PROFILES_,
-        activeVideoTrack.qualities.length);
+      this.reportSessionMetadata_(AgamaSessionMetadata.NUMBER_OF_CONTENT_PROFILES_, activeVideoTrack.qualities.length);
     }
   };
 

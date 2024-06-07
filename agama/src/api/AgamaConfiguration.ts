@@ -82,11 +82,11 @@ export interface AgamaConfiguration {
   deviceModel?: string;
 
   /**
-     * A string describing the physical Device type
-     *
-     * @remarks
-     * <br/> - These pre-defined Device type values must be used if the Device matches one of following: `'tablet'`, `'mobile'`, `'pc'`, `'media-streamer'` (used for Chromecast, Apple TV), `'game-console'`, `'tv'`.
-     * <br/> - If no value is passed, the player will determine this based on the user agent.
-     */
+   * A string describing the physical Device type
+   *
+   * @remarks
+   * <br/> - These pre-defined Device type values must be used if the Device matches one of following: `'tablet'`, `'mobile'`, `'pc'`, `'media-streamer'` (used for Chromecast, Apple TV), `'game-console'`, `'tv'`.
+   * <br/> - If no value is passed, the player will determine this based on the user agent.
+   */
   deviceType?: string;
 }

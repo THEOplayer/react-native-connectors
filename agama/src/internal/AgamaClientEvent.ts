@@ -6,7 +6,7 @@ export type AgamaClientResumeEvent = Event<AgamaClientEventType.RESUME>;
 
 export enum AgamaClientEventType {
   PAUSE = 'agamaclientpause_',
-  RESUME = 'agamaclientresume_'
+  RESUME = 'agamaclientresume_',
 }
 
 export interface AgamaClientEventMap {

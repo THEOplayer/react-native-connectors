@@ -1,12 +1,14 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import type { MuxOptions } from "../api/MuxOptions";
-import type { MuxData } from "../api/MuxData";
-import type { MuxPresentation } from "../api/MuxConnector";
+import type { MuxOptions } from '../api/MuxOptions';
+import type { MuxData } from '../api/MuxData';
+import type { MuxPresentation } from '../api/MuxConnector';
 
 export class MuxConnectorAdapter {
-
-  constructor (private player: THEOplayer, options: MuxOptions) {
+  constructor(
+    private player: THEOplayer,
+    options: MuxOptions,
+  ) {
     NativeModules.MuxModule.initialize(this.player.nativeHandle, options);
   }
 

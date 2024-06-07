@@ -1,21 +1,17 @@
-import type { THEOplayer } from "react-native-theoplayer";
+import type { THEOplayer } from 'react-native-theoplayer';
 import type { ChromelessPlayer } from 'theoplayer';
-import {
-  AgamaMetrics,
-  VideoFramesMetrics
-} from "./AgamaMetrics";
-import type { InterceptableResponse } from "theoplayer";
-import { bytesToBits } from "../utils/ByteUtils";
+import { AgamaMetrics, VideoFramesMetrics } from './AgamaMetrics';
+import type { InterceptableResponse } from 'theoplayer';
+import { bytesToBits } from '../utils/ByteUtils';
 
 /**
  * AgamaMetrics bridges Metrics and SegmentResponse functionality.
  */
 export class PlatformAgamaMetrics extends AgamaMetrics {
-
   private _player: ChromelessPlayer;
 
   constructor(player: THEOplayer) {
-    super()
+    super();
     this._player = player.nativeHandle as ChromelessPlayer;
     this._player.network.addResponseInterceptor(this.onSegmentResponse);
   }
@@ -27,7 +23,7 @@ export class PlatformAgamaMetrics extends AgamaMetrics {
   async videoFrames(): Promise<VideoFramesMetrics> {
     return Promise.resolve({
       droppedVideoFrames: this._player.metrics.droppedVideoFrames,
-      totalVideoFrames: 0 /*TODO*/
+      totalVideoFrames: 0 /*TODO*/,
     });
   }
 
@@ -42,5 +38,5 @@ export class PlatformAgamaMetrics extends AgamaMetrics {
     // TODO
     // this.dispatchEvent(new AgamaMetricsSegmentResponseEvent(response.status, response.mediaType, response.bytesLoaded));
     // this.dispatchEvent(new AgamaMetricsManifestResponseEvent(event.uri));
-  }
+  };
 }

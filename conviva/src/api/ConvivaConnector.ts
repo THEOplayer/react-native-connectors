@@ -2,11 +2,10 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import { ConvivaConnectorAdapter } from '../internal/ConvivaConnectorAdapter';
 import type { ConvivaConfiguration } from './ConvivaConfiguration';
 import type { ConvivaMetadata } from './ConvivaMetadata';
-import type { ConvivaEventDetail } from "./ConvivaEventDetail";
+import type { ConvivaEventDetail } from './ConvivaEventDetail';
 
 export class ConvivaConnector {
-
-  private connectorAdapter: ConvivaConnectorAdapter
+  private connectorAdapter: ConvivaConnectorAdapter;
 
   /**
    * Create a new Conviva connector instance.
