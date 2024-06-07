@@ -19,6 +19,7 @@
     "changeset:version": "changeset version && node .changeset/post-process.js",
     "build": "npm run build --workspaces",
     "clean": "npm run clean --workspaces",
+    "test": "npm run test:docs",
     "prettier": "prettier --check \"*/(src|test)/**/*\"",
     "prettier:fix": "prettier --write \"*/(src|test)/**/*\"",
     "lint": "eslint \"*/src/**/*.ts\" \"*/test*/**/*.ts\"",
