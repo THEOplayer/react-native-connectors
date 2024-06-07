@@ -31,11 +31,10 @@
   ],
   "scripts": {
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{ts,tsx}\"",
-    "prepare": "bob build",
-    "postinstall": "npm run update_manifest",
-    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build",
-    "update_manifest": "node scripts/update_manifest.js"
+    "build": "npm run manifest && bob build",
+    "prepare": "npm run build",
+    "manifest": "node scripts/update_manifest.js",
+    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",

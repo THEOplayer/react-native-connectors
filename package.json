@@ -22,7 +22,7 @@
     "test": "npm run test:docs",
     "prettier": "prettier --check \"*/(src|test)/**/*\"",
     "prettier:fix": "prettier --write \"*/(src|test)/**/*\"",
-    "lint": "eslint \"*/src/**/*.ts\" \"*/test*/**/*.ts\"",
+    "lint": "eslint \"*/{src,test}/**/*.{ts,tsx}\"",
     "lint:fix": "npm run lint -- --fix",
     "docs": "typedoc --treatWarningsAsErrors",
     "test:docs": "npm run docs -- --emit none"
@@ -36,6 +36,7 @@
     "@types/react": "^18.2.74",
     "@types/react-native": "^0.73.0",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
+    "del-cli": "^5.1.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",

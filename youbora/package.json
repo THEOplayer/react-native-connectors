@@ -30,8 +30,8 @@
   ],
   "scripts": {
     "typescript": "tsc --noEmit",
-    "lint": "eslint \"**/*.{ts,tsx}\"",
-    "prepare": "npm run manifest && bob build",
+    "build": "npm run manifest && bob build",
+    "prepare": "npm run build",
     "manifest": "youbora-util manifest",
     "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build"
   },
