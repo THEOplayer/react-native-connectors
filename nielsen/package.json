@@ -32,7 +32,7 @@
     "typescript": "tsc --noEmit",
     "build": "bob build",
     "prepare": "npm run build",
-    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build"
+    "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",

@@ -34,7 +34,7 @@
     "build": "npm run manifest && bob build",
     "prepare": "npm run build",
     "manifest": "node scripts/update_manifest.js",
-    "clean": "del-cli lib android/build example/android/build example/android/app/build example/ios/build"
+    "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",
