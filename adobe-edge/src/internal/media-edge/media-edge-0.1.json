@@ -63,10 +63,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -77,16 +74,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -242,10 +233,7 @@
                                       "description": "The offset of the ad break inside the content, in seconds."
                                     }
                                   },
-                                  "required": [
-                                    "index",
-                                    "offset"
-                                  ]
+                                  "required": ["index", "offset"]
                                 },
                                 "sessionID": {
                                   "type": "string",
@@ -287,11 +275,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "advertisingPodDetails",
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["advertisingPodDetails", "playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -302,16 +286,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -477,10 +455,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -491,16 +466,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -666,10 +635,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -680,16 +646,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -877,12 +837,7 @@
                                       "description": "The position (index) of the ad inside the parent ad break. The first ad has index 0, the second ad has index 1 etc"
                                     }
                                   },
-                                  "required": [
-                                    "name",
-                                    "length",
-                                    "playerName",
-                                    "podPosition"
-                                  ]
+                                  "required": ["name", "length", "playerName", "podPosition"]
                                 },
                                 "sessionID": {
                                   "type": "string",
@@ -924,11 +879,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "advertisingDetails",
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["advertisingDetails", "playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -939,16 +890,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -1114,11 +1059,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "qoeDataDetails",
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["qoeDataDetails", "playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -1129,16 +1070,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -1304,10 +1239,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -1318,16 +1250,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -1493,10 +1419,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -1507,16 +1430,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -1682,10 +1599,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -1696,16 +1610,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -1865,11 +1773,7 @@
                                       "description": "The name of the chapter and/or segment"
                                     }
                                   },
-                                  "required": [
-                                    "index",
-                                    "length",
-                                    "offset"
-                                  ]
+                                  "required": ["index", "length", "offset"]
                                 },
                                 "sessionID": {
                                   "type": "string",
@@ -1911,11 +1815,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "chapterDetails",
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["chapterDetails", "playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -1926,16 +1826,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -2083,16 +1977,10 @@
                                     },
                                     "source": {
                                       "type": "string",
-                                      "enum": [
-                                        "player",
-                                        "external"
-                                      ]
+                                      "enum": ["player", "external"]
                                     }
                                   },
-                                  "required": [
-                                    "name",
-                                    "source"
-                                  ]
+                                  "required": ["name", "source"]
                                 },
                                 "sessionID": {
                                   "type": "string",
@@ -2120,11 +2008,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "errorDetails",
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["errorDetails", "playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -2135,16 +2019,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -2310,10 +2188,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -2324,16 +2199,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -2499,10 +2368,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -2513,16 +2379,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -2688,10 +2548,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -2702,16 +2559,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -2877,10 +2728,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -2891,16 +2739,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -3066,10 +2908,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -3080,16 +2919,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -3279,10 +3112,7 @@
                                     },
                                     "streamType": {
                                       "type": "string",
-                                      "enum": [
-                                        "audio",
-                                        "video"
-                                      ],
+                                      "enum": ["audio", "video"],
                                       "description": "Identifies the stream type"
                                     },
                                     "authorized": {
@@ -3375,13 +3205,7 @@
                                       "description": "Set to true when the hit is generated due to playing a downloaded content media session. Not present when downloaded content is not played."
                                     }
                                   },
-                                  "required": [
-                                    "name",
-                                    "playerName",
-                                    "length",
-                                    "channel",
-                                    "contentType"
-                                  ]
+                                  "required": ["name", "playerName", "length", "channel", "contentType"]
                                 },
                                 "customMetadata": {
                                   "type": "array",
@@ -3419,10 +3243,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionDetails"
-                              ]
+                              "required": ["playhead", "sessionDetails"]
                             },
                             "implementationDetails": {
                               "type": "object",
@@ -3446,11 +3267,7 @@
                                       "authenticatedState": {
                                         "type": "string",
                                         "default": "ambiguous",
-                                        "enum": [
-                                          "ambiguous",
-                                          "authenticated",
-                                          "loggedOut"
-                                        ]
+                                        "enum": ["ambiguous", "authenticated", "loggedOut"]
                                       },
                                       "primary": {
                                         "type": "boolean"
@@ -3469,16 +3286,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }
@@ -3700,9 +3511,7 @@
                                         "pattern": "^[a-zA-Z0-9_.]{1,64}$"
                                       }
                                     },
-                                    "required": [
-                                      "name"
-                                    ]
+                                    "required": ["name"]
                                   }
                                 },
                                 "statesEnd": {
@@ -3715,9 +3524,7 @@
                                         "pattern": "^[a-zA-Z0-9_.]{1,64}$"
                                       }
                                     },
-                                    "required": [
-                                      "name"
-                                    ]
+                                    "required": ["name"]
                                   }
                                 },
                                 "sessionID": {
@@ -3746,10 +3553,7 @@
                                   }
                                 }
                               },
-                              "required": [
-                                "playhead",
-                                "sessionID"
-                              ]
+                              "required": ["playhead", "sessionID"]
                             },
                             "eventType": {
                               "type": "string",
@@ -3760,16 +3564,10 @@
                               "format": "date-time"
                             }
                           },
-                          "required": [
-                            "mediaCollection",
-                            "timestamp",
-                            "eventType"
-                          ]
+                          "required": ["mediaCollection", "timestamp", "eventType"]
                         }
                       },
-                      "required": [
-                        "xdm"
-                      ]
+                      "required": ["xdm"]
                     }
                   }
                 }

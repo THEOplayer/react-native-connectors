@@ -1,19 +1,22 @@
 import type { paths } from './MediaEdge';
-import createClient, { type ClientMethod } from "openapi-fetch";
-import type { MediaType } from "openapi-typescript-helpers";
+import createClient, { type ClientMethod } from 'openapi-fetch';
+import type { MediaType } from 'openapi-typescript-helpers';
 import type {
   AdobeAdvertisingDetails,
-  AdobeAdvertisingPodDetails, AdobeChapterDetails, AdobeCustomMetadataDetails,
-  AdobeErrorDetails, AdobeMediaDetails,
+  AdobeAdvertisingPodDetails,
+  AdobeChapterDetails,
+  AdobeCustomMetadataDetails,
+  AdobeErrorDetails,
+  AdobeMediaDetails,
   AdobeQoeDataDetails,
-  AdobeSessionDetails
-} from "@theoplayer/react-native-analytics-adobe-edge";
-import { pathToEventTypeMap } from "./PathToEventTypeMap";
-import type { AdobePlayerStateData } from "../../api/details/AdobePlayerStateData";
-import { buildUserAgent, sanitisePlayhead } from "../../utils/Utils";
+  AdobeSessionDetails,
+} from '@theoplayer/react-native-analytics-adobe-edge';
+import { pathToEventTypeMap } from './PathToEventTypeMap';
+import type { AdobePlayerStateData } from '../../api/details/AdobePlayerStateData';
+import { buildUserAgent, sanitisePlayhead } from '../../utils/Utils';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type PostRequestType<Paths extends {}, Media extends MediaType = MediaType> = ClientMethod<Paths, "post", Media>;
+type PostRequestType<Paths extends {}, Media extends MediaType = MediaType> = ClientMethod<Paths, 'post', Media>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 interface MediaEdgeClient<Paths extends {}, Media extends MediaType = MediaType> {
@@ -33,7 +36,7 @@ export class MediaEdgeAPI {
     this._hasSessionFailed = false;
     this._client = createClient<paths, 'application/json'>({
       baseUrl,
-      headers: {'User-Agent': userAgent || buildUserAgent()}
+      headers: { 'User-Agent': userAgent || buildUserAgent() },
     });
   }
 
@@ -52,74 +55,73 @@ export class MediaEdgeAPI {
   }
 
   async play(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/play', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/play', { playhead, qoeDataDetails });
   }
 
   async pause(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/pauseStart', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/pauseStart', { playhead, qoeDataDetails });
   }
 
   async error(playhead: number | undefined, errorDetails: AdobeErrorDetails, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/error', {playhead, qoeDataDetails, errorDetails});
+    return this.maybeQueueEvent('/error', { playhead, qoeDataDetails, errorDetails });
   }
 
   async ping(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
     // Only send pings if the session has started, never queue them.
     if (this.hasSessionStarted()) {
-      void this.postEvent('/ping', {playhead, qoeDataDetails});
+      void this.postEvent('/ping', { playhead, qoeDataDetails });
     }
   }
 
   async bufferStart(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/bufferStart', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/bufferStart', { playhead, qoeDataDetails });
   }
 
   async sessionComplete(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/sessionComplete', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/sessionComplete', { playhead, qoeDataDetails });
   }
 
   async sessionEnd(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    await this.maybeQueueEvent('/sessionEnd', {playhead, qoeDataDetails});
+    await this.maybeQueueEvent('/sessionEnd', { playhead, qoeDataDetails });
     this._sessionID = undefined;
   }
 
-  async statesUpdate(playhead: number | undefined,
-                     statesStart?: AdobePlayerStateData[],
-                     statesEnd?: AdobePlayerStateData[],
-                     qoeDataDetails?: AdobeQoeDataDetails) {
+  async statesUpdate(
+    playhead: number | undefined,
+    statesStart?: AdobePlayerStateData[],
+    statesEnd?: AdobePlayerStateData[],
+    qoeDataDetails?: AdobeQoeDataDetails,
+  ) {
     return this.maybeQueueEvent('/statesUpdate', {
-        playhead,
-        qoeDataDetails,
-        statesStart,
-        statesEnd
-      }
-    );
+      playhead,
+      qoeDataDetails,
+      statesStart,
+      statesEnd,
+    });
   }
 
-  async bitrateChange(playhead: number | undefined,
-                      qoeDataDetails: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/bitrateChange', {playhead, qoeDataDetails});
+  async bitrateChange(playhead: number | undefined, qoeDataDetails: AdobeQoeDataDetails) {
+    return this.maybeQueueEvent('/bitrateChange', { playhead, qoeDataDetails });
   }
 
-  async chapterSkip(playhead: number | undefined,
-                    qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/chapterSkip', {playhead, qoeDataDetails});
+  async chapterSkip(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
+    return this.maybeQueueEvent('/chapterSkip', { playhead, qoeDataDetails });
   }
 
-  async chapterStart(playhead: number | undefined,
-                     chapterDetails: AdobeChapterDetails,
-                     customMetadata?: AdobeCustomMetadataDetails[],
-                     qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/chapterStart', {playhead, chapterDetails, customMetadata, qoeDataDetails});
+  async chapterStart(
+    playhead: number | undefined,
+    chapterDetails: AdobeChapterDetails,
+    customMetadata?: AdobeCustomMetadataDetails[],
+    qoeDataDetails?: AdobeQoeDataDetails,
+  ) {
+    return this.maybeQueueEvent('/chapterStart', { playhead, chapterDetails, customMetadata, qoeDataDetails });
   }
 
   async chapterComplete(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/chapterComplete', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/chapterComplete', { playhead, qoeDataDetails });
   }
 
-  async adBreakStart(playhead: number,
-                     advertisingPodDetails: AdobeAdvertisingPodDetails,
-                     qoeDataDetails?: AdobeQoeDataDetails,) {
+  async adBreakStart(playhead: number, advertisingPodDetails: AdobeAdvertisingPodDetails, qoeDataDetails?: AdobeQoeDataDetails) {
     return this.maybeQueueEvent('/adBreakStart', {
       playhead,
       qoeDataDetails,
@@ -128,13 +130,15 @@ export class MediaEdgeAPI {
   }
 
   async adBreakComplete(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/adBreakComplete', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/adBreakComplete', { playhead, qoeDataDetails });
   }
 
-  async adStart(playhead: number,
-                advertisingDetails: AdobeAdvertisingDetails,
-                customMetadata?: AdobeCustomMetadataDetails[],
-                qoeDataDetails?: AdobeQoeDataDetails,) {
+  async adStart(
+    playhead: number,
+    advertisingDetails: AdobeAdvertisingDetails,
+    customMetadata?: AdobeCustomMetadataDetails[],
+    qoeDataDetails?: AdobeQoeDataDetails,
+  ) {
     return this.maybeQueueEvent('/adStart', {
       playhead,
       qoeDataDetails,
@@ -144,41 +148,39 @@ export class MediaEdgeAPI {
   }
 
   async adSkip(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/adSkip', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/adSkip', { playhead, qoeDataDetails });
   }
 
   async adComplete(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this.maybeQueueEvent('/adComplete', {playhead, qoeDataDetails});
+    return this.maybeQueueEvent('/adComplete', { playhead, qoeDataDetails });
   }
 
-  async startSession(sessionDetails: AdobeSessionDetails,
-                     customMetadata?: AdobeCustomMetadataDetails[],
-                     qoeDataDetails?: AdobeQoeDataDetails) {
+  async startSession(sessionDetails: AdobeSessionDetails, customMetadata?: AdobeCustomMetadataDetails[], qoeDataDetails?: AdobeQoeDataDetails) {
     const result = await this._client.POST('/sessionStart', {
       params: {
         query: {
-          configId: this._configId
-        }
+          configId: this._configId,
+        },
       },
       body: {
         events: [
           {
             xdm: {
               eventType: pathToEventTypeMap['/sessionStart'],
-              timestamp: (new Date()).toISOString(),
+              timestamp: new Date().toISOString(),
               mediaCollection: {
                 playhead: 0,
                 sessionDetails,
                 qoeDataDetails,
-                customMetadata
-              }
-            }
-          }
-        ]
-      }
+                customMetadata,
+              },
+            },
+          },
+        ],
+      },
     });
     // @ts-ignore
-    const error = result.error || result.data.errors
+    const error = result.error || result.data.errors;
     if (error) {
       console.error('Failed to start session', error);
       this._hasSessionFailed = true;
@@ -186,12 +188,12 @@ export class MediaEdgeAPI {
     }
     // @ts-ignore
     this._sessionID = result.data?.handle?.find((h: any) => {
-      return h.type === 'media-analytics:new-session'
+      return h.type === 'media-analytics:new-session';
     })?.payload?.[0]?.sessionId;
 
     // empty queue
     if (this._sessionID && this._eventQueue.length !== 0) {
-      this._eventQueue.forEach(doPostEvent => doPostEvent());
+      this._eventQueue.forEach((doPostEvent) => doPostEvent());
       this._eventQueue = [];
     }
   }
@@ -222,27 +224,27 @@ export class MediaEdgeAPI {
     const result = await this._client.POST(path, {
       params: {
         query: {
-          configId: this._configId
-        }
+          configId: this._configId,
+        },
       },
       body: {
         events: [
           {
             xdm: {
               eventType: pathToEventTypeMap[path],
-              timestamp: (new Date()).toISOString(),
+              timestamp: new Date().toISOString(),
               mediaCollection: {
                 ...mediaDetails,
                 playhead: sanitisePlayhead(mediaDetails.playhead),
-                sessionID: this._sessionID
-              }
-            }
-          }
-        ]
-      }
+                sessionID: this._sessionID,
+              },
+            },
+          },
+        ],
+      },
     });
     // @ts-ignore
-    const error = result.error || result.data.errors
+    const error = result.error || result.data.errors;
     if (error) {
       console.error('Failed to send event', error);
     }

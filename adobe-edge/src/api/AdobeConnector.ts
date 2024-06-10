@@ -1,11 +1,10 @@
-import type { THEOplayer } from "react-native-theoplayer";
-import { AdobeConnectorAdapter } from "../internal/AdobeConnectorAdapter";
-import type { AdobeCustomMetadataDetails } from "./details/AdobeCustomMetadataDetails";
-import type { AdobeErrorDetails } from "./details/AdobeErrorDetails";
+import type { THEOplayer } from 'react-native-theoplayer';
+import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
+import type { AdobeCustomMetadataDetails } from './details/AdobeCustomMetadataDetails';
+import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 
 export class AdobeConnector {
-
-  private connectorAdapter: AdobeConnectorAdapter
+  private connectorAdapter: AdobeConnectorAdapter;
 
   constructor(player: THEOplayer, baseUrl: string, dataStreamId: string, userAgent?: string, useDebug?: boolean) {
     this.connectorAdapter = new AdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug);

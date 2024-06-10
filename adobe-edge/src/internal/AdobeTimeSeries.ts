@@ -1,7 +1,7 @@
-import type { AdobeIdentityMap } from "./AdobeIdentityMap";
-import type { AdobeMediaDetails } from "../api/details/AdobeMediaDetails";
-import type { AdobeImplementationDetails } from "../api/details/AdobeImplementationDetails";
-import type { EventType } from "./EventType";
+import type { AdobeIdentityMap } from './AdobeIdentityMap';
+import type { AdobeMediaDetails } from '../api/details/AdobeMediaDetails';
+import type { AdobeImplementationDetails } from '../api/details/AdobeImplementationDetails';
+import type { EventType } from './EventType';
 
 /**
  * Used to indicate the behavior of time partitioned semantics when composed into data schemas.
@@ -10,17 +10,17 @@ import type { EventType } from "./EventType";
  */
 export interface AdobeTimeSeries {
   // The primary event type for this time-series record.
-  eventType: EventType,
+  eventType: EventType;
 
   // The time when an event or observation occurred.
-  timestamp: string,
+  timestamp: string;
 
   // Custom metadata details information.
-  mediaCollection: AdobeMediaDetails,
+  mediaCollection: AdobeMediaDetails;
 
   // Defines a map containing a set of end user identities
-  identityMap?: AdobeIdentityMap,
+  identityMap?: AdobeIdentityMap;
 
   // Details about the SDK, library, or service used in an application or web page implementation of a service.
-  implementationDetails?: AdobeImplementationDetails,
+  implementationDetails?: AdobeImplementationDetails;
 }

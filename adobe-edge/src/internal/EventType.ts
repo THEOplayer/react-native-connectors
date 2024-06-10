@@ -16,5 +16,5 @@ export enum EventType {
   error = 'media.error',
   sessionEnd = 'media.sessionEnd',
   sessionComplete = 'media.sessionComplete',
-  statesUpdate = 'media.statesUpdate'
+  statesUpdate = 'media.statesUpdate',
 }

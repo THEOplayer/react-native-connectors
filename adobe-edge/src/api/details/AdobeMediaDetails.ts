@@ -1,11 +1,11 @@
-import type { AdobeSessionDetails } from "./AdobeSessionDetails";
-import type { AdobeQoeDataDetails } from "./AdobeQoeDataDetails";
-import type { AdobeCustomMetadataDetails } from "./AdobeCustomMetadataDetails";
-import type { AdobeAdvertisingDetails } from "./AdobeAdvertisingDetails";
-import type { AdobeAdvertisingPodDetails } from "./AdobeAdvertisingPodDetails";
-import type { AdobeChapterDetails } from "./AdobeChapterDetails";
-import type { AdobeErrorDetails } from "./AdobeErrorDetails";
-import type { AdobePlayerStateData } from "./AdobePlayerStateData";
+import type { AdobeSessionDetails } from './AdobeSessionDetails';
+import type { AdobeQoeDataDetails } from './AdobeQoeDataDetails';
+import type { AdobeCustomMetadataDetails } from './AdobeCustomMetadataDetails';
+import type { AdobeAdvertisingDetails } from './AdobeAdvertisingDetails';
+import type { AdobeAdvertisingPodDetails } from './AdobeAdvertisingPodDetails';
+import type { AdobeChapterDetails } from './AdobeChapterDetails';
+import type { AdobeErrorDetails } from './AdobeErrorDetails';
+import type { AdobePlayerStateData } from './AdobePlayerStateData';
 
 /**
  * Media details information.
@@ -15,38 +15,38 @@ import type { AdobePlayerStateData } from "./AdobePlayerStateData";
 export interface AdobeMediaDetails {
   // If the content is live, the playhead must be the current second of the day, 0 <= playhead < 86400.
   // If the content is recorded, the playhead must be the current second of content, 0 <= playhead < content length.
-  playhead?: number,
+  playhead?: number;
 
   // Identifies an instance of a content stream unique to an individual playback.
-  sessionID?: string,
+  sessionID?: string;
 
   // Session details information related to the experience event.
-  sessionDetails?: AdobeSessionDetails,
+  sessionDetails?: AdobeSessionDetails;
 
   // Advertising details information related to the experience event.
-  advertisingDetails?: AdobeAdvertisingDetails,
+  advertisingDetails?: AdobeAdvertisingDetails;
 
   // Advertising Pod details information
-  advertisingPodDetails?: AdobeAdvertisingPodDetails,
+  advertisingPodDetails?: AdobeAdvertisingPodDetails;
 
   // Chapter details information related to the experience event.
-  chapterDetails?: AdobeChapterDetails,
+  chapterDetails?: AdobeChapterDetails;
 
   // Error details information related to the experience event.
-  errorDetails?: AdobeErrorDetails,
+  errorDetails?: AdobeErrorDetails;
 
   // Qoe data details information related to the experience event.
-  qoeDataDetails?: AdobeQoeDataDetails,
+  qoeDataDetails?: AdobeQoeDataDetails;
 
   // The list of states start.
-  statesStart?: AdobePlayerStateData[],
+  statesStart?: AdobePlayerStateData[];
 
   // The list of states end.
-  statesEnd?: AdobePlayerStateData[],
+  statesEnd?: AdobePlayerStateData[];
 
   // The list of states.
-  states?: AdobePlayerStateData[],
+  states?: AdobePlayerStateData[];
 
   // The list of custom metadata.
-  customMetadata?: AdobeCustomMetadataDetails[],
+  customMetadata?: AdobeCustomMetadataDetails[];
 }

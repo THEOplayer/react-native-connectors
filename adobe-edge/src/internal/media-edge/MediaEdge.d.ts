@@ -3,37 +3,36 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/adBreakComplete": {
+  '/adBreakComplete': {
     /** @description Signals the completion of an ad break */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.adBreakComplete */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.adBreakComplete */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -45,7 +44,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -55,11 +54,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -67,7 +66,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -84,47 +83,47 @@ export interface paths {
       };
     };
   };
-  "/adBreakStart": {
+  '/adBreakStart': {
     /** @description Signals the start of an ad break */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    advertisingPodDetails: {
-                      /** @description The friendly name of the Ad Break. */
-                      friendlyName?: string;
-                      /** @description The index of the ad break inside the content starting at 1. */
-                      index: number;
-                      /** @description The offset of the ad break inside the content, in seconds. */
-                      offset: number;
-                    };
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    customMetadata?: {
-                        name?: string;
-                        value?: string;
-                      }[];
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  advertisingPodDetails: {
+                    /** @description The friendly name of the Ad Break. */
+                    friendlyName?: string;
+                    /** @description The index of the ad break inside the content starting at 1. */
+                    index: number;
+                    /** @description The offset of the ad break inside the content, in seconds. */
+                    offset: number;
                   };
-                  /** @default media.adBreakStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  customMetadata?: {
+                    name?: string;
+                    value?: string;
+                  }[];
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
+                  };
                 };
-              }[];
+                /** @default media.adBreakStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -136,7 +135,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -146,11 +145,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -158,7 +157,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -175,35 +174,35 @@ export interface paths {
       };
     };
   };
-  "/adComplete": {
+  '/adComplete': {
     /** @description Signals the completion of an ad */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.adComplete */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.adComplete */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -215,7 +214,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -225,11 +224,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -237,7 +236,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -254,35 +253,35 @@ export interface paths {
       };
     };
   };
-  "/adSkip": {
+  '/adSkip': {
     /** @description Signals an ad skip */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.adSkip */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.adSkip */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -294,7 +293,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -304,11 +303,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -316,7 +315,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -333,63 +332,63 @@ export interface paths {
       };
     };
   };
-  "/adStart": {
+  '/adStart': {
     /** @description Signals the start of an ad */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    advertisingDetails: {
-                      /** @description ID of the ad. (Any integer and/or letter combination) */
-                      name: string;
-                      /** @description Company/Brand whose product is featured in the ad */
-                      advertiser?: string;
-                      /** @description ID of the ad campaign */
-                      campaignID?: string;
-                      /** @description ID of the ad creative */
-                      creativeID?: string;
-                      /** @description URL of the ad creative */
-                      creativeURL?: string;
-                      /** @description Length of video ad in seconds */
-                      length: number;
-                      /** @description Placement ID of the ad */
-                      placementID?: string;
-                      /** @description Friendly name of the ad */
-                      friendlyName?: string;
-                      /** @description The name of the player responsible for rendering the ad */
-                      playerName: string;
-                      /** @description ID of the ad site */
-                      siteID?: string;
-                      /** @description The position (index) of the ad inside the parent ad break. The first ad has index 0, the second ad has index 1 etc */
-                      podPosition: number;
-                    };
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    customMetadata?: {
-                        name?: string;
-                        value?: string;
-                      }[];
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  advertisingDetails: {
+                    /** @description ID of the ad. (Any integer and/or letter combination) */
+                    name: string;
+                    /** @description Company/Brand whose product is featured in the ad */
+                    advertiser?: string;
+                    /** @description ID of the ad campaign */
+                    campaignID?: string;
+                    /** @description ID of the ad creative */
+                    creativeID?: string;
+                    /** @description URL of the ad creative */
+                    creativeURL?: string;
+                    /** @description Length of video ad in seconds */
+                    length: number;
+                    /** @description Placement ID of the ad */
+                    placementID?: string;
+                    /** @description Friendly name of the ad */
+                    friendlyName?: string;
+                    /** @description The name of the player responsible for rendering the ad */
+                    playerName: string;
+                    /** @description ID of the ad site */
+                    siteID?: string;
+                    /** @description The position (index) of the ad inside the parent ad break. The first ad has index 0, the second ad has index 1 etc */
+                    podPosition: number;
                   };
-                  /** @default media.adStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  customMetadata?: {
+                    name?: string;
+                    value?: string;
+                  }[];
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
+                  };
                 };
-              }[];
+                /** @default media.adStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -401,7 +400,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -411,11 +410,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -423,7 +422,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -440,35 +439,35 @@ export interface paths {
       };
     };
   };
-  "/bitrateChange": {
+  '/bitrateChange': {
     /** @description Sent when the bitrage changes */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.bitrateChange */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.bitrateChange */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -480,7 +479,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -490,11 +489,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -502,7 +501,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -519,35 +518,35 @@ export interface paths {
       };
     };
   };
-  "/bufferStart": {
+  '/bufferStart': {
     /** @description Sent when buffering starts. Note: Because there is no bufferResume event type, it is inferred when you send a play event after bufferStart. */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.bufferStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.bufferStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -559,7 +558,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -569,11 +568,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -581,7 +580,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -598,35 +597,35 @@ export interface paths {
       };
     };
   };
-  "/chapterComplete": {
+  '/chapterComplete': {
     /** @description Signals the completion of a chapter */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.chapterComplete */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.chapterComplete */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -638,7 +637,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -648,11 +647,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -660,7 +659,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -677,35 +676,35 @@ export interface paths {
       };
     };
   };
-  "/chapterSkip": {
+  '/chapterSkip': {
     /** @description Signals a chapter skip */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.chapterSkip */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.chapterSkip */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -717,7 +716,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -727,11 +726,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -739,7 +738,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -756,49 +755,49 @@ export interface paths {
       };
     };
   };
-  "/chapterStart": {
+  '/chapterStart': {
     /** @description Signals the start of a chapter segment */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    chapterDetails: {
-                      /** @description The offset of the chapter inside the content (in seconds) from the start */
-                      offset: number;
-                      /** @description The length of the chapter, in seconds */
-                      length: number;
-                      /** @description The position (index, integer) of the chapter inside the content */
-                      index: number;
-                      /** @description The name of the chapter and/or segment */
-                      friendlyName?: string;
-                    };
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    customMetadata?: {
-                        name?: string;
-                        value?: string;
-                      }[];
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  chapterDetails: {
+                    /** @description The offset of the chapter inside the content (in seconds) from the start */
+                    offset: number;
+                    /** @description The length of the chapter, in seconds */
+                    length: number;
+                    /** @description The position (index, integer) of the chapter inside the content */
+                    index: number;
+                    /** @description The name of the chapter and/or segment */
+                    friendlyName?: string;
                   };
-                  /** @default media.chapterStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  customMetadata?: {
+                    name?: string;
+                    value?: string;
+                  }[];
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
+                  };
                 };
-              }[];
+                /** @default media.chapterStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -810,7 +809,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -820,11 +819,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -832,7 +831,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -849,40 +848,40 @@ export interface paths {
       };
     };
   };
-  "/error": {
+  '/error': {
     /** @description Signals that an error has occurred */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
-            events?: ({
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    errorDetails: {
-                      name: string;
-                      /** @enum {string} */
-                      source: "player" | "external";
-                    };
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+          'application/json': {
+            events?: {
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  errorDetails: {
+                    name: string;
+                    /** @enum {string} */
+                    source: 'player' | 'external';
                   };
-                  /** @default media.error */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
+                  };
                 };
-              })[];
+                /** @default media.error */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -894,7 +893,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -904,11 +903,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -916,7 +915,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -933,35 +932,35 @@ export interface paths {
       };
     };
   };
-  "/pauseStart": {
+  '/pauseStart': {
     /** @description Sent when the user presses Pause. Because there is no resume event type, it is inferred when you send a play event after a pauseStart. */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.pauseStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.pauseStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -973,7 +972,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -983,11 +982,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -995,7 +994,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -1012,35 +1011,35 @@ export interface paths {
       };
     };
   };
-  "/ping": {
+  '/ping': {
     /** @description Use the Ping request during main content playback in cases when content must be sent every 10 seconds, regardless of other API events that have been sent. The first ping event should fire 10 seconds after main content playback has begun. For ad content, it must be sent every 1 second during ad tracking. */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.ping */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.ping */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1052,7 +1051,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1062,11 +1061,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -1074,7 +1073,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -1091,35 +1090,35 @@ export interface paths {
       };
     };
   };
-  "/play": {
+  '/play': {
     /** @description Sent when the player changes state to "playing" from another state, such as when the on ('Playing') callback is triggered by the player. Other states from which the player moves to "playing" include "buffering", when the user resumes from "paused", when the player recovers from an error, and during autoplay. */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.play */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.play */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1131,7 +1130,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1141,11 +1140,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -1153,7 +1152,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -1170,35 +1169,35 @@ export interface paths {
       };
     };
   };
-  "/sessionComplete": {
+  '/sessionComplete': {
     /** @description Sent when the end of the main content is reached */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.sessionComplete */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.sessionComplete */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1210,7 +1209,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1220,11 +1219,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -1232,7 +1231,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -1249,35 +1248,35 @@ export interface paths {
       };
     };
   };
-  "/sessionEnd": {
+  '/sessionEnd': {
     /** @description Notifies the Media Analytics backend to immediately close the session when the user has abandoned their viewing of the content and they are unlikely to return. If you don't send a sessionEnd, an abandoned session will time-out normally (after no events are received for 10 minutes, or when no playhead movement occurs for 30 minutes), and the session is deleted by the backend. */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.sessionEnd */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.sessionEnd */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1289,7 +1288,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1299,11 +1298,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -1311,7 +1310,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;
@@ -1328,7 +1327,7 @@ export interface paths {
       };
     };
   };
-  "/sessionStart": {
+  '/sessionStart': {
     /** @description Signals the start of a new session. When the response returns, the "sessionId" must be extracted and sent for all subsequent event calls to the Edge API server. */
     post: {
       parameters: {
@@ -1339,112 +1338,112 @@ export interface paths {
       };
       requestBody?: {
         content: {
-          "application/json": {
-            events?: ({
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    sessionDetails: {
-                      adLoad?: string;
-                      /** @description The SDK version used by the player. This could have any custom value that makes sense for your player */
-                      appVersion?: string;
-                      artist?: string;
-                      /** @description Rating as defined by TV Parental Guidelines */
-                      rating?: string;
-                      /** @description Program/Series Name. Program Name is required only if the show is part of a series. */
-                      show?: string;
-                      /** @description Distribution Station/Channels or where the content is played. Any string value is accepted here */
-                      channel: string;
-                      /** @description The number of the episode */
-                      episode?: string;
-                      /** @description Creator of the content */
-                      originator?: string;
-                      /** @description The date when the content first aired on television. Any date format is acceptable, but Adobe recommends: YYYY-MM-DD */
-                      firstAirDate?: string;
-                      /**
-                       * @description Identifies the stream type
-                       * @enum {string}
-                       */
-                      streamType?: "audio" | "video";
-                      /** @description The user has been authorized via Adobe authentication */
-                      authorized?: string;
-                      hasResume?: boolean;
-                      /** @description Format of the stream (HD, SD) */
-                      streamFormat?: string;
-                      /** @description Name / ID of the radio station */
-                      station?: string;
-                      /** @description Type or grouping of content as defined by content producer. Values should be comma delimited in variable implementation. In reporting, the list eVar will split each value into a line item, with each line item receiving equal metrics weight */
-                      genre?: string;
-                      /** @description The season number the show belongs to. Season Series is required only if the show is part of a series */
-                      season?: string;
-                      showType?: string;
-                      /** @description Available values per Stream Type: Audio - "song", "podcast", "audiobook", "radio"; Video: "VoD", "Live", "Linear", "UGC", "DVoD" Customers can provide custom values for this parameter */
-                      contentType: string;
-                      /** @description This is the "friendly" (human-readable) name of the content */
-                      friendlyName?: string;
-                      /** @description Name of the player */
-                      playerName: string;
-                      /** @description Name of the author (of an audiobook) */
-                      author?: string;
-                      album?: string;
-                      /** @description Clip Length/Runtime - This is the maximum length (or duration) of the content being consumed (in seconds) */
-                      length: number;
-                      /** @description A property that defines the time of the day when the content was broadcast or played. This could have any value set as necessary by customers */
-                      dayPart?: string;
-                      /** @description Name of the record label */
-                      label?: string;
-                      /** @description MVPD provided via Adobe authentication. */
-                      mvpd?: string;
-                      /** @description Type of feed */
-                      feed?: string;
-                      /** @description This is the unique identifier for the content of the media asset, such as the TV series episode identifier, movie asset identifier, or live event identifier. Typically these IDs are derived from metadata authorities such as EIDR, TMS/Gracenote, or Rovi. These identifiers can also be from other proprietary or in-house systems. */
-                      assetID?: string;
-                      /** @description Content ID of the content, which can be used to tie back to other industry / CMS IDs */
-                      name: string;
-                      /** @description Name of the audio content publisher */
-                      publisher?: string;
-                      /** @description The date when the content first aired on any digital channel or platform. Any date format is acceptable but Adobe recommends: YYYY-MM-DD */
-                      firstDigitalDate?: string;
-                      /** @description The network/channel name */
-                      network?: string;
-                      /** @description Set to true when the hit is generated due to playing a downloaded content media session. Not present when downloaded content is not played. */
-                      isDownloaded?: boolean;
-                    };
-                    customMetadata?: {
-                        name?: string;
-                        value?: string;
-                      }[];
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+          'application/json': {
+            events?: {
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  sessionDetails: {
+                    adLoad?: string;
+                    /** @description The SDK version used by the player. This could have any custom value that makes sense for your player */
+                    appVersion?: string;
+                    artist?: string;
+                    /** @description Rating as defined by TV Parental Guidelines */
+                    rating?: string;
+                    /** @description Program/Series Name. Program Name is required only if the show is part of a series. */
+                    show?: string;
+                    /** @description Distribution Station/Channels or where the content is played. Any string value is accepted here */
+                    channel: string;
+                    /** @description The number of the episode */
+                    episode?: string;
+                    /** @description Creator of the content */
+                    originator?: string;
+                    /** @description The date when the content first aired on television. Any date format is acceptable, but Adobe recommends: YYYY-MM-DD */
+                    firstAirDate?: string;
+                    /**
+                     * @description Identifies the stream type
+                     * @enum {string}
+                     */
+                    streamType?: 'audio' | 'video';
+                    /** @description The user has been authorized via Adobe authentication */
+                    authorized?: string;
+                    hasResume?: boolean;
+                    /** @description Format of the stream (HD, SD) */
+                    streamFormat?: string;
+                    /** @description Name / ID of the radio station */
+                    station?: string;
+                    /** @description Type or grouping of content as defined by content producer. Values should be comma delimited in variable implementation. In reporting, the list eVar will split each value into a line item, with each line item receiving equal metrics weight */
+                    genre?: string;
+                    /** @description The season number the show belongs to. Season Series is required only if the show is part of a series */
+                    season?: string;
+                    showType?: string;
+                    /** @description Available values per Stream Type: Audio - "song", "podcast", "audiobook", "radio"; Video: "VoD", "Live", "Linear", "UGC", "DVoD" Customers can provide custom values for this parameter */
+                    contentType: string;
+                    /** @description This is the "friendly" (human-readable) name of the content */
+                    friendlyName?: string;
+                    /** @description Name of the player */
+                    playerName: string;
+                    /** @description Name of the author (of an audiobook) */
+                    author?: string;
+                    album?: string;
+                    /** @description Clip Length/Runtime - This is the maximum length (or duration) of the content being consumed (in seconds) */
+                    length: number;
+                    /** @description A property that defines the time of the day when the content was broadcast or played. This could have any value set as necessary by customers */
+                    dayPart?: string;
+                    /** @description Name of the record label */
+                    label?: string;
+                    /** @description MVPD provided via Adobe authentication. */
+                    mvpd?: string;
+                    /** @description Type of feed */
+                    feed?: string;
+                    /** @description This is the unique identifier for the content of the media asset, such as the TV series episode identifier, movie asset identifier, or live event identifier. Typically these IDs are derived from metadata authorities such as EIDR, TMS/Gracenote, or Rovi. These identifiers can also be from other proprietary or in-house systems. */
+                    assetID?: string;
+                    /** @description Content ID of the content, which can be used to tie back to other industry / CMS IDs */
+                    name: string;
+                    /** @description Name of the audio content publisher */
+                    publisher?: string;
+                    /** @description The date when the content first aired on any digital channel or platform. Any date format is acceptable but Adobe recommends: YYYY-MM-DD */
+                    firstDigitalDate?: string;
+                    /** @description The network/channel name */
+                    network?: string;
+                    /** @description Set to true when the hit is generated due to playing a downloaded content media session. Not present when downloaded content is not played. */
+                    isDownloaded?: boolean;
                   };
-                  implementationDetails?: {
-                    version?: string;
+                  customMetadata?: {
+                    name?: string;
+                    value?: string;
+                  }[];
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  identityMap?: {
-                    FPID?: ({
-                        id?: string;
-                        /**
-                         * @default ambiguous
-                         * @enum {string}
-                         */
-                        authenticatedState?: "ambiguous" | "authenticated" | "loggedOut";
-                        primary?: boolean;
-                      })[];
-                  };
-                  /** @default media.sessionStart */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              })[];
+                implementationDetails?: {
+                  version?: string;
+                };
+                identityMap?: {
+                  FPID?: {
+                    id?: string;
+                    /**
+                     * @default ambiguous
+                     * @enum {string}
+                     */
+                    authenticatedState?: 'ambiguous' | 'authenticated' | 'loggedOut';
+                    primary?: boolean;
+                  }[];
+                };
+                /** @default media.sessionStart */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1452,56 +1451,56 @@ export interface paths {
         /** @description OK */
         200: {
           content: {
-            "application/json": {
+            'application/json': {
               /** @description The request ID. */
               requestId?: string;
               handle?: {
-                  payload?: {
-                      /** @description The session ID generated for the media session that must be added for all subsequent calls of the same session */
-                      sessionId?: string;
-                    }[];
-                  type?: string;
-                  /** Format: int32 */
-                  eventIndex?: number;
+                payload?: {
+                  /** @description The session ID generated for the media session that must be added for all subsequent calls of the same session */
+                  sessionId?: string;
                 }[];
+                type?: string;
+                /** Format: int32 */
+                eventIndex?: number;
+              }[];
             };
           };
         };
         /** @description Multi-Status */
         207: {
           content: {
-            "application/json": {
+            'application/json': {
               /** @description The request ID. */
               requestId?: string;
               handle?: {
-                  payload?: Record<string, never>[];
-                  type?: string;
-                  /** Format: int32 */
-                  eventIndex?: number;
-                }[];
+                payload?: Record<string, never>[];
+                type?: string;
+                /** Format: int32 */
+                eventIndex?: number;
+              }[];
               /** @description Errors generated by the upstreams configured for the datastream */
               errors?: {
-                  type?: string;
-                  status?: number;
-                  title?: string;
+                type?: string;
+                status?: number;
+                title?: string;
+                report?: {
+                  /** Format: int32 */
+                  eventIndex?: number;
                   report?: {
-                    /** Format: int32 */
-                    eventIndex?: number;
-                    report?: {
-                        /** @description Field that contains the error */
-                        name?: string;
-                        /** @description Error for that specific field */
-                        reason?: string;
-                      }[];
-                  };
-                }[];
+                    /** @description Field that contains the error */
+                    name?: string;
+                    /** @description Error for that specific field */
+                    reason?: string;
+                  }[];
+                };
+              }[];
             };
           };
         };
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1517,41 +1516,41 @@ export interface paths {
       };
     };
   };
-  "/statesUpdate": {
+  '/statesUpdate': {
     /** @description Signals that one or multiple states are started and/or ended */
     post: {
       requestBody?: {
         content: {
-          "application/json": {
+          'application/json': {
             events?: {
-                xdm: {
-                  mediaCollection: {
-                    playhead: number;
-                    statesStart?: {
-                        name: string;
-                      }[];
-                    statesEnd?: {
-                        name: string;
-                      }[];
-                    /** @description The sessionID generated on sessionStart */
-                    sessionID: string;
-                    qoeDataDetails?: {
-                      /** Format: int32 */
-                      bitrate?: number;
-                      /** Format: int32 */
-                      droppedFrames?: number;
-                      /** Format: int32 */
-                      framesPerSecond?: number;
-                      /** Format: int32 */
-                      timeToStart?: number;
-                    };
+              xdm: {
+                mediaCollection: {
+                  playhead: number;
+                  statesStart?: {
+                    name: string;
+                  }[];
+                  statesEnd?: {
+                    name: string;
+                  }[];
+                  /** @description The sessionID generated on sessionStart */
+                  sessionID: string;
+                  qoeDataDetails?: {
+                    /** Format: int32 */
+                    bitrate?: number;
+                    /** Format: int32 */
+                    droppedFrames?: number;
+                    /** Format: int32 */
+                    framesPerSecond?: number;
+                    /** Format: int32 */
+                    timeToStart?: number;
                   };
-                  /** @default media.statesUpdate */
-                  eventType: string;
-                  /** Format: date-time */
-                  timestamp: string;
                 };
-              }[];
+                /** @default media.statesUpdate */
+                eventType: string;
+                /** Format: date-time */
+                timestamp: string;
+              };
+            }[];
           };
         };
       };
@@ -1563,7 +1562,7 @@ export interface paths {
         /** @description Bad request */
         400: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 400 */
               status?: number;
@@ -1573,11 +1572,11 @@ export interface paths {
               report?: {
                 requestId?: string;
                 details?: {
-                    /** @description Field that contains the error */
-                    name?: string;
-                    /** @description Error for that specific field */
-                    reason?: string;
-                  }[];
+                  /** @description Field that contains the error */
+                  name?: string;
+                  /** @description Error for that specific field */
+                  reason?: string;
+                }[];
               };
             };
           };
@@ -1585,7 +1584,7 @@ export interface paths {
         /** @description Not found */
         404: {
           content: {
-            "application/json": {
+            'application/json': {
               type?: string;
               /** @default 404 */
               status?: number;

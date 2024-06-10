@@ -5,4 +5,4 @@
  *
  * https://github.com/adobe/xdm/blob/master/docs/reference/mixins/shared/identitymap.schema.md
  */
-export type AdobeIdentityMap = { [key: string]: object[] }
+export type AdobeIdentityMap = { [key: string]: object[] };

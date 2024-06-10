@@ -7,20 +7,17 @@ import type {
   MediaTrackEvent,
   TextTrackCue,
   TextTrackEvent,
-  THEOplayer
-} from "react-native-theoplayer";
-import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
-import {
-  calculateAdvertisingPodDetails,
-  calculateAdvertisingDetails, calculateChapterDetails, sanitiseContentLength,
-} from "../utils/Utils";
-import { Platform } from "react-native";
-import { MediaEdgeAPI } from "./media-edge/MediaEdgeAPI";
-import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from "@theoplayer/react-native-analytics-adobe-edge";
-import { ContentType } from "../api/details/AdobeSessionDetails";
-import { ErrorSource } from "../api/details/AdobeErrorDetails";
+  THEOplayer,
+} from 'react-native-theoplayer';
+import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from 'react-native-theoplayer';
+import { calculateAdvertisingPodDetails, calculateAdvertisingDetails, calculateChapterDetails, sanitiseContentLength } from '../utils/Utils';
+import { Platform } from 'react-native';
+import { MediaEdgeAPI } from './media-edge/MediaEdgeAPI';
+import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
+import { ContentType } from '../api/details/AdobeSessionDetails';
+import { ErrorSource } from '../api/details/AdobeErrorDetails';
 
-const TAG = "AdobeConnector";
+const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 
@@ -42,7 +39,7 @@ export class AdobeConnectorAdapter {
 
   private isPlayingAd = false;
 
-  private customMetadata: AdobeCustomMetadataDetails[] = []
+  private customMetadata: AdobeCustomMetadataDetails[] = [];
 
   private currentChapter: TextTrackCue | undefined;
 
@@ -51,7 +48,7 @@ export class AdobeConnectorAdapter {
   private mediaApi: MediaEdgeAPI;
 
   constructor(player: THEOplayer, baseUrl: string, configId: string, userAgent?: string, debug = false) {
-    this.player = player
+    this.player = player;
     this.mediaApi = new MediaEdgeAPI(baseUrl, configId, userAgent);
     this.debug = debug;
     this.addEventListeners();
@@ -91,11 +88,11 @@ export class AdobeConnectorAdapter {
     this.player.addEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.addEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
-    this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
+    this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.addEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
 
-    this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
+    this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
       window.addEventListener('beforeunload', this.onBeforeUnload);
@@ -109,11 +106,11 @@ export class AdobeConnectorAdapter {
     this.player.removeEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.removeEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
-    this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
+    this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.removeEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
 
-    this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
+    this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
       window.removeEventListener('beforeunload', this.onBeforeUnload);
@@ -128,42 +125,42 @@ export class AdobeConnectorAdapter {
     // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
     //   and again after the pre-roll with a correct duration.
     void this.maybeStartSession(e.duration);
-  }
+  };
 
   private onPlaying = () => {
     this.logDebug('onPlaying');
     void this.mediaApi.play(this.player.currentTime);
-  }
+  };
 
   private onPause = () => {
     this.logDebug('onPause');
     void this.mediaApi.pause(this.player.currentTime);
-  }
+  };
 
   private onWaiting = () => {
     this.logDebug('onWaiting');
     void this.mediaApi.bufferStart(this.player.currentTime);
-  }
+  };
 
   private onEnded = async () => {
     this.logDebug('onEnded');
     await this.mediaApi.sessionComplete(this.player.currentTime);
     this.reset();
-  }
+  };
 
   private onSourceChange = () => {
     this.logDebug('onSourceChange');
     void this.maybeEndSession();
-  }
+  };
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
     if (event.subType === MediaTrackEventType.ACTIVE_QUALITY_CHANGED) {
-      const quality = Array.isArray(event.qualities)? event.qualities[0] : event.qualities;
+      const quality = Array.isArray(event.qualities) ? event.qualities[0] : event.qualities;
       void this.mediaApi.bitrateChange(this.player.currentTime, {
         bitrate: quality?.bandwidth ?? 0,
       });
     }
-  }
+  };
 
   private onTextTrackEvent = (event: TextTrackEvent) => {
     const track = this.player.textTracks.find((track) => track.uid === event.trackUid);
@@ -185,14 +182,14 @@ export class AdobeConnectorAdapter {
         }
       }
     }
-  }
+  };
 
   private onError = (error: ErrorEvent) => {
     void this.mediaApi.error(this.player.currentTime, {
       name: error.error.errorCode,
-      source: ErrorSource.PLAYER
+      source: ErrorSource.PLAYER,
     });
-  }
+  };
 
   private onAdEvent = (event: AdEvent) => {
     switch (event.subType) {
@@ -230,11 +227,11 @@ export class AdobeConnectorAdapter {
         break;
       }
     }
-  }
+  };
 
   private onBeforeUnload = () => {
     void this.maybeEndSession();
-  }
+  };
 
   private async maybeEndSession(): Promise<void> {
     this.logDebug(`maybeEndSession`);
@@ -261,11 +258,13 @@ export class AdobeConnectorAdapter {
     const hasValidDuration = isValidDuration(mediaLength);
     const isPlayingAd = await this.player.ads.playing();
 
-    this.logDebug(`maybeStartSession -`,
+    this.logDebug(
+      `maybeStartSession -`,
       `mediaLength: ${mediaLength},`,
       `hasValidSource: ${hasValidSource},`,
       `hasValidDuration: ${hasValidDuration},`,
-      `isPlayingAd: ${isPlayingAd}`);
+      `isPlayingAd: ${isPlayingAd}`,
+    );
 
     if (this.sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
       this.logDebug('maybeStartSession - NOT started');
@@ -273,11 +272,11 @@ export class AdobeConnectorAdapter {
     }
 
     const sessionDetails = {
-      ID: "N/A",
-      name: this.player?.source?.metadata?.title ?? "",
-      channel: "N/A",
+      ID: 'N/A',
+      name: this.player?.source?.metadata?.title ?? '',
+      channel: 'N/A',
       contentType: this.getContentType(),
-      playerName: "THEOplayer",
+      playerName: 'THEOplayer',
       length: mediaLength,
     };
 

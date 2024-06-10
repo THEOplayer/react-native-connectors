@@ -5,13 +5,13 @@
  */
 export interface AdobeErrorDetails {
   // The error ID.
-  name: string,
+  name: string;
 
   // The error source.
-  source: ErrorSource,
+  source: ErrorSource;
 }
 
 export enum ErrorSource {
   PLAYER = 'player',
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
 }

@@ -8,6 +8,5 @@ export interface AdobeResponseBody {
   handle?: {
     type: string;
     payload: { [key: string]: any }[];
-  }[]
+  }[];
 }
-

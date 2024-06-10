@@ -4,15 +4,14 @@
  * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/implementationdetails.schema.md
  */
 export interface AdobeImplementationDetails {
-
   // The environment of the implementation
-  environment?: AdobeEnvironment,
+  environment?: AdobeEnvironment;
 
   // SDK or endpoint identifier. All SDKs or endpoints are identified through a URI, including extensions.
-  name?: string,
+  name?: string;
 
   // The version identifier of the API, e.g h.18.
-  version?: string,
+  version?: string;
 }
 
 /**
@@ -22,5 +21,5 @@ export enum AdobeEnvironment {
   BROWSER = 'browser',
   APP = 'app',
   SERVER = 'server',
-  IOT = 'iot'
+  IOT = 'iot',
 }

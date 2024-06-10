@@ -1,5 +1,5 @@
 export interface AdobeRequestBody {
-  events?: ({
+  events?: {
     xdm: {
       mediaCollection: {
         playhead: number;
@@ -24,7 +24,7 @@ export interface AdobeRequestBody {
            * @description Identifies the stream type
            * @enum {string}
            */
-          streamType?: "audio" | "video";
+          streamType?: 'audio' | 'video';
           /** @description The user has been authorized via Adobe authentication */
           authorized?: string;
           hasResume?: boolean;
@@ -88,20 +88,20 @@ export interface AdobeRequestBody {
         version?: string;
       };
       identityMap?: {
-        FPID?: ({
+        FPID?: {
           id?: string;
           /**
            * @default ambiguous
            * @enum {string}
            */
-          authenticatedState?: "ambiguous" | "authenticated" | "loggedOut";
+          authenticatedState?: 'ambiguous' | 'authenticated' | 'loggedOut';
           primary?: boolean;
-        })[];
+        }[];
       };
       /** @default media.sessionStart */
       eventType: string;
       /** Format: date-time */
       timestamp: string;
     };
-  })[];
+  }[];
 }

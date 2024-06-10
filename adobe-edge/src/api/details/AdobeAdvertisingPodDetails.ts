@@ -5,15 +5,15 @@
  */
 export interface AdobeAdvertisingPodDetails {
   // The ID of the ad break.
-  ID?: string,
+  ID?: string;
 
   // The friendly name of the Ad Break.
-  friendlyName?: string,
+  friendlyName?: string;
 
   // The index of the ad inside the parent ad break start, for example, the first ad has index 0 and the second ad
   // has index 1.
-  index: number,
+  index: number;
 
   // The offset of the ad break inside the content, in seconds.
-  offset: number
+  offset: number;
 }

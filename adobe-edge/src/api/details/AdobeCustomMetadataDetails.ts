@@ -5,8 +5,8 @@
  */
 export type AdobeCustomMetadataDetails = {
   // The name of the custom field.
-  name?: string,
+  name?: string;
 
   // The value of the custom field.
-  value?: string
-}
+  value?: string;
+};
