@@ -7,8 +7,8 @@ export class AdobeConnector {
 
   private connectorAdapter: AdobeConnectorAdapter
 
-  constructor(player: THEOplayer, baseUrl: string, dataStreamId: string, userAgent?: string) {
-    this.connectorAdapter = new AdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent);
+  constructor(player: THEOplayer, baseUrl: string, dataStreamId: string, userAgent?: string, useDebug?: boolean) {
+    this.connectorAdapter = new AdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug);
   }
 
   /**
