@@ -69,3 +69,4 @@ lib/
 # TypeDoc
 /api
 youbora/manifest.json
+agama/src/static/manifest.json
