@@ -26,6 +26,15 @@ export class AdobeConnector {
   }
 
   /**
+   * Set debug flag.
+   *
+   * @param debug whether to write debug info or not.
+   */
+  setDebug(debug: boolean) {
+    this.connectorAdapter.setDebug(debug);
+  }
+
+  /**
    * Explicitly stop the current session and start a new one.
    *
    * This can be used to manually mark the start of a new session during a live stream,
