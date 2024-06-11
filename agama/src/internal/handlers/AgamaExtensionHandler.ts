@@ -45,9 +45,6 @@ export class AgamaExtensionHandler {
   private onSourceChange_ = (): void => {
     this.retrieveAgamaSourceConfiguration_();
     this.prepareAgamaToStartOnPlay_();
-
-    // TEST
-    this._player.currentTime = 10000;
   };
 
   private retrieveAgamaSourceConfiguration_ = (): void => {
