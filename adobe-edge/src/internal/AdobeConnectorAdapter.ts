@@ -52,7 +52,12 @@ export class AdobeConnectorAdapter {
 
   private mediaApi: MediaEdgeAPI;
 
-  constructor(player: THEOplayer, baseUrl: string, configId: string, userAgent?: string, debug = false, debugSessionId: string = undefined) {
+  constructor(player: THEOplayer,
+              baseUrl: string,
+              configId: string,
+              userAgent?: string,
+              debug = false,
+              debugSessionId: string | undefined = undefined) {
     this.player = player;
     this.mediaApi = new MediaEdgeAPI(baseUrl, configId, userAgent, debugSessionId);
     this.debug = debug;
