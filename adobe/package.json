@@ -43,7 +43,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:THEOplayer/react-native-theoplayer-analytics.git"
+    "url": "git@github.com:THEOplayer/react-native-connectors.git"
   },
   "author": "THEO Technologies",
   "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
