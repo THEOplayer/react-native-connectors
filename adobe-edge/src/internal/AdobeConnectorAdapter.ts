@@ -284,7 +284,7 @@ export class AdobeConnectorAdapter {
 
     const sessionDetails = {
       ID: 'N/A',
-      name: this.player?.source?.metadata?.title ?? '',
+      name: this.player?.source?.metadata?.title ?? 'N/A',
       channel: 'N/A',
       contentType: this.getContentType(),
       playerName: 'THEOplayer',
