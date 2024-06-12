@@ -32,15 +32,16 @@ npm install \
 Create the connector by providing the `THEOplayer` instance, the Media Collection API's end point,
 Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
 
-```jsx
+```tsx
 import { useAdobe } from '@theoplayer/react-native-analytics-adobe';
 
 const baseUrl = "<Media Collection API's end point>";
 const dataStreamId = "<dataStreamId or configId>";
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
+const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent);
+  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, debugSessionID);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector

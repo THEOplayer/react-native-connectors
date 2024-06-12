@@ -7,6 +7,7 @@ export function useAdobe(
   dataStreamId: string,
   userAgent?: string,
   useDebug?: boolean,
+  debugSessionId?: string,
 ): [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
   const connector = useRef<AdobeConnector | undefined>();
   const theoPlayer = useRef<THEOplayer | undefined>();
@@ -17,7 +18,7 @@ export function useAdobe(
 
     theoPlayer.current = player;
     if (player) {
-      connector.current = new AdobeConnector(player, baseUrl, dataStreamId, userAgent, useDebug);
+      connector.current = new AdobeConnector(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
       player.addEventListener(PlayerEventType.DESTROY, onDestroy);
     } else {
       throw new Error('Invalid THEOplayer instance');

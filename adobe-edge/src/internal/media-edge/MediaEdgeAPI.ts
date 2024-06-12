@@ -27,12 +27,14 @@ interface MediaEdgeClient<Paths extends {}, Media extends MediaType = MediaType>
 export class MediaEdgeAPI {
   private readonly _client: MediaEdgeClient<paths, 'application/json'>;
   private readonly _configId: string;
-  private _sessionID: string | undefined;
+  private _debugSessionId: string | undefined;
+  private _sessionId: string | undefined;
   private _hasSessionFailed: boolean;
   private _eventQueue: (() => Promise<void>)[] = [];
 
-  constructor(baseUrl: string, configId: string, userAgent?: string) {
+  constructor(baseUrl: string, configId: string, userAgent?: string, debugSessionId?: string) {
     this._configId = configId;
+    this._debugSessionId = debugSessionId;
     this._hasSessionFailed = false;
     this._client = createClient<paths, 'application/json'>({
       baseUrl,
@@ -40,8 +42,12 @@ export class MediaEdgeAPI {
     });
   }
 
+  setDebugSessionId(id: string | undefined) {
+    this._debugSessionId = id;
+  }
+
   hasSessionStarted(): boolean {
-    return !!this._sessionID;
+    return !!this._sessionId;
   }
 
   hasSessionFailed(): boolean {
@@ -49,7 +55,7 @@ export class MediaEdgeAPI {
   }
 
   reset() {
-    this._sessionID = undefined;
+    this._sessionId = undefined;
     this._hasSessionFailed = false;
     this._eventQueue = [];
   }
@@ -83,7 +89,7 @@ export class MediaEdgeAPI {
 
   async sessionEnd(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
     await this.maybeQueueEvent('/sessionEnd', { playhead, qoeDataDetails });
-    this._sessionID = undefined;
+    this._sessionId = undefined;
   }
 
   async statesUpdate(
@@ -155,13 +161,21 @@ export class MediaEdgeAPI {
     return this.maybeQueueEvent('/adComplete', { playhead, qoeDataDetails });
   }
 
+  private createClientParams() {
+    const params = {
+      query: {
+        configId: this._configId,
+      }  as { configId: string; debugSessionID?: string },
+    };
+    if (this._debugSessionId) {
+      params.query.debugSessionID = this._debugSessionId;
+    }
+    return params;
+  }
+
   async startSession(sessionDetails: AdobeSessionDetails, customMetadata?: AdobeCustomMetadataDetails[], qoeDataDetails?: AdobeQoeDataDetails) {
     const result = await this._client.POST('/sessionStart', {
-      params: {
-        query: {
-          configId: this._configId,
-        },
-      },
+      params: this.createClientParams(),
       body: {
         events: [
           {
@@ -187,12 +201,12 @@ export class MediaEdgeAPI {
       return;
     }
     // @ts-ignore
-    this._sessionID = result.data?.handle?.find((h: any) => {
+    this._sessionId = result.data?.handle?.find((h: any) => {
       return h.type === 'media-analytics:new-session';
     })?.payload?.[0]?.sessionId;
 
     // empty queue
-    if (this._sessionID && this._eventQueue.length !== 0) {
+    if (this._sessionId && this._eventQueue.length !== 0) {
       this._eventQueue.forEach((doPostEvent) => doPostEvent());
       this._eventQueue = [];
     }
@@ -217,16 +231,12 @@ export class MediaEdgeAPI {
 
   async postEvent(path: keyof paths, mediaDetails: AdobeMediaDetails) {
     // Make sure we are positing data with a valid sessionID.
-    if (!this._sessionID) {
+    if (!this._sessionId) {
       console.error('Invalid sessionID');
       return;
     }
     const result = await this._client.POST(path, {
-      params: {
-        query: {
-          configId: this._configId,
-        },
-      },
+      params: this.createClientParams(),
       body: {
         events: [
           {
@@ -236,7 +246,7 @@ export class MediaEdgeAPI {
               mediaCollection: {
                 ...mediaDetails,
                 playhead: sanitisePlayhead(mediaDetails.playhead),
-                sessionID: this._sessionID,
+                sessionID: this._sessionId,
               },
             },
           },

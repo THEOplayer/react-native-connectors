@@ -6,8 +6,8 @@ import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 export class AdobeConnector {
   private connectorAdapter: AdobeConnectorAdapter;
 
-  constructor(player: THEOplayer, baseUrl: string, dataStreamId: string, userAgent?: string, useDebug?: boolean) {
-    this.connectorAdapter = new AdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug);
+  constructor(player: THEOplayer, baseUrl: string, dataStreamId: string, userAgent?: string, useDebug?: boolean, debugSessionId?: string) {
+    this.connectorAdapter = new AdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
   }
 
   /**
@@ -31,6 +31,13 @@ export class AdobeConnector {
    */
   setDebug(debug: boolean) {
     this.connectorAdapter.setDebug(debug);
+  }
+
+  /**
+   * Set a debugSessionID query parameter that is added to all outgoing requests.
+   */
+  setDebugSessionId(id: string | undefined) {
+    this.connectorAdapter.setDebugSessionId(id);
   }
 
   /**
