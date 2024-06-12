@@ -49,7 +49,7 @@
   },
   "author": "THEO Technologies",
   "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
-  "homepage": "https://theoplayer.com/",
+  "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/agama#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
