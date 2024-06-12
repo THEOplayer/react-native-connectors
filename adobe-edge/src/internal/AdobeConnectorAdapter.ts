@@ -29,9 +29,6 @@ const AD_PING_INTERVAL = 1000;
 export class AdobeConnectorAdapter {
   private player: THEOplayer;
 
-  /** The id of the current session */
-  private sessionId: string | undefined = undefined;
-
   /** Timer handling the ping event request */
   private pingInterval: ReturnType<typeof setInterval> | undefined;
 
@@ -300,7 +297,7 @@ export class AdobeConnectorAdapter {
     }
 
     this.sessionInProgress = true;
-    this.logDebug('maybeStartSession - STARTED', `sessionId: ${this.sessionId}`);
+    this.logDebug('maybeStartSession - STARTED', `sessionId: ${this.mediaApi.sessionId}`);
 
     if (!this.isPlayingAd) {
       this.startPinger(CONTENT_PING_INTERVAL);
@@ -332,7 +329,6 @@ export class AdobeConnectorAdapter {
     this.adBreakPodIndex = 0;
     this.adPodPosition = 1;
     this.isPlayingAd = false;
-    this.sessionId = undefined;
     this.sessionInProgress = false;
     clearInterval(this.pingInterval);
     this.pingInterval = undefined;

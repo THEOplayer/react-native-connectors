@@ -46,6 +46,10 @@ export class MediaEdgeAPI {
     this._debugSessionId = id;
   }
 
+  get sessionId(): string | undefined {
+    return this._sessionId;
+  }
+
   hasSessionStarted(): boolean {
     return !!this._sessionId;
   }
