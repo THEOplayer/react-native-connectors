@@ -1,57 +1,22 @@
-# React Native THEOplayer Analytics
+# THEOplayer React Native Connectors
+
+This repository is maintained by [THEO Technologies](https://www.theoplayer.com/) and provides a collection of
+connectors for [`react-native-theoplayer`](https://github.com/THEOplayer/react-native-theoplayer),
+the official THEOplayer React Native video player.
+
+## Available Connectors
+
+| Connector                                                        | npm package                                                                                                                                                                                                                                                         | Source                                                                        |
+|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| Adobe analytics connector implementing the Media Collections API | [![%40theoplayer/react-native-analytics-adobe](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-adobe?label=%40theoplayer/react-native-analytics-adobe)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-adobe)             | [`Adobe`](https://github.com/THEOplayer/react-native-theoplayer-analytics)    |
+| Agama analytics connector                                        | [![%40theoplayer/react-native-analytics-agama](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-agama?label=%40theoplayer/react-native-analytics-agama)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-agama)             | [`Agama`](https://github.com/THEOplayer/react-native-theoplayer-analytics)    |
+| Comscore analytics connector                                     | [![%40theoplayer/react-native-analytics-comscore](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-comscore?label=%40theoplayer/react-native-analytics-comscore)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-comscore) | [`Comscore`](https://github.com/THEOplayer/react-native-theoplayer-analytics) |
+| Conviva analytics connector                                      | [![%40theoplayer/react-native-analytics-conviva](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-conviva?label=%40theoplayer/react-native-analytics-conviva)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-conviva)     | [`Conviva`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  |
+| Mux analytics connector                                          | [![%40theoplayer/react-native-analytics-mux](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-mux?label=%40theoplayer/react-native-analytics-mux)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-mux)                     | [`Mux`](https://github.com/THEOplayer/react-native-theoplayer-analytics)      |
+| Nielsen analytics connector                                      | [![%40theoplayer/react-native-analytics-nielsen](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-nielsen?label=%40theoplayer/react-native-analytics-nielsen)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-nielsen)     | [`Nielsen`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  |
+| Youbora analytics connector                                      | [![%40theoplayer/react-native-analytics-youbora](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-youbora?label=%40theoplayer/react-native-analytics-youbora=)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-youbora)    | [`Youbora`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  |
+
 
 ## License
 
-This projects falls under the license as defined in https://github.com/THEOplayer/license-and-disclaimer.
-
-## Table of Contents
-
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [How to use these guides](#how-to-use-these-guides)
-4. [Getting Started](#getting-started)
-
-## Overview
-
-The `@theoplayer/react-native-analytics` package provides a collection of analytics connectors
-for `react-native-theoplayer`, the official THEOplayer React Native video player.
-
-This document covers how to add an analytics connector to your `THEOplayer` instance. For information on
-how to include `react-native-theoplayer` in your React Native app, we refer to the
-[documentation](https://github.com/THEOplayer/react-native-theoplayer) on the main GitHub page.
-
-Currently, the following analytics connectors are available:
-
-| Package name                                                                                                     | Purpose                                                          | Registry                                                                                                                                                      |
-|------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`@theoplayer/react-native-analytics-adobe`](https://github.com/THEOplayer/react-native-theoplayer-analytics)    | Adobe analytics connector implementing the Media Collections API | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-adobe)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-adobe)       |
-| [`@theoplayer/react-native-analytics-agama`](https://github.com/THEOplayer/react-native-theoplayer-analytics)    | Agama analytics connector                                        | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-agama)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-agama)       |
-| [`@theoplayer/react-native-analytics-comscore`](https://github.com/THEOplayer/react-native-theoplayer-analytics) | Comscore analytics connector                                     | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-comscore)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-comscore) |
-| [`@theoplayer/react-native-analytics-conviva`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Conviva analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-conviva)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-conviva)   |
-| [`@theoplayer/react-native-analytics-mux`](https://github.com/THEOplayer/react-native-theoplayer-analytics)      | Mux analytics connector                                          | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-mux)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-mux)           |
-| [`@theoplayer/react-native-analytics-nielsen`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Nielsen analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-nielsen)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-nielsen)   |
-| [`@theoplayer/react-native-analytics-youbora`](https://github.com/THEOplayer/react-native-theoplayer-analytics)  | Youbora analytics connector                                      | [![npm](https://img.shields.io/npm/v/@theoplayer/react-native-analytics-youbora)](https://www.npmjs.com/package/@theoplayer/react-native-analytics-youbora)   |
-
-## Prerequisites
-
-If you have no previous experience in React Native, we encourage you to first explore the
-[React Native Documentation](https://reactnative.dev/docs/getting-started),
-as it gives you a good start on one of the most popular app development frameworks.
-
-## How to use these guides
-
-These are guides on how to use the THEOplayer React Native UI in your React Native project(s) and can be used
-linearly or by searching the specific section. It is recommended that you have a basic understanding of how
-React Native works to speed up the way of working with THEOplayer React Native SDK.
-
-## Getting Started
-
-In this section you will find step-by-step instructions on setting up an analytics connector.
-
-- [Adobe](./adobe/README.md)
-- [Agama](./agama/README.md)
-- [Comscore](./comscore/README.md)
-- [Conviva](./conviva/README.md)
-- [Mux](./mux/README.md)
-- [Nielsen](./nielsen/README.md)
-- [Youbora](./youbora/README.md)
+The contents of this package are subject to the [THEOplayer license](https://www.theoplayer.com/terms).
