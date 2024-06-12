@@ -1,13 +1,22 @@
-import type { THEOplayer } from "react-native-theoplayer";
-import type { AdobeMetaData } from "../internal/Types";
-import { AdobeConnectorAdapter } from "../internal/AdobeConnectorAdapter";
+import type { THEOplayer } from 'react-native-theoplayer';
+import type { AdobeMetaData } from '../internal/Types';
+import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
+
+export { type AdobeMetaData };
 
 export class AdobeConnector {
+  private connectorAdapter: AdobeConnectorAdapter;
 
-  private connectorAdapter: AdobeConnectorAdapter
-
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
-              userAgent?: string, useDebug?: boolean) {
+  constructor(
+    player: THEOplayer,
+    uri: string,
+    ecid: string,
+    sid: string,
+    trackingUrl: string,
+    metadata?: AdobeMetaData,
+    userAgent?: string,
+    useDebug?: boolean,
+  ) {
     this.connectorAdapter = new AdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
   }
 

@@ -1,9 +1,8 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import type youbora from "youboralib";
-import { YouboraConnectorAdapter } from "../internal/YouboraConnectorAdapter";
+import type youbora from 'youboralib';
+import { YouboraConnectorAdapter } from '../internal/YouboraConnectorAdapter';
 
 export class YouboraConnector {
-
   private connectorAdapter: YouboraConnectorAdapter;
 
   /**

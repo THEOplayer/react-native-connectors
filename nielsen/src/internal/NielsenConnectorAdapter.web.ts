@@ -4,19 +4,13 @@ import { NielsenConnector, NielsenOptions } from '@theoplayer/nielsen-connector-
 import type { ChromelessPlayer } from 'theoplayer';
 
 export class NielsenConnectorAdapter {
-
   private integration: NielsenConnector;
 
   constructor(player: THEOplayer, appId: string, instanceName: string, options: NielsenOptions) {
-    this.integration = new NielsenConnector(
-      player.nativeHandle as ChromelessPlayer,
-      appId,
-      instanceName,
-      options
-    );
+    this.integration = new NielsenConnector(player.nativeHandle as ChromelessPlayer, appId, instanceName, options);
   }
 
-  updateMetadata(metadata: { [ key: string ]: string }): void {
+  updateMetadata(metadata: { [key: string]: string }): void {
     this.integration.updateMetadata(metadata);
   }
 

@@ -1,4 +1,4 @@
-import type { TimeRange } from "react-native-theoplayer";
+import type { TimeRange } from 'react-native-theoplayer';
 
 // Default to TimeRanges where start is inclusive and end is exclusive
 function createDefaultInclusiveness(length: number): boolean[] {
@@ -62,7 +62,7 @@ export class NumberTimeRanges {
         const integerIndex = index | 0; // cast to integer
         timeRanges.checkBounds_(integerIndex);
         return timeRanges.end_(integerIndex);
-      }
+      },
     };
   }
 
@@ -476,13 +476,7 @@ export class NumberTimeRanges {
    * @param [tolerance]
    * @returns Index of found range, or -1 if not found.
    */
-  findPartialRangeIndex_(
-    startTime: number,
-    endTime: number,
-    startInclusive = true,
-    endInclusive = true,
-    tolerance = 0
-  ): number {
+  findPartialRangeIndex_(startTime: number, endTime: number, startInclusive = true, endInclusive = true, tolerance = 0): number {
     const toleratedStartTime = startTime - tolerance;
     const toleratedEndTime = endTime + tolerance;
     for (let index = 0; index < this.length_; index += 1) {
@@ -507,13 +501,7 @@ export class NumberTimeRanges {
    * @param [tolerance]
    * @returns Index of found range, or -1 if not found.
    */
-  findRangeIndex_(
-    startTime: number,
-    endTime: number,
-    startInclusive = true,
-    endInclusive = false,
-    tolerance = 0
-  ): number {
+  findRangeIndex_(startTime: number, endTime: number, startInclusive = true, endInclusive = false, tolerance = 0): number {
     const toleratedStartTime = startTime + tolerance;
     const toleratedEndTime = endTime - tolerance;
     for (let index = 0; index < this.length_; index += 1) {

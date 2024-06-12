@@ -1,0 +1,16 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "includeVersion": true,
+  "plugin": [
+    "typedoc-plugin-external-resolver",
+    "typedoc-plugin-mdn-links"
+  ],
+  "navigationLinks": {
+    "Docs": "https://www.theoplayer.com/docs/",
+    "THEOplayer.com": "https://www.theoplayer.com/"
+  },
+  "githubPages": true,
+  "excludePrivate": true,
+  "excludeExternals": true,
+  "excludeInternal": true
+}

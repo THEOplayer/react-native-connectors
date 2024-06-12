@@ -28,7 +28,7 @@ export enum DetectableBrowser {
   OPERA_MOBILE_ = 'Opera Mobile',
   VIVALDI_ = 'Vivaldi',
   HEADLESS_CHROME_ = 'HeadlessChrome',
-  ANDROID_STOCK_ = 'Android Browser'
+  ANDROID_STOCK_ = 'Android Browser',
 }
 
 /*
@@ -50,7 +50,7 @@ const browserNameRegexpMap: DetectionRegexpMap = {
   [DetectableBrowser.IE_]: /Trident/i,
   [DetectableBrowser.OPERA_]: /Opera|OPR/i,
   [DetectableBrowser.VIVALDI_]: /Vivaldi/i,
-  [DetectableBrowser.ANDROID_STOCK_]: undefined
+  [DetectableBrowser.ANDROID_STOCK_]: undefined,
 };
 
 function matchBrowserName(bdWindow: DetectionWindow, browser: DetectableBrowser): boolean {
@@ -67,8 +67,7 @@ function isMobile(bdWindow: DetectionWindow): boolean {
 
 function isChrome(bdWindow: DetectionWindow): boolean {
   return (
-    Boolean(bdWindow.chrome && bdWindow.navigator && bdWindow.navigator.vendor && /google/i.test(bdWindow.navigator.vendor)) ||
-    isChromeIOS(bdWindow)
+    Boolean(bdWindow.chrome && bdWindow.navigator && bdWindow.navigator.vendor && /google/i.test(bdWindow.navigator.vendor)) || isChromeIOS(bdWindow)
   );
 }
 
@@ -101,10 +100,7 @@ function isFirefoxIOS(bdWindow: DetectionWindow): boolean {
 }
 
 function isSafari(bdWindow: DetectionWindow): boolean {
-  return (
-    matchBrowserName(bdWindow, DetectableBrowser.SAFARI_) &&
-    !matchBrowserName(bdWindow, DetectableBrowser.CHROME_)
-  );
+  return matchBrowserName(bdWindow, DetectableBrowser.SAFARI_) && !matchBrowserName(bdWindow, DetectableBrowser.CHROME_);
 }
 
 function isSafariMobile(bdWindow: DetectionWindow): boolean {
@@ -153,7 +149,7 @@ const browserVersionRegexpMap: DetectionRegexpMap = {
   [DetectableBrowser.OPERA_]: /(OPR\/(\d+\.\d+))|(Opera(?=.*Version\/((\d+)\.(\d+))))/i,
   [DetectableBrowser.OPERA_MOBILE_]: undefined,
   [DetectableBrowser.VIVALDI_]: /Vivaldi\/((\d+)\.(\d+)\.(\d+)(?:\.(\d+))?)/i,
-  [DetectableBrowser.ANDROID_STOCK_]: undefined
+  [DetectableBrowser.ANDROID_STOCK_]: undefined,
 };
 
 /*

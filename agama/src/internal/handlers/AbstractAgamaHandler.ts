@@ -1,11 +1,11 @@
 import type { AgamaClient } from '../AgamaClient';
 import { AgamaClientEventType } from '../AgamaClientEvent';
-import type { THEOplayer } from "react-native-theoplayer";
-import { DefaultEventDispatcher } from "../event/DefaultEventDispatcher";
-import { BaseEvent } from "../event/BaseEvent";
+import type { THEOplayer } from 'react-native-theoplayer';
+import { DefaultEventDispatcher } from '../event/DefaultEventDispatcher';
+import { BaseEvent } from '../event/BaseEvent';
 
 export enum AgamaHandlerEventType {
-  VIEWSTATE_CHANGE = 'agamaviewstatechange_'
+  VIEWSTATE_CHANGE = 'agamaviewstatechange_',
 }
 
 export interface AgamaHandlerEventMap {
@@ -19,10 +19,12 @@ export class AgamaViewStateChangeEvent extends BaseEvent<AgamaHandlerEventType.V
 }
 
 export abstract class AbstractAgamaHandler extends DefaultEventDispatcher<AgamaHandlerEventMap> {
-
   protected _isReporting = false;
 
-  constructor(protected _player: THEOplayer, protected _agamaClient: AgamaClient) {
+  constructor(
+    protected _player: THEOplayer,
+    protected _agamaClient: AgamaClient,
+  ) {
     super();
     this._agamaClient.addEventListener(AgamaClientEventType.PAUSE, this.pauseReporting_);
     this._agamaClient.addEventListener(AgamaClientEventType.RESUME, this.resumeReporting_);

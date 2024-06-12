@@ -1,7 +1,7 @@
 import { DASHSourceType, HLSSourceType, KnownSourceType, SourceType } from './SourceUtils';
 import { stringContains_, stringStartsWith } from './StringUtils';
-import type { SourceDescription, TypedSource } from "react-native-theoplayer";
-import { isArray } from "./TypeUtils";
+import type { SourceDescription, TypedSource } from 'react-native-theoplayer';
+import { isArray } from './TypeUtils';
 
 export function isM3U8SourceString_(source: string): boolean {
   if (!source) {

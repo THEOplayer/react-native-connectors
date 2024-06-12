@@ -7,33 +7,32 @@ import { AdMetadata } from './web/ComscoreAdMetadata';
 import { ContentMetadata } from './web/ComscoreContentMetadata';
 
 export class ComscoreConnectorAdapter {
+  private integration: ComscoreTheo;
 
-    private integration: ComscoreTheo;
+  constructor(player: THEOplayer, ComscoreMetadata: ComscoreMetadata, ComscoreConfig: ComscoreConfiguration) {
+    this.integration = new ComscoreTheo(
+      ComscoreConfig.publisherId,
+      player,
+      new ContentMetadata(ComscoreMetadata),
+      new AdMetadata(),
+      ComscoreConfig.usagePropertiesAutoUpdateMode,
+    );
+  }
 
-    constructor(player: THEOplayer, ComscoreMetadata: ComscoreMetadata, ComscoreConfig: ComscoreConfiguration) {
-        this.integration = new ComscoreTheo(
-            ComscoreConfig.publisherId,
-            player,
-            new ContentMetadata(ComscoreMetadata),
-            new AdMetadata(),
-            ComscoreConfig.usagePropertiesAutoUpdateMode
-        );
-    }
+  update(metadata: ComscoreMetadata): void {
+    // TODO uncomment once Comscore version has been updated
+    this.integration.setContentMetadata(new ContentMetadata(metadata));
+  }
 
-    update(metadata: ComscoreMetadata): void {
-        // TODO uncomment once Comscore version has been updated
-        this.integration.setContentMetadata(new ContentMetadata(metadata));
-    }
+  setPersistentLabel(label: string, value: string): void {
+    // TODO Implement web counterpart
+  }
 
-    setPersistentLabel(label: string, value: string): void {
-        // TODO Implement web counterpart
-    }
+  setPersistentLabels(labels: { [key: string]: string }): void {
+    // TODO Implement web counterpart
+  }
 
-    setPersistentLabels(labels: { [key: string]: string }): void {
-        // TODO Implement web counterpart
-    }
-
-    destroy() {
-        this.integration.destroy();
-    }
+  destroy() {
+    this.integration.destroy();
+  }
 }

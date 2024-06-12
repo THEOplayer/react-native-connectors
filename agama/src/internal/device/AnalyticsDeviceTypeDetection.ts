@@ -8,7 +8,7 @@ export enum DetectableDeviceType {
   MOBILE_ = 'mobile',
   TABLET_ = 'tablet',
   SMARTTV_ = 'smarttv',
-  SEARCH_BOT_ = 'searchbot'
+  SEARCH_BOT_ = 'searchbot',
 }
 
 // Device regexes partly based on https://github.com/rguerreiro/device/blob/master/lib/device.js

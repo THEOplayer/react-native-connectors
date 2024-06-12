@@ -1,15 +1,15 @@
 export type ContentType = 'VOD' | 'Live' | 'Linear';
 
 export type AdobeEventRequestBody = {
-  "playerTime"?: object,
-  "eventType"?: string,
-} & AdobeMetaData
+  playerTime?: object;
+  eventType?: string;
+} & AdobeMetaData;
 
 export type AdobeMetaData = {
-  "params"?: object,
-  "qoeData"?: object,
-  "customMetadata"?: object
-}
+  params?: object;
+  qoeData?: object;
+  customMetadata?: object;
+};
 
 export enum AdobeEventTypes {
   SESSION_START = 'sessionStart',
@@ -28,5 +28,5 @@ export enum AdobeEventTypes {
   CHAPTER_COMPLETE = 'chapterComplete',
   ERROR = 'error',
   SESSION_END = 'sessionEnd',
-  SESSION_COMPLETE = 'sessionComplete'
+  SESSION_COMPLETE = 'sessionComplete',
 }

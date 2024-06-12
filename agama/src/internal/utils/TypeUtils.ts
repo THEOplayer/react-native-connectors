@@ -17,8 +17,8 @@ export type Values<T> = T[keyof T];
 // https://github.com/microsoft/TypeScript/issues/38646#issuecomment-1054510795
 export type KeysOfType<T, U> = T extends infer TT
   ? Values<{
-    [P in keyof TT as TT[P] extends U ? P : never]: P;
-  }>
+      [P in keyof TT as TT[P] extends U ? P : never]: P;
+    }>
   : never;
 
 /**
@@ -82,4 +82,3 @@ export function isDate(x: unknown): x is Date {
 export function isNumber(x: unknown): x is number {
   return typeof x === 'number';
 }
-

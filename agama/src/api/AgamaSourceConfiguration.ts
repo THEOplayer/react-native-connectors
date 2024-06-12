@@ -1,4 +1,4 @@
-import type { AnalyticsDescription } from "react-native-theoplayer";
+import type { AnalyticsDescription } from 'react-native-theoplayer';
 
 /**
  * The stream type, represented by a value from the following list:

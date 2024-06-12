@@ -7,16 +7,16 @@ import type {
   MediaTrackEvent,
   TextTrackCue,
   TextTrackEvent,
-  THEOplayer
-} from "react-native-theoplayer";
-import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from "react-native-theoplayer";
-import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from "./Types";
-import { AdobeEventTypes } from "./Types";
-import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from "../utils/Utils";
-import { NativeModules, Platform } from "react-native";
-import DeviceInfo from "react-native-device-info";
+  THEOplayer,
+} from 'react-native-theoplayer';
+import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from 'react-native-theoplayer';
+import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from './Types';
+import { AdobeEventTypes } from './Types';
+import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from '../utils/Utils';
+import { NativeModules, Platform } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
-const TAG = "AdobeConnector";
+const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 const USER_AGENT_PREFIX = 'Mozilla/5.0';
@@ -59,7 +59,7 @@ export class AdobeConnectorAdapter {
 
   private isPlayingAd = false;
 
-  private customMetadata: AdobeMetaData = {}
+  private customMetadata: AdobeMetaData = {};
 
   private currentChapter: TextTrackCue | undefined;
 
@@ -67,15 +67,23 @@ export class AdobeConnectorAdapter {
 
   private debug = false;
 
-  constructor(player: THEOplayer, uri: string, ecid: string, sid: string, trackingUrl: string, metadata?: AdobeMetaData,
-              userAgent?: string, debug = false) {
-    this.player = player
+  constructor(
+    player: THEOplayer,
+    uri: string,
+    ecid: string,
+    sid: string,
+    trackingUrl: string,
+    metadata?: AdobeMetaData,
+    userAgent?: string,
+    debug = false,
+  ) {
+    this.player = player;
     this.uri = `https://${uri}/api/v1/sessions`;
     this.ecid = ecid;
     this.sid = sid;
     this.debug = debug;
     this.trackingUrl = trackingUrl;
-    this.customMetadata = {...this.customMetadata, ...metadata};
+    this.customMetadata = { ...this.customMetadata, ...metadata };
     this.customUserAgent = userAgent || this.buildUserAgent();
 
     this.addEventListeners();
@@ -88,7 +96,7 @@ export class AdobeConnectorAdapter {
   }
 
   updateMetadata(metadata: AdobeMetaData): void {
-    this.customMetadata = {...this.customMetadata, ...metadata};
+    this.customMetadata = { ...this.customMetadata, ...metadata };
   }
 
   setError(metadata: AdobeMetaData): void {
@@ -116,11 +124,11 @@ export class AdobeConnectorAdapter {
     this.player.addEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.addEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
-    this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
+    this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.addEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
 
-    this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
+    this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
       window.addEventListener('beforeunload', this.onBeforeUnload);
@@ -134,11 +142,11 @@ export class AdobeConnectorAdapter {
     this.player.removeEventListener(PlayerEventType.WAITING, this.onWaiting);
     this.player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.removeEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
-    this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent)
+    this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.removeEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
 
-    this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent)
+    this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
       window.removeEventListener('beforeunload', this.onBeforeUnload);
@@ -153,39 +161,39 @@ export class AdobeConnectorAdapter {
     // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
     //   and again after the pre-roll with a correct duration.
     void this.maybeStartSession(e.duration);
-  }
+  };
 
   private onPlaying = () => {
     this.logDebug('onPlaying');
     void this.sendEventRequest(AdobeEventTypes.PLAY);
-  }
+  };
 
   private onPause = () => {
     this.logDebug('onPause');
     void this.sendEventRequest(AdobeEventTypes.PAUSE_START);
-  }
+  };
 
   private onWaiting = () => {
     this.logDebug('onWaiting');
     void this.sendEventRequest(AdobeEventTypes.BUFFER_START);
-  }
+  };
 
   private onEnded = async () => {
     this.logDebug('onEnded');
     await this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE);
     this.reset();
-  }
+  };
 
   private onSourceChange = () => {
     this.logDebug('onSourceChange');
     void this.maybeEndSession();
-  }
+  };
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
     if (event.subType === MediaTrackEventType.ACTIVE_QUALITY_CHANGED) {
       void this.sendEventRequest(AdobeEventTypes.BITRATE_CHANGE);
     }
-  }
+  };
 
   private onTextTrackEvent = (event: TextTrackEvent) => {
     const track = this.player.textTracks.find((track) => track.uid === event.trackUid);
@@ -208,17 +216,17 @@ export class AdobeConnectorAdapter {
         }
       }
     }
-  }
+  };
 
   private onError = (error: ErrorEvent) => {
     const metadata: AdobeMetaData = {
       qoeData: {
-        "media.qoe.errorID": error.error.errorCode,
-        "media.qoe.errorSource": "player"
-      }
-    }
+        'media.qoe.errorID': error.error.errorCode,
+        'media.qoe.errorSource': 'player',
+      },
+    };
     void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
-  }
+  };
 
   private onAdEvent = (event: AdEvent) => {
     switch (event.subType) {
@@ -228,7 +236,8 @@ export class AdobeConnectorAdapter {
         const adBreak = event.ad as AdBreak;
         const metadata = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
         void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
-        if ((metadata.params as any)["media.ad.podIndex"] > this.adBreakPodIndex) { // TODO fix!
+        if ((metadata.params as any)['media.ad.podIndex'] > this.adBreakPodIndex) {
+          // TODO fix!
           this.adBreakPodIndex++;
         }
         break;
@@ -256,11 +265,11 @@ export class AdobeConnectorAdapter {
         break;
       }
     }
-  }
+  };
 
   private onBeforeUnload = () => {
     void this.maybeEndSession();
-  }
+  };
 
   private async maybeEndSession(): Promise<void> {
     this.logDebug(`maybeEndSession - sessionId: '${this.sessionId}'`);
@@ -273,12 +282,12 @@ export class AdobeConnectorAdapter {
 
   private createBaseRequest(eventType: string): AdobeEventRequestBody {
     return {
-      "playerTime": {
-        "playhead": this.getCurrentTime(),
-        "ts": Date.now()
+      playerTime: {
+        playhead: this.getCurrentTime(),
+        ts: Date.now(),
       },
-      "eventType": eventType,
-      "qoeData": {},
+      eventType: eventType,
+      qoeData: {},
     };
   }
 
@@ -286,7 +295,7 @@ export class AdobeConnectorAdapter {
     if (this.player.duration === Infinity) {
       // If content is live, the playhead must be the current second of the day.
       const date = new Date();
-      return date.getSeconds() + (60 * (date.getMinutes() + (60 * date.getHours())));
+      return date.getSeconds() + 60 * (date.getMinutes() + 60 * date.getHours());
     }
     return this.player.currentTime / 1000;
   }
@@ -307,11 +316,13 @@ export class AdobeConnectorAdapter {
     const hasValidDuration = isValidDuration(mediaLength);
     const isPlayingAd = await this.player.ads.playing();
 
-    this.logDebug(`maybeStartSession -`,
+    this.logDebug(
+      `maybeStartSession -`,
       `mediaLength: ${mediaLength},`,
       `hasValidSource: ${hasValidSource},`,
       `hasValidDuration: ${hasValidDuration},`,
-      `isPlayingAd: ${isPlayingAd}`);
+      `isPlayingAd: ${isPlayingAd}`,
+    );
 
     if (this.sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
       this.logDebug('maybeStartSession - NOT started');
@@ -321,21 +332,21 @@ export class AdobeConnectorAdapter {
     let friendlyName = {};
     if (this.player?.source?.metadata?.title) {
       friendlyName = {
-        "media.name": this.player.source.metadata.title
+        'media.name': this.player.source.metadata.title,
       };
     }
     initialBody.params = {
-      "analytics.reportSuite": this.sid,
-      "analytics.trackingServer": this.trackingUrl,
-      "media.channel": "N/A",
-      "media.contentType": this.getContentType(),
-      "media.id": "N/A",
-      "media.length": mediaLength,
-      "media.playerName": "THEOplayer", // TODO make distinctions between platforms?
-      "visitor.marketingCloudOrgId": this.ecid,
+      'analytics.reportSuite': this.sid,
+      'analytics.trackingServer': this.trackingUrl,
+      'media.channel': 'N/A',
+      'media.contentType': this.getContentType(),
+      'media.id': 'N/A',
+      'media.length': mediaLength,
+      'media.playerName': 'THEOplayer', // TODO make distinctions between platforms?
+      'visitor.marketingCloudOrgId': this.ecid,
       ...friendlyName,
-      ...this.customMetadata.params
-    }
+      ...this.customMetadata.params,
+    };
     const body = this.addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody);
 
     const response = await this.sendRequest(this.uri, body);
@@ -372,20 +383,22 @@ export class AdobeConnectorAdapter {
 
   private addCustomMetadata(eventType: AdobeEventTypes, body: AdobeEventRequestBody): AdobeEventRequestBody {
     if (eventType !== AdobeEventTypes.PING) {
-      if (eventType === AdobeEventTypes.AD_BREAK_START
-        || eventType === AdobeEventTypes.CHAPTER_START
-        || eventType === AdobeEventTypes.AD_START
-        || eventType === AdobeEventTypes.SESSION_START) {
-        body.customMetadata = {...this.customMetadata.customMetadata};
+      if (
+        eventType === AdobeEventTypes.AD_BREAK_START ||
+        eventType === AdobeEventTypes.CHAPTER_START ||
+        eventType === AdobeEventTypes.AD_START ||
+        eventType === AdobeEventTypes.SESSION_START
+      ) {
+        body.customMetadata = { ...this.customMetadata.customMetadata };
       }
       // TODO check params which are fine and which need more limitations?
     }
-    body.qoeData = {...body.qoeData, ...this.customMetadata.qoeData};
+    body.qoeData = { ...body.qoeData, ...this.customMetadata.qoeData };
     return body;
   }
 
   private async sendEventRequest(eventType: AdobeEventTypes, metadata?: AdobeEventRequestBody): Promise<void> {
-    const initialBody: AdobeEventRequestBody = {...this.createBaseRequest(eventType), ...metadata};
+    const initialBody: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata };
     const body = this.addCustomMetadata(eventType, initialBody);
     if (this.sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
@@ -418,7 +431,7 @@ export class AdobeConnectorAdapter {
 
   private buildUserAgent(): string | undefined {
     if (Platform.OS === 'android') {
-      const {Release, Model: deviceName} = Platform.constants;
+      const { Release, Model: deviceName } = Platform.constants;
       const localeString = nonEmptyOrUnknown(NativeModules.I18nManager?.localeIdentifier?.replace('_', '-'));
       const operatingSystem = `Android ${Release}`;
       const deviceBuildId = nonEmptyOrUnknown(DeviceInfo.getBuildIdSync());
@@ -427,14 +440,13 @@ export class AdobeConnectorAdapter {
       // Example: Mozilla/5.0 (Linux; U; Android 7.1.2; en-US; AFTN Build/NS6296)
       return `${USER_AGENT_PREFIX} (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`;
     } else if (Platform.OS === 'ios') {
-      const localeString = NativeModules.SettingsManager.settings.AppleLocale ||
-        NativeModules.SettingsManager.settings.AppleLanguages[0]
+      const localeString = NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0];
       const model = DeviceInfo.getModel();
       const osVersion = DeviceInfo.getSystemVersion().replace('.', '_');
       return `${USER_AGENT_PREFIX} (${model}; CPU OS ${osVersion} like Mac OS X; ${localeString})`;
     } else if (Platform.OS === 'web') {
       return navigator.userAgent;
-    } else /* if (Platform.OS === 'windows' || Platform.OS === 'macos') */ {
+    } /* if (Platform.OS === 'windows' || Platform.OS === 'macos') */ else {
       // Custom User-Agent for Windows and MacOS not supported
       return undefined;
     }
@@ -449,11 +461,11 @@ export class AdobeConnectorAdapter {
           'Content-Type': 'application/json',
 
           // Override User-Agent with provided value.
-          ...(this.customUserAgent && {'User-Agent': this.customUserAgent})
-        }
+          ...(this.customUserAgent && { 'User-Agent': this.customUserAgent }),
+        },
       });
     } catch (e) {
-      console.error(TAG, "Failed to send request");
+      console.error(TAG, 'Failed to send request');
       return undefined;
     }
   }

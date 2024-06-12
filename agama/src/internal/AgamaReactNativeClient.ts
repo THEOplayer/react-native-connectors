@@ -1,17 +1,18 @@
 import {
   AgamaClient,
-  AgamaMeasurement, AgamaPlayerDescription,
+  AgamaMeasurement,
+  AgamaPlayerDescription,
   AgamaSessionMetadata,
   AgamaShutdownType,
   AgamaStatusCode,
-  AgamaViewState
+  AgamaViewState,
 } from './AgamaClient';
 import type { AgamaConfiguration } from '../api/AgamaConfiguration';
 import type { Agama } from './Agama';
 import { AgamaDeviceMetadataHandler } from './handlers/AgamaDeviceMetadataHandler';
 import { generateAgamaAbrConfiguration, mapAgamaLogLevel } from './AgamaUtils';
-import type { TypedSource } from "react-native-theoplayer";
-import type { AgamaSourceConfiguration } from "../api/AgamaSourceConfiguration";
+import type { TypedSource } from 'react-native-theoplayer';
+import type { AgamaSourceConfiguration } from '../api/AgamaSourceConfiguration';
 
 export class AgamaReactNativeClient extends AgamaClient {
   private readonly _agama: typeof Agama | undefined;
@@ -107,8 +108,7 @@ export class AgamaReactNativeClient extends AgamaClient {
           this._agamaClient.setSessionMetadata(this._agama.SessionMetadata.MANIFEST_URI, metadata);
           break;
         case AgamaSessionMetadata.NUMBER_OF_CONTENT_PROFILES_:
-          this._agamaClient.setSessionMetadata(this._agama.SessionMetadata.NUMBER_OF_CONTENT_PROFILES,
-            metadata);
+          this._agamaClient.setSessionMetadata(this._agama.SessionMetadata.NUMBER_OF_CONTENT_PROFILES, metadata);
           break;
         case AgamaSessionMetadata.SERVICE_NAME_:
           this._agamaClient.setSessionMetadata(this._agama.SessionMetadata.SERVICE_NAME, metadata);
@@ -138,12 +138,7 @@ export class AgamaReactNativeClient extends AgamaClient {
   abrSession_(agamaSource: TypedSource, agamaSourceConfiguration: AgamaSourceConfiguration): void {
     if (this._agama && this._agamaClient) {
       this.exitSession_();
-      startAgamaAbrSession(
-        this._agama,
-        this._agamaClient,
-        agamaSource,
-        agamaSourceConfiguration
-      );
+      startAgamaAbrSession(this._agama, this._agamaClient, agamaSource, agamaSourceConfiguration);
       this._inSession = true;
     }
   }
@@ -230,23 +225,18 @@ function sanitiseStatusMessage(statusMessage: string | undefined): string {
   return statusMessage ? statusMessage : '';
 }
 
-export function startAgamaAbrSession(agama: typeof Agama,
-                                     agamaClient: Agama.EMPClient,
-                                     agamaSource: TypedSource,
-                                     agamaSourceConfiguration: AgamaSourceConfiguration): void {
-  const agamaAbrSourceConfiguration = generateAgamaAbrConfiguration(
-    agama,
-    agamaSource,
-    agamaSourceConfiguration
-  );
+export function startAgamaAbrSession(
+  agama: typeof Agama,
+  agamaClient: Agama.EMPClient,
+  agamaSource: TypedSource,
+  agamaSourceConfiguration: AgamaSourceConfiguration,
+): void {
+  const agamaAbrSourceConfiguration = generateAgamaAbrConfiguration(agama, agamaSource, agamaSourceConfiguration);
 
-  agamaClient.abrSession(agamaAbrSourceConfiguration,
-    agama.ViewState.INITIAL_BUFFERING);
+  agamaClient.abrSession(agamaAbrSourceConfiguration, agama.ViewState.INITIAL_BUFFERING);
 }
 
-export function initialiseEmpClient(configuration: AgamaConfiguration,
-                                    agama: typeof Agama): Agama.EMPClient | undefined {
-
+export function initialiseEmpClient(configuration: AgamaConfiguration, agama: typeof Agama): Agama.EMPClient | undefined {
   const agamaLogLevel = mapAgamaLogLevel(agama, configuration.logLevel);
   agama.setLogLevel(agamaLogLevel);
 

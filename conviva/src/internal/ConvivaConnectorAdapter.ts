@@ -2,11 +2,14 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
 import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import { NativeModules } from 'react-native';
-import type { ConvivaEventDetail } from "../api/ConvivaEventDetail";
+import type { ConvivaEventDetail } from '../api/ConvivaEventDetail';
 
 export class ConvivaConnectorAdapter {
-
-  constructor (private player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
+  constructor(
+    private player: THEOplayer,
+    convivaMetadata: ConvivaMetadata,
+    convivaConfig: ConvivaConfiguration,
+  ) {
     NativeModules.ConvivaModule.initialize(this.player.nativeHandle, convivaMetadata, convivaConfig);
   }
 
