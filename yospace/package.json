@@ -54,7 +54,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^3.0.0 || ^7.0.0",
+    "react-native-theoplayer": "^7.5.0",
     "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
   },
   "peerDependenciesMeta": {
