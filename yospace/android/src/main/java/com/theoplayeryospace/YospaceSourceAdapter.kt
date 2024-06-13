@@ -24,7 +24,6 @@ private const val PROP_KEEPPROXYALIVE = "keepProxyAlive"
 private const val PROP_EXCLUDEFROMSUPPRESSION = "excludeFromSuppression"
 private const val PROP_TOKEN = "token"
 private const val PROP_CUSTOMHTTPHEADERS = "customHttpHeaders"
-private const val PROP_DEBUGFLAGS = "debugFlags"
 
 private const val ERROR_YOSPACE_NOT_ENABLED = "Yospace support not enabled."
 private const val ERROR_YOSPACE_INVALID_SESSION_PROPERTIES =
@@ -77,9 +76,6 @@ private fun sessionPropertiesFromJson(json: JSONObject?): Session.SessionPropert
           }
         }
       }
-      if (json?.has(PROP_DEBUGFLAGS) == true) Session.SessionProperties.setDebugFlags(
-        json.getInt(PROP_DEBUGFLAGS)
-      )
     }
   } catch (e: Exception) {
     throw THEOplayerException(

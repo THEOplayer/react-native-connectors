@@ -9,8 +9,8 @@ export class YospaceConnector {
    *
    * @param player THEOplayer instance.
    */
-  constructor(player: THEOplayer) {
-    this.connectorAdapter = new YospaceConnectorAdapter(player);
+  constructor(player: THEOplayer, debugFlags?: number) {
+    this.connectorAdapter = new YospaceConnectorAdapter(player, debugFlags);
   }
 
   /**
