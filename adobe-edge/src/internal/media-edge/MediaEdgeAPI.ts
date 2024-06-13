@@ -24,6 +24,8 @@ interface MediaEdgeClient<Paths extends {}, Media extends MediaType = MediaType>
   POST: PostRequestType<Paths, Media>;
 }
 
+const TAG = "AdobeEdge";
+
 export class MediaEdgeAPI {
   private readonly _client: MediaEdgeClient<paths, 'application/json'>;
   private readonly _configId: string;
@@ -216,7 +218,7 @@ export class MediaEdgeAPI {
         this._eventQueue = [];
       }
     } catch (e) {
-      console.error(`Failed to start session: ${e}`);
+      console.error(TAG, `Failed to start session. ${JSON.stringify(e)}`);
       this._hasSessionFailed = true;
     }
   }
@@ -241,7 +243,7 @@ export class MediaEdgeAPI {
   async postEvent(path: keyof paths, mediaDetails: AdobeMediaDetails) {
     // Make sure we are positing data with a valid sessionID.
     if (!this._sessionId) {
-      console.error('Invalid sessionID');
+      console.error(TAG, 'Invalid sessionID');
       return;
     }
     try {
@@ -266,10 +268,10 @@ export class MediaEdgeAPI {
       // @ts-ignore
       const error = result.error || result.data.errors;
       if (error) {
-        console.error(`Failed to send event: ${error}`);
+        console.error(TAG, `Failed to send event. ${JSON.stringify(error)}`);
       }
     } catch (e) {
-      console.error(`Failed to send event: ${e}`);
+      console.error(TAG, `Failed to send event: ${JSON.stringify(e)}`);
     }
   }
 }
