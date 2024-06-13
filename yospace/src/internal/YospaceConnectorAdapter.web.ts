@@ -7,6 +7,10 @@ export class YospaceConnectorAdapter {
 
   constructor(player: THEOplayer, _debugFlags?: number) {
     this.connector = new YospaceConnector(player.nativeHandle as ChromelessPlayer);
+
+    // TODO:
+    // this.connector.setupYospaceSession()
+    console.warn('THEOplayer Yospace connector does not support Web yet.');
   }
 
   destroy() {
