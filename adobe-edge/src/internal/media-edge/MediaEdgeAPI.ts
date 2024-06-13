@@ -178,41 +178,46 @@ export class MediaEdgeAPI {
   }
 
   async startSession(sessionDetails: AdobeSessionDetails, customMetadata?: AdobeCustomMetadataDetails[], qoeDataDetails?: AdobeQoeDataDetails) {
-    const result = await this._client.POST('/sessionStart', {
-      params: this.createClientParams(),
-      body: {
-        events: [
-          {
-            xdm: {
-              eventType: pathToEventTypeMap['/sessionStart'],
-              timestamp: new Date().toISOString(),
-              mediaCollection: {
-                playhead: 0,
-                sessionDetails,
-                qoeDataDetails,
-                customMetadata,
+    try {
+      const result = await this._client.POST('/sessionStart', {
+        params: this.createClientParams(),
+        body: {
+          events: [
+            {
+              xdm: {
+                eventType: pathToEventTypeMap['/sessionStart'],
+                timestamp: new Date().toISOString(),
+                mediaCollection: {
+                  playhead: 0,
+                  sessionDetails,
+                  qoeDataDetails,
+                  customMetadata,
+                },
               },
             },
-          },
-        ],
-      },
-    });
-    // @ts-ignore
-    const error = result.error || result.data.errors;
-    if (error) {
-      console.error('Failed to start session', error);
-      this._hasSessionFailed = true;
-      return;
-    }
-    // @ts-ignore
-    this._sessionId = result.data?.handle?.find((h: any) => {
-      return h.type === 'media-analytics:new-session';
-    })?.payload?.[0]?.sessionId;
+          ],
+        },
+      });
 
-    // empty queue
-    if (this._sessionId && this._eventQueue.length !== 0) {
-      this._eventQueue.forEach((doPostEvent) => doPostEvent());
-      this._eventQueue = [];
+      // @ts-ignore
+      const error = result.error || result.data.errors;
+      if (error) {
+        // noinspection ExceptionCaughtLocallyJS
+        throw Error(error);
+      }
+      // @ts-ignore
+      this._sessionId = result.data?.handle?.find((h: { type: string }) => {
+        return h.type === 'media-analytics:new-session';
+      })?.payload?.[0]?.sessionId;
+
+      // empty queue
+      if (this._sessionId && this._eventQueue.length !== 0) {
+        this._eventQueue.forEach((doPostEvent) => doPostEvent());
+        this._eventQueue = [];
+      }
+    } catch (e) {
+      console.error(`Failed to start session: ${e}`);
+      this._hasSessionFailed = true;
     }
   }
 
@@ -239,28 +244,32 @@ export class MediaEdgeAPI {
       console.error('Invalid sessionID');
       return;
     }
-    const result = await this._client.POST(path, {
-      params: this.createClientParams(),
-      body: {
-        events: [
-          {
-            xdm: {
-              eventType: pathToEventTypeMap[path],
-              timestamp: new Date().toISOString(),
-              mediaCollection: {
-                ...mediaDetails,
-                playhead: sanitisePlayhead(mediaDetails.playhead),
-                sessionID: this._sessionId,
+    try {
+      const result = await this._client.POST(path, {
+        params: this.createClientParams(),
+        body: {
+          events: [
+            {
+              xdm: {
+                eventType: pathToEventTypeMap[path],
+                timestamp: new Date().toISOString(),
+                mediaCollection: {
+                  ...mediaDetails,
+                  playhead: sanitisePlayhead(mediaDetails.playhead),
+                  sessionID: this._sessionId,
+                },
               },
             },
-          },
-        ],
-      },
-    });
-    // @ts-ignore
-    const error = result.error || result.data.errors;
-    if (error) {
-      console.error('Failed to send event', error);
+          ],
+        },
+      });
+      // @ts-ignore
+      const error = result.error || result.data.errors;
+      if (error) {
+        console.error(`Failed to send event: ${error}`);
+      }
+    } catch (e) {
+      console.error(`Failed to send event: ${e}`);
     }
   }
 }
