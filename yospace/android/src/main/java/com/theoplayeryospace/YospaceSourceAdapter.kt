@@ -28,7 +28,7 @@ private const val PROP_DEBUGFLAGS = "debugFlags"
 
 private const val ERROR_YOSPACE_NOT_ENABLED = "Yospace support not enabled."
 private const val ERROR_YOSPACE_INVALID_SESSION_PROPERTIES =
-  "Invalid session propertie in source description."
+  "Invalid session properties in source description."
 
 @Throws(THEOplayerException::class)
 fun yospaceBuilderFromJson(builder: TypedSource.Builder, json: JSONObject): TypedSource.Builder {
