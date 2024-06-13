@@ -20,9 +20,11 @@ class ReactTHEOplayerYospaceModule(context: ReactApplicationContext) :
     viewResolver = ViewResolver(context)
 
     // Register source builder
-    SSAIAdapterRegistry.register(PROP_SSAI_INTEGRATION_YOSPACE) { json, currentBuilder ->
-      currentBuilder.apply {
-        yospaceBuilderFromJson(currentBuilder, json)
+    if (!SSAIAdapterRegistry.hasIntegration(PROP_SSAI_INTEGRATION_YOSPACE)) {
+      SSAIAdapterRegistry.register(PROP_SSAI_INTEGRATION_YOSPACE) { json, currentBuilder ->
+        currentBuilder.apply {
+          yospaceBuilderFromJson(currentBuilder, json)
+        }
       }
     }
   }
