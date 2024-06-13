@@ -23,9 +23,7 @@ class ReactTHEOplayerYospaceModule(context: ReactApplicationContext) :
     // Register source builder
     if (!SSAIAdapterRegistry.hasIntegration(PROP_SSAI_INTEGRATION_YOSPACE)) {
       SSAIAdapterRegistry.register(PROP_SSAI_INTEGRATION_YOSPACE) { json, currentBuilder ->
-        currentBuilder.apply {
-          yospaceBuilderFromJson(currentBuilder, json)
-        }
+        yospaceBuilderFromJson(currentBuilder, json)
       }
     }
   }
