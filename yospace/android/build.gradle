@@ -70,6 +70,13 @@ repositories {
   // Local Maven repo
   maven { url("local") }
   maven { url 'https://jitpack.io' }
+  maven {
+    url 'https://yospacerepo.jfrog.io/yospacerepo/android-sdk'
+    credentials {
+      username safeExtGet('yospaceUsername', System.getenv("YOSPACE_USERNAME"))
+      password safeExtGet('yospacePassword', System.getenv("YOSPACE_PASSWORD"))
+    }
+  }
 }
 
 // The Yospace connector requires at least THEOplayer SDK v5.11.0.
