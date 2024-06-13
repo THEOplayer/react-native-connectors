@@ -1,6 +1,6 @@
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { RefObject, useEffect, useRef } from 'react';
-import { YospaceConnector } from '@theoplayer/react-native-analytics-yospace';
+import { YospaceConnector } from '@theoplayer/react-native-yospace';
 
 export function useYospace(): [RefObject<YospaceConnector | undefined>, (player: THEOplayer | undefined) => void] {
   const connector = useRef<YospaceConnector | undefined>();

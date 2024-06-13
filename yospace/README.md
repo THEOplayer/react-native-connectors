@@ -5,10 +5,10 @@ A Yospace connector for `@theoplayer/react-native`.
 ## Installation
 
 ```sh
-npm install @theoplayer/react-native-analytics-yospace
+npm install @theoplayer/react-native-yospace
 ```
 
-[//]: # (npm install @theoplayer/react-native-analytics-yospace)
+[//]: # (npm install @theoplayer/react-native-yospace)
 
 ## Usage
 
@@ -18,7 +18,7 @@ Create the connector by providing the `THEOplayer` instance, some initial metada
 object:
 
 ```tsx
-import { useYospace } from '@theoplayer/react-native-analytics-yospace';
+import { useYospace } from '@theoplayer/react-native-yospace';
 
 const App = () => {
   const [yospace, initYospace] = useYospace();

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@theoplayer/react-native-analytics-yospace": [
+      "@theoplayer/react-native-yospace": [
         "./src/index"
       ]
     }

@@ -59,7 +59,7 @@ android {
 rootProject.allprojects {
   repositories {
     // Any project depending on this module through npm should be able to find the local Maven repo.
-    maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-yospace/android/local") }
+    maven { url("$rootDir/../node_modules/@theoplayer/react-native-yospace/android/local") }
   }
 }
 
