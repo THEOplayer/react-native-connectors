@@ -8,6 +8,7 @@
   "license": "MIT",
   "workspaces": [
     "adobe",
+    "adobe-edge",
     "agama",
     "comscore",
     "conviva",

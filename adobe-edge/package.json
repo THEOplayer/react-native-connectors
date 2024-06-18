@@ -1,0 +1,88 @@
+{
+  "name": "@theoplayer/react-native-analytics-adobe-edge",
+  "version": "0.1.0",
+  "description": "Adobe Edge analytics connector for @theoplayer/react-native",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "android",
+    "ios",
+    "cpp",
+    "*.podspec",
+    "*.tgz",
+    "CHANGELOG.md",
+    "!lib/typescript/example",
+    "!ios/build",
+    "!android/build",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "typescript": "tsc --noEmit",
+    "build": "bob build",
+    "prepare": "npm run build",
+    "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
+    "generate-types": "openapi-typescript ./src/internal/media-edge/media-edge-0.1.json -o ./src/internal/media-edge/MediaEdge.d.ts"
+  },
+  "keywords": [
+    "react-native",
+    "THEOplayer",
+    "ios",
+    "android",
+    "adobe"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:THEOplayer/react-native-connectors.git"
+  },
+  "author": "THEO Technologies",
+  "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
+  "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/adobe-edge#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-device-info": "*",
+    "react-native-theoplayer": "^3.0.0 || ^7.0.0",
+    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "theoplayer": {
+      "optional": true
+    }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.9.5"
+  }
+}
