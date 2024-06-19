@@ -25,16 +25,11 @@ private const val PROP_EXCLUDEFROMSUPPRESSION = "excludeFromSuppression"
 private const val PROP_TOKEN = "token"
 private const val PROP_CUSTOMHTTPHEADERS = "customHttpHeaders"
 
-private const val ERROR_YOSPACE_NOT_ENABLED = "Yospace support not enabled."
 private const val ERROR_YOSPACE_INVALID_SESSION_PROPERTIES =
   "Invalid session properties in source description."
 
 @Throws(THEOplayerException::class)
 fun yospaceBuilderFromJson(builder: TypedSource.Builder, json: JSONObject): TypedSource.Builder {
-  // Check whether the connector was enabled
-  if (!BuildConfig.EXTENSION_YOSPACE) {
-    throw THEOplayerException(ErrorCode.AD_ERROR, ERROR_YOSPACE_NOT_ENABLED)
-  }
   return builder.ssai(
     YospaceSsaiDescription(
       streamType = streamTypeFromString(json.optString(PROP_STREAM_TYPE)),
