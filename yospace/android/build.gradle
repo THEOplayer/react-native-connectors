@@ -74,8 +74,8 @@ repositories {
     url 'https://yospacerepo.jfrog.io/yospacerepo/android-sdk'
     credentials {
       // Get credentials either from project properties, or from environment variables.
-      username safeExtGet('yospaceUsername', System.getenv("YOSPACE_USERNAME"))
-      password safeExtGet('yospacePassword', System.getenv("YOSPACE_PASSWORD"))
+      username safeExtGet('YOSPACE_USERNAME', System.getenv("YOSPACE_USERNAME"))
+      password safeExtGet('YOSPACE_PASSWORD', System.getenv("YOSPACE_PASSWORD"))
     }
   }
 }
