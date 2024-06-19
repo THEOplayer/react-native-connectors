@@ -1,12 +1,28 @@
 # THEOplayer React-Native Yospace Connector
 
 A Yospace connector for `@theoplayer/react-native`.
+The connector only supports Android platforms for now.
 
 ## Installation
 
 ```sh
 npm install @theoplayer/react-native-yospace
 ```
+
+The connector uses the **private Yospace SDK**, for which credentials need to be configured.
+
+### Android
+
+On Android, configure the Maven repository credentials either setting project properties, for example in
+the `gradle.properties` file:
+
+```
+YOSPACE_USERNAME=myUserName
+YOSPACE_PASSWORD=myPassword
+```
+
+or, alternatively, by setting both `YOSPACE_USERNAME` and `YOSPACE_PASSWORD` as environment variables on your build
+system. Make sure not to expose them!
 
 [//]: # (npm install @theoplayer/react-native-yospace)
 
