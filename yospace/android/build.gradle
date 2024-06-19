@@ -69,7 +69,7 @@ repositories {
   mavenCentral()
   // Local Maven repo
   maven { url("local") }
-  maven { url 'https://jitpack.io' }
+  maven { url 'https://maven.theoplayer.com/releases' }
   maven {
     url 'https://yospacerepo.jfrog.io/yospacerepo/android-sdk'
     credentials {
