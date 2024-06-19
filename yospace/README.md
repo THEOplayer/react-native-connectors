@@ -48,6 +48,7 @@ const App = () => {
       sources: [
         {
           src: 'https://csm-e-sdk-validation.bln1.yospace.com/csm/extlive/yospace02,hlssample42.m3u8?yo.br=true&yo.av=4',
+          type: 'application/x-mpegurl',
           ssai: {
             integration: 'yospace',
 
