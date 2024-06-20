@@ -5,7 +5,7 @@ import type { ChromelessPlayer } from "theoplayer";
 export class YospaceConnectorAdapter {
   private connector: YospaceConnector;
 
-  constructor(player: THEOplayer, _debugFlags?: number) {
+  constructor(player: THEOplayer, _debugFlags: number = 0) {
     this.connector = new YospaceConnector(player.nativeHandle as ChromelessPlayer);
 
     // TODO:
