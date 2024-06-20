@@ -60,7 +60,7 @@ rootProject.allprojects {
   repositories {
     // Any project depending on this module through npm should be able to find the local Maven repo.
     maven { url("$rootDir/../node_modules/@theoplayer/react-native-yospace/android/local") }
-
+    maven { url 'https://maven.theoplayer.com/releases' }
     maven {
       url 'https://yospacerepo.jfrog.io/yospacerepo/android-sdk'
       credentials {
@@ -76,7 +76,6 @@ repositories {
   mavenLocal()
   google()
   mavenCentral()
-  maven { url 'https://maven.theoplayer.com/releases' }
 }
 
 // The Yospace connector requires at least THEOplayer SDK v7.6.0.
