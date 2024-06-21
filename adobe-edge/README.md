@@ -35,8 +35,8 @@ Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tra
 ```tsx
 import { useAdobe } from '@theoplayer/react-native-analytics-adobe';
 
-const baseUrl = "<Media Collection API's end point>";
-const dataStreamId = "<dataStreamId or configId>";
+const baseUrl = "https://edge.adobedc.net/ee-pre-prd/va/v1";
+const dataStreamId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
 const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
 
