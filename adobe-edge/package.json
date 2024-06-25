@@ -33,7 +33,8 @@
     "build": "bob build",
     "prepare": "npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
-    "generate-types": "openapi-typescript ./src/internal/media-edge/media-edge-0.1.json -o ./src/internal/media-edge/MediaEdge.d.ts"
+    "generate-types": "openapi-typescript ./src/internal/media-edge/media-edge-0.1.json -o ./src/internal/media-edge/MediaEdge.d.ts",
+    "test": "jest"
   },
   "keywords": [
     "react-native",
