@@ -15,7 +15,8 @@ To set up terminology, in chronological order, media tracking solutions were:
 
 ## Installation
 
-The `@theoplayer/react-native` package has a peer dependency on `react-native-device-info`, which has to be installed as well:
+The `@theoplayer/react-native` package has a peer dependency on `react-native-device-info`, which has to be installed as
+well:
 
 ```sh
 npm install \
@@ -64,9 +65,9 @@ import { AdobeCustomMetadataDetails } from "@theoplayer/react-native-analytics-a
 
 const onUpdateMetadata = () => {
   const metadata: AdobeCustomMetadataDetails[] = [
-      { "customTag1": "customValue1" },
-      { "customTag2": "customValue2" }
-    ]
+    {name: 'title', value: 'test'},
+    {name: 'custom1', value: 'value1'},
+  ]
   adobe.current?.updateMetadata(metadata);
 };
 ```
