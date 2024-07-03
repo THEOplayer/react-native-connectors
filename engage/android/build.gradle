@@ -1,0 +1,83 @@
+buildscript {
+  // Buildscript is evaluated before everything else so we can't use getExtOrDefault
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.9.10"
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:7.2.2"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+def isNewArchitectureEnabled() {
+  return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+if (isNewArchitectureEnabled()) {
+  apply plugin: "com.facebook.react"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+android {
+  compileSdkVersion safeExtGet("THEOplayerEngage_compileSdkVersion", 34)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("THEOplayerEngage_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerEngage_targetSdkVersion", 34)
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    versionCode 1
+    versionName "1.0"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+    }
+  }
+
+  lintOptions {
+    disable "GradleCompatible"
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+repositories {
+  mavenLocal()
+  google()
+  mavenCentral()
+  maven { url 'https://jitpack.io' }
+}
+
+def kotlin_version = safeExtGet("THEOplayerEngage_kotlinVersion", "1.9.10")
+def work_version = safeExtGet("THEOplayerEngage_workVersion", "2.9.0")
+def coroutines_version = safeExtGet("THEOplayerEngage_coroutinesVersion", "1.7.3")
+
+dependencies {
+  //noinspection GradleDynamicVersion
+  implementation "com.facebook.react:react-native"
+  implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation "androidx.work:work-runtime-ktx:$work_version"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+  implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+
+  // Engage SDK
+  implementation 'com.google.android.engage:engage-core:1.5.2'
+
+  // Align the Kotlin SDK libraries with the same version.
+  implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
+}
