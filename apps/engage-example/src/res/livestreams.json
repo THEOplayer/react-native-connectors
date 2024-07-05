@@ -1,0 +1,112 @@
+[
+  {
+    "type": "liveStream",
+    "id": "id_FootballMatch",
+    "name": "Football Match",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ],
+    "broadcaster": "Broadcaster",
+    "playbackUri": "https://tv.com/playback/FootballMatch",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/FootballMatch",
+        "platformType": 0
+      }
+    ],
+    "availability": 0
+  },
+  {
+    "type": "liveStream",
+    "id": "id_BasketballGame",
+    "name": "Basketball Game",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ],
+    "broadcaster": "Broadcaster",
+    "playbackUri": "https://tv.com/playback/BasketballGame",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/BasketballGame",
+        "platformType": 0
+      }
+    ],
+    "availability": 0
+  },
+  {
+    "type": "liveStream",
+    "id": "id_TennisMatch",
+    "name": "Tennis Match",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ],
+    "broadcaster": "Broadcaster",
+    "playbackUri": "https://tv.com/playback/TennisMatch",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/TennisMatch",
+        "platformType": 0
+      }
+    ],
+    "availability": 0
+  },
+  {
+    "type": "liveStream",
+    "id": "id_BaseballGame",
+    "name": "Baseball Game",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ],
+    "broadcaster": "Broadcaster",
+    "playbackUri": "https://tv.com/playback/BaseballGame",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/BaseballGame",
+        "platformType": 0
+      }
+    ],
+    "availability": 0
+  },
+  {
+    "type": "liveStream",
+    "id": "id_SoccerGame",
+    "name": "Soccer Game",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ],
+    "broadcaster": "Broadcaster",
+    "playbackUri": "https://tv.com/playback/SoccerGame",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/SoccerGame",
+        "platformType": 0
+      }
+    ],
+    "availability": 0
+  }
+]
