@@ -6,7 +6,8 @@ export enum EntityType {
   TvEpisode = 'tvEpisode',
   TvSeason = 'tvSeason',
   TvShow = 'tvShow',
-  VideoClip = 'videoClip'
+  VideoClip = 'videoClip',
+  SignIn = 'signIn'
 }
 
 export interface Entity {
@@ -16,7 +17,7 @@ export interface Entity {
   type: EntityType;
 
   /**
-   * The entity's name.
+   * The entity's name or title.
    */
   name: string;
 

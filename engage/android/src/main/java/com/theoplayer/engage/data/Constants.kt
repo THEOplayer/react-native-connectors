@@ -14,6 +14,7 @@ object Constants {
   const val PROP_CURRENT_PRICE = "currentPrice"
   const val PROP_STRIKETHROUGH_PRICE = "strikethroughPrice"
   const val PROP_SHOW_TITLE = "showTitle"
+  const val PROP_SUBTITLE = "subtitle"
   const val PROP_EPISODE_COUNT = "episodeCount"
   const val PROP_EPISODE_NUMBER = "episodeNumber"
   const val PROP_EPISODE_DISPLAY_NUMBER = "episodeDisplayNumber"
@@ -50,4 +51,6 @@ object Constants {
   const val PROP_NEXT_EPISODE_AVAILABLE = "isNextEpisodeAvailable"
   const val PROP_LAST_ENGAGEMENT_TIME = "lastEngagementTime"
   const val PROP_LAST_PLAYBACK_POS = "lastPlaybackPosition"
+  const val PROP_ACTION_TEXT = "actionText"
+  const val PROP_ACTION_URI = "actionUri"
 }
