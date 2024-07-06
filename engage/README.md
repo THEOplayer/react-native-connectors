@@ -4,7 +4,15 @@ An Engage connector for `@theoplayer/react-native`. Currently only Android platf
 
 ## Overview
 
-TODO
+The Engage connector aims to **re-engage users** with your app by offering interesting content, promotions and deals.
+Users can be driven directly to a relevant page within your app using **deep links**.
+
+Typical use-cases are
+the **"Continue Watching"** feature, which allows users to continue media play-back from where they
+left off bookmarks, **(personalized) recommendations** promoting content that might be of interest to the user,
+or a **sign-in** option that navigates users to the sign-in page of your app.
+
+Currently, the engage connector only supports the [Android Engage SDK](https://developer.android.com/guide/playcore/engage).
 
 ### Terminology
 
