@@ -4,13 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
 import com.google.android.engage.service.Intents.ACTION_PUBLISH_CONTINUATION
 import com.google.android.engage.service.Intents.ACTION_PUBLISH_FEATURED
 import com.google.android.engage.service.Intents.ACTION_PUBLISH_RECOMMENDATION
-import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_CONTINUATION
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_FEATURED
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_RECOMMENDATIONS
@@ -37,10 +34,6 @@ class EngageServiceBroadcastReceiver : BroadcastReceiver() {
   }
 
   private fun onPublish(context: ReactApplicationContext, type: String) {
-    context.getJSModule(RCTDeviceEventEmitter::class.java).emit(
-      "onUpdateCluster",
-      Arguments.createMap().apply {
-        putString(PUBLISH_TYPE, type)
-      })
+    // TODO
   }
 }

@@ -1,69 +1,33 @@
-import { EngageClient } from '../internal/EngageClient';
+import { DefaultEngageClient } from '../internal/DefaultEngageClient';
 import { Platform } from 'react-native';
 import { EngageConfiguration } from "./EngageConfiguration";
-import { ClusterType, ClusterDataProvider } from "./types";
-import { DefaultEventDispatcher } from "../internal/event/DefaultEventDispatcher";
-import { EngageEventMap } from "./EngageEvent";
+import { EngageClient } from "./EngageClient";
 
-export class EngageConnector extends DefaultEventDispatcher<EngageEventMap> {
-  private readonly _engageClient?: EngageClient;
+export class EngageConnector {
 
-  constructor(configuration: EngageConfiguration) {
-    super();
-    if (isValidConfiguration()) {
-      this._engageClient = new EngageClient(configuration, this);
-    }
-  }
+  private static client: EngageClient | undefined = undefined;
 
   /**
-   * Request an update for the current list entities for a given cluster,
+   * Create an Engage client.
    *
-   * @param clusterType either "Continuation" (or "Continue Watching"), "Featured", or "Recommendation".
-   *
-   * @remarks
-   * <br/> - Any previously set list is replaced, there is no need to remove the old list first.
-   * <br/> - The content can be unpersonalized if 'guest' sessions are supported.
+   * @param configuration
    */
-  updateClusterEntities(clusterType: ClusterType) {
-    this._engageClient?.updateClusterEntities(clusterType);
-  }
-
-  /**
-   * Set a callback to provide a list of cluster entities when requested from the OS.
-   *
-   * @param clusterType either "Continuation" (or "Continue Watching"), "Featured", or "Recommendation".
-   * @param cb cluster entity provider callback.
-   */
-  setClusterDataProvider(clusterType: ClusterType, cb: ClusterDataProvider | undefined) {
-    this._engageClient?.setClusterDataProvider(clusterType, cb);
-  }
-
-  /**
-   * Clear all entities for a given cluster type.
-   */
-  removeClusterEntities(clusterType: ClusterType) {
-    this._engageClient?.removeClusterEntities(clusterType);
-  }
-
-  /**
-   * Remove all entities for all cluster types.
-   */
-  removeAllClusterEntities() {
-    this._engageClient?.removeAllClusterEntities();
-  }
-
-  /**
-   * Destroy the connector.
-   */
-  destroy(): void {
-    this._engageClient?.destroy();
+  static createClient(configuration: EngageConfiguration): Promise<EngageClient> {
+    return new Promise((resolve, reject) => {
+      if (this.client) {
+        // Keep a singleton client
+        resolve(this.client);
+      } else if (isValidConfiguration()) {
+        this.client = new DefaultEngageClient(configuration, (client: EngageClient) => {
+          resolve(client);
+        });
+      } else {
+        reject(`EngageConnector is not support on ${Platform.OS}`);
+      }
+    });
   }
 }
 
 function isValidConfiguration(): boolean {
-  if (!(Platform.OS === 'android')) {
-    console.warn(`EngageConnector is not support on ${Platform.OS}`);
-    return false;
-  }
-  return true;
+  return Platform.OS === 'android';
 }

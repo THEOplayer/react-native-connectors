@@ -6,8 +6,8 @@
     "posters": [
       {
         "uri": "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_QL75_UX380_CR0,4,380,562_.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 723,
         "theme": "light"
       }
     ],
@@ -15,7 +15,7 @@
     "platformSpecificPlaybackUri": [
       {
         "playbackUri": "https://tv.com/playback/BreakingBad_S1E1",
-        "platformType": "PlatformType.AndroidMobile"
+        "platformType": 0
       }
     ],
     "availability": 0,
@@ -44,8 +44,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 723,
         "theme": "light"
       }
     ],
@@ -53,7 +53,7 @@
     "platformSpecificPlaybackUri": [
       {
         "playbackUri": "https://tv.com/playback/GameOfThrones_S1E1",
-        "platformType": "PlatformType.AndroidMobile"
+        "platformType": 0
       }
     ],
     "availability": 0,
@@ -82,8 +82,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 723,
         "theme": "light"
       }
     ],
@@ -91,7 +91,7 @@
     "platformSpecificPlaybackUri": [
       {
         "playbackUri": "https://tv.com/playback/StrangerThings_S1E1",
-        "platformType": "PlatformType.AndroidMobile"
+        "platformType": 0
       }
     ],
     "availability": 0,
@@ -120,8 +120,8 @@
     "posters": [
       {
         "uri": "https://m.media-amazon.com/images/M/MV5BN2M5YWFjN2YtYzU2YS00NzBlLTgwZWUtYWQzNWFhNDkyYjg3XkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_FMjpg_UY2500_.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 723,
         "theme": "light"
       }
     ],
@@ -129,7 +129,7 @@
     "platformSpecificPlaybackUri": [
       {
         "playbackUri": "https://tv.com/playback/TheMandalorian_S1E1",
-        "platformType": "PlatformType.AndroidMobile"
+        "platformType": 0
       }
     ],
     "availability": 0,
@@ -143,7 +143,7 @@
     "seasonNumber": "Sz.1",
     "episodeNumber": 1,
     "episodeDisplayNumber": "Ep.1",
-    "airDate": 1573603200000,
+    "airDate": 1573605000000,
     "contentRating": [
       {
         "rating": "TV-14",
@@ -158,8 +158,8 @@
     "posters": [
       {
         "uri": "https://m.media-amazon.com/images/M/MV5BNDVkYjU0MzctMWRmZi00NTkxLTgwZWEtOWVhYjZlYjllYmU4XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_QL75_UY562_CR1,0,380,562_.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 723,
         "theme": "light"
       }
     ],
@@ -167,7 +167,7 @@
     "platformSpecificPlaybackUri": [
       {
         "playbackUri": "https://tv.com/playback/Friends_S1E1",
-        "platformType": "PlatformType.AndroidMobile"
+        "platformType": 0
       }
     ],
     "availability": 0,

@@ -1,7 +1,7 @@
 import { Entity, EntityType } from "./Entity";
 
 /**
- * Movie.
+ * SignIn.
  */
 export interface SignIn extends Entity {
   /**

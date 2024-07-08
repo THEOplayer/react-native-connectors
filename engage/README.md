@@ -50,41 +50,36 @@ const engage = useEngage(engageConfig);
 const connector = new EngageConnector(engageConfig);
 ```
 
-### Providing cluster data
+### Creating clusters
 
-By giving a _cluster data provider_, the connector can update its cluster data, a list of either
-"Continuation" (or "Continue Watching"), "Featured" or "Recommendation" entities.
+Using the Engage connector API, a _cluster_ can be created, a grouped set of data which can be of type
+"Continuation" (or "Continue Watching"), "Featured" or "Recommendation".
 
 ```tsx
 import { ClusterType } from "@theoplayer/react-native-engage/src";
 
-connector.setClusterDataProvider(ClusterType.Continuation, () => {
-  // Return an updated list of continuation entities.
-  return [{
-    id: "id0",
-    name: "The Dark Knight",
-    posters: [/**/],
-    // ...
-  }];
-});
+const accountProfile: AccountProfile = {
+  accountId: 'accountId',
+  profileId: 'profileId'
+};
+const syncAcrossDevices: boolean = true;
+
+// Create a "Continuation" cluster.
+const continuation = connector.createContinuationCluster(accountProfile, syncAcrossDevices);
 ```
-
-Alternatively, a hook can be used to conveniently provide and manage the cluster data:
-
-```tsx
-const [continuation, addToContinuation, removeFromContinuation] = useContinuation(engage);
-```
-
-Note that cluster operations are _upsert_: they replace existing content for that cluster. There is no need to first remove
-entities before inserting new ones.
 
 ### Updating or "publishing" cluster data
 
 The cluster data can be updated either **manually**:
 
 ```tsx
-// Request an update of the Continuation data
-connector.updateClusterEntities(ClusterType.Continuation);
+// Add or remove continuation entities.
+continuation.addEntity({
+  id: "id0",
+  name: "The Dark Knight",
+  posters: [/**/],
+  // ...
+});
 ```
 
 or when requested **by the connector**. For example, on Android platforms when a broadcast message is sent to the app,
