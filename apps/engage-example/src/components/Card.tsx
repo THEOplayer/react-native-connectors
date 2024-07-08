@@ -11,7 +11,7 @@ export interface CardProps {
 }
 
 export const Card = (props: CardProps) => (
-  <TouchableOpacity style={styles.card} onPress={() => props.onTap(props.item)}>
+  <TouchableOpacity style={styles.card} onPress={() => props.onTap?.(props.item)}>
     <Image source={{ uri: props.item.posters?.[0].uri }} resizeMode={'cover'} style={styles.cardImage} />
     <View style={{ margin: 10, flex: 1, justifyContent: 'flex-end' }}>
       <Text style={styles.cardTitle} ellipsizeMode={"tail"} numberOfLines={2}>{props.item.name}</Text>

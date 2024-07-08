@@ -1,30 +1,33 @@
-package com.theoplayer.engage.data
+package com.theoplayer.engage.adapter
 
-import android.net.Uri
 import android.util.Log
+import com.google.android.engage.common.datamodel.AccountProfile
 import com.google.android.engage.common.datamodel.DisplayTimeWindow
 import com.google.android.engage.common.datamodel.Entity
 import com.google.android.engage.common.datamodel.Image
 import com.google.android.engage.common.datamodel.PlatformSpecificUri
 import com.google.android.engage.common.datamodel.Price
 import com.google.android.engage.video.datamodel.RatingSystem
-import com.theoplayer.engage.data.ParseUtils.getInt
-import com.theoplayer.engage.data.ParseUtils.getLong
-import com.theoplayer.engage.data.ParseUtils.getString
-import com.theoplayer.engage.data.ParseUtils.parseImageTheme
-import com.theoplayer.engage.data.Constants.PROP_AVAILABILITY_END
-import com.theoplayer.engage.data.Constants.PROP_AVAILABILITY_START
-import com.theoplayer.engage.data.Constants.PROP_CONTENT_RATING
-import com.theoplayer.engage.data.Constants.PROP_CONTENT_RATING_AGENCY
-import com.theoplayer.engage.data.Constants.PROP_CURRENT_PRICE
-import com.theoplayer.engage.data.Constants.PROP_PLATFORM_TYPE
-import com.theoplayer.engage.data.Constants.PROP_PLAYBACK_URI
-import com.theoplayer.engage.data.Constants.PROP_POSTER_HEIGHT
-import com.theoplayer.engage.data.Constants.PROP_POSTER_THEME
-import com.theoplayer.engage.data.Constants.PROP_POSTER_URI
-import com.theoplayer.engage.data.Constants.PROP_POSTER_WIDTH
-import com.theoplayer.engage.data.Constants.PROP_STRIKETHROUGH_PRICE
-import com.theoplayer.engage.data.Constants.PROP_TYPE
+import com.theoplayer.engage.adapter.Constants.PROP_ACCOUNT_ID
+import com.theoplayer.engage.adapter.ParseUtils.getInt
+import com.theoplayer.engage.adapter.ParseUtils.getLong
+import com.theoplayer.engage.adapter.ParseUtils.getString
+import com.theoplayer.engage.adapter.ParseUtils.parseImageTheme
+import com.theoplayer.engage.adapter.Constants.PROP_AVAILABILITY_END
+import com.theoplayer.engage.adapter.Constants.PROP_AVAILABILITY_START
+import com.theoplayer.engage.adapter.Constants.PROP_CONTENT_RATING
+import com.theoplayer.engage.adapter.Constants.PROP_CONTENT_RATING_AGENCY
+import com.theoplayer.engage.adapter.Constants.PROP_CURRENT_PRICE
+import com.theoplayer.engage.adapter.Constants.PROP_PLATFORM_TYPE
+import com.theoplayer.engage.adapter.Constants.PROP_PLAYBACK_URI
+import com.theoplayer.engage.adapter.Constants.PROP_POSTER_HEIGHT
+import com.theoplayer.engage.adapter.Constants.PROP_POSTER_THEME
+import com.theoplayer.engage.adapter.Constants.PROP_POSTER_URI
+import com.theoplayer.engage.adapter.Constants.PROP_POSTER_WIDTH
+import com.theoplayer.engage.adapter.Constants.PROP_PROFILE_ID
+import com.theoplayer.engage.adapter.Constants.PROP_STRIKETHROUGH_PRICE
+import com.theoplayer.engage.adapter.Constants.PROP_TYPE
+import com.theoplayer.engage.adapter.ParseUtils.getUri
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -39,20 +42,11 @@ private const val TYPE_CLIP = "videoClip"
 private const val TYPE_SIGNIN = "signIn"
 
 object EntityAdapter {
-  fun convertItems(items: String?): List<Entity> {
-    try {
-      return convertItems(JSONArray(items))
-    } catch (e: Exception) {
-      Log.w(TAG, "Failed to parse entities: ${e.message}")
-      return listOf()
-    }
-  }
-
-  private fun convertItems(items: JSONArray): List<Entity> {
+  fun convertItems(items: JSONArray?): List<Entity> {
     return mutableListOf<Entity>().apply {
-      for (i in 0 until items.length()) {
+      for (i in 0 until (items?.length() ?: 0)) {
         try {
-          this += convertItem(items.getJSONObject(i))
+          this += convertItem(items?.getJSONObject(i))
         } catch (e: Exception) {
           Log.w(TAG, "Failed to parse entity: ${e.message}")
         }
@@ -60,8 +54,12 @@ object EntityAdapter {
     }
   }
 
-  private fun convertItem(item: JSONObject): Entity {
-    return when (item.getString(PROP_TYPE)) {
+  fun convertItem(item: String): Entity {
+    return convertItem(JSONObject(item))
+  }
+
+  fun convertItem(item: JSONObject?): Entity {
+    return when (item?.getString(PROP_TYPE)) {
       TYPE_MOVIE -> MovieAdapter.convert(item)
       TYPE_EPISODE -> TvEpisodeAdapter.convert(item)
       TYPE_SEASON -> TvSeasonAdapter.convert(item)
@@ -69,7 +67,7 @@ object EntityAdapter {
       TYPE_LIVE_STREAM -> LiveStreamAdapter.convert(item)
       TYPE_CLIP -> VideoClipAdapter.convert(item)
       TYPE_SIGNIN -> SignInAdapter.convert(item)
-      else -> throw Exception("Unknown entity type: ${item.getString(PROP_TYPE)}")
+      else -> throw Exception("Unknown entity type: ${item?.getString(PROP_TYPE)}")
     }
   }
 
@@ -86,14 +84,14 @@ object EntityAdapter {
       getString(image, PROP_POSTER_THEME)?.let {
         setImageTheme(parseImageTheme(it))
       }
-      getString(image, PROP_POSTER_URI)?.let { uri ->
-        setImageUri(Uri.parse(uri))
+      getUri(image, PROP_POSTER_URI)?.let { uri ->
+        setImageUri(uri)
       }
       getInt(image, PROP_POSTER_WIDTH)?.let { width ->
         setImageWidthInPixel(width)
       }
       getInt(image, PROP_POSTER_HEIGHT)?.let { height ->
-        setImageWidthInPixel(height)
+        setImageHeightInPixel(height)
       }
     }.build()
   }
@@ -149,8 +147,8 @@ object EntityAdapter {
 
   private fun convertPlatformSpecificUri(platformUri: JSONObject): PlatformSpecificUri {
     return PlatformSpecificUri.Builder().apply {
-      getString(platformUri, PROP_PLAYBACK_URI)?.let { uri ->
-        setActionUri(Uri.parse(uri))
+      getUri(platformUri, PROP_PLAYBACK_URI)?.let { uri ->
+        setActionUri(uri)
       }
       getInt(platformUri, PROP_PLATFORM_TYPE)?.let { platform ->
         setPlatformType(platform)
@@ -164,5 +162,16 @@ object EntityAdapter {
         this += convertPlatformSpecificUri(platformUris.getJSONObject(i))
       }
     }
+  }
+
+  fun convertAccountProfile(profile: JSONObject): AccountProfile {
+    return AccountProfile.Builder().apply {
+      getString(profile, PROP_ACCOUNT_ID)?.let { id ->
+        setAccountId(id)
+      }
+      getString(profile, PROP_PROFILE_ID)?.let { id ->
+        setProfileId(id)
+      }
+    }.build()
   }
 }

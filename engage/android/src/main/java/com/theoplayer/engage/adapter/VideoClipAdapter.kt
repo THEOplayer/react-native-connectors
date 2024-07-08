@@ -1,27 +1,27 @@
-package com.theoplayer.engage.data
+package com.theoplayer.engage.adapter
 
-import android.net.Uri
 import com.google.android.engage.video.datamodel.VideoClipEntity
-import com.theoplayer.engage.data.ParseUtils.getArray
-import com.theoplayer.engage.data.ParseUtils.getInt
-import com.theoplayer.engage.data.ParseUtils.getLong
-import com.theoplayer.engage.data.ParseUtils.getString
-import com.theoplayer.engage.data.Constants.PROP_AVAILABILITY_WINDOWS
-import com.theoplayer.engage.data.Constants.PROP_CREATED_TIME
-import com.theoplayer.engage.data.Constants.PROP_CREATOR
-import com.theoplayer.engage.data.Constants.PROP_DOWNLOADED_ON_DEVICE
-import com.theoplayer.engage.data.Constants.PROP_DURATION
-import com.theoplayer.engage.data.Constants.PROP_ID
-import com.theoplayer.engage.data.Constants.PROP_LAST_ENGAGEMENT_TIME
-import com.theoplayer.engage.data.Constants.PROP_LAST_PLAYBACK_POS
-import com.theoplayer.engage.data.Constants.PROP_NAME
-import com.theoplayer.engage.data.Constants.PROP_PLATFORM_PLAYBACK_URI
-import com.theoplayer.engage.data.Constants.PROP_PLAYBACK_URI
-import com.theoplayer.engage.data.Constants.PROP_POSTERS
-import com.theoplayer.engage.data.Constants.PROP_VIEW_COUNT
-import com.theoplayer.engage.data.Constants.PROP_WATCHNEXT_TYPE
-import com.theoplayer.engage.data.EntityAdapter.convertImages
-import com.theoplayer.engage.data.ParseUtils.getBool
+import com.theoplayer.engage.adapter.ParseUtils.getArray
+import com.theoplayer.engage.adapter.ParseUtils.getInt
+import com.theoplayer.engage.adapter.ParseUtils.getLong
+import com.theoplayer.engage.adapter.ParseUtils.getString
+import com.theoplayer.engage.adapter.Constants.PROP_AVAILABILITY_WINDOWS
+import com.theoplayer.engage.adapter.Constants.PROP_CREATED_TIME
+import com.theoplayer.engage.adapter.Constants.PROP_CREATOR
+import com.theoplayer.engage.adapter.Constants.PROP_DOWNLOADED_ON_DEVICE
+import com.theoplayer.engage.adapter.Constants.PROP_DURATION
+import com.theoplayer.engage.adapter.Constants.PROP_ID
+import com.theoplayer.engage.adapter.Constants.PROP_LAST_ENGAGEMENT_TIME
+import com.theoplayer.engage.adapter.Constants.PROP_LAST_PLAYBACK_POS
+import com.theoplayer.engage.adapter.Constants.PROP_NAME
+import com.theoplayer.engage.adapter.Constants.PROP_PLATFORM_PLAYBACK_URI
+import com.theoplayer.engage.adapter.Constants.PROP_PLAYBACK_URI
+import com.theoplayer.engage.adapter.Constants.PROP_POSTERS
+import com.theoplayer.engage.adapter.Constants.PROP_VIEW_COUNT
+import com.theoplayer.engage.adapter.Constants.PROP_WATCHNEXT_TYPE
+import com.theoplayer.engage.adapter.EntityAdapter.convertImages
+import com.theoplayer.engage.adapter.ParseUtils.getBool
+import com.theoplayer.engage.adapter.ParseUtils.getUri
 import org.json.JSONObject
 
 object VideoClipAdapter {
@@ -39,8 +39,8 @@ object VideoClipAdapter {
     getArray(clip, PROP_POSTERS)?.let { posterList ->
       builder.addPosterImages(convertImages(posterList))
     }
-    getString(clip, PROP_PLAYBACK_URI)?.let {
-      builder.setPlayBackUri(Uri.parse(it))
+    getUri(clip, PROP_PLAYBACK_URI)?.let {
+      builder.setPlayBackUri(it)
     }
     getArray(clip, PROP_PLATFORM_PLAYBACK_URI)?.let {
       builder.addPlatformSpecificPlaybackUris(EntityAdapter.convertPlatformSpecificUris(it))

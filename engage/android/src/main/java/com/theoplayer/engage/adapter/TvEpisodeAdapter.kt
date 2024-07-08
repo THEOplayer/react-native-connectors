@@ -1,37 +1,37 @@
-package com.theoplayer.engage.data
+package com.theoplayer.engage.adapter
 
-import android.net.Uri
 import com.google.android.engage.video.datamodel.TvEpisodeEntity
-import com.theoplayer.engage.data.Constants.PROP_AIR_DATE
-import com.theoplayer.engage.data.ParseUtils.getArray
-import com.theoplayer.engage.data.ParseUtils.getInt
-import com.theoplayer.engage.data.ParseUtils.getLong
-import com.theoplayer.engage.data.ParseUtils.getString
-import com.theoplayer.engage.data.Constants.PROP_AVAILABILITY
-import com.theoplayer.engage.data.Constants.PROP_AVAILABILITY_WINDOWS
-import com.theoplayer.engage.data.Constants.PROP_CONTENT_RATINGS
-import com.theoplayer.engage.data.Constants.PROP_DOWNLOADED_ON_DEVICE
-import com.theoplayer.engage.data.Constants.PROP_DURATION
-import com.theoplayer.engage.data.Constants.PROP_EPISODE_DISPLAY_NUMBER
-import com.theoplayer.engage.data.Constants.PROP_EPISODE_NUMBER
-import com.theoplayer.engage.data.Constants.PROP_GENRES
-import com.theoplayer.engage.data.Constants.PROP_ID
-import com.theoplayer.engage.data.Constants.PROP_INFOPAGE_URI
-import com.theoplayer.engage.data.Constants.PROP_LAST_ENGAGEMENT_TIME
-import com.theoplayer.engage.data.Constants.PROP_LAST_PLAYBACK_POS
-import com.theoplayer.engage.data.Constants.PROP_NAME
-import com.theoplayer.engage.data.Constants.PROP_NEXT_EPISODE_AVAILABLE
-import com.theoplayer.engage.data.Constants.PROP_PLATFORM_PLAYBACK_URI
-import com.theoplayer.engage.data.Constants.PROP_PLAYBACK_URI
-import com.theoplayer.engage.data.Constants.PROP_POSTERS
-import com.theoplayer.engage.data.Constants.PROP_PRICE
-import com.theoplayer.engage.data.Constants.PROP_SEASON_NUMBER
-import com.theoplayer.engage.data.Constants.PROP_SEASON_TITLE
-import com.theoplayer.engage.data.Constants.PROP_SHOW_TITLE
-import com.theoplayer.engage.data.Constants.PROP_WATCHNEXT_TYPE
-import com.theoplayer.engage.data.EntityAdapter.convertImages
-import com.theoplayer.engage.data.ParseUtils.getBool
-import com.theoplayer.engage.data.ParseUtils.getObject
+import com.theoplayer.engage.adapter.Constants.PROP_AIR_DATE
+import com.theoplayer.engage.adapter.ParseUtils.getArray
+import com.theoplayer.engage.adapter.ParseUtils.getInt
+import com.theoplayer.engage.adapter.ParseUtils.getLong
+import com.theoplayer.engage.adapter.ParseUtils.getString
+import com.theoplayer.engage.adapter.Constants.PROP_AVAILABILITY
+import com.theoplayer.engage.adapter.Constants.PROP_AVAILABILITY_WINDOWS
+import com.theoplayer.engage.adapter.Constants.PROP_CONTENT_RATINGS
+import com.theoplayer.engage.adapter.Constants.PROP_DOWNLOADED_ON_DEVICE
+import com.theoplayer.engage.adapter.Constants.PROP_DURATION
+import com.theoplayer.engage.adapter.Constants.PROP_EPISODE_DISPLAY_NUMBER
+import com.theoplayer.engage.adapter.Constants.PROP_EPISODE_NUMBER
+import com.theoplayer.engage.adapter.Constants.PROP_GENRES
+import com.theoplayer.engage.adapter.Constants.PROP_ID
+import com.theoplayer.engage.adapter.Constants.PROP_INFOPAGE_URI
+import com.theoplayer.engage.adapter.Constants.PROP_LAST_ENGAGEMENT_TIME
+import com.theoplayer.engage.adapter.Constants.PROP_LAST_PLAYBACK_POS
+import com.theoplayer.engage.adapter.Constants.PROP_NAME
+import com.theoplayer.engage.adapter.Constants.PROP_NEXT_EPISODE_AVAILABLE
+import com.theoplayer.engage.adapter.Constants.PROP_PLATFORM_PLAYBACK_URI
+import com.theoplayer.engage.adapter.Constants.PROP_PLAYBACK_URI
+import com.theoplayer.engage.adapter.Constants.PROP_POSTERS
+import com.theoplayer.engage.adapter.Constants.PROP_PRICE
+import com.theoplayer.engage.adapter.Constants.PROP_SEASON_NUMBER
+import com.theoplayer.engage.adapter.Constants.PROP_SEASON_TITLE
+import com.theoplayer.engage.adapter.Constants.PROP_SHOW_TITLE
+import com.theoplayer.engage.adapter.Constants.PROP_WATCHNEXT_TYPE
+import com.theoplayer.engage.adapter.EntityAdapter.convertImages
+import com.theoplayer.engage.adapter.ParseUtils.getBool
+import com.theoplayer.engage.adapter.ParseUtils.getObject
+import com.theoplayer.engage.adapter.ParseUtils.getUri
 import org.json.JSONObject
 
 object TvEpisodeAdapter {
@@ -49,14 +49,14 @@ object TvEpisodeAdapter {
     getArray(episode, PROP_POSTERS)?.let { posterList ->
       builder.addPosterImages(convertImages(posterList))
     }
-    getString(episode, PROP_PLAYBACK_URI)?.let {
-      builder.setPlayBackUri(Uri.parse(it))
+    getUri(episode, PROP_PLAYBACK_URI)?.let {
+      builder.setPlayBackUri(it)
     }
     getArray(episode, PROP_PLATFORM_PLAYBACK_URI)?.let {
       builder.addPlatformSpecificPlaybackUris(EntityAdapter.convertPlatformSpecificUris(it))
     }
-    getString(episode, PROP_INFOPAGE_URI)?.let {
-      builder.setInfoPageUri(Uri.parse(it))
+    getUri(episode, PROP_INFOPAGE_URI)?.let {
+      builder.setInfoPageUri(it)
     }
     getString(episode, PROP_SHOW_TITLE)?.let {
       builder.setShowTitle(it)

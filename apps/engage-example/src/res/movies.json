@@ -6,8 +6,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 750,
         "theme": "light"
       }
     ],
@@ -38,8 +38,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 750,
         "theme": "light"
       }
     ],
@@ -70,8 +70,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 750,
         "theme": "light"
       }
     ],
@@ -102,8 +102,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/8tZYtuWezp8JbcsvHYO0O46tFbo.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 750,
         "theme": "light"
       }
     ],
@@ -134,8 +134,8 @@
     "posters": [
       {
         "uri": "https://image.tmdb.org/t/p/w500/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg",
-        "width": 320,
-        "height": 180,
+        "width": 500,
+        "height": 750,
         "theme": "light"
       }
     ],

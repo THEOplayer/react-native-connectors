@@ -1,11 +1,18 @@
-import { EngageConfiguration, EngageConnector } from "@theoplayer/react-native-engage";
-import { useEffect, useRef } from "react";
+import { EngageClient, EngageConfiguration, EngageConnector } from "@theoplayer/react-native-engage";
+import { useEffect, useState } from "react";
 
+/**
+ * useEngage is a convenience hook managing an Engage client.
+ *
+ * @param config
+ */
 export function useEngage(config: EngageConfiguration) {
-  const engageConnector = useRef<EngageConnector | undefined>();
+  const [engageClient, setEngageClient] = useState<EngageClient | undefined>();
   useEffect(() => {
-    engageConnector.current = new EngageConnector(config);
-    return () => engageConnector.current?.destroy();
+    EngageConnector.createClient(config).then ((client) => {
+      setEngageClient(client);
+    });
+    return () => engageClient?.destroy();
   }, []);
-  return engageConnector;
+  return engageClient;
 }

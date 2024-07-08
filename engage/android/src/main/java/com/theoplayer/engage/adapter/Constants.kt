@@ -1,8 +1,9 @@
-package com.theoplayer.engage.data
+package com.theoplayer.engage.adapter
 
 object Constants {
   const val PROP_TYPE = "type"
   const val PROP_NAME = "name"
+  const val PROP_ENTITIES = "entities"
   const val PROP_ID = "id"
   const val PROP_POSTERS = "posters"
   const val PROP_POSTER_URI = "uri"
@@ -14,6 +15,7 @@ object Constants {
   const val PROP_CURRENT_PRICE = "currentPrice"
   const val PROP_STRIKETHROUGH_PRICE = "strikethroughPrice"
   const val PROP_SHOW_TITLE = "showTitle"
+  const val PROP_TITLE = "title"
   const val PROP_SUBTITLE = "subtitle"
   const val PROP_EPISODE_COUNT = "episodeCount"
   const val PROP_EPISODE_NUMBER = "episodeNumber"
@@ -53,4 +55,12 @@ object Constants {
   const val PROP_LAST_PLAYBACK_POS = "lastPlaybackPosition"
   const val PROP_ACTION_TEXT = "actionText"
   const val PROP_ACTION_URI = "actionUri"
+  const val PROP_ACCOUNT_ID = "accountId"
+  const val PROP_PROFILE_ID = "profileId"
+  const val PROP_PROVIDER_PACKAGE_NAME = "packageName"
+  const val PROP_EXPIRATION_TIME = "expirationTime"
+  const val PROP_SUBSCRIPTION_TYPE = "subscriptionType"
+  const val PROP_CONFIG = "config"
+  const val PROP_ACCOUNT_PROFILE = "accountProfile"
+  const val PROP_SYNC_ACROSS_DEVICES = "syncAcrossDevices"
 }

@@ -1,5 +1,6 @@
-package com.theoplayer.engage.data
+package com.theoplayer.engage.adapter
 
+import android.net.Uri
 import android.util.Log
 import com.google.android.engage.common.datamodel.ImageTheme
 import org.json.JSONArray
@@ -68,6 +69,14 @@ object ParseUtils {
 
   fun getObject(obj: JSONObject, key: String): JSONObject? {
     return getTypedOrWarning(obj, key, JSONObject::class)
+  }
+
+  fun getUri(obj: JSONObject, key: String): Uri? {
+    return try {
+      Uri.parse(getTypedOrWarning(obj, key, String::class))
+    } catch (e: Exception) {
+      null
+    }
   }
 
   fun parseImageTheme(value: String?): Int {

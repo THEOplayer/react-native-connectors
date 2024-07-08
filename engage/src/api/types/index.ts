@@ -1,3 +1,4 @@
+export * from "./AccountProfile";
 export * from "./Availability";
 export * from "./ClusterType";
 export * from "./DisplayTimeWindow";
