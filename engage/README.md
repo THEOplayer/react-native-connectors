@@ -136,6 +136,6 @@ stored and published to the platform.
 Tapping the bin icon results in removing and unpublishing (deleting) the cluster from the
 platform.
 
-| ![](./docs/example_app_1.png)          |       |
-|----------------------------------------|-------|
-| **Continuation and Featured clusters** |       |
+| ![](./docs/example_app_1.png)          | ![](./docs/example_app_2.png) |
+|----------------------------------------|-------------------------------|
+| **Continuation and Featured clusters** | **Swimlanes with entities**   |
