@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Swimlane } from "./components/Swimlane";
 import {
-  ClusterType, ContinuationClusterConfig,
+  ClusterType,
+  ContinuationClusterConfig,
   EngageEventType,
   Entity,
   LiveStream,
