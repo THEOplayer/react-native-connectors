@@ -58,12 +58,12 @@ export default function App() {
     continuationCluster?.removeEntity(entity);
   }, [continuationCluster]);
 
-  const removeContinuationCluster = useCallback(() => {
-    engage?.unpublishCluster(ClusterType.Continuation);
+  const clearContinuationCluster = useCallback(() => {
+    engage?.clearCluster(ClusterType.Continuation);
   }, [engage]);
 
-  const removeFeaturedCluster = useCallback(() => {
-    engage?.unpublishCluster(ClusterType.Featured);
+  const clearFeaturedCluster = useCallback(() => {
+    engage?.clearCluster(ClusterType.Featured);
   }, [engage]);
 
 
@@ -89,14 +89,14 @@ export default function App() {
                     data={continuationCluster?.entities}
                     title={"Continuation"}
                     onTap={removeContinuationEntity}
-                    onDelete={removeContinuationCluster}/>}
+                    onDelete={clearContinuationCluster}/>}
         {/* The Featured cluster with fixed items */}
         {featuredCluster?.entities.length > 0 &&
           <Swimlane style={styles.cluster}
                     data={featuredCluster?.entities}
                     title={"Featured"}
                     onTap={addContinuationEntity}
-                    onDelete={removeFeaturedCluster}/>}
+                    onDelete={clearFeaturedCluster}/>}
         <Swimlane style={styles.cluster}
                   data={movies as unknown as Movie[]}
                   title={"Movies"}

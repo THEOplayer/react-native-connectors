@@ -1,6 +1,6 @@
 import {
   AddOperation,
-  Cluster,
+  Cluster, ClusterConfig,
   ClusterEntitiesChangedEvent,
   ClusterType,
   Entity
@@ -8,10 +8,21 @@ import {
 import { DefaultEngageClient } from "../DefaultEngageClient";
 
 export class DefaultCluster extends Cluster {
+  private clusterConfig: ClusterConfig;
+
   constructor(private engageClient: DefaultEngageClient,
               public type: ClusterType,
               public entities: Entity[] = []) {
     super();
+  }
+
+  get config(): ClusterConfig {
+    return this.clusterConfig;
+  }
+
+  set config(config: ClusterConfig) {
+    this.clusterConfig = config;
+    this.update();
   }
 
   update() {
@@ -39,11 +50,5 @@ export class DefaultCluster extends Cluster {
   removeAllEntities(): void {
     this.entities = [];
     this.update();
-  }
-
-  unpublish(): void {
-    this.entities = [];
-    this.engageClient.unpublish(this);
-    this.dispatchEvent(new ClusterEntitiesChangedEvent());
   }
 }

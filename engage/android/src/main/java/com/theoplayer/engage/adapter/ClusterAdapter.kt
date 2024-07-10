@@ -8,7 +8,7 @@ import com.google.android.engage.common.datamodel.SubscriptionEntity
 import com.theoplayer.engage.adapter.Constants.PROP_ACCOUNT_PROFILE
 import com.theoplayer.engage.adapter.Constants.PROP_ACTION_TEXT
 import com.theoplayer.engage.adapter.Constants.PROP_ACTION_URI
-import com.theoplayer.engage.adapter.Constants.PROP_CONFIG
+import com.theoplayer.engage.adapter.Constants.PROP_CLUSTER_CONFIG
 import com.theoplayer.engage.adapter.Constants.PROP_ENTITIES
 import com.theoplayer.engage.adapter.Constants.PROP_SUBTITLE
 import com.theoplayer.engage.adapter.Constants.PROP_SYNC_ACROSS_DEVICES
@@ -28,7 +28,7 @@ object ClusterAdapter {
       convertItems(json.optJSONArray(PROP_ENTITIES)).forEach { entity ->
         addEntity(entity)
       }
-      getObject(json, PROP_CONFIG)?.let { config ->
+      getObject(json, PROP_CLUSTER_CONFIG)?.let { config ->
         getObject(config, PROP_ACCOUNT_PROFILE)?.let {
           setAccountProfile(convertAccountProfile(it))
         }
@@ -45,7 +45,7 @@ object ClusterAdapter {
       convertItems(json.optJSONArray(PROP_ENTITIES)).forEach { entity ->
         addEntity(entity)
       }
-      getObject(json, PROP_CONFIG)?.let { config ->
+      getObject(json, PROP_CLUSTER_CONFIG)?.let { config ->
         getString(config, PROP_TITLE)?.let {
           setTitle(it)
         }

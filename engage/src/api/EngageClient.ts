@@ -17,7 +17,7 @@ export interface EngageClient extends EventDispatcher<EngageEventMap> {
    *
    * @param type cluster type, either "Continuation", "Recommendation" or "Featured".
    */
-  unpublishCluster(type: ClusterType): void;
+  clearCluster(type: ClusterType): void;
 
   /**
    * Release the client.

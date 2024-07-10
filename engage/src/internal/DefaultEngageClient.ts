@@ -8,7 +8,7 @@ import {
 import { NativeEventEmitter, NativeModules } from "react-native";
 import { DefaultEventDispatcher } from "./event/DefaultEventDispatcher";
 import { EngageErrorEvent, EngageEventMap } from "../api/EngageEvent";
-import { readCluster, removeCluster, storeCluster } from "./storage/Storage";
+import { readCluster, storeCluster } from "./storage/Storage";
 
 interface NativeErrorEvent {
   message: string;
@@ -50,6 +50,10 @@ export class DefaultEngageClient extends DefaultEventDispatcher<EngageEventMap> 
     return cluster;
   }
 
+  clearCluster(type:ClusterType) {
+    this._clusters.get(type)?.removeAllEntities();
+  }
+
   setSignInEntity(entity?: SignIn) {
     if (entity) {
       if (this._configuration.debug) {
@@ -62,10 +66,6 @@ export class DefaultEngageClient extends DefaultEventDispatcher<EngageEventMap> 
       }
       NativeModules.EngageModule.unpublishSignInEntity();
     }
-  }
-
-  unpublishCluster(type: ClusterType) {
-    this._clusters.get(type)?.unpublish();
   }
 
   /**
@@ -90,17 +90,6 @@ export class DefaultEngageClient extends DefaultEventDispatcher<EngageEventMap> 
     ));
     // Persistently store
     void storeCluster(cluster);
-  }
-
-  unpublish(cluster: Cluster) {
-    if (this._configuration.debug) {
-      console.debug(TAG, `Unpublish cluster "${cluster.type}"`);
-    }
-    // Unpublish
-    NativeModules.EngageModule.unpublishCluster(cluster.type);
-
-    // Clear stored data
-    void removeCluster(cluster.type);
   }
 
   private onEngageReady = async (event: NativeReadyEvent) => {

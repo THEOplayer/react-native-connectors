@@ -20,9 +20,6 @@ import com.theoplayer.engage.publish.Constants.WORKER_NAME_FEATURED
 import com.theoplayer.engage.publish.Constants.WORKER_NAME_RECOMMENDATIONS
 import com.theoplayer.engage.publish.Constants.WORKER_NAME_SUBSCRIPTION
 import com.theoplayer.engage.publish.Constants.WORKER_NAME_USER_ACCOUNT_MANAGEMENT
-import com.theoplayer.engage.publish.Constants.WORK_PUBLISH
-import com.theoplayer.engage.publish.Constants.WORK_TYPE
-import com.theoplayer.engage.publish.Constants.WORK_UNPUBLISH
 import org.json.JSONObject
 
 object Publisher {
@@ -31,19 +28,8 @@ object Publisher {
   fun publishRecommendationClusters(context: Context, clusterJson: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_RECOMMENDATIONS,
-      WORK_PUBLISH,
       PUBLISH_TYPE_RECOMMENDATIONS,
       clusterJson,
-      context
-    )
-  }
-
-  fun unpublishRecommendationClusters(context: Context) {
-    queueOneTimeEngageServiceWorker(
-      WORKER_NAME_RECOMMENDATIONS,
-      WORK_UNPUBLISH,
-      PUBLISH_TYPE_RECOMMENDATIONS,
-      null,
       context
     )
   }
@@ -51,19 +37,8 @@ object Publisher {
   fun publishFeaturedClusters(context: Context, payload: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_FEATURED,
-      WORK_PUBLISH,
       PUBLISH_TYPE_FEATURED,
       payload,
-      context
-    )
-  }
-
-  fun unpublishFeaturedClusters(context: Context) {
-    queueOneTimeEngageServiceWorker(
-      WORKER_NAME_FEATURED,
-      WORK_UNPUBLISH,
-      PUBLISH_TYPE_FEATURED,
-      null,
       context
     )
   }
@@ -71,19 +46,8 @@ object Publisher {
   fun publishContinuationClusters(context: Context, payload: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_CONTINUATION,
-      WORK_PUBLISH,
       PUBLISH_TYPE_CONTINUATION,
       payload,
-      context
-    )
-  }
-
-  fun unpublishContinuationClusters(context: Context) {
-    queueOneTimeEngageServiceWorker(
-      WORKER_NAME_CONTINUATION,
-      WORK_UNPUBLISH,
-      PUBLISH_TYPE_CONTINUATION,
-      null,
       context
     )
   }
@@ -91,7 +55,6 @@ object Publisher {
   fun publishSubscriptionClusters(context: Context, payload: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_SUBSCRIPTION,
-      WORK_PUBLISH,
       PUBLISH_TYPE_SUBSCRIPTION,
       payload,
       context
@@ -101,7 +64,6 @@ object Publisher {
   fun publishUserAccount(context: Context, payload: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_USER_ACCOUNT_MANAGEMENT,
-      WORK_PUBLISH,
       PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT,
       payload,
       context
@@ -110,7 +72,6 @@ object Publisher {
 
   private fun queueOneTimeEngageServiceWorker(
     workerName: String,
-    workType: String,
     publishType: String,
     clusterJson: JSONObject?,
     context: Context
@@ -120,7 +81,6 @@ object Publisher {
         .setInputData(
           workDataOf(
             CLUSTER_TYPE to publishType,
-            WORK_TYPE to workType,
             PUBLISH_CLUSTER to clusterJson?.toString()
           )
         )

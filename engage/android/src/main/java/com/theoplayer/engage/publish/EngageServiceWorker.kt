@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.CoroutineWorker
 import com.google.android.engage.common.datamodel.ContinuationCluster
-import com.google.android.engage.common.datamodel.Entity
 import com.google.android.engage.common.datamodel.FeaturedCluster
 import com.google.android.engage.common.datamodel.RecommendationCluster
 import com.google.android.engage.common.datamodel.SignInCardEntity
@@ -26,9 +25,6 @@ import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_CONTINUATION
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_FEATURED
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_RECOMMENDATIONS
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT
-import com.theoplayer.engage.publish.Constants.WORK_PUBLISH
-import com.theoplayer.engage.publish.Constants.WORK_TYPE
-import com.theoplayer.engage.publish.Constants.WORK_UNPUBLISH
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "EngageServiceWorker"
@@ -51,15 +47,7 @@ class EngageServiceWorker(
     }
 
     val clusterType = inputData.getString(CLUSTER_TYPE)
-
-    return when (inputData.getString(WORK_TYPE)) {
-      WORK_PUBLISH -> publish(inputData.getString(PUBLISH_CLUSTER), clusterType)
-      WORK_UNPUBLISH -> unpublish(clusterType)
-      else -> Result.failure()
-    }
-  }
-
-  private suspend fun publish(payload: String?, clusterType: String?): Result {
+    val payload = inputData.getString(PUBLISH_CLUSTER)
     if (payload.isNullOrEmpty()) {
       return Result.failure()
     }
@@ -73,84 +61,61 @@ class EngageServiceWorker(
       PUBLISH_TYPE_FEATURED -> publishFeatured(
         ClusterAdapter.convertFeaturedCluster(payload)
       )
-//      PUBLISH_TYPE_SUBSCRIPTION -> publishSubscription(cluster)
       PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT -> publishUserAccountManagement(
-        EntityAdapter.convertItem(payload)
+        EntityAdapter.convertItem(payload) as SignInCardEntity
       )
       else -> throw IllegalArgumentException("Bad publish type")
     }
   }
 
-  private suspend fun unpublish(clusterType: String?): Result {
-    return when (clusterType) {
-      PUBLISH_TYPE_RECOMMENDATIONS -> deleteRecommendations()
-      PUBLISH_TYPE_CONTINUATION -> deleteContinuation()
-      PUBLISH_TYPE_FEATURED -> deleteFeatured()
-      PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT -> deleteUserAccountManagement()
-      else -> throw IllegalArgumentException("Bad publish type")
-    }
-  }
-
-  private suspend fun deleteRecommendations(): Result {
-    return publishAndProvideResult(
-      client.deleteRecommendationsClusters(),
-      AppEngagePublishStatusCode.PUBLISHED
-    )
-  }
-
   private suspend fun publishRecommendations(cluster: RecommendationCluster): Result {
-    val publishTask: Task<Void> = client.publishRecommendationClusters(
-      PublishRecommendationClustersRequest.Builder()
-        .addRecommendationCluster(cluster)
-        .build()
-    )
+    val publishTask: Task<Void> = if (cluster.entities.isEmpty()) {
+      client.deleteRecommendationsClusters()
+    } else {
+      client.publishRecommendationClusters(
+        PublishRecommendationClustersRequest.Builder()
+          .addRecommendationCluster(cluster)
+          .build()
+      )
+    }
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
-  }
-
-  private suspend fun deleteContinuation(): Result {
-    return publishAndProvideResult(
-      client.deleteContinuationCluster(),
-      AppEngagePublishStatusCode.PUBLISHED
-    )
   }
 
   private suspend fun publishContinuation(cluster: ContinuationCluster): Result {
-    val publishTask: Task<Void> = client.publishContinuationCluster(
-      PublishContinuationClusterRequest.Builder()
-        .setContinuationCluster(cluster)
-        .build()
-    )
+    val publishTask: Task<Void> = if (cluster.entities.isEmpty()) {
+      client.deleteContinuationCluster()
+    } else {
+      client.publishContinuationCluster(
+        PublishContinuationClusterRequest.Builder()
+          .setContinuationCluster(cluster)
+          .build()
+      )
+    }
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
-  }
-
-  private suspend fun deleteFeatured(): Result {
-    return publishAndProvideResult(
-      client.deleteFeaturedCluster(),
-      AppEngagePublishStatusCode.PUBLISHED
-    )
   }
 
   private suspend fun publishFeatured(cluster: FeaturedCluster): Result {
-    val publishTask: Task<Void> = client.publishFeaturedCluster(
-      PublishFeaturedClusterRequest.Builder()
-        .setFeaturedCluster(cluster)
-        .build()
-    )
+    val publishTask: Task<Void> =  if (cluster.entities.isEmpty()) {
+      client.deleteFeaturedCluster()
+    } else {
+      client.publishFeaturedCluster(
+        PublishFeaturedClusterRequest.Builder()
+          .setFeaturedCluster(cluster)
+          .build()
+      )
+    }
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
   }
 
-  private suspend fun deleteUserAccountManagement(): Result {
-    return publishAndProvideResult(
-      client.deleteUserManagementCluster(),
-      AppEngagePublishStatusCode.PUBLISHED
-    )
-  }
-
-  private suspend fun publishUserAccountManagement(item: Entity): Result {
-    val publishTask: Task<Void> = client.publishUserAccountManagementRequest(
-      PublishUserAccountManagementRequest.Builder()
-        .setSignInCardEntity(item as SignInCardEntity).build()
-    )
+  private suspend fun publishUserAccountManagement(item: SignInCardEntity): Result {
+    val publishTask: Task<Void> = if (!item.entityId.isPresent) {
+      client.deleteUserManagementCluster()
+    } else {
+      client.publishUserAccountManagementRequest(
+        PublishUserAccountManagementRequest.Builder()
+          .setSignInCardEntity(item).build()
+      )
+    }
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
   }
 
