@@ -1,5 +1,5 @@
 import {
-  Cluster,
+  Cluster, ClusterConfig,
   ClusterType,
   EngageClient,
   EngageConfiguration,
@@ -42,8 +42,12 @@ export class DefaultEngageClient extends DefaultEventDispatcher<EngageEventMap> 
     NativeModules.EngageModule.initialize(configuration);
   }
 
-  getCluster(type:ClusterType): Cluster {
-    return this._clusters.get(type);
+  getCluster(type:ClusterType, config?: ClusterConfig): Cluster {
+    const cluster = this._clusters.get(type);
+    if (config && cluster) {
+      cluster.config = config;
+    }
+    return cluster;
   }
 
   setSignInEntity(entity?: SignIn) {
