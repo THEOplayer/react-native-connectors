@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
  *
  * @param engage
  * @param type
+ * @param config
  */
 export function useCluster(engage?: EngageClient, type?: ClusterType, config?: ClusterConfig) {
   const [, setEntities] = useState<Entity[]>([]);
@@ -19,9 +20,7 @@ export function useCluster(engage?: EngageClient, type?: ClusterType, config?: C
 
   useEffect(() => {
     if (engage) {
-      const cluster = engage.getCluster(type);
-      // Apply config
-      cluster.config = config;
+      const cluster = engage.getCluster(type, config);
       setCluster(cluster);
       // Set initial entities list
       setEntities(cluster?.entities);

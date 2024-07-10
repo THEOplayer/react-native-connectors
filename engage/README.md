@@ -26,8 +26,13 @@ In this document, we will refer to the following concepts:
 
 ## Installation
 
+In addition to installing the engage connector module, it is also necessary to add a dependency to
+async-storage to allow persistently storing engage data.
+
 ```sh
-npm install @theoplayer/react-native-engage @react-native-async-storage/async-storage
+npm install \
+  @theoplayer/react-native-engage \
+  @react-native-async-storage/async-storage
 ```
 
 ## Usage
@@ -67,8 +72,7 @@ const continuationConfig: ContinuationClusterConfig = {
 }
 
 // Create or get the "Continuation" cluster.
-const continuation = client.getCluster(ClusterType.Continuation);
-continuation.config = continuationConfig;
+const continuation = client.getCluster(ClusterType.Continuation, continuationConfig);
 ```
 
 Alternatively, the `useCluster` hook can be used:
