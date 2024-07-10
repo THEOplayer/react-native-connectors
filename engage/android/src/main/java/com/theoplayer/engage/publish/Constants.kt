@@ -9,10 +9,6 @@ object Constants {
   const val WORKER_NAME_SUBSCRIPTION: String = "Upload Subscription"
   const val WORKER_NAME_USER_ACCOUNT_MANAGEMENT: String = "Upload User Account Management"
 
-  const val WORK_TYPE = "workType"
-  const val WORK_PUBLISH = "publish"
-  const val WORK_UNPUBLISH = "unpublish"
-
   const val CLUSTER_TYPE: String = "type"
 
   const val PUBLISH_CLUSTER: String = "cluster"

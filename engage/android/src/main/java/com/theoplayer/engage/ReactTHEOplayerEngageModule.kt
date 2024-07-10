@@ -16,11 +16,6 @@ private const val TAG = "EngageModule"
 private const val PROP_DEBUG = "debug"
 private const val PROP_CLUSTER_TYPE = "type"
 
-private const val VAL_CONTINUATION = "continuation"
-private const val VAL_FEATURED = "featured"
-private const val VAL_RECOMMENDATION = "recommendation"
-private const val VAL_SUBSCRIPTION = "subscription"
-
 class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
 
@@ -66,31 +61,11 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
   }
 
   @ReactMethod
-  fun unpublishSignInEntity() {
+  fun deleteSignInEntity() {
     if (EngageConfiguration.debug) {
       Log.d(TAG, "Removing SignIn")
     }
     Publisher.publishUserAccount(reactContext, JSONObject())
-  }
-
-  @ReactMethod
-  fun unpublishCluster(clusterType: String) {
-    if (EngageConfiguration.debug) {
-      Log.d(TAG, "Unpublishing cluster $clusterType")
-    }
-    when (clusterType) {
-      VAL_CONTINUATION -> Publisher.unpublishContinuationClusters(reactContext)
-      VAL_FEATURED -> Publisher.unpublishFeaturedClusters(reactContext)
-      VAL_RECOMMENDATION -> Publisher.unpublishRecommendationClusters(reactContext)
-      else -> Log.w(TAG, "Invalid cluster type: $clusterType")
-    }
-  }
-
-  @ReactMethod
-  fun unpublishAllClusters() {
-    unpublishCluster(VAL_CONTINUATION)
-    unpublishCluster(VAL_FEATURED)
-    unpublishCluster(VAL_RECOMMENDATION)
   }
 
   @ReactMethod

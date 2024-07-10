@@ -19,12 +19,12 @@ export abstract class Cluster extends DefaultEventDispatcher<EngageClusterEventM
   /**
    * Cluster config.
    */
-  config: ClusterConfig;
+  abstract config: ClusterConfig;
 
   /**
    * The list of entities in this cluster
    */
-  entities: Entity[];
+  abstract entities: Entity[];
 
   /**
    * Add an entity to the cluster.
@@ -40,9 +40,4 @@ export abstract class Cluster extends DefaultEventDispatcher<EngageClusterEventM
    * Remove all entities from the cluster.
    */
   abstract removeAllEntities(): void;
-
-  /**
-   * Clears and unpublishes the cluster.
-   */
-  abstract unpublish(): void;
 }

@@ -60,7 +60,7 @@ object Constants {
   const val PROP_PROVIDER_PACKAGE_NAME = "packageName"
   const val PROP_EXPIRATION_TIME = "expirationTime"
   const val PROP_SUBSCRIPTION_TYPE = "subscriptionType"
-  const val PROP_CONFIG = "config"
+  const val PROP_CLUSTER_CONFIG = "clusterConfig"
   const val PROP_ACCOUNT_PROFILE = "accountProfile"
   const val PROP_SYNC_ACROSS_DEVICES = "syncAcrossDevices"
 }
