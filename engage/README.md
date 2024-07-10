@@ -27,14 +27,14 @@ In this document, we will refer to the following concepts:
 ## Installation
 
 ```sh
-npm install @theoplayer/react-native-engage
+npm install @theoplayer/react-native-engage @react-native-async-storage/async-storage
 ```
 
 ## Usage
 
 ### Creating a connector instance
 
-Create an instance of the engage connector, using either the convenient `useEngage` hook or
+Create an instance of an Engage client, using either the convenient `useEngage` hook or
 by creating a direct instance of the connector:
 
 ```tsx
@@ -43,34 +43,43 @@ const engageConfig = {
   recommendationTitle: "Because you enjoyed",
 };
 
-// Using either a hook
-const engage = useEngage(engageConfig);
+// Creating a client instance using the connector
+const client = await EngageConnector.createClient(engageConfig);
 
-// ... or, alternatively, by directly creating an instance
-const connector = new EngageConnector(engageConfig);
+// ... or, alternatively, by using a hook
+const engage = useEngage(engageConfig);
 ```
 
 ### Creating clusters
 
-Using the Engage connector API, a _cluster_ can be created, a grouped set of data which can be of type
-"Continuation" (or "Continue Watching"), "Featured" or "Recommendation".
+Using the Engage connector API, a _cluster_ can be created, or requested if it already exists on the device.
+A cluster is a grouped set of data which can be of type "Continuation" (or "Continue Watching"), "Featured" or "Recommendation".
 
 ```tsx
-import { ClusterType } from "@theoplayer/react-native-engage/src";
+import { ClusterType, ContinuationClusterConfig } from "@theoplayer/react-native-engage";
 
-const accountProfile: AccountProfile = {
-  accountId: 'accountId',
-  profileId: 'profileId'
-};
-const syncAcrossDevices: boolean = true;
+const continuationConfig: ContinuationClusterConfig = {
+  accountProfile: {
+    accountId: 'accountId',
+    profileId: 'profileId'
+  },
+  syncAcrossDevices: false
+}
 
-// Create a "Continuation" cluster.
-const continuation = connector.createContinuationCluster(accountProfile, syncAcrossDevices);
+// Create or get the "Continuation" cluster.
+const continuation = client.getCluster(ClusterType.Continuation);
+continuation.config = continuationConfig;
+```
+
+Alternatively, the `useCluster` hook can be used:
+
+```tsx
+const continuation = useCluster(engage, ClusterType.Continuation, continuationConfig);
 ```
 
 ### Updating or "publishing" cluster data
 
-The cluster data can be updated either **manually**:
+The cluster data can be updated either **manually** by manipulating its entities:
 
 ```tsx
 // Add or remove continuation entities.
@@ -85,6 +94,11 @@ continuation.addEntity({
 or when requested **by the connector**. For example, on Android platforms when a broadcast message is sent to the app,
 or when a scheduled update request is set (e.g., each 12 hours).
 
+### Persisting cluster data
+
+The cluster data is persistently stored on the device each time it is changed. When
+the app reopens and creates a new Engage client, the stored that will be loaded first.
+
 ### Personalized experience
 
 **TODO**: provide a "_signIn_" entity that can be displayed on the engage surface, and which directs users
@@ -93,9 +107,31 @@ to a sign-in page of the app.
 **TODO** there is also a "_subscription_" entity that contains one or more entitlements. It is yet unclear how this
 is used.
 
-## Example application
+## Validating the published items
 
-**TODO**
+On Android, the [Verification App ](https://developer.android.com/guide/playcore/engage/workflow#shared-files) can
+be used to check the state and contents of all published clusters. Warnings are shown in case
+the published data does not satisfy the requirements.
+
+| ![](./docs/verification_app_1.png) | ![](./docs/verification_app_2.png)          |
+|------------------------------------|---------------------------------------------|
+| **Published Continuation cluster** | **Published Feature cluster with warnings** |
+
+## Example application
 
 The example app showcases the integration of the Engage connector in a React Native application.
 
+### Manipulating clusters
+
+Tapping items (or entities) will add them to the "Continuation" cluster, while tapping items
+in the Continuation cluster will remove them again. On each update the cluster is persistently
+stored and published to the platform.
+
+### Unpublished clusters
+
+Tapping the bin icon results in removing and unpublishing (deleting) the cluster from the
+platform.
+
+| ![](./docs/example_app_1.png)          |       |
+|----------------------------------------|-------|
+| **Continuation and Featured clusters** |       |
