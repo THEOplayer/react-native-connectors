@@ -4,7 +4,7 @@ import UIKit
 import react_native_theoplayer
 import THEOplayerSDK
 import MuxCore
-import MUXSDKStatsTHEOplayer
+import MuxStatsTHEOplayer
 
 let PROP_DATA = "data"
 let PROP_ENVIRONMENT_KEY = "env_key"
