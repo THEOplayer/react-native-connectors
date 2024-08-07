@@ -36,15 +36,15 @@ export function calculateAdvertisingPodDetails(adBreak: AdBreak, lastPodIndex: n
   }
   return {
     index: podIndex ?? 0,
-    offset: adBreak.timeOffset,
+    offset: Math.trunc(currentAdBreakTimeOffset),
   };
 }
 
 export function calculateAdvertisingDetails(ad: Ad, podPosition: number): AdobeAdvertisingDetails {
   return {
     podPosition,
-    length: ad.duration ?? 0,
-    name: 'TODO', // TODO
+    length: ad.duration ? Math.trunc(ad.duration) : 0,
+    name: 'NA', // TODO
     playerName: 'THEOplayer',
   };
 }
@@ -53,8 +53,8 @@ export function calculateChapterDetails(cue: TextTrackCue): AdobeChapterDetails 
   const id = Number(cue.id);
   const index = isNaN(id) ? 0 : id;
   return {
-    length: (cue.endTime - cue.startTime) / 1000,
-    offset: cue.startTime / 1000,
+    length: Math.trunc((cue.endTime - cue.startTime) / 1000),
+    offset: Math.trunc(cue.startTime / 1000),
     index,
   };
 }
