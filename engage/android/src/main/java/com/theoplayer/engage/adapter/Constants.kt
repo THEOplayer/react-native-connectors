@@ -63,4 +63,5 @@ object Constants {
   const val PROP_CLUSTER_CONFIG = "clusterConfig"
   const val PROP_ACCOUNT_PROFILE = "accountProfile"
   const val PROP_SYNC_ACROSS_DEVICES = "syncAcrossDevices"
+  const val PROP_ENTITLEMENTS = "entitlements"
 }

@@ -8,7 +8,6 @@ export enum EntityType {
   TvShow = 'tvShow',
   VideoClip = 'videoClip',
   SignIn = 'signIn',
-  Subscription = 'subscription'
 }
 
 export interface Entity {

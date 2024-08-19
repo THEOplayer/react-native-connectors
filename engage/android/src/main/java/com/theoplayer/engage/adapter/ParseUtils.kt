@@ -14,7 +14,7 @@ private const val VAL_THEME_DARK = "dark"
 private const val VAL_THEME_LIGHT = "light"
 
 object ParseUtils {
-  fun <T : Any> getNonNullTypedOrWarning(obj: JSONObject, key: String, type: KClass<T>): T? {
+  private fun <T : Any> getNonNullTypedOrWarning(obj: JSONObject, key: String, type: KClass<T>): T? {
     if (!obj.has(key)) {
       Log.w(TAG, "No value for key `$key` provided.")
       return null
@@ -23,19 +23,19 @@ object ParseUtils {
   }
 
   @Suppress("UNCHECKED_CAST")
-  fun <T : Any> getTypedOrWarning(obj: JSONObject, key: String, type: KClass<T>): T? {
+  private fun <T : Any> getTypedOrWarning(obj: JSONObject, key: String, type: KClass<T>): T? {
     try {
-      when {
-        type == Boolean::class -> return obj.optBoolean(key) as T?
-        type == String::class -> return obj.optString(key) as T?
-        type == JSONObject::class -> return obj.optJSONObject(key) as T?
-        type == Double::class -> return obj.optDouble(key) as T?
-        type == Int::class -> return obj.optInt(key) as T?
-        type == Long::class -> return obj.optLong(key) as T?
-        type == JSONArray::class -> return obj.optJSONArray(key) as T?
-        else -> {
-          Log.w(TAG, "Unknown property type for $key: ${obj.get(key)}.")
-        }
+      when (type) {
+          Boolean::class -> return obj.optBoolean(key) as T?
+          String::class -> return obj.optString(key) as T?
+          JSONObject::class -> return obj.optJSONObject(key) as T?
+          Double::class -> return obj.optDouble(key) as T?
+          Int::class -> return obj.optInt(key) as T?
+          Long::class -> return obj.optLong(key) as T?
+          JSONArray::class -> return obj.optJSONArray(key) as T?
+          else -> {
+            Log.w(TAG, "Unknown property type for $key: ${obj.get(key)}.")
+          }
       }
       Log.w(TAG, "Property $key has wrong type: expected $type.")
     } catch (_: JSONException) {
