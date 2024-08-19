@@ -77,7 +77,7 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
 
   // Engage SDK
-  implementation "com.google.android.engage:engage-core:$engage_version"
+  compileOnly "com.google.android.engage:engage-core:$engage_version"
 
   // Align the Kotlin SDK libraries with the same version.
   implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
