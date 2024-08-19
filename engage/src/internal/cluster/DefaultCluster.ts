@@ -1,9 +1,10 @@
 import {
   AddOperation,
-  Cluster, ClusterConfig,
+  Cluster,
+  ClusterConfig,
   ClusterEntitiesChangedEvent,
+  ClusterEntity,
   ClusterType,
-  Entity
 } from "@theoplayer/react-native-engage";
 import { DefaultEngageClient } from "../DefaultEngageClient";
 
@@ -12,7 +13,7 @@ export class DefaultCluster extends Cluster {
 
   constructor(private engageClient: DefaultEngageClient,
               public type: ClusterType,
-              public entities: Entity[] = []) {
+              public entities: ClusterEntity[] = []) {
     super();
   }
 
@@ -30,7 +31,7 @@ export class DefaultCluster extends Cluster {
     this.dispatchEvent(new ClusterEntitiesChangedEvent());
   }
 
-  addEntity(entity: Entity, op: AddOperation = AddOperation.AddToFront): void {
+  addEntity(entity: ClusterEntity, op: AddOperation = AddOperation.AddToFront): void {
     switch (op) {
       case AddOperation.AddToBack:
         this.entities = [...this.entities.filter(e => e.id !== entity.id), entity];
@@ -42,7 +43,7 @@ export class DefaultCluster extends Cluster {
     this.update();
   }
 
-  removeEntity(entity: Entity): void {
+  removeEntity(entity: ClusterEntity): void {
     this.entities = this.entities.filter(e => e.id !== entity.id);
     this.update();
   }

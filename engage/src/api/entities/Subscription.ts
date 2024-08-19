@@ -1,3 +1,12 @@
+import { Entity, EntityType } from "@theoplayer/react-native-engage";
+
+export enum SubscriptionType {
+  Unspecified = 0,
+  Active = 1,
+  ActiveTrial = 2,
+  Inactive = 3
+}
+
 export interface Entitlement {
   /**
    * Required identifier string for this entitlement. This must match one of the entitlement identifiers provided in
@@ -19,4 +28,36 @@ export interface Entitlement {
    * time the subscription expires.
    */
   expirationTime?: number;
+}
+
+/**
+ * Subscription.
+ */
+export interface Subscription extends Entity {
+  /**
+   * The entity type.
+   */
+  type: EntityType.Subscription;
+
+  /**
+   * providerPackageName
+   */
+  providerPackageName: string;
+
+  /**
+   * subscriptionType
+   */
+  subscriptionType: SubscriptionType;
+
+  /**
+   * The optional subscription's expiration time in milliseconds.
+   */
+  expirationTime?: number;
+
+  /**
+   * If you offer multi-tiered premium subscription packages,
+   * which includes expanded content or features beyond the common tier, you can represent this by adding one or
+   * more entitlements to Subscription.
+   */
+  entitlements?: Entitlement[];
 }

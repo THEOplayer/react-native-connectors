@@ -8,15 +8,15 @@ import {
   ViewStyle,
   Image, TouchableOpacity,
 } from "react-native";
-import { Entity } from "@theoplayer/react-native-engage";
+import { ClusterEntity } from "@theoplayer/react-native-engage";
 import { Card } from "./Card";
 import DeleteIcon from "../res/images/delete.png";
 
 interface SwimlaneProps {
   title: string,
   style: StyleProp<ViewStyle>;
-  data: Entity[];
-  onTap?: (entity: Entity) => void;
+  data: ClusterEntity[];
+  onTap?: (entity: ClusterEntity) => void;
   onDelete?: () => void;
 }
 

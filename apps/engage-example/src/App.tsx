@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Swimlane } from "./components/Swimlane";
 import {
+  ClusterEntity,
   ClusterType,
   ContinuationClusterConfig,
   EngageEventType,
-  Entity,
   LiveStream,
   Movie,
   SignIn,
@@ -50,11 +50,11 @@ export default function App() {
     featuredCluster?.addEntity(episodes[0] as TvEpisode);
   }, [featuredCluster]);
 
-  const addContinuationEntity = useCallback((entity: Entity) => {
+  const addContinuationEntity = useCallback((entity: ClusterEntity) => {
     continuationCluster?.addEntity(entity);
   }, [continuationCluster]);
 
-  const removeContinuationEntity = useCallback((entity: Entity) => {
+  const removeContinuationEntity = useCallback((entity: ClusterEntity) => {
     continuationCluster?.removeEntity(entity);
   }, [continuationCluster]);
 

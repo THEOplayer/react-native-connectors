@@ -1,17 +1,12 @@
-import { DisplayTimeWindow } from "../types/DisplayTimeWindow";
 import { RatingSystem } from "../types/RatingSystem";
-import { Availability } from "../types/Availability";
-import { WatchNextType } from "../types/WatchNextType";
 import { Price } from "../types/Price";
-import { Entity, EntityType } from "./Entity";
+import { ClusterEntity, EntityType } from "./Entity";
 
-export interface TvSeason extends Entity {
-  type: EntityType.TvSeason;
-
+export interface TvSeason extends ClusterEntity {
   /**
-   * The deep link to the provider app to start playing the entity.
+   * The entity type.
    */
-  playbackUri?: string;
+  type: EntityType.TvSeason;
 
   /**
    * The deep link to the provider app to show details about the entity.
@@ -39,11 +34,6 @@ export interface TvSeason extends Entity {
   lastEpisodeAirDate?: number;
 
   /**
-   * The availability of the entity.
-   */
-  availability?: Availability;
-
-  /**
    * The entity's price.
    */
   price?: Price;
@@ -62,28 +52,4 @@ export interface TvSeason extends Entity {
    * A list of content ratings.
    */
   contentRating?: RatingSystem[];
-
-  /**
-   * WatchNext type in case the entity is in a continuation cluster.
-   * Either `continue`, `new`, `next` or `watchlist`.
-   */
-  watchNextType?: WatchNextType;
-
-  /**
-   * The last engagement time in milliseconds.
-   * Must be provided when the item is in the Continuation cluster.
-   */
-  lastEngagementTime?: number;
-
-  /**
-   * The last playback position in milliseconds.
-   * Must be provided when the item is in the Continuation cluster and WatchNextType is CONTINUE.
-   * In epoch milliseconds.
-   */
-  lastPlaybackPosition?: number;
-
-  /**
-   * A list of time windows at which the entity is available.
-   */
-  availabilityTimeWindows?: DisplayTimeWindow[];
 }

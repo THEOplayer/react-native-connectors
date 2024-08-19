@@ -32,6 +32,7 @@
     "typescript": "tsc --noEmit",
     "build": "bob build",
     "prepare": "npm run build",
+    "lint": "eslint \"**/*.{ts,tsx}\"",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
