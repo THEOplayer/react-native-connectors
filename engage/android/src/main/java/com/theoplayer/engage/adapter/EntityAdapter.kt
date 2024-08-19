@@ -40,6 +40,7 @@ private const val TYPE_SEASON = "tvSeason"
 private const val TYPE_SHOW = "tvShow"
 private const val TYPE_CLIP = "videoClip"
 private const val TYPE_SIGNIN = "signIn"
+private const val TYPE_SUBSCRIPTION = "subscription"
 
 object EntityAdapter {
   fun convertItems(items: JSONArray?): List<Entity> {
@@ -67,6 +68,7 @@ object EntityAdapter {
       TYPE_LIVE_STREAM -> LiveStreamAdapter.convert(item)
       TYPE_CLIP -> VideoClipAdapter.convert(item)
       TYPE_SIGNIN -> SignInAdapter.convert(item)
+      TYPE_SUBSCRIPTION -> SubscriptionAdapter.convert(item)
       else -> throw Exception("Unknown entity type: ${item?.getString(PROP_TYPE)}")
     }
   }

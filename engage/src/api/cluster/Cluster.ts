@@ -1,4 +1,4 @@
-import { ClusterType, Entity } from "@theoplayer/react-native-engage";
+import { ClusterEntity, ClusterType } from "@theoplayer/react-native-engage";
 import { DefaultEventDispatcher } from "../../internal/event/DefaultEventDispatcher";
 import { EngageClusterEventMap } from "./EngageClusterEvent";
 
@@ -24,17 +24,17 @@ export abstract class Cluster extends DefaultEventDispatcher<EngageClusterEventM
   /**
    * The list of entities in this cluster
    */
-  abstract entities: Entity[];
+  abstract entities: ClusterEntity[];
 
   /**
    * Add an entity to the cluster.
    */
-  abstract addEntity(entity: Entity, op?: AddOperation): void;
+  abstract addEntity(entity: ClusterEntity, op?: AddOperation): void;
 
   /**
    * Remove an entity from the cluster.
    */
-  abstract removeEntity(entity: Entity): void;
+  abstract removeEntity(entity: ClusterEntity): void;
 
   /**
    * Remove all entities from the cluster.

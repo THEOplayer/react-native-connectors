@@ -1,4 +1,4 @@
-import { Entity } from "@theoplayer/react-native-engage";
+import { ClusterEntity } from "@theoplayer/react-native-engage";
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 
@@ -6,8 +6,8 @@ const { width } = Dimensions.get('window');
 const cardRatio = 9.0 / 16.0;
 
 export interface CardProps {
-  item: Entity,
-  onTap?: (entity: Entity) => void
+  item: ClusterEntity,
+  onTap?: (entity: ClusterEntity) => void
 }
 
 export const Card = (props: CardProps) => (
