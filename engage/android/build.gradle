@@ -63,8 +63,8 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-def work_version = safeExtGet("THEOplayerEngage_workVersion", "2.9.0")
 def kotlin_version = safeExtGet("THEOplayerEngage_kotlinVersion", "1.8.22")
+def work_version = safeExtGet("THEOplayerEngage_workVersion", "2.9.1")
 def coroutines_version = safeExtGet("THEOplayerEngage_coroutinesVersion", "1.7.3")
 def engage_version = safeExtGet("THEOplayerEngage_engageVersion", "1.5.4")
 
