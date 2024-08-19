@@ -33,6 +33,7 @@ class EngageServiceBroadcastReceiver : BroadcastReceiver() {
     }
   }
 
+  @Suppress("UNUSED_PARAMETER")
   private fun onPublish(context: ReactApplicationContext, type: String) {
     // TODO
   }
