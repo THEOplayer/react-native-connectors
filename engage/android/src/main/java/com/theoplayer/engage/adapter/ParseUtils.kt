@@ -22,6 +22,7 @@ object ParseUtils {
     return getTypedOrWarning(obj, key, type)
   }
 
+  @Suppress("UNCHECKED_CAST")
   fun <T : Any> getTypedOrWarning(obj: JSONObject, key: String, type: KClass<T>): T? {
     try {
       when {

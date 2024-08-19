@@ -16,6 +16,7 @@ private const val TAG = "EngageModule"
 private const val PROP_DEBUG = "debug"
 private const val PROP_CLUSTER_TYPE = "type"
 
+@Suppress("unused")
 class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
 
@@ -68,10 +69,12 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
     Publisher.publishUserAccount(reactContext, JSONObject())
   }
 
+  @Suppress("UNUSED_PARAMETER")
   @ReactMethod
   fun addListener(eventName: String?) {
   }
 
+  @Suppress("UNUSED_PARAMETER")
   @ReactMethod
   fun removeListeners(count: Int?) {
   }
@@ -81,6 +84,7 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
     // Nothing to do yet
   }
 
+  @Suppress("SameParameterValue")
   private fun dispatchEvent(event: String, payload: ReadableMap) {
     reactContext.getJSModule(ReactContext.RCTDeviceEventEmitter::class.java).emit(
       event,
