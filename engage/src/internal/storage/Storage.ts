@@ -3,14 +3,19 @@ import {
   ClusterType,
 } from "@theoplayer/react-native-engage";
 import { DefaultEngageClient } from "../DefaultEngageClient";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MMKV } from 'react-native-mmkv'
 import { DefaultCluster } from "../cluster/DefaultCluster";
 
 const TAG: string = 'EngageStorage';
 
+const storage = new MMKV({
+  id: 'engage-storage'
+});
+
 export async function readCluster(client: DefaultEngageClient, clusterType: ClusterType): Promise<Cluster> {
+  console.log(TAG, 'read', clusterType);
   try {
-    return createCluster(client, clusterType, await AsyncStorage.getItem(storageKeyForCluster(clusterType)));
+    return createCluster(client, clusterType, storage.getString(storageKeyForCluster(clusterType)));
   } catch (e) {
     console.warn(TAG, `Failed to retrieve cluster data from storage: ${e}`);
   }
@@ -36,7 +41,7 @@ export async function storeCluster(cluster: Cluster): Promise<boolean> {
       ...cluster,
       engageClient: undefined,
     });
-    await AsyncStorage.setItem(key, json);
+    storage.set(key, json);
     return true;
   } catch (e) {
     console.warn(TAG, `Failed to store cluster data ${key}: ${e}`);
@@ -45,7 +50,7 @@ export async function storeCluster(cluster: Cluster): Promise<boolean> {
 }
 
 export async function removeCluster(type: ClusterType) {
-  await AsyncStorage.removeItem(storageKeyForCluster(type));
+  storage.delete(storageKeyForCluster(type));
 }
 
 function storageKeyForCluster(type: ClusterType): string {
