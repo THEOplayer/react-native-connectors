@@ -8,28 +8,39 @@ import {
   ClusterType,
   ContinuationClusterConfig,
   EngageEventType,
+  EntityType,
   LiveStream,
   Movie,
   SignIn,
   TvEpisode,
   useCluster,
-  useEngage
+  useEngage,
+  SubscriptionType, Subscription
 } from "@theoplayer/react-native-engage";
 import movies from "./res/movies.json";
 import episodes from "./res/episodes.json";
 import livestreams from "./res/livestreams.json";
-import signin from "./res/signin.json";
+import signIn from "./res/signin.json";
 
 const engageConfig = {
   debug: true
 }
 
+const accountProfile = {
+  accountId: 'testAccountId',
+  profileId: 'testProfileId'
+}
+
 const continuationConfig: ContinuationClusterConfig = {
-  accountProfile: {
-    accountId: 'accountId',
-    profileId: 'profileId'
-  },
+  accountProfile,
   syncAcrossDevices: false
+}
+
+const subscription: Subscription = {
+  type: EntityType.Subscription,
+  providerPackageName: 'testProviderPackage',
+  subscriptionType: SubscriptionType.Active,
+  expirationTime: 999999999
 }
 
 export default function App() {
@@ -66,13 +77,19 @@ export default function App() {
     engage?.clearCluster(ClusterType.Featured);
   }, [engage]);
 
-
   const toggleSigning = useCallback(() => {
-    setSignedIn(signedIn => {
-      // engage?.setSignInEntity(signedIn ? null : signin as SignIn);
-      return !signedIn;
+    setSignedIn(wasSignedIn => {
+      // Set a signIn entity when not logged-in
+      engage?.setSignInEntity(wasSignedIn ? signIn as SignIn : null);
+
+      if (wasSignedIn) {
+        engage?.setSubscription(accountProfile, null);
+      } else {
+        engage?.setSubscription(accountProfile, subscription);
+      }
+      return !wasSignedIn;
     });
-  }, []);
+  }, [engage]);
 
   return (
     <SafeAreaView style={[StyleSheet.absoluteFill, {backgroundColor: '#000000', paddingTop: 25}]}>

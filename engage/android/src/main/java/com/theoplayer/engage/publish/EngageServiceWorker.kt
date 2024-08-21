@@ -4,10 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
 import androidx.work.CoroutineWorker
+import com.google.android.engage.common.datamodel.AccountProfile
 import com.google.android.engage.common.datamodel.ContinuationCluster
 import com.google.android.engage.common.datamodel.FeaturedCluster
 import com.google.android.engage.common.datamodel.RecommendationCluster
 import com.google.android.engage.common.datamodel.SignInCardEntity
+import com.google.android.engage.common.datamodel.SubscriptionEntity
 import com.google.android.engage.service.AppEngageException
 import com.google.android.engage.service.AppEngagePublishClient
 import com.google.android.engage.service.AppEngagePublishStatusCode
@@ -15,17 +17,21 @@ import com.google.android.engage.service.PublishContinuationClusterRequest
 import com.google.android.engage.service.PublishFeaturedClusterRequest
 import com.google.android.engage.service.PublishRecommendationClustersRequest
 import com.google.android.engage.service.PublishStatusRequest
+import com.google.android.engage.service.PublishSubscriptionRequest
 import com.google.android.engage.service.PublishUserAccountManagementRequest
 import com.google.android.gms.tasks.Task
 import com.theoplayer.engage.adapter.ClusterAdapter
 import com.theoplayer.engage.adapter.EntityAdapter
-import com.theoplayer.engage.publish.Constants.PUBLISH_CLUSTER
+import com.theoplayer.engage.publish.Constants.PUBLISH_PAYLOAD
 import com.theoplayer.engage.publish.Constants.CLUSTER_TYPE
+import com.theoplayer.engage.publish.Constants.PUBLISH_PAYLOAD_EXTRA
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_CONTINUATION
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_FEATURED
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_RECOMMENDATIONS
+import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_SUBSCRIPTION
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT
 import kotlinx.coroutines.tasks.await
+import org.json.JSONObject
 
 private const val TAG = "EngageServiceWorker"
 
@@ -47,7 +53,7 @@ class EngageServiceWorker(
     }
 
     val clusterType = inputData.getString(CLUSTER_TYPE)
-    val payload = inputData.getString(PUBLISH_CLUSTER)
+    val payload = inputData.getString(PUBLISH_PAYLOAD)
     if (payload.isNullOrEmpty()) {
       return Result.failure()
     }
@@ -62,7 +68,13 @@ class EngageServiceWorker(
         ClusterAdapter.convertFeaturedCluster(payload)
       )
       PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT -> publishUserAccountManagement(
-        EntityAdapter.convertItem(payload) as SignInCardEntity
+        EntityAdapter.convertItem(payload) as SignInCardEntity?
+      )
+      PUBLISH_TYPE_SUBSCRIPTION -> publishSubscription(
+        EntityAdapter.convertAccountProfile(JSONObject(payload)),
+        inputData.getString(PUBLISH_PAYLOAD_EXTRA)?.let {
+          EntityAdapter.convertItem(it) as SubscriptionEntity
+        }
       )
       else -> throw IllegalArgumentException("Bad publish type")
     }
@@ -107,13 +119,27 @@ class EngageServiceWorker(
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
   }
 
-  private suspend fun publishUserAccountManagement(item: SignInCardEntity): Result {
-    val publishTask: Task<Void> = if (!item.entityId.isPresent) {
+  private suspend fun publishUserAccountManagement(item: SignInCardEntity?): Result {
+    val publishTask: Task<Void> = if (item == null) {
       client.deleteUserManagementCluster()
     } else {
       client.publishUserAccountManagementRequest(
         PublishUserAccountManagementRequest.Builder()
           .setSignInCardEntity(item).build()
+      )
+    }
+    return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)
+  }
+
+  private suspend fun publishSubscription(accountProfile: AccountProfile, subscription: SubscriptionEntity?): Result {
+    val publishTask: Task<Void> = if (subscription == null) {
+      client.deleteSubscription(accountProfile)
+    } else {
+      client.publishSubscription(
+        PublishSubscriptionRequest.Builder()
+          .setAccountProfile(accountProfile)
+          .setSubscription(subscription)
+          .build()
       )
     }
     return publishAndProvideResult(publishTask, AppEngagePublishStatusCode.PUBLISHED)

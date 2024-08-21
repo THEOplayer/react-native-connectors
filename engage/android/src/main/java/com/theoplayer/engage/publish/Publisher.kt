@@ -8,8 +8,9 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.android.engage.service.AppEngageErrorCode
 import com.google.android.engage.service.AppEngageException
-import com.theoplayer.engage.publish.Constants.PUBLISH_CLUSTER
+import com.theoplayer.engage.publish.Constants.PUBLISH_PAYLOAD
 import com.theoplayer.engage.publish.Constants.CLUSTER_TYPE
+import com.theoplayer.engage.publish.Constants.PUBLISH_PAYLOAD_EXTRA
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_CONTINUATION
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_FEATURED
 import com.theoplayer.engage.publish.Constants.PUBLISH_TYPE_RECOMMENDATIONS
@@ -25,47 +26,52 @@ import org.json.JSONObject
 object Publisher {
   private const val TAG = "Publisher"
 
-  fun publishRecommendationClusters(context: Context, clusterJson: JSONObject) {
+  fun publishRecommendationClusters(context: Context, recommendationJson: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_RECOMMENDATIONS,
       PUBLISH_TYPE_RECOMMENDATIONS,
-      clusterJson,
+      recommendationJson,
+      null,
       context
     )
   }
 
-  fun publishFeaturedClusters(context: Context, payload: JSONObject) {
+  fun publishFeaturedClusters(context: Context, featuredJson: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_FEATURED,
       PUBLISH_TYPE_FEATURED,
-      payload,
+      featuredJson,
+      null,
       context
     )
   }
 
-  fun publishContinuationClusters(context: Context, payload: JSONObject) {
+  fun publishContinuationClusters(context: Context, continuationJson: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_CONTINUATION,
       PUBLISH_TYPE_CONTINUATION,
-      payload,
+      continuationJson,
+      null,
       context
     )
   }
 
-  fun publishSubscriptionClusters(context: Context, payload: JSONObject) {
+  fun publishSubscription(context: Context, accountInfoJson: JSONObject, subscriptionJson: JSONObject?) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_SUBSCRIPTION,
       PUBLISH_TYPE_SUBSCRIPTION,
-      payload,
+      accountInfoJson,
+      subscriptionJson,
       context
     )
   }
 
-  fun publishUserAccount(context: Context, payload: JSONObject) {
+  fun publishUserAccount(context: Context, userAccountJson: JSONObject) {
     queueOneTimeEngageServiceWorker(
       WORKER_NAME_USER_ACCOUNT_MANAGEMENT,
       PUBLISH_TYPE_USER_ACCOUNT_MANAGEMENT,
-      payload,
+      userAccountJson,
+      null,
       context
     )
   }
@@ -73,7 +79,8 @@ object Publisher {
   private fun queueOneTimeEngageServiceWorker(
     workerName: String,
     publishType: String,
-    clusterJson: JSONObject?,
+    payload: JSONObject?,
+    payloadExtra: JSONObject?,
     context: Context
   ) {
     val workRequest =
@@ -81,7 +88,8 @@ object Publisher {
         .setInputData(
           workDataOf(
             CLUSTER_TYPE to publishType,
-            PUBLISH_CLUSTER to clusterJson?.toString()
+            PUBLISH_PAYLOAD to payload?.toString(),
+            PUBLISH_PAYLOAD_EXTRA to payloadExtra?.toString()
           )
         )
         .build()
