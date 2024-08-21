@@ -35,6 +35,19 @@ npm install \
   @react-native-async-storage/async-storage
 ```
 
+The Engage SDK is set as a peer dependency, so the Android app using it still has to add an explicit dependency in
+Gradle, for mobile applications:
+
+```
+implementation "com.google.android.engage:engage-core:1.5.4"
+```
+
+or, for Android TV:
+
+```
+implementation "com.google.android.engage:engage-tv:1.0.0"
+```
+
 ## Usage
 
 ### Creating a connector instance
