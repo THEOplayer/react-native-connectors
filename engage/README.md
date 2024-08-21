@@ -18,7 +18,7 @@ Currently, the engage connector only supports the [Android Engage SDK](https://d
 
 In this document, we will refer to the following concepts:
 
-- **Entity**: A content asset, which can be a "_movie_", "_tvShow_", "_tvSeason_", "_tvEpisode_", "_liveStream_", "_videoClip_" or "_signIn_".
+- **Entity**: A content asset, which can be a "_movie_", "_tvShow_", "_tvSeason_", "_tvEpisode_", "_liveStream_", "_videoClip_", "_signIn_" or "_subscription_".
 - **Cluster**: A collection of entities grouped together in single UI view. Available types are:
   - "_Continuation_" or "_Continue Watching_": Contains unfinished videos and relevant newly released episodes.
   - "_Featured_": Showcases a selection of entities.
@@ -105,11 +105,61 @@ the app reopens and creates a new Engage client, the stored that will be loaded 
 
 ### Personalized experience
 
-**TODO**: provide a "_signIn_" entity that can be displayed on the engage surface, and which directs users
+#### SignIn entity
+
+An optional "_signIn_" entity can be displayed on the engage surface, which directs users
 to a sign-in page of the app.
 
-**TODO** there is also a "_subscription_" entity that contains one or more entitlements. It is yet unclear how this
-is used.
+```typescript
+const signIn: SignIn = {
+  type: EntityType.SignIn,
+  name: "Sign In Demo",
+  subtitle: "Demonstrates usage of sign-in card",
+  actionUri: "https://xyz.com/signin",
+  actionText: "Sign In",
+  posters: [
+    {
+      uri: "https://xyz.com/signin.png",
+      width: 320,
+      height: 180,
+      theme: ImageTheme.Light
+    }
+  ]
+}
+
+engage?.setSignInEntity(signIn);
+```
+
+#### Subscription and entitlement data
+
+In addition, it is possible to share app subscription and entitlement data via the Engage SDK, allowing
+users to easily find content they are entitled to and enable Google TV to deliver highly relevant content
+recommendations to users, directly within their Google TV experiences on TV, mobile and tablet.
+
+Subscription information can be published whenever the user performs one of the following actions:
+
+- The user logs in to the app;
+- The user switches between profiles, if the app supports single account with multiple profiles;
+- The user purchases a new subscription;
+- The user upgrades an existing subscription;
+- An existing user subscription or tiered subscription expires;
+
+```typescript
+const accountProfile = {
+  accountId: 'testAccountId',
+  profileId: 'testProfileId'
+}
+
+const subscription: Subscription = {
+  type: EntityType.Subscription,
+  providerPackageName: 'testProviderPackage',
+  subscriptionType: SubscriptionType.Active
+}
+
+engage?.setSubscription(accountProfile, subscription);
+```
+
+The "_subscription_" entity that contains one or more entitlements.
 
 ## Validating the published items
 
