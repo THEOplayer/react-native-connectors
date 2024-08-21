@@ -1,4 +1,5 @@
 import {
+  AccountProfile,
   Cluster, ClusterConfig,
   ClusterType,
   EngageClient,
@@ -9,6 +10,7 @@ import { NativeEventEmitter, NativeModules } from "react-native";
 import { DefaultEventDispatcher } from "./event/DefaultEventDispatcher";
 import { EngageErrorEvent, EngageEventMap } from "../api/EngageEvent";
 import { readCluster, storeCluster } from "./storage/Storage";
+import { Subscription } from "../api/entities/Subscription";
 
 interface NativeErrorEvent {
   message: string;
@@ -64,8 +66,15 @@ export class DefaultEngageClient extends DefaultEventDispatcher<EngageEventMap> 
       if (this._configuration.debug) {
         console.debug(TAG, `Removing SignIn entity`);
       }
-      NativeModules.EngageModule.unpublishSignInEntity();
+      NativeModules.EngageModule.deleteSignInEntity();
     }
+  }
+
+  setSubscription(accountProfile: AccountProfile, subscription?: Subscription) {
+    if (this._configuration.debug) {
+      console.debug(TAG, `Setting Subscription ${JSON.stringify(accountProfile, null, 2)} - ${JSON.stringify(subscription, null, 2)}`);
+    }
+    NativeModules.EngageModule.publishSubscription(accountProfile, subscription);
   }
 
   /**

@@ -3,8 +3,7 @@ package com.theoplayer.engage.adapter
 enum class ClusterType(val type: String) {
   Continuation("continuation"),
   Featured("featured"),
-  Recommendation("recommendation"),
-  Subscription("subscription");
+  Recommendation("recommendation");
 
   override fun toString(): String {
     return type

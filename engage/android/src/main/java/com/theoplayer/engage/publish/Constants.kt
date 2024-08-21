@@ -11,7 +11,8 @@ object Constants {
 
   const val CLUSTER_TYPE: String = "type"
 
-  const val PUBLISH_CLUSTER: String = "cluster"
+  const val PUBLISH_PAYLOAD: String = "payload"
+  const val PUBLISH_PAYLOAD_EXTRA: String = "payloadExtra"
   const val PUBLISH_TYPE_RECOMMENDATIONS = "recommendations"
   const val PUBLISH_TYPE_CONTINUATION = "continuation"
   const val PUBLISH_TYPE_FEATURED = "featured"

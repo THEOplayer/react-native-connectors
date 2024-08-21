@@ -47,7 +47,9 @@ object EntityAdapter {
     return mutableListOf<Entity>().apply {
       for (i in 0 until (items?.length() ?: 0)) {
         try {
-          this += convertItem(items?.getJSONObject(i))
+          convertItem(items?.getJSONObject(i))?.let { item ->
+            this += item
+          }
         } catch (e: Exception) {
           Log.w(TAG, "Failed to parse entity: ${e.message}")
         }
@@ -55,12 +57,12 @@ object EntityAdapter {
     }
   }
 
-  fun convertItem(item: String): Entity {
+  fun convertItem(item: String): Entity? {
     return convertItem(JSONObject(item))
   }
 
-  fun convertItem(item: JSONObject?): Entity {
-    return when (item?.getString(PROP_TYPE)) {
+  private fun convertItem(item: JSONObject?): Entity? {
+    return when (item?.optString(PROP_TYPE)) {
       TYPE_MOVIE -> MovieAdapter.convert(item)
       TYPE_EPISODE -> TvEpisodeAdapter.convert(item)
       TYPE_SEASON -> TvSeasonAdapter.convert(item)
@@ -69,7 +71,7 @@ object EntityAdapter {
       TYPE_CLIP -> VideoClipAdapter.convert(item)
       TYPE_SIGNIN -> SignInAdapter.convert(item)
       TYPE_SUBSCRIPTION -> SubscriptionAdapter.convert(item)
-      else -> throw Exception("Unknown entity type: ${item?.getString(PROP_TYPE)}")
+      else -> return null
     }
   }
 

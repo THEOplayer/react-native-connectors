@@ -48,7 +48,6 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
       ClusterType.Continuation -> Publisher.publishContinuationClusters(reactContext, clusterJson)
       ClusterType.Recommendation -> Publisher.publishRecommendationClusters(reactContext, clusterJson)
       ClusterType.Featured -> Publisher.publishFeaturedClusters(reactContext, clusterJson)
-      ClusterType.Subscription -> Publisher.publishSubscriptionClusters(reactContext, clusterJson)
     }
   }
 
@@ -67,6 +66,16 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
       Log.d(TAG, "Removing SignIn")
     }
     Publisher.publishUserAccount(reactContext, JSONObject())
+  }
+
+  @ReactMethod
+  fun publishSubscription(accountInfo: ReadableMap, subscription: ReadableMap?) {
+    val accountInfoJson = JSONObject(accountInfo.toHashMap())
+    val subscriptionJson = subscription?.let { JSONObject(it.toHashMap()) }
+    if (EngageConfiguration.debug) {
+      Log.d(TAG, "Publishing Subscription - ${accountInfoJson.toString(2)} - ${subscriptionJson?.toString(2)}")
+    }
+    Publisher.publishSubscription(reactContext, accountInfoJson, subscriptionJson)
   }
 
   @Suppress("UNUSED_PARAMETER")
