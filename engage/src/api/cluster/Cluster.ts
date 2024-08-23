@@ -1,4 +1,5 @@
-import { ClusterEntity, ClusterType } from "@theoplayer/react-native-engage";
+import { ClusterType } from "../types";
+import { ClusterEntity } from "../entities";
 import { DefaultEventDispatcher } from "../../internal/event/DefaultEventDispatcher";
 import { EngageClusterEventMap } from "./EngageClusterEvent";
 

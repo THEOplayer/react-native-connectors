@@ -1,12 +1,12 @@
 import {
   AddOperation,
-  Cluster,
   ClusterConfig,
   ClusterEntitiesChangedEvent,
   ClusterEntity,
   ClusterType,
 } from "@theoplayer/react-native-engage";
-import { DefaultEngageClient } from "../DefaultEngageClient";
+import { type DefaultEngageClient } from "../DefaultEngageClient";
+import { Cluster } from "../../api/cluster/Cluster";
 
 export class DefaultCluster extends Cluster {
   private clusterConfig: ClusterConfig;

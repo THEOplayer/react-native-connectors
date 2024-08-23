@@ -1,6 +1,7 @@
 import {
   AccountProfile,
-  Cluster, ClusterConfig,
+  Cluster,
+  ClusterConfig,
   ClusterType,
   EngageClient,
   EngageConfiguration,
