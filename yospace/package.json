@@ -81,6 +81,6 @@
     ]
   },
   "dependencies": {
-    "@theoplayer/yospace-connector-web": "^2.1.3"
+    "@theoplayer/yospace-connector-web": "^2.3.0"
   }
 }

@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "react-native-uuid": "^2.0.2",
-    "strftime": "^0.10.2"
+    "strftime": "^0.10.3"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "^1.23.1",

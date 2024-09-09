@@ -83,6 +83,6 @@
     ]
   },
   "dependencies": {
-    "openapi-fetch": "^0.9.5"
+    "openapi-fetch": "^0.9.8"
   }
 }
