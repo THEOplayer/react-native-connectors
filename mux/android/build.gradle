@@ -68,7 +68,7 @@ repositories {
   mavenCentral()
   // Local Maven repo
   maven { url 'local' }
-  maven { url 'https://jitpack.io' }
+  maven { url "https://maven.theoplayer.com/releases" }
 }
 
 // The Mux connector requires at least THEOplayer SDK v5.11.0.
