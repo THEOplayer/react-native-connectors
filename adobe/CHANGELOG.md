@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.6.0
+
+### ✨ Features
+
+- Added support for THEOplayer 8.0
+
 ## 1.5.0
 
 ### 🐛 Issues

@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.5.0
+
+### ✨ Features
+
+- Added support for THEOplayer 8.0
+
 ## 1.4.0
 
 ### 📦 Dependency Updates
