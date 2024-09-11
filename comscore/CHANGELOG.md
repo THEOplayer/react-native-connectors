@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.7.0
+
+### ✨ Features
+
+- Added support for THEOplayer 8.0
+
 ## 1.6.0
 
 ### 📦 Dependency Updates
