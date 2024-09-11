@@ -10,12 +10,7 @@ import type {
   THEOplayer,
 } from 'react-native-theoplayer';
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from 'react-native-theoplayer';
-import {
-  calculateAdvertisingPodDetails,
-  calculateAdvertisingDetails,
-  calculateChapterDetails,
-  sanitiseContentLength
-} from '../utils/Utils';
+import { calculateAdvertisingPodDetails, calculateAdvertisingDetails, calculateChapterDetails, sanitiseContentLength } from '../utils/Utils';
 import { Platform } from 'react-native';
 import { MediaEdgeAPI } from './media-edge/MediaEdgeAPI';
 import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
@@ -49,12 +44,14 @@ export class AdobeConnectorAdapter {
 
   private mediaApi: MediaEdgeAPI;
 
-  constructor(player: THEOplayer,
-              baseUrl: string,
-              configId: string,
-              userAgent?: string,
-              debug = false,
-              debugSessionId: string | undefined = undefined) {
+  constructor(
+    player: THEOplayer,
+    baseUrl: string,
+    configId: string,
+    userAgent?: string,
+    debug = false,
+    debugSessionId: string | undefined = undefined,
+  ) {
     this.player = player;
     this.mediaApi = new MediaEdgeAPI(baseUrl, configId, userAgent, debugSessionId);
     this.debug = debug;

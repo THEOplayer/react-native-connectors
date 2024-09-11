@@ -1,5 +1,5 @@
-import { ServerSideAdInsertionConfiguration, TypedSource } from "react-native-theoplayer";
-import { YospaceSessionProperties } from "./YospaceSessionProperties";
+import { ServerSideAdInsertionConfiguration, TypedSource } from 'react-native-theoplayer';
+import { YospaceSessionProperties } from './YospaceSessionProperties';
 
 /**
  * The identifier of the Yospace integration.
@@ -21,7 +21,7 @@ export enum YospaceStreamType {
   vod = 'vod',
   live = 'live',
   livepause = 'livepause',
-  nonlinear = 'nonlinear'
+  nonlinear = 'nonlinear',
 }
 
 /**

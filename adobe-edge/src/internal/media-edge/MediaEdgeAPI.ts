@@ -24,7 +24,7 @@ interface MediaEdgeClient<Paths extends {}, Media extends MediaType = MediaType>
   POST: PostRequestType<Paths, Media>;
 }
 
-const TAG = "AdobeEdge";
+const TAG = 'AdobeEdge';
 
 export class MediaEdgeAPI {
   private readonly _client: MediaEdgeClient<paths, 'application/json'>;
@@ -171,7 +171,7 @@ export class MediaEdgeAPI {
     const params = {
       query: {
         configId: this._configId,
-      }  as { configId: string; debugSessionID?: string },
+      } as { configId: string; debugSessionID?: string },
     };
     if (this._debugSessionId) {
       params.query.debugSessionID = this._debugSessionId;
