@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-adobe-edge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Adobe Edge analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
