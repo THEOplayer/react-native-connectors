@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "youbora-adapter-theoplayer2": "^6.8.10",
-    "youboralib": "^6.8.54"
+    "youboralib": "^6.8.57"
   },
   "devDependencies": {
     "youboralib-util": "^1.4.3"

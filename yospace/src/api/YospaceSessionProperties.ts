@@ -2,7 +2,6 @@
  * Provides a means for a client to specify custom properties at session initialisation.
  */
 export interface YospaceSessionProperties {
-
   /**
    * Sets whether to prefetch nonlinear resources defined in the VAST for this advert.
    * Prefetching resources allows the application to use or display the resource as soon
@@ -94,5 +93,5 @@ export interface YospaceSessionProperties {
   /**
    * Sets the custom HTTP headers to be used when sending requests.
    */
-  customHttpHeaders?: {[key: string]: string | number};
+  customHttpHeaders?: { [key: string]: string | number };
 }

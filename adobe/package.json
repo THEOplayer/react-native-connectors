@@ -55,8 +55,8 @@
     "react": "*",
     "react-native": "*",
     "react-native-device-info": "^10.13.1",
-    "react-native-theoplayer": "^3.0.0 || ^7.0.0",
-    "theoplayer": "^5.0.0 || ^6.0.0 || ^7.0.0"
+    "react-native-theoplayer": "^3 || ^7 || ^8",
+    "theoplayer": "^5 || ^6 || ^7 || ^8"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
