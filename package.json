@@ -22,12 +22,18 @@
     "build": "npm run build --workspaces",
     "clean": "npm run clean --workspaces",
     "test": "npm run test:docs",
-    "prettier": "prettier --check \"*/(src|test)/**/*\"",
-    "prettier:fix": "prettier --write \"*/(src|test)/**/*\"",
+    "prettier": "prettier --check \"*/(src|test)/**/*.{js,jsx,ts,tsx}\"",
+    "prettier:fix": "prettier --write \"*/(src|test)/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"*/{src,test}/**/*.{ts,tsx}\"",
     "lint:fix": "npm run lint -- --fix",
     "docs": "typedoc --treatWarningsAsErrors",
-    "test:docs": "npm run docs -- --emit none"
+    "test:docs": "npm run docs -- --emit none",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*/(src|test)/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.8",
@@ -40,6 +46,8 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.10",
     "pod-install": "^0.1.39",
     "prettier": "^3.3.3",
     "react": "^18.2.0",
