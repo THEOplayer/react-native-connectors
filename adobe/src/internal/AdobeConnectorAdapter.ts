@@ -13,7 +13,7 @@ import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType }
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from './Types';
 import { AdobeEventTypes } from './Types';
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from '../utils/Utils';
-import { NativeModules, Platform } from 'react-native';
+import { I18nManager, Settings, Platform } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 const TAG = 'AdobeConnector';
@@ -432,7 +432,7 @@ export class AdobeConnectorAdapter {
   private buildUserAgent(): string | undefined {
     if (Platform.OS === 'android') {
       const { Release, Model: deviceName } = Platform.constants;
-      const localeString = nonEmptyOrUnknown(NativeModules.I18nManager?.localeIdentifier?.replace('_', '-'));
+      const localeString = nonEmptyOrUnknown(I18nManager?.getConstants()?.localeIdentifier?.replace('_', '-'));
       const operatingSystem = `Android ${Release}`;
       const deviceBuildId = nonEmptyOrUnknown(DeviceInfo.getBuildIdSync());
       // operatingSystem: `Android Build.VERSION.RELEASE`
@@ -440,7 +440,7 @@ export class AdobeConnectorAdapter {
       // Example: Mozilla/5.0 (Linux; U; Android 7.1.2; en-US; AFTN Build/NS6296)
       return `${USER_AGENT_PREFIX} (Linux; U; ${operatingSystem}; ${localeString}; ${deviceName} Build/${deviceBuildId})`;
     } else if (Platform.OS === 'ios') {
-      const localeString = NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0];
+      const localeString = Settings.get('AppleLocale') || Settings.get('AppleLanguages')[0];
       const model = DeviceInfo.getModel();
       const osVersion = DeviceInfo.getSystemVersion().replace('.', '_');
       return `${USER_AGENT_PREFIX} (${model}; CPU OS ${osVersion} like Mac OS X; ${localeString})`;
