@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.5.1
+
+### 🐛 Issues
+
+- Deleted dependency on the removed ad module for Android.
+
 ## 1.5.0
 
 ### ✨ Features

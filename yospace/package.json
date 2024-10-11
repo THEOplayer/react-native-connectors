@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-yospace",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Yospace connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.7.1
+
+### 🐛 Issues
+
+- Deleted dependency on the removed ad module for Android.
+
 ## 1.7.0
 
 ### ✨ Features
