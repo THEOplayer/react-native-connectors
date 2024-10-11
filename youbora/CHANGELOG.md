@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-youbora
 
+## 1.2.1
+
+### 🐛 Issues
+
+- Deleted dependency on the removed ad module for Android.
+
 ## 1.2.0
 
 ### 📦 Dependency Updates

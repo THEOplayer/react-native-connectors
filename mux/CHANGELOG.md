@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.4.1
+
+### 🐛 Issues
+
+- Deleted dependency on the removed ad module for Android.
+
 ## 1.4.0
 
 ### ✨ Features
