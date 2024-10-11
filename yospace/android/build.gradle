@@ -101,7 +101,6 @@ dependencies {
   }
 
   compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
-  compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads:$theoplayer_sdk_version"
   compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   compileOnly project(':react-native-theoplayer')
 
