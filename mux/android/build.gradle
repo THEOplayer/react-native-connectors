@@ -85,7 +85,6 @@ dependencies {
 
   implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_v5:$mux_version"
   implementation "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:integration-ads:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
