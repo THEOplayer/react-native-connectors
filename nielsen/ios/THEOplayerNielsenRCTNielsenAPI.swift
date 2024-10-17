@@ -32,10 +32,11 @@ class THEOplayerNielsenRCTNielsenAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             log("\(appId) \(instanceName) \(nielsenOptions)")
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
-            if let player = theView?.player {
-                nielsenOptions.setValue(appId, forKey: "appId")
+            if let player = theView?.player,
+			   var options = nielsenOptions as? [String:Any] {
+			    options["appId"] = appId
                 if let connector = NielsenConnector(
-                    configuration: nielsenOptions,
+                    configuration: options as NSDictionary,
                     player: player
                 ) {
                     self.connectors[node] = connector
