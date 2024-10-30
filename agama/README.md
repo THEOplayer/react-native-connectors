@@ -92,7 +92,3 @@ player.source = {
 
 As it is possible to configure more than one analytics integration, it is important to include the
 `integration: 'agama'` property to let the connector known which object to use.
-
-### Example application
-
-The [example application](./example) demonstrates the use of the Agama connector.
