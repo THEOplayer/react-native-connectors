@@ -2,8 +2,6 @@
 
 A Mux analytics connector for `@theoplayer/react-native`, supporting Web, iOS and Android.
 
-Try the accompanying [example](./example) app for a fully integrated demonstration of the connector.
-
 ## Installation
 
 ```sh
