@@ -1,5 +1,17 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.7.0
+
+### ✨ Features
+
+- Dropped usage of the NativeModules import to make the connector ready for the new architecture
+
+### 🐛 Issues
+
+- ### 📦 Dependency Updates
+
+  react-native-device-info@>=10.0.0 <14.0.0
+
 ## 1.6.0
 
 ### ✨ Features

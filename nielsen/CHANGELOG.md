@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.6.0
+
+### ✨ Features
+
+- Apply correct update mechanism for nielsen options dictionary
+
 ## 1.5.1
 
 ### 🐛 Issues
