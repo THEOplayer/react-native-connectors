@@ -35,7 +35,7 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
 
   @ReactMethod
   fun publishCluster(cluster: ReadableMap) {
-    val clusterJson = JSONObject(cluster.toHashMap())
+    val clusterJson = JSONObject(cluster.toHashMap() as Map<*, *>)
     val clusterType = ClusterType.fromString(cluster.getString(PROP_CLUSTER_TYPE))
     if (clusterType == null) {
       Log.w(TAG, "Invalid cluster type")
@@ -53,7 +53,7 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
 
   @ReactMethod
   fun publishSignInEntity(signIn: ReadableMap) {
-    val signInJson = JSONObject(signIn.toHashMap())
+    val signInJson = JSONObject(signIn.toHashMap() as Map<*, *>)
     if (EngageConfiguration.debug) {
       Log.d(TAG, "Setting SignIn - ${signInJson.toString(2)}")
     }
@@ -70,8 +70,8 @@ class ReactTHEOplayerEngageModule(private val reactContext: ReactApplicationCont
 
   @ReactMethod
   fun publishSubscription(accountInfo: ReadableMap, subscription: ReadableMap?) {
-    val accountInfoJson = JSONObject(accountInfo.toHashMap())
-    val subscriptionJson = subscription?.let { JSONObject(it.toHashMap()) }
+    val accountInfoJson = JSONObject(accountInfo.toHashMap() as Map<*, *>)
+    val subscriptionJson = subscription?.let { JSONObject(it.toHashMap() as Map<*, *>) }
     if (EngageConfiguration.debug) {
       Log.d(TAG, "Publishing Subscription - ${accountInfoJson.toString(2)} - ${subscriptionJson?.toString(2)}")
     }
