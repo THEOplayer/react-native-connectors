@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.2.0
+
+### ✨ Features
+
+- Added support for React Native v0.75.
+
 ## 0.1.2
 
 ### 🐛 Issues
