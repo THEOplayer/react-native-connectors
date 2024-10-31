@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="recommendation_cluster_title" translatable="false">Because you enjoyed</string>
+  <string name="recommendation_cluster_subtitle" translatable="false"> </string>
+  <string name="sign_in_card_action_text" translatable="false">Sign in</string>
+</resources>

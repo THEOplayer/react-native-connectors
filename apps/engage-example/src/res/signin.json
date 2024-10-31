@@ -1,0 +1,15 @@
+  {
+    "type": "signIn",
+    "name": "Sign In Demo",
+    "subtitle": "Demonstrates usage of sign-in card",
+    "actionUri": "https://xyz.com/signin",
+    "actionText": "Sign In",
+    "posters": [
+      {
+        "uri": "https://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+        "width": 320,
+        "height": 180,
+        "theme": "light"
+      }
+    ]
+  }

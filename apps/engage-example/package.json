@@ -1,0 +1,44 @@
+{
+  "name": "react-native-theoplayer-example",
+  "description": "Example app for react-native-theoplayer",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "npx react-native run-android",
+    "android-release": "npx react-native run-android --mode release",
+    "start": "npx react-native start",
+    "lint": "eslint \"**/*.{ts,tsx}\""
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "npm:react-native-tvos@^0.75.4-0",
+    "react-native-mmkv": "^2.12.2",
+    "react-native-status-bar-height": "^2.6.0",
+    "react-native-svg": "^15.8.0",
+    "react-native-web-image-loader": "^0.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.9",
+    "@babel/preset-env": "^7.25.9",
+    "@babel/runtime": "^7.25.9",
+    "@react-native/babel-preset": "0.75.4",
+    "@react-native/eslint-config": "0.75.4",
+    "@react-native/metro-config": "0.75.4",
+    "@react-native/typescript-config": "0.75.4",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "babel-loader": "^8.4.1",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^8.57.1",
+    "typescript": "5.0.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "overrides": {
+    "react-native-mmkv": {
+      "react-native": "npm:react-native-tvos@^0.75.4-0"
+    }
+  }
+}

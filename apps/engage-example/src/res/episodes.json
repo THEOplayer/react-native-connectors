@@ -1,0 +1,191 @@
+[
+  {
+    "type": "tvEpisode",
+    "id": "id_BreakingBad_S1E1",
+    "name": "Breaking Bad - Pilot",
+    "posters": [
+      {
+        "uri": "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_QL75_UX380_CR0,4,380,562_.jpg",
+        "width": 500,
+        "height": 723,
+        "theme": "light"
+      }
+    ],
+    "playbackUri": "https://tv.com/playback/BreakingBad_S1E1",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/BreakingBad_S1E1",
+        "platformType": 0
+      }
+    ],
+    "availability": 0,
+    "duration": 5400000,
+    "genres": [
+      "crime",
+      "drama"
+    ],
+    "showTitle": "Breaking Bad",
+    "seasonTitle": "Season 1",
+    "seasonNumber": "Sz.1",
+    "episodeNumber": 1,
+    "episodeDisplayNumber": "Ep.1",
+    "airDate": 1199145600000,
+    "contentRating": [
+      {
+        "rating": "TV-MA",
+        "agencyName": "MPAA"
+      }
+    ]
+  },
+  {
+    "type": "tvEpisode",
+    "id": "id_GameOfThrones_S1E1",
+    "name": "Game of Thrones - Winter Is Coming",
+    "posters": [
+      {
+        "uri": "https://image.tmdb.org/t/p/w500/zwaj4egrhnXOBIit1tyb4Sbt3KP.jpg",
+        "width": 500,
+        "height": 723,
+        "theme": "light"
+      }
+    ],
+    "playbackUri": "https://tv.com/playback/GameOfThrones_S1E1",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/GameOfThrones_S1E1",
+        "platformType": 0
+      }
+    ],
+    "availability": 0,
+    "duration": 5400000,
+    "genres": [
+      "fantasy",
+      "drama"
+    ],
+    "showTitle": "Game of Thrones",
+    "seasonTitle": "Season 1",
+    "seasonNumber": "Sz.1",
+    "episodeNumber": 1,
+    "episodeDisplayNumber": "Ep.1",
+    "airDate": 1302480000000,
+    "contentRating": [
+      {
+        "rating": "TV-MA",
+        "agencyName": "MPAA"
+      }
+    ]
+  },
+  {
+    "type": "tvEpisode",
+    "id": "id_StrangerThings_S1E1",
+    "name": "Stranger Things - Chapter One: The Vanishing of Will Byers",
+    "posters": [
+      {
+        "uri": "https://image.tmdb.org/t/p/w500/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg",
+        "width": 500,
+        "height": 723,
+        "theme": "light"
+      }
+    ],
+    "playbackUri": "https://tv.com/playback/StrangerThings_S1E1",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/StrangerThings_S1E1",
+        "platformType": 0
+      }
+    ],
+    "availability": 0,
+    "duration": 5400000,
+    "genres": [
+      "drama",
+      "fantasy"
+    ],
+    "showTitle": "Stranger Things",
+    "seasonTitle": "Season 1",
+    "seasonNumber": "Sz.1",
+    "episodeNumber": 1,
+    "episodeDisplayNumber": "Ep.1",
+    "airDate": 1468713600000,
+    "contentRating": [
+      {
+        "rating": "TV-14",
+        "agencyName": "MPAA"
+      }
+    ]
+  },
+  {
+    "type": "tvEpisode",
+    "id": "id_TheMandalorian_S1E1",
+    "name": "The Mandalorian - Chapter 1: The Mandalorian",
+    "posters": [
+      {
+        "uri": "https://m.media-amazon.com/images/M/MV5BN2M5YWFjN2YtYzU2YS00NzBlLTgwZWUtYWQzNWFhNDkyYjg3XkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_FMjpg_UY2500_.jpg",
+        "width": 500,
+        "height": 723,
+        "theme": "light"
+      }
+    ],
+    "playbackUri": "https://tv.com/playback/TheMandalorian_S1E1",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/TheMandalorian_S1E1",
+        "platformType": 0
+      }
+    ],
+    "availability": 0,
+    "duration": 5400000,
+    "genres": [
+      "action",
+      "sci-fi"
+    ],
+    "showTitle": "The Mandalorian",
+    "seasonTitle": "Season 1",
+    "seasonNumber": "Sz.1",
+    "episodeNumber": 1,
+    "episodeDisplayNumber": "Ep.1",
+    "airDate": 1573605000000,
+    "contentRating": [
+      {
+        "rating": "TV-14",
+        "agencyName": "MPAA"
+      }
+    ]
+  },
+  {
+    "type": "tvEpisode",
+    "id": "id_Friends_S1E1",
+    "name": "Friends - The One Where Monica Gets a Roommate",
+    "posters": [
+      {
+        "uri": "https://m.media-amazon.com/images/M/MV5BNDVkYjU0MzctMWRmZi00NTkxLTgwZWEtOWVhYjZlYjllYmU4XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_QL75_UY562_CR1,0,380,562_.jpg",
+        "width": 500,
+        "height": 723,
+        "theme": "light"
+      }
+    ],
+    "playbackUri": "https://tv.com/playback/Friends_S1E1",
+    "platformSpecificPlaybackUri": [
+      {
+        "playbackUri": "https://tv.com/playback/Friends_S1E1",
+        "platformType": 0
+      }
+    ],
+    "availability": 0,
+    "duration": 5400000,
+    "genres": [
+      "comedy"
+    ],
+    "showTitle": "Friends",
+    "seasonTitle": "Season 1",
+    "seasonNumber": "Sz.1",
+    "episodeNumber": 1,
+    "episodeDisplayNumber": "Ep.1",
+    "airDate": 780552000000,
+    "contentRating": [
+      {
+        "rating": "TV-PG",
+        "agencyName": "MPAA"
+      }
+    ]
+  }
+]
