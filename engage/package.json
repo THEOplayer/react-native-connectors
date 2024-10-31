@@ -54,7 +54,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-device-info": "^10.13.1",
+    "react-native-device-info": "*",
     "react-native-mmkv": "^2.12.2"
   },
   "eslintIgnore": [
