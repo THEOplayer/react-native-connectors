@@ -13,7 +13,8 @@ import type {
 } from '@theoplayer/react-native-analytics-adobe-edge';
 import { pathToEventTypeMap } from './PathToEventTypeMap';
 import type { AdobePlayerStateData } from '../../api/details/AdobePlayerStateData';
-import { buildUserAgent, sanitisePlayhead } from '../../utils/Utils';
+import { sanitisePlayhead } from '../../utils/Utils';
+import { buildUserAgent } from '../../utils/UserAgent';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type PostRequestType<Paths extends {}, Media extends MediaType = MediaType> = ClientMethod<Paths, 'post', Media>;
