@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 0.3.2
+
+### 🐛 Issues
+
+- Fixed a build issue where the `Settings` object would not be found when using the connector with react-native-web.
+
 ## 0.3.1
 
 ### 🐛 Issues
