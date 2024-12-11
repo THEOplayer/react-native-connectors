@@ -80,7 +80,7 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
                 let name = self.buildPlayerName(node)
                 
                 // Start to monitor a given THEOplayer object.
-                MUXSDKStatsTHEOplayer.monitorTHEOplayer(player, name: name, customerData: customerData, softwareVersion: "1.0.0", automaticErrorTracking: true)
+                MUXSDKStatsTHEOplayer.monitorTHEOplayer(player, name: name, customerData: customerData, softwareVersion: THEOplayer.version, automaticErrorTracking: true)
                 self.connectors[node] = customerData
                 
                 log("[Mux] added connector to view \(node)")
