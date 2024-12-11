@@ -43,11 +43,11 @@ const muxOptions = {
 };
 
 const App = () => {
-  const [mux, initMux] = useMux(muxOptions);
+  const [mux, initMux] = useMux();
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize connector
-    initMux(player);
+    initMux(player, muxOptions);
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);
