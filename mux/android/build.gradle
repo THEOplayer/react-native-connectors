@@ -74,7 +74,8 @@ repositories {
 // The Mux connector requires at least THEOplayer SDK v5.11.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 8.0.0)')
 def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.9.10")
-def mux_version = safeExtGet('THEOplayerMux_muxVersion', '0.2.+')
+def mux_version = safeExtGet('THEOplayerMux_muxVersion', '0.4.+')
+def mux_core_version = safeExtGet('Mux_muxVersion', '1.2.0')
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -83,7 +84,8 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_v5:$mux_version"
+  implementation "com.mux.stats.sdk.muxstats:android:$mux_core_version"
+  implementation "com.mux.stats.sdk.muxstats:muxstatssdktheoplayer_v7:$mux_version"
   implementation "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
