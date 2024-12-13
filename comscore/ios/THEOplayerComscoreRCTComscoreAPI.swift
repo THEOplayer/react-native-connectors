@@ -31,6 +31,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
                     publisherId: ComscoreConfig["publisherId"] as! String,
                     applicationName: ComscoreConfig["applicationName"] as! String,
                     userConsent: self.mapUserConsent(userConsent: ComscoreConfig["userConsent"] as! String),
+                    usagePropertiesAutoUpdateMode: self.mapUsagePropertiesAutoUpdateMode(usagePropertiesAutoUpdateMode: ComscoreConfig["usagePropertiesAutoUpdateMode"] as? String ?? "foregroundOnly"),
                     adIdProcessor: nil,
                     debug: ComscoreConfig["debug"] as! Bool
                 )
@@ -140,6 +141,19 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
             customLabels: metadata["customLabels"] as? [String:String]
         )
         return comscoreMetadata
+    }
+    
+    func mapUsagePropertiesAutoUpdateMode(usagePropertiesAutoUpdateMode: String) -> ComscoreUsagePropertiesAutoUpdateMode {
+        switch usagePropertiesAutoUpdateMode {
+        case "foregroundOnly":
+            return .foregroundOnly
+        case "foregroundAndBackground":
+            return .foregroundAndBackground
+        case "disabled":
+            return .disabled
+        default:
+            return .foregroundOnly
+        }
     }
     
     func mapUserConsent(userConsent: String) -> ComScoreUserConsent {
