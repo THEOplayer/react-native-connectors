@@ -30,8 +30,9 @@
   ],
   "scripts": {
     "typescript": "tsc --noEmit",
+    "manifest": "node manifest.js > src/manifest.json",
     "build": "bob build",
-    "prepare": "npm run build",
+    "prepare": "npm run manifest && npm run build",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
