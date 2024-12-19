@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.2.1
+
+### 🐛 Issues
+
+- Enforced mandatory entity attributes.
+
 ## 0.2.0
 
 ### ✨ Features
