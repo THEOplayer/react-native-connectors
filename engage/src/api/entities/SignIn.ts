@@ -1,8 +1,10 @@
-import { Entity, EntityType } from "./Entity";
-import { Poster } from "../types";
+import { Entity, EntityType } from './Entity';
+import { Poster } from '../types';
 
 /**
- * SignIn.
+ * An entity representing a sign in card.
+ *
+ * {@link https://developers.google.com/android/reference/kotlin/com/google/android/engage/common/datamodel/SignInCardEntity | SignInCardEntity}.
  */
 export interface SignIn extends Entity {
   /**

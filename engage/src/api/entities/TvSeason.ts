@@ -1,7 +1,13 @@
-import { RatingSystem } from "../types/RatingSystem";
-import { Price } from "../types/Price";
-import { ClusterEntity, EntityType } from "./Entity";
+import { RatingSystem } from '../types/RatingSystem';
+import { Price } from '../types/Price';
+import { ClusterEntity, EntityType } from './Entity';
+import { Availability } from '@theoplayer/react-native-engage';
 
+/**
+ * An object representing a tv season.
+ *
+ * {@link https://developer.android.com/guide/playcore/engage/watch#tvseasonentity | TvSeasonEntity}.
+ */
 export interface TvSeason extends ClusterEntity {
   /**
    * The entity type.
@@ -52,4 +58,9 @@ export interface TvSeason extends ClusterEntity {
    * A list of content ratings.
    */
   contentRating?: RatingSystem[];
+
+  /**
+   * The availability of the entity.
+   */
+  availability?: Availability;
 }

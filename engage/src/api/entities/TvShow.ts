@@ -1,8 +1,10 @@
-import { Price, RatingSystem } from "../types";
-import { ClusterEntity, EntityType } from "./Entity";
+import { Availability, Price, RatingSystem } from '../types';
+import { ClusterEntity, EntityType } from './Entity';
 
 /**
- * TvShow.
+ * An object representing a tv show.
+ *
+ * {@link https://developer.android.com/guide/playcore/engage/watch#tvshowentity | TvShowEntity}
  */
 export interface TvShow extends ClusterEntity {
   /**
@@ -13,12 +15,32 @@ export interface TvShow extends ClusterEntity {
   /**
    * The deep link to the provider app to show details about the entity.
    */
-  infoPageUri?: string;
+  infoPageUri: string;
 
   /**
    * The air date of the first episode, in epoch milliseconds.
    */
-  firstEpisodeAirDate?: number;
+  firstEpisodeAirDate: number;
+
+  /**
+   * The availability of the entity.
+   */
+  availability: Availability;
+
+  /**
+   * Season count.
+   */
+  seasonCount: number;
+
+  /**
+   * A list of genres.
+   */
+  genres: string[];
+
+  /**
+   * A list of content ratings.
+   */
+  contentRating: RatingSystem[];
 
   /**
    * The air date of the last episode, in epoch milliseconds.
@@ -29,19 +51,4 @@ export interface TvShow extends ClusterEntity {
    * The entity's price.
    */
   price?: Price;
-
-  /**
-   * Season count.
-   */
-  seasonCount?: number;
-
-  /**
-   * A list of genres.
-   */
-  genres?: string[];
-
-  /**
-   * A list of content ratings.
-   */
-  contentRating?: RatingSystem[];
 }
