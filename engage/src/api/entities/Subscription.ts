@@ -1,9 +1,24 @@
 import { Entity, EntityType } from '@theoplayer/react-native-engage';
 
 export enum SubscriptionType {
+  /**
+   * The user has an unspecified subscription type.
+   */
   Unspecified = 0,
+
+  /**
+   * The user has a paid subscription currently active.
+   */
   Active = 1,
+
+  /**
+   * The user has a trial subscription.
+   */
   ActiveTrial = 2,
+
+  /**
+   * The user has an account but no active subscription or trial.
+   */
   Inactive = 3,
 }
 
@@ -47,17 +62,19 @@ export interface Subscription extends Entity {
   type: EntityType.Subscription;
 
   /**
-   * providerPackageName
+   * The package name of the app that handles the subscription.
+   *
+   * @example "com.google.android.youtube".
    */
   providerPackageName: string;
 
   /**
-   * subscriptionType
+   * The type of subscription.
    */
   subscriptionType: SubscriptionType;
 
   /**
-   * The optional subscription's expiration time in milliseconds.
+   * The optional subscription's expiration time in milliseconds since epoch.
    */
   expirationTime?: number;
 
