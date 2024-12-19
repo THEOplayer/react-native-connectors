@@ -1,4 +1,4 @@
-import { Availability, DisplayTimeWindow, Poster, WatchNextType } from '../types';
+import { DisplayTimeWindow, Poster, WatchNextType } from '../types';
 
 export enum EntityType {
   LiveStream = 'liveStream',
