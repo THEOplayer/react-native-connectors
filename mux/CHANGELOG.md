@@ -2,7 +2,7 @@
 
 ## 1.5.0
 
-### ✨ Features
+### 📦 Dependency Updates
 
 - Updated the mux connector on Android to be compatible with THEOplayer v8 versions.
 
