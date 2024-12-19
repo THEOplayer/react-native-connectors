@@ -1,5 +1,16 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.5.0
+
+### ✨ Features
+
+- Updated the mux connector on Android to be compatible with THEOplayer v8 versions.
+
+### 🐛 Issues
+
+- Changed the `useMux` hook to allow the `MuxOptions` to be passed with the initialize instead of directly passing it into the hook itself.
+- Fixed an issue on iOS where an incorrect THEOplayer version would be passed.
+
 ## 1.4.1
 
 ### 🐛 Issues
