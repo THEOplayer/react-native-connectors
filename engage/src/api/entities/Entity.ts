@@ -1,8 +1,8 @@
-import { Availability, DisplayTimeWindow, Poster, WatchNextType } from "../types";
+import { DisplayTimeWindow, Poster, WatchNextType } from '../types';
 
 export enum EntityType {
-  LiveStream = "liveStream",
-  Movie = "movie",
+  LiveStream = 'liveStream',
+  Movie = 'movie',
   TvEpisode = 'tvEpisode',
   TvSeason = 'tvSeason',
   TvShow = 'tvShow',
@@ -45,11 +45,6 @@ export interface ClusterEntity extends Entity {
    * The deep link to the provider app to start playing the entity.
    */
   playbackUri?: string;
-
-  /**
-   * The availability of the entity.
-   */
-  availability?: Availability;
 
   /**
    * The last engagement time in milliseconds.

@@ -27,12 +27,12 @@ In this document, we will refer to the following concepts:
 ## Installation
 
 In addition to installing the engage connector module, it is also necessary to add a dependency to
-async-storage to allow persistently storing engage data.
+`react-native-mmkv` to allow persistently storing engage data.
 
 ```sh
 npm install \
   @theoplayer/react-native-engage \
-  @react-native-async-storage/async-storage
+  react-native-mmkv
 ```
 
 The Engage SDK is set as a peer dependency, so the Android app using it still has to add an explicit dependency in

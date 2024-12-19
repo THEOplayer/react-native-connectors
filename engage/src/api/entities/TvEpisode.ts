@@ -1,11 +1,46 @@
-import { ClusterEntity, EntityType } from "./Entity";
-import { PlatformUri, Price, RatingSystem } from "../types";
+import { ClusterEntity, EntityType } from './Entity';
+import { Availability, PlatformUri, Price, RatingSystem } from '../types';
 
+/**
+ * An object representing a tv episode.
+ *
+ * {@link https://developer.android.com/guide/playcore/engage/watch#tvepisodeentity | TvEpisodeEntity}.
+ */
 export interface TvEpisode extends ClusterEntity {
   /**
    * The entity type.
    */
   type: EntityType.TvEpisode;
+
+  /**
+   * The deep link to the provider app to start playing the entity.
+   */
+  playbackUri: string;
+
+  /**
+   * The air date of the episode, in epoch milliseconds.
+   */
+  airDate: number;
+
+  /**
+   * The availability of the entity.
+   */
+  availability: Availability;
+
+  /**
+   * Duration in milliseconds.
+   */
+  duration: number;
+
+  /**
+   * A list of genres.
+   */
+  genres: string[];
+
+  /**
+   * A list of content ratings.
+   */
+  contentRating: RatingSystem[];
 
   /**
    * A list of platform-specific deep links to the provider app to start playing the entity.
@@ -43,29 +78,9 @@ export interface TvEpisode extends ClusterEntity {
   episodeDisplayNumber?: string;
 
   /**
-   * The air date of the episode, in epoch milliseconds.
-   */
-  airDate?: number;
-
-  /**
    * The entity's price.
    */
   price?: Price;
-
-  /**
-   * Duration in milliseconds.
-   */
-  duration: number;
-
-  /**
-   * A list of genres.
-   */
-  genres?: string[];
-
-  /**
-   * A list of content ratings.
-   */
-  contentRating?: RatingSystem[];
 
   /**
    * Whether the entity was downloaded on the device for offline viewing.

@@ -1,12 +1,17 @@
-import { Entity, EntityType } from "@theoplayer/react-native-engage";
+import { Entity, EntityType } from '@theoplayer/react-native-engage';
 
 export enum SubscriptionType {
   Unspecified = 0,
   Active = 1,
   ActiveTrial = 2,
-  Inactive = 3
+  Inactive = 3,
 }
 
+/**
+ * An object representing a subscription entitlement.
+ *
+ * {@link https://developers.google.com/android/reference/kotlin/com/google/android/engage/common/datamodel/SubscriptionEntitlement | SubscriptionEntitlement}.
+ */
 export interface Entitlement {
   /**
    * Required identifier string for this entitlement. This must match one of the entitlement identifiers provided in
@@ -31,7 +36,9 @@ export interface Entitlement {
 }
 
 /**
- * Subscription.
+ * An object representing a subscription.
+ *
+ * {@link https://developers.google.com/android/reference/kotlin/com/google/android/engage/common/datamodel/SubscriptionEntity | SubscriptionEntity}.
  */
 export interface Subscription extends Entity {
   /**

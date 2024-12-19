@@ -1,19 +1,15 @@
-import {
-  Cluster,
-  ClusterType,
-} from "@theoplayer/react-native-engage";
-import { DefaultEngageClient } from "../DefaultEngageClient";
-import { MMKV } from 'react-native-mmkv'
-import { DefaultCluster } from "../cluster/DefaultCluster";
+import { Cluster, ClusterType } from '@theoplayer/react-native-engage';
+import { DefaultEngageClient } from '../DefaultEngageClient';
+import { MMKV } from 'react-native-mmkv';
+import { DefaultCluster } from '../cluster/DefaultCluster';
 
 const TAG: string = 'EngageStorage';
 
 const storage = new MMKV({
-  id: 'engage-storage'
+  id: 'engage-storage',
 });
 
 export async function readCluster(client: DefaultEngageClient, clusterType: ClusterType): Promise<Cluster> {
-  console.log(TAG, 'read', clusterType);
   try {
     return createCluster(client, clusterType, storage.getString(storageKeyForCluster(clusterType)));
   } catch (e) {
@@ -54,5 +50,5 @@ export async function removeCluster(type: ClusterType) {
 }
 
 function storageKeyForCluster(type: ClusterType): string {
-  return `engage/cluster/${type}`
+  return `engage/cluster/${type}`;
 }

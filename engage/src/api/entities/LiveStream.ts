@@ -1,6 +1,11 @@
-import { ClusterEntity, EntityType } from "./Entity";
-import { PlatformUri } from "../types";
+import { ClusterEntity, EntityType } from './Entity';
+import { PlatformUri } from '../types';
 
+/**
+ * An object representing a live streaming video.
+ *
+ * {@link https://developer.android.com/guide/playcore/engage/watch#livestreamingvideoentity | LiveStreamVideoEntity}.
+ */
 export interface LiveStream extends ClusterEntity {
   /**
    * The entity type.
@@ -8,14 +13,19 @@ export interface LiveStream extends ClusterEntity {
   type: EntityType.LiveStream;
 
   /**
-   * A list of platform-specific deep links to the provider app to start playing the entity.
+   * The deep link to the provider app to start playing the entity.
    */
-  platformSpecificPlaybackUri?: PlatformUri[];
+  playbackUri: string;
 
   /**
    * The stream's broadcaster.
    */
-  broadcaster?: string;
+  broadcaster: string;
+
+  /**
+   * A list of platform-specific deep links to the provider app to start playing the entity.
+   */
+  platformSpecificPlaybackUri?: PlatformUri[];
 
   /**
    * The stream's broadcaster icon uri.
