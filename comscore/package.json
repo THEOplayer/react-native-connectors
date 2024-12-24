@@ -30,7 +30,8 @@
   "scripts": {
     "typescript": "tsc --noEmit",
     "build": "bob build",
-    "prepare": "npm run build",
+    "manifest": "node manifest.js > src/manifest.json",
+    "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
