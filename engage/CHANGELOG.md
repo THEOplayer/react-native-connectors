@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.3.0
+
+### ✨ Features
+
+- Added sdkVersions API to Nielsen, Mux, Conviva, Comscore, Adobe and Engage connectors
+
 ## 0.2.1
 
 ### 🐛 Issues

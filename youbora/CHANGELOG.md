@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-youbora
 
+## 1.2.2
+
+### 🐛 Issues
+
+- Added sdkVersions API to Nielsen, Mux, Conviva, Comscore, Adobe and Engage connectors
+- Added THEOplayer 8.x to peerDependency setup
+
 ## 1.2.1
 
 ### 🐛 Issues

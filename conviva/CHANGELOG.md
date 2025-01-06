@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.8.0
+
+### ✨ Features
+
+- Added sdkVersions API to Nielsen, Mux, Conviva, Comscore, Adobe and Engage connectors
+
 ## 1.7.1
 
 ### 🐛 Issues
