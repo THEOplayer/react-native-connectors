@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.6.0
+
+### ✨ Features
+
+- Added sdkVersions API to Nielsen, Mux, Conviva, Comscore, Adobe and Engage connectors
+
 ## 1.5.0
 
 ### 📦 Dependency Updates

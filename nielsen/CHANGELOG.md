@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.7.0
+
+### ✨ Features
+
+- Added sdkVersions API to Nielsen, Mux, Conviva, Comscore, Adobe and Engage connectors
+
 ## 1.6.0
 
 ### ✨ Features
