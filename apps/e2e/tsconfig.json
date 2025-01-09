@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@theoplayer/react-native-analytics-adobe": [
+        "../../adobe/src/index"
+      ],
+      "@theoplayer/react-native-analytics-comscore": [
+        "../../comscore/src/index"
+      ],
+      "@theoplayer/react-native-analytics-conviva": [
+        "../../conviva/src/index"
+      ],
+      "@theoplayer/react-native-analytics-nielsen": [
+        "../../nielsen/src/index"
+      ]
+    }
+  }
+}
