@@ -410,7 +410,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact-iOS/React-cxxreact_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/boost-iOS/boost_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/glog-iOS/glog_privacy.bundle",
-				"${PODS_ROOT}/../../../ios/style.css",
+				"${PODS_ROOT}/../../node_modules/react-native-theoplayer/ios/style.css",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -443,7 +443,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact-tvOS/React-cxxreact_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/boost-tvOS/boost_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/glog-tvOS/glog_privacy.bundle",
-				"${PODS_ROOT}/../../../ios/style.css",
+				"${PODS_ROOT}/../../node_modules/react-native-theoplayer/ios/style.css",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -475,7 +475,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact-tvOS/React-cxxreact_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/boost-tvOS/boost_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/glog-tvOS/glog_privacy.bundle",
-				"${PODS_ROOT}/../../../ios/style.css",
+				"${PODS_ROOT}/../../node_modules/react-native-theoplayer/ios/style.css",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -516,7 +516,9 @@
 				"${PODS_ROOT}/Target Support Files/Pods-ReactNativeTHEOplayer-tvOS/Pods-ReactNativeTHEOplayer-tvOS-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ComScore/Dynamic/ComScore.framework/ComScore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/NielsenAppSDK-XC/NielsenAppApi.framework/NielsenAppApi",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOliveSDK/THEOliveSDK.framework/THEOliveSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleIMA/Base/THEOplayerGoogleIMAIntegration.framework/THEOplayerGoogleIMAIntegration",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-THEOlive/Base/THEOplayerTHEOliveIntegration.framework/THEOplayerTHEOliveIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayerSDK-core/THEOplayerSDK.framework/THEOplayerSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAds-IMA-tvOS-SDK/GoogleInteractiveMediaAds.framework/GoogleInteractiveMediaAds",
@@ -525,7 +527,9 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ComScore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NielsenAppApi.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOliveSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleIMAIntegration.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerTHEOliveIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleInteractiveMediaAds.framework",
@@ -567,8 +571,10 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ComScore/Dynamic/ComScore.framework/ComScore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAds-IMA-iOS-SDK/GoogleInteractiveMediaAds.framework/GoogleInteractiveMediaAds",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/NielsenAppSDK-XC/NielsenAppApi.framework/NielsenAppApi",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOliveSDK/THEOliveSDK.framework/THEOliveSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleCast/Base/THEOplayerGoogleCastIntegration.framework/THEOplayerGoogleCastIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleIMA/Base/THEOplayerGoogleIMAIntegration.framework/THEOplayerGoogleIMAIntegration",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-THEOlive/Base/THEOplayerTHEOliveIntegration.framework/THEOplayerTHEOliveIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayerSDK-core/THEOplayerSDK.framework/THEOplayerSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/google-cast-sdk-dynamic-xcframework/GoogleCast.framework/GoogleCast",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
@@ -578,8 +584,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ComScore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleInteractiveMediaAds.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NielsenAppApi.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOliveSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleCastIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleIMAIntegration.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerTHEOliveIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleCast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
@@ -598,7 +606,9 @@
 				"${PODS_ROOT}/Target Support Files/Pods-ReactNativeTHEOplayer-tvOS-ReactNativeTHEOplayer-tvOSTests/Pods-ReactNativeTHEOplayer-tvOS-ReactNativeTHEOplayer-tvOSTests-frameworks.sh",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ComScore/Dynamic/ComScore.framework/ComScore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/NielsenAppSDK-XC/NielsenAppApi.framework/NielsenAppApi",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOliveSDK/THEOliveSDK.framework/THEOliveSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleIMA/Base/THEOplayerGoogleIMAIntegration.framework/THEOplayerGoogleIMAIntegration",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-THEOlive/Base/THEOplayerTHEOliveIntegration.framework/THEOplayerTHEOliveIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayerSDK-core/THEOplayerSDK.framework/THEOplayerSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAds-IMA-tvOS-SDK/GoogleInteractiveMediaAds.framework/GoogleInteractiveMediaAds",
@@ -607,7 +617,9 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ComScore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NielsenAppApi.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOliveSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleIMAIntegration.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerTHEOliveIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleInteractiveMediaAds.framework",
@@ -632,7 +644,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-cxxreact-iOS/React-cxxreact_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/boost-iOS/boost_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/glog-iOS/glog_privacy.bundle",
-				"${PODS_ROOT}/../../../ios/style.css",
+				"${PODS_ROOT}/../../node_modules/react-native-theoplayer/ios/style.css",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -765,8 +777,10 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ComScore/Dynamic/ComScore.framework/ComScore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoogleAds-IMA-iOS-SDK/GoogleInteractiveMediaAds.framework/GoogleInteractiveMediaAds",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/NielsenAppSDK-XC/NielsenAppApi.framework/NielsenAppApi",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOliveSDK/THEOliveSDK.framework/THEOliveSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleCast/Base/THEOplayerGoogleCastIntegration.framework/THEOplayerGoogleCastIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-GoogleIMA/Base/THEOplayerGoogleIMAIntegration.framework/THEOplayerGoogleIMAIntegration",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayer-Integration-THEOlive/Base/THEOplayerTHEOliveIntegration.framework/THEOplayerTHEOliveIntegration",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/THEOplayerSDK-core/THEOplayerSDK.framework/THEOplayerSDK",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/google-cast-sdk-dynamic-xcframework/GoogleCast.framework/GoogleCast",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/Pre-built/hermes.framework/hermes",
@@ -776,8 +790,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ComScore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleInteractiveMediaAds.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NielsenAppApi.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOliveSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleCastIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerGoogleIMAIntegration.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerTHEOliveIntegration.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/THEOplayerSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleCast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hermes.framework",

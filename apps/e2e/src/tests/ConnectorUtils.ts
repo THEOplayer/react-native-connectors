@@ -25,9 +25,11 @@ export function testConnector(spec: TestScope, onCreate: PlayerFn, onUseAPI: Pla
     // Use connector API
     if (onUseAPI !== NoOpPlayerFn) {
       await onUseAPI(player);
+      console.debug(`[testConnector] Successfully used the connector API.`);
     }
 
     // Clean-up and destroy connector.
     await onDestroy(player);
+    console.debug(`[testConnector] Successfully destroyed to the connector.`);
   });
 }
