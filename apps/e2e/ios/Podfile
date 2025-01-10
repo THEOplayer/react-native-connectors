@@ -24,7 +24,10 @@ target 'ReactNativeTHEOplayer' do
     :path => config[:reactNativePath]
   )
 
-  pod 'react-native-theoplayer', :path => '../..'
+  pod 'react-native-theoplayer-comscore', :path => '../../../comscore'
+  pod 'react-native-theoplayer-conviva', :path => '../../../conviva'
+  pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
+
   google_cast_redirect
   
   target 'ReactNativeTHEOplayerTests' do
@@ -44,7 +47,9 @@ target 'ReactNativeTHEOplayer-tvOS' do
     :path => config[:reactNativePath]
   )
 
-  pod 'react-native-theoplayer', :path => '../..'
+  pod 'react-native-theoplayer-comscore', :path => '../../../comscore'
+  pod 'react-native-theoplayer-conviva', :path => '../../../conviva'
+  pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
 
   target 'ReactNativeTHEOplayer-tvOSTests' do
     inherit! :complete
