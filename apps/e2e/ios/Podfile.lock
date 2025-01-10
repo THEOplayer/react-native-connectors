@@ -1256,7 +1256,28 @@ PODS:
   - react-native-google-cast/RNGoogleCast (4.6.2):
     - PromisesObjC
     - React
-  - react-native-theoplayer (8.11.1):
+  - react-native-slider (4.5.5):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-theoplayer (8.12.0):
     - React-Core
     - THEOplayer-Connector-SideloadedSubtitle (~> 8.6)
     - THEOplayer-Integration-GoogleCast (~> 8.6)
@@ -1537,7 +1558,7 @@ PODS:
     - React-utils (= 0.75.4-0)
   - RNDeviceInfo (10.14.0):
     - React-Core
-  - RNSVG (13.14.1):
+  - RNSVG (15.11.1):
     - React-Core
   - SocketRocket (0.7.0)
   - Swifter (1.5.0)
@@ -1625,6 +1646,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-google-cast (from `https://github.com/Danesz/react-native-google-cast.git`, branch `feature/guestmode_apple_silicon`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-theoplayer (from `../node_modules/react-native-theoplayer`)
   - react-native-theoplayer-comscore (from `../../../comscore`)
   - react-native-theoplayer-conviva (from `../../../conviva`)
@@ -1760,6 +1782,8 @@ EXTERNAL SOURCES:
   react-native-google-cast:
     :branch: feature/guestmode_apple_silicon
     :git: https://github.com/Danesz/react-native-google-cast.git
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   react-native-theoplayer:
     :path: "../node_modules/react-native-theoplayer"
   react-native-theoplayer-comscore:
@@ -1877,7 +1901,8 @@ SPEC CHECKSUMS:
   React-Mapbuffer: d9594fa247e7866b44249d5e04a68ace76af2841
   React-microtasksnativemodule: a3489ca37b515f6f685ec1a86c8df364343ac578
   react-native-google-cast: d7bdfd1a0eeba84afde03b9722351ec29543e74c
-  react-native-theoplayer: 2657b64251e0910f261b81ad0e478452094795d6
+  react-native-slider: 4a0f3386a38fc3d2d955efc515aef7096f7d1ee4
+  react-native-theoplayer: c2c094bb3e7ba7d0925ad772e512c0dd6d22a876
   react-native-theoplayer-comscore: 9bb314d14fce9a85b4d401c49dde543505f92571
   react-native-theoplayer-conviva: 06bf2a49aa0d92581faaab8275ed272cfe1f298a
   react-native-theoplayer-nielsen: 8b42c94347d860826fe61298b3023562833249ac
@@ -1908,7 +1933,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 873a3cfea4daf5b7f86d49361cc049831a45d840
   ReactCommon: a1cd388360d4e9545ab8e571ff293606c9ea6687
   RNDeviceInfo: 59344c19152c4b2b32283005f9737c5c64b42fba
-  RNSVG: af3907ac5d4fa26a862b75a16d8f15bc74f2ceda
+  RNSVG: 669ed128ab9005090c612a0d627dbecb6ab5c76f
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Swifter: e71dd674404923d7f03ebb03f3f222d1c570bc8e
   SwiftSubtitles: c659af19d710a2946779015464c0577d07fe4666
@@ -1923,8 +1948,8 @@ SPEC CHECKSUMS:
   THEOplayer-Integration-THEOlive: 258d439e0823493810c74947005dd26ebfa7f57d
   THEOplayerSDK-core: 1007db3c8d6ab156b9a8f2f8a4f4f07ef1ca00fc
   TinyCSV: fd6228edbcf1c07466ac34b76dac5e052143eaba
-  Yoga: 1eb8c4882b3018c344a2ff61c5f2e5c6b1711d82
+  Yoga: 07ebe50bd234e51e5e3e07befa14a3078a0fcbbd
 
-PODFILE CHECKSUM: 3d2ba07f2e2744e8852e50d98e6f409c2286c3ca
+PODFILE CHECKSUM: 1db78314a52c67a8fe96e168cc72c5c8034f398c
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.14.3
