@@ -1,4 +1,4 @@
-name: Test
+name: Build Web on PRs
 on:
   push:
     branches:
