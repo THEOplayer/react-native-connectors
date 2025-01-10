@@ -61,6 +61,7 @@ jobs:
         run: npm test
 
       - name: Install & update e2e app with latest react-native-theoplayer
+        run: |
           cd apps/e2e
           npm update react-native-theoplayer
           npm ci
