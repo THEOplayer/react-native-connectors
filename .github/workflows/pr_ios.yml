@@ -45,10 +45,6 @@ jobs:
           restore-keys: |
             pods-${{ runner.os }}-
 
-      - name: Run patch scripts
-        working-directory: apps/e2e
-        run: bash ./scripts/patch_ios_podspec.sh
-
       - name: Run npm install
         run: |
           npm i -g corepack
