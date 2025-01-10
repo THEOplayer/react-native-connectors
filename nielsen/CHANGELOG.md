@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.7.1
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the project would not build when used in a project that has New Architecture enabled.
+
 ## 1.7.0
 
 ### ✨ Features
