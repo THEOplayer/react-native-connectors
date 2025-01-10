@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.6.2
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the podspec files did not contain all references when not using the New Architecture.
+
 ## 1.6.1
 
 ### 🐛 Issues

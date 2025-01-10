@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.8.2
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the podspec files did not contain all references when not using the New Architecture.
+
 ## 1.8.1
 
 ### 🐛 Issues

@@ -1,5 +1,11 @@
 # @theoplayer/react-native-yospace
 
+## 1.2.3
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the podspec files did not contain all references when not using the New Architecture.
+
 ## 1.2.2
 
 ### 🐛 Issues
