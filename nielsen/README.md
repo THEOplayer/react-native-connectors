@@ -17,8 +17,8 @@ npm install @theoplayer/react-native-analytics-nielsen
 Create the connector by providing the `THEOplayer` instance, the `appId` provided by Nielsen, and `instanceName`
 that describes the player or site, and an optional set of `NielsenOptions`:
 
-```jsx
-import { useNielsen } from '@theoplayer/react-native-analytics-nielsen';
+```tsx
+import { useNielsen, NielsenOptions } from '@theoplayer/react-native-analytics-nielsen';
 
 const appId = 'PXXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
 
