@@ -21,10 +21,20 @@ npm install \
   @theoplayer/react-native-analytics-agama
 ```
 
+Some of these dependencies explicitly rely on `react-native` as a peer dependency.
+If you are using the `react-native-tvos` fork, it is necessary to specify this override in your package.json:
+
+```json
+  "overrides": {
+    "react-native": "npm:react-native-tvos@^0.76.5-0"
+  }
+```
+
 ### Agama library
 
-The Agama libraries need to be provided by the hosting app. Put the libraries next to the source and load them at the
-start of the app, along with the necessary polyfills:
+The Agama libraries need to be provided by the hosting app.
+Since they are privately hosted, you need to download them from [Agama's support site](https://support.agama.tv/).
+Put the libraries next to the source and load them at the start of the app, along with the necessary polyfills:
 
 ```typescript
 import { AgamaPolyfills } from "@theoplayer/react-native-analytics-agama";
@@ -45,10 +55,10 @@ A `useAgama` React hook is provided for convenience. It takes care of initializa
 It is also possible to create the connector explicitly by creating an instance of `AgamaConnector`, in which case
 the `destroy()` method must be called when destroying either the connector or the player.
 
-```jsx
-import { useAgama } from '@theoplayer/react-native-analytics-agama';
+```tsx
+import { useAgama, AgamaConfiguration } from '@theoplayer/react-native-analytics-agama';
 
-const config = {
+const config: AgamaConfiguration = {
   config: 'emp_service=http://127.0.0.1:8191/report;report_interval=60;id_report_interval=240;operator_id=fooSoo',
   logLevel: 'debug',
   application: 'React-Native THEOplayer',
