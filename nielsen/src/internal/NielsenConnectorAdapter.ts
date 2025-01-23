@@ -1,6 +1,6 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import type { NielsenOptions } from '@theoplayer/nielsen-connector-web';
+import { NielsenOptions } from '@theoplayer/react-native-analytics-nielsen';
 
 export class NielsenConnectorAdapter {
   constructor(

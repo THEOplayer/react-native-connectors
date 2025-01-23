@@ -1,6 +1,11 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { NielsenConnectorAdapter } from '../internal/NielsenConnectorAdapter';
-import type { NielsenOptions } from '@theoplayer/nielsen-connector-web';
+
+export type NielsenOptions = {
+  containerId?: string;
+  nol_sdkDebug?: string;
+  optout?: boolean;
+};
 
 export class NielsenConnector {
   private connectorAdapter: NielsenConnectorAdapter;

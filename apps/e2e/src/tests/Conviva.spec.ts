@@ -1,7 +1,7 @@
 import { TestScope } from 'cavy';
 import { ConvivaConnector } from '@theoplayer/react-native-analytics-conviva';
-import {testConnector} from "./ConnectorUtils";
-import {THEOplayer} from "react-native-theoplayer";
+import { testConnector } from './ConnectorUtils';
+import { THEOplayer } from 'react-native-theoplayer';
 
 export default function (spec: TestScope) {
   spec.describe(`Setup Conviva connector`, function () {

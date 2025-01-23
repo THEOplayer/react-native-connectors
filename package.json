@@ -55,7 +55,7 @@
     "react-native": "^0.74.5",
     "react-native-builder-bob": "^0.23.2",
     "react-native-device-info": "^13.1.0",
-    "react-native-theoplayer": "^8.7.0",
+    "react-native-theoplayer": "^8.13.0",
     "rimraf": "^5.0.10",
     "theoplayer": "^7.12.0",
     "typedoc": "^0.25.13",

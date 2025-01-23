@@ -1,7 +1,6 @@
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { RefObject, useEffect, useRef } from 'react';
-import type { NielsenOptions } from '@theoplayer/nielsen-connector-web';
-import { NielsenConnector } from '@theoplayer/react-native-analytics-nielsen';
+import { NielsenConnector, NielsenOptions } from '@theoplayer/react-native-analytics-nielsen';
 
 export function useNielsen(
   appId: string,

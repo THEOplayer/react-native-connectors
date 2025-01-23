@@ -41,7 +41,7 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
           val config = ConvivaConfiguration(
             customerKey,
-            convivaConfig.getBoolean(PROP_DEBUG),
+            if (convivaConfig.hasKey(PROP_DEBUG)) convivaConfig.getBoolean(PROP_DEBUG) else false,
             convivaConfig.getString(PROP_GATEWAY_URL),
           )
           convivaConnectors[tag] =
