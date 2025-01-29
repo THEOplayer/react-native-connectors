@@ -2,7 +2,7 @@
 
 ## 1.6.3
 
-### 🐛 Issues
+### 📦 Dependency Updates
 
 - Updated dependencies on Android, allowing THEOplayer v8 and using latest Mux connector version.
 
