@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.8.3
+
+### 🐛 Issues
+
+- Fixed an issue on Android where the optional `debug` property in `ConvivaConfiguration` was treated as being required.
+- Added the option on Android to allow setting a different connector version using `THEOplayerName_connectorVersion`.
+
 ## 1.8.2
 
 ### 🐛 Issues
