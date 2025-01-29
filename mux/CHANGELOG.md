@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.6.3
+
+### 📦 Dependency Updates
+
+- Updated dependencies on Android, allowing THEOplayer v8 and using latest Mux connector version.
+
 ## 1.6.2
 
 ### 🐛 Issues

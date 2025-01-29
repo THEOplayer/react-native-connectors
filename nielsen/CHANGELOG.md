@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.7.3
+
+### 🐛 Issues
+
+- Fixed an issue where the `NielsenOptions` type would not be properly provided by the package.
+
+### ✨ Features
+
+- Added the option on Android to allow setting a different connector version using `THEOplayerName_connectorVersion`.
+
 ## 1.7.2
 
 ### 🐛 Issues
