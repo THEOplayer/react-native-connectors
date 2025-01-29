@@ -88,7 +88,7 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
   implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
-  implementation "com.theoplayer.android-connector:conviva:$theoplayer_sdk_version"
+  implementation "com.theoplayer.android-connector:conviva:$theoplayer_conviva_connector_version"
 
   implementation "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
   implementation "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
