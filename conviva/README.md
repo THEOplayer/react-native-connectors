@@ -28,7 +28,7 @@ const convivaMetadata: ConvivaMetadata = {
 const convivaConfig: ConvivaConfiguration = {
   customerKey: 'your_customer_key',
   debug: true,
-  gatewayUrl: 'https://[account]-test.testonly.conviva.com'
+  gatewayUrl: 'https://[account]-test.ts-testonly.conviva.com'
 };
 
 const App = () => {
