@@ -16,7 +16,7 @@ install! 'cocoapods', :deterministic_uuids => false
 
 target 'ReactNativeTHEOplayer' do
 
-  platform :ios, '13.4'
+  platform :ios, '15.1'
 
   config = use_native_modules!
 
@@ -39,7 +39,7 @@ end
 
 target 'ReactNativeTHEOplayer-tvOS' do
 
-  platform :tvos, '13.4'
+  platform :tvos, '15.1'
 
   config = use_native_modules!
 
