@@ -46,6 +46,8 @@
 	<string>Local Network Usage Permission</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Bluetooth Always Usage Permission</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Just for fun</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
