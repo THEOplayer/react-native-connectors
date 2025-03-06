@@ -3,6 +3,7 @@ import {
   ComscoreConfiguration,
   ComscoreConnector,
   ComscoreMetadata,
+  ComscoreUsagePropertiesAutoUpdateMode,
   ComscoreUserConsent
 } from '@theoplayer/react-native-analytics-comscore';
 import {ComscoreMediaType} from '@theoplayer/react-native-analytics-comscore/src/api/ComscoreMetadata';
@@ -26,6 +27,7 @@ export default function (spec: TestScope) {
       publisherId: 'publisherId',
       applicationName: 'applicationName',
       userConsent: ComscoreUserConsent.granted,
+      usagePropertiesAutoUpdateMode: ComscoreUsagePropertiesAutoUpdateMode.foregroundAndBackground,
       debug: true
     };
 
