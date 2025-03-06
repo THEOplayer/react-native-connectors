@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.9.0
+
+### ✨ Features
+
+- Passing the usagePropertiesAutoUpdateMode configuration property to the native iOS connector.
+
 ## 1.8.2
 
 ### 🐛 Issues
