@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@convivainc/conviva-js-coresdk": "^4.7.9",
-    "@theoplayer/conviva-connector-web": "^2.1.4"
+    "@theoplayer/conviva-connector-web": "^2.6.0"
   },
   "peerDependencies": {
     "react": "*",
