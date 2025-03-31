@@ -1,7 +1,7 @@
 {
-  "name": "@theoplayer/react-native-analytics-conviva",
-  "version": "1.8.3",
-  "description": "Conviva analytics connector for @theoplayer/react-native",
+  "name": "@theoplayer/react-native-drm",
+  "version": "1.8.1",
+  "description": "DRM connectors for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -32,15 +32,14 @@
     "typescript": "tsc --noEmit",
     "build": "bob build",
     "manifest": "node manifest.js > src/manifest.json",
-    "prepare": "npm run manifest && npm run build",
+    "prepare": "npm run manifest && bob build && husky",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
   },
   "keywords": [
     "react-native",
     "THEOplayer",
     "ios",
-    "android",
-    "conviva"
+    "android"
   ],
   "repository": {
     "type": "git",
@@ -48,24 +47,14 @@
   },
   "author": "THEO Technologies",
   "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
-  "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/conviva#readme",
+  "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/drm#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "dependencies": {
-    "@convivainc/conviva-js-coresdk": "^4.7.9",
-    "@theoplayer/conviva-connector-web": "^2.6.0"
-  },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
     "react-native-theoplayer": "^3 || ^7 || ^8",
     "theoplayer": "^5 || ^6 || ^7 || ^8"
-  },
-  "peerDependenciesMeta": {
-    "theoplayer": {
-      "optional": true
-    }
   },
   "eslintIgnore": [
     "node_modules/",
