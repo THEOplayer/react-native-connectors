@@ -1,7 +1,7 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
   def gradle_version = rootProject.ext.has("gradlePluginVersion") ? rootProject.ext.get("gradlePluginVersion") : "8.3.2"
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.8.10"
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
 
   repositories {
     google()
@@ -75,9 +75,7 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-  implementation "com.conviva.sdk:conviva-core-sdk:$conviva_version"
   implementation "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
-  implementation "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
   // Align the Kotlin SDK libraries with the same version.

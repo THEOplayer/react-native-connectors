@@ -1,23 +1,20 @@
-# Changelog
+# @theoplayer/react-native-connector-template
 
-All notable changes to this project will be documented in this file.
+## 0.0.3
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-## [0.0.3] - 23-10-04
-
-### Changed
+### 📦 Dependency Updates
 
 - Updated dependencies.
 
-## [0.0.2] - 23-08-09
+## 0.0.2
 
-### Fixed
+### 🐛 Issues
 
 - Fixed an issue on Web where `theoplayer` would not installed as a dependency.
 - Fixed an issue on Android where the connector package would be added twice.
 
-## [0.0.1] - 23-08-09
+## 0.0.1
 
-Initial release
+### ✨ Features
+
+- Initial release
