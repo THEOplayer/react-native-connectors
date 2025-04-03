@@ -6,7 +6,7 @@ import com.comscore.streaming.AdvertisementType
 import com.comscore.streaming.ContentMetadata
 import com.comscore.streaming.StreamingAnalytics
 import com.theoplayer.android.api.ads.AdBreak
-import com.theoplayer.android.api.ads.GoogleImaAd
+import com.theoplayer.android.api.ads.ima.GoogleImaAd
 import com.theoplayer.android.api.ads.ima.GoogleImaAdEvent
 import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
