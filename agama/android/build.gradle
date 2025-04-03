@@ -63,7 +63,7 @@ repositories {
   maven { url "https://maven.theoplayer.com/releases" }
 }
 
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[6.0.0, 9.0.0)')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[6.0.0, 10.0.0)')
 def kotlin_version = safeExtGet("THEOplayerAgama_kotlinVersion", "1.9.10")
 
 dependencies {

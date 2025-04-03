@@ -58,8 +58,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^3 || ^7 || ^8",
-    "theoplayer": "^5 || ^6 || ^7 || ^8"
+    "react-native-theoplayer": "^3 || ^7 || ^8 || ^9",
+    "theoplayer": "^5 || ^6 || ^7 || ^8 || ^9"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
