@@ -412,8 +412,8 @@ class ComscoreAdapter(
       Log.i(TAG, "DEBUG: SEEKED to: " + seekedEvent.currentTime)
     }
     val currentTime = seekedEvent.currentTime
-    if (isNaN(player.duration)) {
-      val seekableRanges = player.seekable
+    val seekableRanges = player.seekable
+    if (isNaN(player.duration) && seekableRanges.length() > 0) {
       val dvrWindowEnd = seekableRanges.getEnd(seekableRanges.length() - 1)
       val newDvrWindowOffset =
         java.lang.Double.valueOf(dvrWindowEnd - currentTime).toLong() * 1000
