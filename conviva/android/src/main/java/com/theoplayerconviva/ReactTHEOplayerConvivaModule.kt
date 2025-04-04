@@ -60,33 +60,45 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun stopAndStartNewSession(tag: Int, convivaMetadata: ReadableMap) {
-    convivaConnectors[tag]?.stopAndStartNewSession(convivaMetadata.toHashMap())
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.stopAndStartNewSession(convivaMetadata.toHashMap())
+    }
   }
 
   @ReactMethod
   fun reportPlaybackFailed(tag: Int, message: String?) {
-    convivaConnectors[tag]?.reportPlaybackFailed(message ?: "")
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.reportPlaybackFailed(message ?: "")
+    }
   }
 
   @ReactMethod
   fun reportPlaybackEvent(tag: Int, eventName: String, eventDetail: ReadableMap) {
-    convivaConnectors[tag]?.reportPlaybackEvent(eventName, eventDetail.toHashMap())
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.reportPlaybackEvent(eventName, eventDetail.toHashMap())
+    }
   }
 
   @ReactMethod
   fun setContentInfo(tag: Int, convivaMetadata: ReadableMap) {
-    convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+    }
   }
 
   @ReactMethod
   fun setAdInfo(tag: Int, convivaMetadata: ReadableMap) {
-    convivaConnectors[tag]?.setAdInfo(convivaMetadata.toHashMap())
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.setAdInfo(convivaMetadata.toHashMap())
+    }
   }
 
   @ReactMethod
   fun destroy(tag: Int) {
     // Destroy connector
-    convivaConnectors[tag]?.destroy()
-    convivaConnectors.remove(tag)
+    viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
+      convivaConnectors[tag]?.destroy()
+      convivaConnectors.remove(tag)
+    }
   }
 }
