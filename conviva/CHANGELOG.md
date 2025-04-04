@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.9.0
+
+### ✨ Features
+
+- Added support for THEOplayer 9.0.
+
+### 🐛 Issues
+
+- Fixed an issue on Android where an app would crash when accessing the connector's `stopAndStartNewSession` method.
+
 ## 1.8.3
 
 ### 🐛 Issues

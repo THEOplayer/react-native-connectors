@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.7.0
+
+### ✨ Features
+
+- Added support for THEOplayer 9.0.
+
 ## 1.6.3
 
 ### 📦 Dependency Updates
