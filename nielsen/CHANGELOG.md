@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.8.1
+
+### 🐛 Issues
+
+- Fixed an issue where the connector would output a `HashMap` conversion build error for Android platforms.
+
 ## 1.8.0
 
 ### ✨ Features

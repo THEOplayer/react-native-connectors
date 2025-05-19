@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.9.1
+
+### 🐛 Issues
+
+- Fixed an issue where the connector would output a `HashMap` conversion build error for Android platforms.
+
 ## 1.9.0
 
 ### ✨ Features
