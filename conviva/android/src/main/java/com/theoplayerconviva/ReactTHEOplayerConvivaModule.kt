@@ -17,13 +17,9 @@ private const val PROP_GATEWAY_URL = "gatewayUrl"
 class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
-  private val viewResolver: ViewResolver
+  private val viewResolver: ViewResolver = ViewResolver(context)
 
   private var convivaConnectors: HashMap<Int, ConvivaConnector> = HashMap()
-
-  init {
-    viewResolver = ViewResolver(context)
-  }
 
   override fun getName(): String {
     return TAG
@@ -48,11 +44,11 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
             ConvivaConnector(
               reactApplicationContext,
               player,
-              convivaMetadata.toHashMap(),
+              convivaMetadata.toHashMap() as Map<String, Any>,
               config,
               view.broadcast as EventDispatcher<AdEvent<*>>
             )
-          convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+          convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap() as Map<String, Any>)
         }
       }
     }
@@ -61,7 +57,7 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   @ReactMethod
   fun stopAndStartNewSession(tag: Int, convivaMetadata: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
-      convivaConnectors[tag]?.stopAndStartNewSession(convivaMetadata.toHashMap())
+      convivaConnectors[tag]?.stopAndStartNewSession(convivaMetadata.toHashMap() as Map<String, Any>)
     }
   }
 
@@ -75,21 +71,21 @@ class ReactTHEOplayerConvivaModule(context: ReactApplicationContext) :
   @ReactMethod
   fun reportPlaybackEvent(tag: Int, eventName: String, eventDetail: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
-      convivaConnectors[tag]?.reportPlaybackEvent(eventName, eventDetail.toHashMap())
+      convivaConnectors[tag]?.reportPlaybackEvent(eventName, eventDetail.toHashMap() as Map<String, Any>)
     }
   }
 
   @ReactMethod
   fun setContentInfo(tag: Int, convivaMetadata: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
-      convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap())
+      convivaConnectors[tag]?.setContentInfo(convivaMetadata.toHashMap() as Map<String, Any>)
     }
   }
 
   @ReactMethod
   fun setAdInfo(tag: Int, convivaMetadata: ReadableMap) {
     viewResolver.resolveViewByTag(tag) { _: ReactTHEOplayerView? ->
-      convivaConnectors[tag]?.setAdInfo(convivaMetadata.toHashMap())
+      convivaConnectors[tag]?.setAdInfo(convivaMetadata.toHashMap() as Map<String, Any>)
     }
   }
 
