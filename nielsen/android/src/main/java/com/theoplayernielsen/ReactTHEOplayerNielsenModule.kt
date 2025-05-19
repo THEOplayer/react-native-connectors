@@ -12,13 +12,9 @@ private const val TAG = "NielsenModule"
 class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
-  private val viewResolver: ViewResolver
+  private val viewResolver: ViewResolver = ViewResolver(context)
 
   private var nielsenConnectors: HashMap<Int, NielsenConnector> = HashMap()
-
-  init {
-    viewResolver = ViewResolver(context)
-  }
 
   override fun getName(): String {
     return TAG
@@ -39,7 +35,7 @@ class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun updateMetadata(tag: Int, metadata: ReadableMap) {
-    nielsenConnectors[tag]?.updateMetadata(metadata.toHashMap())
+    nielsenConnectors[tag]?.updateMetadata(metadata.toHashMap() as HashMap<String, Any>)
   }
 
   @ReactMethod
