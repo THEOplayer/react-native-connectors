@@ -7,11 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      YOSPACE_USERNAME: ${{ secrets.YOSPACE_USERNAME }}
-      YOSPACE_PASSWORD: ${{ secrets.YOSPACE_PASSWORD }}
-
     strategy:
       matrix:
         api-level: [ 34 ]
@@ -89,8 +84,8 @@ jobs:
       - name: Modify gradle.properties with repository secrets
         working-directory: apps/e2e/android
         run: |
-          echo "YOSPACE_USERNAME=${{ YOSPACE_USERNAME }}" >> ./gradle.properties
-          echo "YOSPACE_PASSWORD=${{ YOSPACE_PASSWORD }}" >> ./gradle.properties
+          echo "YOSPACE_USERNAME=${{ secrets.YOSPACE_USERNAME }}" >> ./gradle.properties
+          echo "YOSPACE_PASSWORD=${{ secrets.YOSPACE_PASSWORD }}" >> ./gradle.properties
 
       - name: Modify gradle.properties for newArchEnabled
         working-directory: apps/e2e/android
