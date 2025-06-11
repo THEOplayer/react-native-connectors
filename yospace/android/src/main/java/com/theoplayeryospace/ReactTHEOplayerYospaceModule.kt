@@ -13,18 +13,14 @@ private const val PROP_SSAI_INTEGRATION_YOSPACE = "yospace"
 class ReactTHEOplayerYospaceModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
-  private val viewResolver: ViewResolver
+  private val viewResolver: ViewResolver = ViewResolver(context)
 
   private var yospaceConnectors: HashMap<Int, YospaceConnector> = HashMap()
 
   init {
-    viewResolver = ViewResolver(context)
-
     // Register source builder
-    if (!SSAIAdapterRegistry.hasIntegration(PROP_SSAI_INTEGRATION_YOSPACE)) {
-      SSAIAdapterRegistry.register(PROP_SSAI_INTEGRATION_YOSPACE) { json, currentBuilder ->
-        yospaceBuilderFromJson(currentBuilder, json)
-      }
+    SSAIAdapterRegistry.register(PROP_SSAI_INTEGRATION_YOSPACE) { json, currentBuilder ->
+      yospaceBuilderFromJson(currentBuilder, json)
     }
   }
 
