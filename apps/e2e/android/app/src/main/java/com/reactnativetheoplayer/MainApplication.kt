@@ -13,7 +13,7 @@ import com.facebook.soloader.SoLoader
 import com.theoplayercomscore.ReactTHEOplayerComscorePackage
 import com.theoplayerconviva.ReactTHEOplayerConvivaPackage
 import com.theoplayernielsen.ReactTHEOplayerNielsenPackage
-import com.yospace.ReactTHEOplayerYospacePackage
+import com.theoplayeryospace.ReactTHEOplayerYospacePackage
 
 class MainApplication : Application(), ReactApplication {
   override val reactNativeHost: ReactNativeHost =
