@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-agama
 
+## 1.8.0
+
+### ✨ Features
+
+- Bumped dependency on react-native-device-info
+
 ## 1.7.0
 
 ### ✨ Features

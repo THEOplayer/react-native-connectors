@@ -1,5 +1,11 @@
 # @theoplayer/react-native-yospace
 
+## 1.3.1
+
+### 🐛 Issues
+
+- Fixed an issue where the connector would throw an error while building on Android.
+
 ## 1.3.0
 
 ### ✨ Features
