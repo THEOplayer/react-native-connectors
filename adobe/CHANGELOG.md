@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.10.0
+
+### ✨ Features
+
+- Bumped dependency on react-native-device-info
+
 ## 1.9.0
 
 ### ✨ Features

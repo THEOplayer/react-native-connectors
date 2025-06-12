@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 0.5.0
+
+### ✨ Features
+
+- Bumped dependency on react-native-device-info
+
 ## 0.4.0
 
 ### ✨ Features
