@@ -13,6 +13,7 @@ import com.facebook.soloader.SoLoader
 import com.theoplayercomscore.ReactTHEOplayerComscorePackage
 import com.theoplayerconviva.ReactTHEOplayerConvivaPackage
 import com.theoplayernielsen.ReactTHEOplayerNielsenPackage
+import com.theoplayeryospace.ReactTHEOplayerYospacePackage
 
 class MainApplication : Application(), ReactApplication {
   override val reactNativeHost: ReactNativeHost =
@@ -23,6 +24,7 @@ class MainApplication : Application(), ReactApplication {
           add(ReactTHEOplayerComscorePackage())
           add(ReactTHEOplayerConvivaPackage())
           add(ReactTHEOplayerNielsenPackage())
+          add(ReactTHEOplayerYospacePackage())
         }
 
       override fun getJSMainModuleName(): String = "index"
