@@ -34,14 +34,14 @@ Create the connector by providing the `THEOplayer` instance, some initial metada
 object:
 
 ```tsx
-import { useYospace } from '@theoplayer/react-native-yospace';
+import { useYospace, YospaceSSAIConfiguration } from '@theoplayer/react-native-yospace';
 
 const App = () => {
   const [yospace, initYospace] = useYospace();
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize connector
-    useYospace(player);
+    initYospace(player);
 
     // Set source with ssai integration 'yospace', and optional session properties.
     player.source = {
@@ -61,7 +61,7 @@ const App = () => {
             sessionProperties: {
               prefetchResources: true
             }
-          }
+          } as YospaceSSAIConfiguration
         }
       ]
     }
