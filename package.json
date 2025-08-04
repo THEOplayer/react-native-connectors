@@ -18,7 +18,8 @@
     "mux",
     "nielsen",
     "yospace",
-    "youbora"
+    "youbora",
+    "gemius"
   ],
   "scripts": {
     "changeset:version": "changeset version && node .changeset/post-process.js",
