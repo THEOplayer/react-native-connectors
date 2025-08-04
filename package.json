@@ -7,17 +7,18 @@
   "author": "THEO Technologies NV",
   "license": "MIT",
   "workspaces": [
+    "agama",
     "adobe",
     "adobe-edge",
-    "agama",
+    "adscript",
     "comscore",
     "conviva",
+    "drm",
     "engage",
     "mux",
     "nielsen",
     "yospace",
-    "youbora",
-    "drm"
+    "youbora"
   ],
   "scripts": {
     "changeset:version": "changeset version && node .changeset/post-process.js",
