@@ -1,3 +1,5 @@
+import java.util.zip.GZIPInputStream
+
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
   def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
@@ -90,11 +92,35 @@ dependencies {
   compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
-  implementation "com.theoplayer.android-connector:adscript:$adscript_version"
 
-  // TEMP
-  implementation files("${getRootDir()}/app/libs/adscript-debug.aar")
-  implementation files("${getRootDir()}/app/libs/AdScriptApiClient_v1.0.10.aar")
+
+  // TEMP: replace this once the native connector has been published
+//  implementation "com.theoplayer.android-connector:adscript:$adscript_version"
+  implementation files("./libs/adscript-debug.aar")
+  def aarFileName = 'AdScriptApiClient_v1.0.10.aar'
+  def adscriptSdkDir = rootProject.properties['adscriptSdkDir']
+  if (!adscriptSdkDir) {
+    logger.warn("⚠️ WARNING: adscriptSdkDir not set.")
+  } else if (!rootProject.file(adscriptSdkDir).exists()) {
+    logger.warn("⚠️ WARNING: adscriptSdkDir does not exist at: ${adscriptSdkDir}")
+  } else {
+    def aarFile = new File(adscriptSdkDir, aarFileName)
+
+    // The Adscript aar file is typically provided as .gz, check if we still need to extract.
+    def gzFile = new File("${aarFile}.gz")
+    if (!aarFile.exists() && gzFile.exists()) {
+      new FileInputStream(gzFile).withCloseable { fis ->
+        new GZIPInputStream(fis).withCloseable { gis ->
+          new FileOutputStream(aarFile).withCloseable { fos ->
+            fos << gis
+          }
+        }
+      }
+    }
+    dependencies {
+      compileOnly fileTree(dir: "${rootProject.file(adscriptSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
+    }
+  }
 
   // Align the Kotlin SDK libraries with the same version.
   implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
