@@ -16,3 +16,5 @@ include ':react-native-theoplayer-yospace'
 project(':react-native-theoplayer-yospace').projectDir = new File(rootProject.projectDir, '../../../yospace/android')
 include ':react-native-theoplayer-analytics-adscript'
 project(':react-native-theoplayer-analytics-adscript').projectDir = new File(rootProject.projectDir, '../../../adscript/android')
+include ':react-native-theoplayer-analytics-gemius'
+project(':react-native-theoplayer-analytics-gemius').projectDir = new File(rootProject.projectDir, '../../../gemius/android')
