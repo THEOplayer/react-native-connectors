@@ -69,7 +69,6 @@ repositories {
 
 rootProject.allprojects {
   repositories {
-    maven { url "https://npaw.jfrog.io/artifactory/gemius/" }
     maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-gemius/android/local") }
   }
 }

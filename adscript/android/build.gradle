@@ -69,7 +69,6 @@ repositories {
 
 rootProject.allprojects {
   repositories {
-    maven { url "https://npaw.jfrog.io/artifactory/adscript/" }
     maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-adscript/android/local") }
   }
 }
