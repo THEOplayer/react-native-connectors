@@ -2,6 +2,9 @@ import type { THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
 import { AdscriptMetadata } from '../api/AdscriptMetadata';
 
+const TAG = 'AdscriptConnector';
+const ERROR_MSG = 'AdscriptConnectorAdapter Error';
+
 export class AdscriptConnectorAdapter {
   constructor(
     private player: THEOplayer,
@@ -9,14 +12,26 @@ export class AdscriptConnectorAdapter {
     contentMetadata: AdscriptMetadata,
     debug?: boolean,
   ) {
-    NativeModules.AdscriptModule.initialize(this.player.nativeHandle, implementationId, contentMetadata, debug ?? false);
+    try {
+      NativeModules.AdscriptModule.initialize(this.player.nativeHandle || -1, implementationId, contentMetadata, debug ?? false);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   updateMetadata(metadata: AdscriptMetadata) {
-    NativeModules.AdscriptModule.updateMetadata(this.player.nativeHandle, metadata);
+    try {
+      NativeModules.AdscriptModule.updateMetadata(this.player.nativeHandle || -1, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
-    NativeModules.AdscriptModule.destroy(this.player.nativeHandle || -1);
+    try {
+      NativeModules.AdscriptModule.destroy(this.player.nativeHandle || -1);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }
