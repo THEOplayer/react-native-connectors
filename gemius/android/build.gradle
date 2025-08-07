@@ -92,7 +92,7 @@ dependencies {
   implementation project(':react-native-theoplayer')
 
   // TEMP: replace this once the native connector has been published
-//  implementation "com.theoplayer.android-connector:gemius:$gemius_version"
+  // implementation "com.theoplayer.android-connector:gemius:$gemius_version"
   implementation files("./libs/gemius-debug.aar")
   def aarFileName = 'GemiusSDK_2.0.8.aar'
   def gemiusSdkDir = rootProject.properties['gemiusSdkDir']
@@ -102,7 +102,7 @@ dependencies {
     logger.warn("⚠️ WARNING: gemiusSdkDir does not exist at: ${gemiusSdkDir}")
   } else {
     dependencies {
-      compileOnly fileTree(dir: "${rootProject.file(gemiusSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
+      implementation fileTree(dir: "${rootProject.file(gemiusSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
     }
   }
 

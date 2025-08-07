@@ -117,7 +117,7 @@ dependencies {
       }
     }
     dependencies {
-      compileOnly fileTree(dir: "${rootProject.file(adscriptSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
+      implementation fileTree(dir: "${rootProject.file(adscriptSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
     }
   }
 
