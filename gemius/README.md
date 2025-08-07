@@ -10,6 +10,19 @@ npm install @theoplayer/react-native-analytics-gemius
 
 [//]: # (npm install @theoplayer/react-native-analytics-gemius)
 
+## Prerequisites
+
+### Android
+
+On Android, the connector requires downloading the private `GemiusSDK_2.0.8.aar`
+module into the app's `libs/` folder. Pass the SDK location to the connector
+by setting the `gemiusSdkDir` in your app's `gradle.properties` file:
+
+```bash
+# Location of the Gemius SDK
+gemiusSdkDir=./app/libs/
+```
+
 ## Usage
 
 ### Configuring the connector
@@ -17,9 +30,9 @@ npm install @theoplayer/react-native-analytics-gemius
 Create the connector by providing the `THEOplayer` instance and a `GemiusConfiguration` object.
 
 ```tsx
-import { useGemius } from '@theoplayer/react-native-analytics-gemius';
+import { useGemius, GemiusConfiguration, ProgramType } from '@theoplayer/react-native-analytics-gemius';
 
-const gemiusConfig = {
+const gemiusConfig: GemiusConfiguration = {
   applicationName: "Demo",
   applicationVersion: "1.0",
   hitCollectorHost: "your_hit_collector_host",
