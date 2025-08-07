@@ -8,11 +8,11 @@ export class GemiusConnectorAdapter {
     private player: THEOplayer,
     configuration: GemiusConfiguration,
   ) {
-    NativeModules.GemiusModule.initialize(this.player.nativeHandle, configuration);
+    NativeModules.GemiusModule.initialize(this.player.nativeHandle || -1, configuration);
   }
 
   update(programId: string, programData: ProgramData) {
-    NativeModules.GemiusModule.update(programId, programData);
+    NativeModules.GemiusModule.update(this.player.nativeHandle || -1, programId, programData);
   }
 
   destroy(): void {
