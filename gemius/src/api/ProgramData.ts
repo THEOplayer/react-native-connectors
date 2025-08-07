@@ -23,5 +23,5 @@ export class ProgramData {
   transmissionChannel?: string;
   transmissionStartTime?: string;
   transmissionType?: number;
-  [key: string]: string | number;
+  [key: string | number | ProgramType]: string | number;
 }
