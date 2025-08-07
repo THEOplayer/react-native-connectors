@@ -22,7 +22,7 @@
     "react-native-device-info": "^10.14.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "^15.8.0",
-    "react-native-theoplayer": "^9.3.0",
+    "react-native-theoplayer": "^9.9.1",
     "react-native-web": "^0.19.13",
     "react-native-web-image-loader": "^0.1.1"
   },
