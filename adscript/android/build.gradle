@@ -91,8 +91,6 @@ dependencies {
   compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
-
-
   // TEMP: replace this once the native connector has been published
 //  implementation "com.theoplayer.android-connector:adscript:$adscript_version"
   implementation files("./libs/adscript-debug.aar")

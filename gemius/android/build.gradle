@@ -73,10 +73,10 @@ rootProject.allprojects {
   }
 }
 
-// The Gemius connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 10.0.0)')
+// The Gemius connector requires at least THEOplayer SDK v9.0.0.
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.0.0, 10.0.0)')
 def kotlin_version = safeExtGet("THEOplayerGemius_kotlinVersion", "1.9.10")
-def gemius_version = safeExtGet("THEOplayerGemius_gemiusVersion", "+")
+def gemius_version = safeExtGet("THEOplayerGemius_gemiusVersion", "2.0.8")
 
 // ACRA 5.8+ uses Kotlin; GemiusSDK is pure java (for now)
 def acra_version = safeExtGet("THEOplayerGemius_acraVersion", '5.7.0')
@@ -96,8 +96,8 @@ dependencies {
 
   // TEMP: replace this once the native connector has been published
   // implementation "com.theoplayer.android-connector:gemius:$gemius_version"
-  implementation files("./libs/gemius-debug.aar")
-  def aarFileName = 'GemiusSDK_2.0.8.aar'
+  implementation files("./libs/gemius.aar")
+  def aarFileName = "GemiusSDK_${gemius_version}.aar"
   def gemiusSdkDir = rootProject.properties['gemiusSdkDir']
   if (!gemiusSdkDir) {
     logger.warn("⚠️ WARNING: gemiusSdkDir not set.")
