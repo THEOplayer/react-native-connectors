@@ -78,6 +78,9 @@ def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 10.0.0)')
 def kotlin_version = safeExtGet("THEOplayerGemius_kotlinVersion", "1.9.10")
 def gemius_version = safeExtGet("THEOplayerGemius_gemiusVersion", "+")
 
+// ACRA 5.8+ uses Kotlin; GemiusSDK is pure java (for now)
+def acra_version = safeExtGet("THEOplayerGemius_acraVersion", '5.7.0')
+
 dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
@@ -105,6 +108,8 @@ dependencies {
       implementation fileTree(dir: "${rootProject.file(gemiusSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
     }
   }
+
+  implementation "ch.acra:acra-http:$acra_version"
 
   // Align the Kotlin SDK libraries with the same version.
   implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
