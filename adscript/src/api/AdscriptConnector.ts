@@ -1,6 +1,7 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { AdscriptConnectorAdapter } from '../internal/AdscriptConnectorAdapter';
 import { AdscriptMetadata } from './AdscriptMetadata';
+import { AdScriptI12n } from './AdScriptI12n';
 
 export class AdscriptConnector {
   private connectorAdapter: AdscriptConnectorAdapter;
@@ -23,6 +24,13 @@ export class AdscriptConnector {
    */
   updateMetadata(metadata: AdscriptMetadata) {
     this.connectorAdapter.updateMetadata(metadata);
+  }
+
+  /**
+   * Update logged-in user info.
+   */
+  updateUser(user: AdScriptI12n) {
+    this.connectorAdapter.updateUser(user);
   }
 
   /**

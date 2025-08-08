@@ -8,6 +8,8 @@ import com.theoplayer.android.connector.analytics.adscript.AdscriptConfiguration
 import com.theoplayer.android.connector.analytics.adscript.AdscriptConnector
 import com.theoplayer.util.ViewResolver
 import com.nad.adscriptapiclient.AdScriptDataObject
+import com.nad.adscriptapiclient.AdScriptI12n
+import org.json.JSONException
 
 private const val TAG = "AdscriptModule"
 
@@ -63,9 +65,26 @@ class ReactTHEOplayerAdscriptModule(context: ReactApplicationContext) :
     }
   }
 
+  private fun buildUser(user: ReadableArray): AdScriptI12n {
+    return AdScriptI12n().apply {
+      try {
+        for (i in 0 until user.size()) {
+          set(i, user.getString(i))
+        }
+      } catch (e: JSONException) {
+        Log.e(TAG, "Failed to build user: ${e.message}")
+      }
+    }
+  }
+  
   @ReactMethod
   fun updateMetadata(tag: Int, contentMetadata: ReadableMap) {
     adscriptConnectors[tag]?.updateMetadata(buildContentMetadata(contentMetadata))
+  }
+
+  @ReactMethod
+  fun updateUser(tag: Int, user: ReadableArray) {
+    adscriptConnectors[tag]?.updateUser(buildUser(user))
   }
 
   @ReactMethod
