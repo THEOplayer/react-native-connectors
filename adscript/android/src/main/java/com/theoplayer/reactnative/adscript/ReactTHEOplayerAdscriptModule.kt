@@ -76,7 +76,7 @@ class ReactTHEOplayerAdscriptModule(context: ReactApplicationContext) :
       }
     }
   }
-  
+
   @ReactMethod
   fun updateMetadata(tag: Int, contentMetadata: ReadableMap) {
     adscriptConnectors[tag]?.updateMetadata(buildContentMetadata(contentMetadata))
