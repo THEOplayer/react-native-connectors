@@ -35,7 +35,8 @@ import { useAdscript, AdscriptMetadata } from '@theoplayer/react-native-analytic
 
 const adscriptImplementationId = "myImplementionId";
 const adscriptContentMetadata: AdscriptMetadata = {
-
+  assetId: "abc98731568435405",
+  type: "content"
 };
 
 const App = () => {
