@@ -28,3 +28,24 @@ adscriptSdkDir=./app/libs/
 
 ### Configuring the connector
 
+Create the connector by providing the `THEOplayer` instance and a `GemiusConfiguration` object.
+
+```tsx
+import { useAdscript, AdscriptMetadata } from '@theoplayer/react-native-analytics-adscript';
+
+const adscriptImplementationId = "myImplementionId";
+const adscriptContentMetadata: AdscriptMetadata = {
+
+};
+
+const App = () => {
+  const [adscript, initAdscript] = useAdscript(adscriptImplementationId, adscriptContentMetadata, true /*debug*/);
+
+  const onPlayerReady = (player: THEOplayer) => {
+    // Initialize Adscript connector
+    initAdscript(player);
+  };
+
+  return <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady} />;
+};
+```
