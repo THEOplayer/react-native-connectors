@@ -23,6 +23,37 @@ by setting the `gemiusSdkDir` in your app's `gradle.properties` file:
 gemiusSdkDir=./app/libs/
 ```
 
+### iOS & tvOS
+
+On Apple platforms, the connector requires downloading the private `GemiusSDK_iOS` archive, which contains
+a multiplatform binary platform module for both iOS and tvOS.
+
+Copy the `Framework` folder in your app's `iOS` folder, and add this `GemiusSDK.podspec` file inside, which describes
+the structure and metadata of Gemius' CocoaPod:
+
+```ruby
+Pod::Spec.new do |spec|
+  spec.name         = "GemiusSDK"
+  spec.version      = "2.0.6"
+  spec.summary      = "The Gemius SDK for iOS"
+
+  spec.homepage     = 'https://github.com/THEOplayer/iOS-Connector'
+  spec.license      = { :type => 'MIT', :file => 'LICENSE' }
+  spec.author       = "THEO technologies"
+  spec.source       = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => spec.version.to_s }
+
+  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
+  spec.ios.vendored_frameworks = "./iOS/GemiusSDK.xcframework"
+  spec.tvos.vendored_frameworks = "./tvOS/GemiusSDK.xcframework"
+end
+```
+
+Finally, include the Gemius SDK as dependency in your app's `Podfile`:
+
+```ruby
+  pod 'GemiusSDK', :path => 'Frameworks/'
+```
+
 ## Usage
 
 ### Configuring the connector
@@ -62,6 +93,7 @@ const onUpdateMetadata = () => {
     name: 'Demo asset',
     duration: 1200,
     programType: ProgramType.VIDEO,
+    customKey: 'customValue',
     // ...
   });
 }
