@@ -14,9 +14,10 @@ npm install @theoplayer/react-native-analytics-gemius
 
 ### Android
 
-On Android, the connector requires downloading the private `GemiusSDK_2.0.8.aar`
-module into the app's `libs/` folder. Pass the SDK location to the connector
-by setting the `gemiusSdkDir` in your app's `gradle.properties` file:
+The Gemius Android SDK is not publicly available as a Maven module, so additional work is needed to include it as
+connector dependency.
+It requires downloading the private `GemiusSDK_2.0.8.aar` module into the app's `libs/` folder.
+The SDK location needs to be passed to the connector by setting the `gemiusSdkDir` in your app's `gradle.properties` file:
 
 ```bash
 # Location of the Gemius SDK
@@ -28,8 +29,8 @@ gemiusSdkDir=./app/libs/
 On Apple platforms, the connector requires downloading the private `GemiusSDK_iOS` archive, which contains
 a multiplatform binary platform module for both iOS and tvOS.
 
-Copy the `Framework` folder in your app's `iOS` folder, and add this `GemiusSDK.podspec` file inside, which describes
-the structure and metadata of Gemius' CocoaPod:
+Create a `Frameworks` folder in your app's `iOS` folder, copy the Gemius SDK XCFrameworks in it
+and add this `GemiusSDK.podspec` file inside, which describes the structure and metadata of Gemius' CocoaPod:
 
 ```ruby
 Pod::Spec.new do |spec|
@@ -43,8 +44,8 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => spec.version.to_s }
 
   spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-  spec.ios.vendored_frameworks = "./iOS/GemiusSDK.xcframework"
-  spec.tvos.vendored_frameworks = "./tvOS/GemiusSDK.xcframework"
+  spec.ios.vendored_frameworks = "GemiusSDK.xcframework"
+  spec.tvos.vendored_frameworks = "GemiusSDKtvOS.xcframework"
 end
 ```
 
