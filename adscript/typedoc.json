@@ -8,5 +8,5 @@
   ],
   "tsconfig": "tsconfig.json",
   "readme": "README.md",
-  "name": "Adscript Connector"
+  "name": "AdScript Connector"
 }

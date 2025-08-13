@@ -1,13 +1,13 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { AdscriptConnectorAdapter } from '../internal/AdscriptConnectorAdapter';
-import { AdscriptMetadata } from './AdscriptMetadata';
+import { AdScriptConnectorAdapter } from '../internal/AdScriptConnectorAdapter';
+import { AdScriptMetadata } from './AdScriptMetadata';
 import { AdScriptI12n } from './AdScriptI12n';
 
-export class AdscriptConnector {
-  private connectorAdapter: AdscriptConnectorAdapter;
+export class AdScriptConnector {
+  private connectorAdapter: AdScriptConnectorAdapter;
 
   /**
-   * Create AdscriptConnector
+   * Create AdScriptConnector
    *
    * @param player A React Native THEOplayer instance.
    * @param implementationId The implementation ID you will receive from your Nielsen Admosphere representative.
@@ -15,14 +15,14 @@ export class AdscriptConnector {
    * @param debug Whether to show debug logging.
    * @public
    */
-  constructor(player: THEOplayer, implementationId: string, contentMetadata: AdscriptMetadata, debug?: boolean) {
-    this.connectorAdapter = new AdscriptConnectorAdapter(player, implementationId, contentMetadata, debug);
+  constructor(player: THEOplayer, implementationId: string, contentMetadata: AdScriptMetadata, debug?: boolean) {
+    this.connectorAdapter = new AdScriptConnectorAdapter(player, implementationId, contentMetadata, debug);
   }
 
   /**
    * Update metadata.
    */
-  updateMetadata(metadata: AdscriptMetadata) {
+  updateMetadata(metadata: AdScriptMetadata) {
     this.connectorAdapter.updateMetadata(metadata);
   }
 

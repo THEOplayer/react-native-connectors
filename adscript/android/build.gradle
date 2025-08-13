@@ -32,11 +32,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerAdscript_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerAdScript_compileSdkVersion", 35)
 
   defaultConfig {
-    minSdkVersion safeExtGet("THEOplayerAdscript_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerAdscript_targetSdkVersion", 35)
+    minSdkVersion safeExtGet("THEOplayerAdScript_minSdkVersion", 21)
+    targetSdkVersion safeExtGet("THEOplayerAdScript_targetSdkVersion", 35)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -73,10 +73,10 @@ rootProject.allprojects {
   }
 }
 
-// The Adscript connector requires at least THEOplayer SDK v5.11.0.
+// The AdScript connector requires at least THEOplayer SDK v5.11.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 10.0.0)')
-def kotlin_version = safeExtGet("THEOplayerAdscript_kotlinVersion", "1.9.10")
-def adscript_version = safeExtGet("THEOplayerAdscript_adscriptVersion", "1.0.10")
+def kotlin_version = safeExtGet("THEOplayerAdScript_kotlinVersion", "1.9.10")
+def adscript_version = safeExtGet("THEOplayerAdScript_adscriptVersion", "1.0.10")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -95,15 +95,15 @@ dependencies {
 //  implementation "com.theoplayer.android-connector:adscript:$adscript_version"
   implementation files("./libs/adscript.aar")
   def aarFileName = "AdScriptApiClient_v${adscript_version}.aar"
-  def adscriptSdkDir = rootProject.properties['adscriptSdkDir']
-  if (!adscriptSdkDir) {
-    logger.warn("⚠️ WARNING: adscriptSdkDir not set.")
-  } else if (!rootProject.file(adscriptSdkDir).exists()) {
-    logger.warn("⚠️ WARNING: adscriptSdkDir does not exist at: ${adscriptSdkDir}")
+  def adScriptSdkDir = rootProject.properties['adScriptSdkDir']
+  if (!adScriptSdkDir) {
+    logger.warn("⚠️ WARNING: adScriptSdkDir not set.")
+  } else if (!rootProject.file(adScriptSdkDir).exists()) {
+    logger.warn("⚠️ WARNING: adScriptSdkDir does not exist at: ${adScriptSdkDir}")
   } else {
-    def aarFile = new File(adscriptSdkDir, aarFileName)
+    def aarFile = new File(adScriptSdkDir, aarFileName)
 
-    // The Adscript aar file is typically provided as .gz, check if we still need to extract.
+    // The AdScript aar file is typically provided as .gz, check if we still need to extract.
     def gzFile = new File("${aarFile}.gz")
     if (!aarFile.exists() && gzFile.exists()) {
       new FileInputStream(gzFile).withCloseable { fis ->
@@ -115,7 +115,7 @@ dependencies {
       }
     }
     dependencies {
-      implementation fileTree(dir: "${rootProject.file(adscriptSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
+      implementation fileTree(dir: "${rootProject.file(adScriptSdkDir)}/$aarFileName", include: ['*.aar', '*.jar'], exclude: [])
     }
   }
 

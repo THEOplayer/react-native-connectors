@@ -1,14 +1,14 @@
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { RefObject, useEffect, useRef } from 'react';
-import { AdscriptMetadata } from '../AdscriptMetadata';
-import { AdscriptConnector } from '../AdscriptConnector';
+import { AdScriptMetadata } from '../AdScriptMetadata';
+import { AdScriptConnector } from '../AdScriptConnector';
 
-export function useAdscript(
+export function useAdScript(
   implementationId: string,
-  contentMetadata: AdscriptMetadata,
+  contentMetadata: AdScriptMetadata,
   debug?: boolean,
-): [RefObject<AdscriptConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<AdscriptConnector | undefined>();
+): [RefObject<AdScriptConnector | undefined>, (player: THEOplayer | undefined) => void] {
+  const connector = useRef<AdScriptConnector | undefined>();
   const theoPlayer = useRef<THEOplayer | undefined>();
 
   const initialize = (player: THEOplayer | undefined) => {
@@ -17,7 +17,7 @@ export function useAdscript(
 
     theoPlayer.current = player;
     if (player) {
-      connector.current = new AdscriptConnector(player, implementationId, contentMetadata, debug);
+      connector.current = new AdScriptConnector(player, implementationId, contentMetadata, debug);
       player.addEventListener(PlayerEventType.DESTROY, onDestroy);
     } else {
       throw new Error('Invalid THEOplayer instance');

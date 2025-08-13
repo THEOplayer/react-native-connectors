@@ -1,7 +1,7 @@
 {
   "name": "@theoplayer/react-native-analytics-adscript",
   "version": "1.0.0",
-  "description": "Nielsen Adscript analytics connector for @theoplayer/react-native",
+  "description": "Nielsen AdScript analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",

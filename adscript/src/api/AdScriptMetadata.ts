@@ -1,4 +1,4 @@
-export type AdscriptMetadata = {
+export type AdScriptMetadata = {
   /**
    * Unique video content identifier. Any designation according to the needs of the TV company,
    * which ensures identification of the same content across platforms.

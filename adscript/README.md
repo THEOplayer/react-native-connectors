@@ -1,6 +1,6 @@
-# THEOplayer React-Native Adscript Connector
+# THEOplayer React-Native AdScript Connector
 
-A [Nielsen Adscript](https://adscript.admosphere.cz/) analytics connector for `@theoplayer/react-native`.
+A [Nielsen AdScript](https://adscript.admosphere.cz/) analytics connector for `@theoplayer/react-native`.
 
 ## Installation
 
@@ -17,11 +17,11 @@ npm install @theoplayer/react-native-analytics-adscript
 On Android, the connector requires downloading the private
 [AdScript client library](https://adscript.admosphere.cz/download/AdScriptApiClient_v1.0.10.aar.gz)
 module into the app's `libs/` folder. Pass the SDK location to the connector
-by setting the `adscriptSdkDir` in your app's `gradle.properties` file:
+by setting the `adScriptSdkDir` in your app's `gradle.properties` file:
 
 ```bash
-# Location of the adscript SDK
-adscriptSdkDir=./app/libs/
+# Location of the AdScript SDK
+adScriptSdkDir=./app/libs/
 ```
 
 ## Usage
@@ -31,20 +31,20 @@ adscriptSdkDir=./app/libs/
 Create the connector by providing the `THEOplayer` instance and a `GemiusConfiguration` object.
 
 ```tsx
-import { useAdscript, AdscriptMetadata } from '@theoplayer/react-native-analytics-adscript';
+import { useAdScript, AdScriptMetadata } from '@theoplayer/react-native-analytics-adscript';
 
 const adscriptImplementationId = "myImplementionId";
-const adscriptContentMetadata: AdscriptMetadata = {
+const adscriptContentMetadata: AdScriptMetadata = {
   assetId: "abc98731568435405",
   type: "content"
 };
 
 const App = () => {
-  const [adscript, initAdscript] = useAdscript(adscriptImplementationId, adscriptContentMetadata, true /*debug*/);
+  const [adscript, initAdScript] = useAdScript(adscriptImplementationId, adscriptContentMetadata, true /*debug*/);
 
   const onPlayerReady = (player: THEOplayer) => {
-    // Initialize Adscript connector
-    initAdscript(player);
+    // Initialize AdScript connector
+    initAdScript(player);
   };
 
   return <THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady} />;

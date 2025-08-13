@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5E555C0D2413F4C50049A1A2 /* TheoplayerAdscript.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* TheoplayerAdscript.m */; };
-		F4FF95D7245B92E800C19C63 /*  TheoplayerAdscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /*  TheoplayerAdscript.swift */; };
+		5E555C0D2413F4C50049A1A2 /* TheoplayerAdScript.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* TheoplayerAdScript.m */; };
+		F4FF95D7245B92E800C19C63 /*  TheoplayerAdScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /*  TheoplayerAdScript.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +24,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		134814201AA4EA6300B7C361 /* libTheoplayerAdscript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTheoplayerAdscript.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3E7B5891CC2AC0600A0062D /* TheoplayerAdscript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TheoplayerAdscript.m; sourceTree = "<group>"; };
-		F4FF95D5245B92E700C19C63 /* TheoplayerAdscript-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TheoplayerAdscript-Bridging-Header.h"; sourceTree = "<group>"; };
-		F4FF95D6245B92E800C19C63 /* TheoplayerAdscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoplayerAdscript.swift; sourceTree = "<group>"; };
+		134814201AA4EA6300B7C361 /* libTheoplayerAdScript.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTheoplayerAdScript.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3E7B5891CC2AC0600A0062D /* TheoplayerAdScript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TheoplayerAdScript.m; sourceTree = "<group>"; };
+		F4FF95D5245B92E700C19C63 /* TheoplayerAdScript-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TheoplayerAdScript-Bridging-Header.h"; sourceTree = "<group>"; };
+		F4FF95D6245B92E800C19C63 /* TheoplayerAdScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoplayerAdScript.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +44,7 @@
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				134814201AA4EA6300B7C361 /* libTheoplayerAdscript.a */,
+				134814201AA4EA6300B7C361 /* libTheoplayerAdScript.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -52,9 +52,9 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				F4FF95D6245B92E800C19C63 /* TheoplayerAdscript.swift */,
-				B3E7B5891CC2AC0600A0062D /* TheoplayerAdscript.m */,
-				F4FF95D5245B92E700C19C63 /* TheoplayerAdscript-Bridging-Header.h */,
+				F4FF95D6245B92E800C19C63 /* TheoplayerAdScript.swift */,
+				B3E7B5891CC2AC0600A0062D /* TheoplayerAdScript.m */,
+				F4FF95D5245B92E700C19C63 /* TheoplayerAdScript-Bridging-Header.h */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,9 +62,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58B511DA1A9E6C8500147676 /* TheoplayerAdscript */ = {
+		58B511DA1A9E6C8500147676 /* TheoplayerAdScript */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "TheoplayerAdscript" */;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "TheoplayerAdScript" */;
 			buildPhases = (
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
@@ -74,9 +74,9 @@
 			);
 			dependencies = (
 			);
-			name = TheoplayerAdscript;
+			name = TheoplayerAdScript;
 			productName = RCTDataManager;
-			productReference = 134814201AA4EA6300B7C361 /* libTheoplayerAdscript.a */;
+			productReference = 134814201AA4EA6300B7C361 /* libTheoplayerAdScript.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -93,7 +93,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "TheoplayerAdscript" */;
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "TheoplayerAdScript" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -106,7 +106,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				58B511DA1A9E6C8500147676 /* TheoplayerAdscript */,
+				58B511DA1A9E6C8500147676 /* TheoplayerAdScript */,
 			);
 		};
 /* End PBXProject section */
@@ -116,8 +116,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4FF95D7245B92E800C19C63 /* TheoplayerAdscript.swift in Sources */,
-				B3E7B58A1CC2AC0600A0062D /* TheoplayerAdscript.m in Sources */,
+				F4FF95D7245B92E800C19C63 /* TheoplayerAdScript.swift in Sources */,
+				B3E7B58A1CC2AC0600A0062D /* TheoplayerAdScript.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,9 +230,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = TheoplayerAdscript;
+				PRODUCT_NAME = TheoplayerAdScript;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TheoplayerAdscript-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "TheoplayerAdScript-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -249,9 +249,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = TheoplayerAdscript;
+				PRODUCT_NAME = TheoplayerAdScript;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "TheoplayerAdscript-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "TheoplayerAdScript-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -259,7 +259,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "TheoplayerAdscript" */ = {
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "TheoplayerAdScript" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511ED1A9E6C8500147676 /* Debug */,
@@ -268,7 +268,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "TheoplayerAdscript" */ = {
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "TheoplayerAdScript" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58B511F01A9E6C8500147676 /* Debug */,

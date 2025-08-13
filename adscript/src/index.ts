@@ -1,4 +1,4 @@
-export * from './api/AdscriptConnector';
-export * from './api/AdscriptMetadata';
+export * from './api/AdScriptConnector';
+export * from './api/AdScriptMetadata';
 export * from './api/AdScriptI12n';
-export { useAdscript } from './api/hooks/useAdscript';
+export { useAdScript } from './api/hooks/useAdScript';
