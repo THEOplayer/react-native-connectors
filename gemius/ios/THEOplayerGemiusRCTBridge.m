@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // Gemius Module
 // ----------------------------------------------------------------------------
-@interface RCT_EXTERN_REMAP_MODULE(ConvivaModule, THEOplayerConvivaRCTConvivaAPI, NSObject)
+@interface RCT_EXTERN_REMAP_MODULE(GemiusModule, THEOplayerGemiusRCTGemiusAPI, NSObject)
 
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   gemiusConfig:(NSDictionary)gemiusConfig)

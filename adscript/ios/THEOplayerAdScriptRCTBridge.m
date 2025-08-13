@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 // AdScript Module
 // ----------------------------------------------------------------------------
-@interface RCT_EXTERN_REMAP_MODULE(ConvivaModule, THEOplayerConvivaRCTConvivaAPI, NSObject)
+@interface RCT_EXTERN_REMAP_MODULE(AdScriptModule, THEOplayerAdScriptRCTAdScriptAPI, NSObject)
 
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   implementationId:(nonnull NSString *)implementationId

@@ -38,7 +38,7 @@ class THEOplayerAdScriptRCTAdScriptAPI: NSObject, RCTBridgeModule {
     }
   }
   
-  @objc(update:metadata:)
+  @objc(updateMetadata:metadata:)
   func updateMetadata(_ node: NSNumber, metadata: NSDictionary) {
     log("updateMetadata triggered.")
     DispatchQueue.main.async {
@@ -51,7 +51,7 @@ class THEOplayerAdScriptRCTAdScriptAPI: NSObject, RCTBridgeModule {
     }
   }
   
-  @objc(update:user:)
+  @objc(updateUser:user:)
   func updateUser(_ node: NSNumber, user: NSArray) {
     log("updateUser triggered.")
     DispatchQueue.main.async {
