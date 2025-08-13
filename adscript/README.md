@@ -24,11 +24,52 @@ by setting the `adScriptSdkDir` in your app's `gradle.properties` file:
 adScriptSdkDir=./app/libs/
 ```
 
+### iOS & tvOS
+
+On Apple platforms, the connector requires downloading the private `AdScriptAPIClient` archive.
+
+Create a `Frameworks` folder in your app's `ios` folder, copy the Adscript SDK XCFramework in it
+and add this `AdScriptApiClient.podspec` file inside, which describes the structure and metadata of Adscript's CocoaPod:
+
+```ruby
+Pod::Spec.new do |spec|
+  spec.name         = "AdScriptApiClient"
+  spec.version      = "1.0.8"
+  spec.summary      = "The Adscript Api Client for iOS"
+
+  spec.homepage     = 'https://github.com/THEOplayer/iOS-Connector'
+  spec.license      = { :type => 'MIT', :file => 'LICENSE' }
+  spec.author       = "THEO technologies"
+  spec.source       = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => spec.version.to_s }
+
+  spec.source_files  = "Classes", "Classes/**/*.{h,m}"
+  spec.ios.vendored_frameworks = "AdScriptApiClient.xcframework"
+end
+```
+
+To enable IDFA (Identifier for Advertisers), replace the framework reference:
+
+```
+spec.ios.vendored_frameworks = "AdScriptApiClient.xcframework"
+```
+
+with
+
+```
+spec.ios.vendored_frameworks = "AdScriptApiClient_withidfa.xcframework"
+```
+
+Finally, include the AdScript SDK as dependency in your app's `Podfile`:
+
+```ruby
+  pod 'AdScriptApiClient', :path => 'Frameworks/'
+```
+
 ## Usage
 
 ### Configuring the connector
 
-Create the connector by providing the `THEOplayer` instance and a `GemiusConfiguration` object.
+Create the connector by providing the `THEOplayer` instance, an `implementationId`, and a `metadata` object.
 
 ```tsx
 import { useAdScript, AdScriptMetadata } from '@theoplayer/react-native-analytics-adscript';

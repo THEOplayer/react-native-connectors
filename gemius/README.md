@@ -29,8 +29,8 @@ gemiusSdkDir=./app/libs/
 On Apple platforms, the connector requires downloading the private `GemiusSDK_iOS` archive, which contains
 a multiplatform binary platform module for both iOS and tvOS.
 
-Create a `Frameworks` folder in your app's `iOS` folder, copy the Gemius SDK XCFrameworks in it
-and add this `GemiusSDK.podspec` file inside, which describes the structure and metadata of Gemius' CocoaPod:
+Create a `Frameworks` folder in your app's `ios` folder, copy the Gemius SDK XCFrameworks in it
+and add this `GemiusSDK.podspec` file inside, which describes the structure and metadata of Gemius's CocoaPod:
 
 ```ruby
 Pod::Spec.new do |spec|
