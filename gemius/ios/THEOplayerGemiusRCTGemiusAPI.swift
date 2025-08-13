@@ -25,7 +25,6 @@ class THEOplayerGemiusRCTGemiusAPI: NSObject, RCTBridgeModule {
     log("initialize triggered.")
     
     DispatchQueue.main.async {
-      log(gemiusConfig.debugDescription)
       if let view = self.view(for: node), let player = view.player {
         let configuration = GemiusConfiguration(
           applicationName: gemiusConfig["applicationName"] as! String,
@@ -47,7 +46,7 @@ class THEOplayerGemiusRCTGemiusAPI: NSObject, RCTBridgeModule {
   
   @objc(update:programId:metadata:)
   func update(_ node: NSNumber, programId: NSString, metadata: NSDictionary) {
-    log("setContentInfo triggered.")
+    log("update triggered.")
     DispatchQueue.main.async {
       if let connector = self.connectors[node] {
         connector
