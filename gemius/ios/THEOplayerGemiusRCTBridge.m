@@ -11,7 +11,7 @@ RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   gemiusConfig:(NSDictionary)gemiusConfig)
 
 RCT_EXTERN_METHOD(update:(nonnull NSNumber *)node
-                  programId:(NSString)programId
+                  programId:(nonnull NSString *)programId
                   metadata:(NSDictionary)metadata)
 
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
