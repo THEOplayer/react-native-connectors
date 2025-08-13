@@ -4,8 +4,8 @@ import android.util.Log
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.android.api.THEOplayerView
-import com.theoplayer.android.connector.analytics.adscript.AdScriptConfiguration
-import com.theoplayer.android.connector.analytics.adscript.AdScriptConnector
+import com.theoplayer.android.connector.analytics.adscript.AdscriptConfiguration
+import com.theoplayer.android.connector.analytics.adscript.AdscriptConnector
 import com.theoplayer.util.ViewResolver
 import com.nad.adscriptapiclient.AdScriptDataObject
 import com.nad.adscriptapiclient.AdScriptI12n
@@ -18,7 +18,7 @@ class ReactTHEOplayerAdScriptModule(context: ReactApplicationContext) :
 
   private val viewResolver: ViewResolver = ViewResolver(context)
 
-  private var adscriptConnectors: HashMap<Int, AdScriptConnector> = HashMap()
+  private var adscriptConnectors: HashMap<Int, AdscriptConnector> = HashMap()
 
   override fun getName(): String {
     return TAG
@@ -39,11 +39,11 @@ class ReactTHEOplayerAdScriptModule(context: ReactApplicationContext) :
     implementationId: String,
     contentMetadata: ReadableMap,
     debug: Boolean
-  ): AdScriptConnector {
-    return AdScriptConnector(
+  ): AdscriptConnector {
+    return AdscriptConnector(
       activity = reactApplicationContext.currentActivity!!,
       playerView = view,
-      configuration = AdScriptConfiguration(implementationId, debug),
+      configuration = AdscriptConfiguration(implementationId, debug),
       contentMetadata = buildContentMetadata(contentMetadata),
       adProcessor = null)
   }
