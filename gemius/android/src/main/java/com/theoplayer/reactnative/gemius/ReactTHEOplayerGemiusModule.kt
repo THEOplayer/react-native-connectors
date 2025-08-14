@@ -91,9 +91,9 @@ class ReactTHEOplayerGemiusModule(context: ReactApplicationContext) :
           PROP_EXTERNAL_PREMIERE_DATE -> externalPremiereDate = data.getString(entry.key)
           PROP_PREMIERE_DATE -> premiereDate = data.getString(entry.key)
           PROP_SERIES -> series = data.getString(entry.key)
-          PROP_PROGRAM_TYPE -> programType = data.takeIf { data.hasKey(entry.key) }?.getString(entry.key)?.let {
+          PROP_PROGRAM_TYPE -> programType = data.takeIf { data.hasKey(entry.key) }?.getInt(entry.key)?.let {
             when (it) {
-              "audio" -> ProgramData.ProgramType.AUDIO
+              0 -> ProgramData.ProgramType.AUDIO
               else -> ProgramData.ProgramType.VIDEO
             }
           }
