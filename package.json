@@ -7,17 +7,19 @@
   "author": "THEO Technologies NV",
   "license": "MIT",
   "workspaces": [
+    "agama",
     "adobe",
     "adobe-edge",
-    "agama",
+    "adscript",
     "comscore",
     "conviva",
+    "drm",
     "engage",
     "mux",
     "nielsen",
     "yospace",
     "youbora",
-    "drm"
+    "gemius"
   ],
   "scripts": {
     "changeset:version": "changeset version && node .changeset/post-process.js",
@@ -56,7 +58,7 @@
     "react-native": "^0.74.5",
     "react-native-builder-bob": "^0.23.2",
     "react-native-device-info": "^14.0.4",
-    "react-native-theoplayer": "^9.0.0",
+    "react-native-theoplayer": "^9.9.1",
     "rimraf": "^5.0.10",
     "theoplayer": "^9.0.0",
     "typedoc": "^0.25.13",

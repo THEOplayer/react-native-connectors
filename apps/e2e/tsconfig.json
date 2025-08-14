@@ -17,6 +17,12 @@
       ],
       "@theoplayer/react-native-yospace": [
         "../../yospace/src/index"
+      ],
+      "@theoplayer/react-native-adscript": [
+        "../../adscript/src/index"
+      ],
+      "@theoplayer/react-native-gemius": [
+        "../../gemius/src/index"
       ]
     }
   }

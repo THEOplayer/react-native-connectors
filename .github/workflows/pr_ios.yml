@@ -69,7 +69,7 @@ jobs:
       - name: Run pod install & update dependencies
         working-directory: apps/e2e/ios
         run: |
-          RCT_NEW_ARCH_ENABLED=${{ matrix.newArchEnabled }} bundle exec pod install
+          RCT_NEW_ARCH_ENABLED=${{ matrix.newArchEnabled }} bundle exec pod update
 
       - name: Start iOS simulator
         uses: futureware-tech/simulator-action@v4
