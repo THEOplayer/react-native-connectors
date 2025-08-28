@@ -1,12 +1,13 @@
+
 package com.theoplayer.reactnative.adobe
 
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
-import com.theoplayer.android.api.THEOplayerView
 import com.theoplayer.util.ViewResolver
 
 private const val TAG = "AdobeModule"
 
+@Suppress("unused")
 class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
@@ -33,13 +34,12 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
       view?.playerContext?.playerView?.let { playerView ->
         adobeConnectors[tag] =
           AdobeConnector(
-            context = reactApplicationContext,
-            playerView = playerView,
+            player = playerView.player,
             uri = uri,
             ecid = ecid,
             sid = sid,
             trackingUrl = trackingUrl,
-            metadata = metadata,
+            metadata = metadata?.toAdobeMetaData(),
             userAgent = userAgent,
             debug = debug
           )
@@ -48,7 +48,27 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun setDebug(tag: Int, debug: Boolean) {
+    adobeConnectors[tag]?.setDebug(debug)
+  }
+
+  @ReactMethod
+  fun updateMetadata(tag: Int, metadata: ReadableMap) {
+    adobeConnectors[tag]?.updateMetadata(metadata.toAdobeMetaData())
+  }
+
+  @ReactMethod
+  fun setError(tag: Int, metadata: ReadableMap) {
+    adobeConnectors[tag]?.setError(metadata.toAdobeMetaData())
+  }
+
+  @ReactMethod
+  fun stopAndStartNewSession(tag: Int, metadata: ReadableMap) {
+    adobeConnectors[tag]?.stopAndStartNewSession(metadata.toAdobeMetaData())
+  }
+
+  @ReactMethod
   fun destroy(tag: Int) {
-//    adobeConnectors[tag]?.destroy()
+    adobeConnectors[tag]?.destroy()
   }
 }
