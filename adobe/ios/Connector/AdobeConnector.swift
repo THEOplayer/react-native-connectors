@@ -6,6 +6,12 @@ import Foundation
 import THEOplayerSDK
 import UIKit
 
+enum ContentType: String {
+    case VOD = "VOD"
+    case Live = "Live"
+    case Linear = "Linear"
+}
+
 class AdobeConnector {
     private weak var player: THEOplayer?
     private var uri: String
@@ -15,6 +21,9 @@ class AdobeConnector {
     private var customMetadata: AdobeMetadata?
     private var userAgent: String?
     private var debug: Bool = false
+    
+    private var sessionInProgress = false
+    private var isPlayingAd = false
     
     // MARK: Player Listeners
     private var playingListener: EventListener?
@@ -41,7 +50,7 @@ class AdobeConnector {
         self.sid = sid
         self.trackingUrl = trackingUrl
         self.customMetadata = metadata
-        self.userAgent = userAgent ?? self.buildUserAgent()
+        self.userAgent = userAgent ?? AdobeUtils.buildUserAgent()
         self.debug = debug
         
         self.addEventListeners()
@@ -49,21 +58,17 @@ class AdobeConnector {
         self.log("Connector initialized.")
     }
     
-    func buildUserAgent() -> String {
-        let device = UIDevice.current
-        let model = device.model
-        let osVersion = device.systemVersion.replacingOccurrences(of: ".", with: "_")
-        let locale = (UserDefaults.standard.array(forKey: "AppleLanguages")?.first as? String) ?? Locale.current.identifier
-        let userAgent = "Mozilla/5.0 (\(model); CPU OS \(osVersion) like Mac OS X; \(locale))"
-        return userAgent
-    }
-    
     func setDebug(_ debug: Bool) -> Void {
         self.debug = debug
     }
     
     func updateMetadata(_ metadata: AdobeMetadata) -> Void {
-        // todo
+        if let currentMetadata = self.customMetadata {
+            currentMetadata.add(metadata)
+            return
+        } else {
+            self.customMetadata = metadata
+        }
     }
     
     func setError(_ metadata: AdobeMetadata) -> Void {
@@ -174,7 +179,7 @@ class AdobeConnector {
     
     func onLoadedMetadata(event: LoadedMetaDataEvent) -> Void {
         self.log("onLoadedMetadata triggered.")
-        // todo
+        self.maybeStartSession(duration: self.player?.duration)
     }
     
     func onError(event: ErrorEvent) -> Void {
@@ -200,6 +205,71 @@ class AdobeConnector {
     func onAdEnd(event: AdEndEvent) -> Void {
         self.log("onAdEnd triggered.")
         // todo
+    }
+    
+    /**
+     * Start a new session, but only if:
+     * - no existing session has is in progress;
+     * - the player has a valid source;
+     * - no ad is playing, otherwise the ad's media duration will be picked up;
+     * - the player's content media duration is known.
+     *
+     * @param mediaLength
+     * @private
+     */
+    func maybeStartSession(duration: Double?) -> Void {
+        guard let player = self.player else {
+            return
+        }
+        
+        let mediaLength = self.getContentLength(mediaLengthInSec: duration)
+        let hasValidSource = player.source != nil
+        var hasValidDuration = false
+        if let duration = player.duration {
+            hasValidDuration = !duration.isNaN
+        }
+        self.log("maybeStartSession - mediaLength: \(mediaLength)")
+        self.log("maybeStartSession - hasValidSource: \(hasValidSource)")
+        self.log("maybeStartSession - hasValidDuration: \(hasValidDuration)")
+        self.log("maybeStartSession - sessionInProgress: \(self.sessionInProgress)")
+        self.log("maybeStartSession - isPlayingAd: \(self.isPlayingAd)")
+        
+        if (self.sessionInProgress || self.isPlayingAd || !hasValidSource || !hasValidDuration) {
+              self.log("=> maybeStartSession - NOT started")
+              return
+        }
+    }
+    
+    /**
+       * Get the current media length in seconds.
+       *
+       * - In case of a live stream, set it to 24h.
+       *
+       * @param mediaLengthInMSec optional mediaLengthInMSec provided by a player event.
+       * @private
+       */
+    private func getContentLength(mediaLengthInSec: Double?) -> Double {
+        if let mediaLength = mediaLengthInSec {
+            return mediaLength == Double.infinity ? 86400 : mediaLength
+        }
+        
+        if let player = self.player,
+           let duration = player.duration {
+            return duration == Double.infinity ? 86400 : duration
+        }
+        
+        return 86400
+    }
+    
+    private func getContentType() -> ContentType {
+        if let player = self.player,
+           let duration = player.duration {
+            if duration != Double.infinity {
+                return ContentType.VOD
+            }
+        }
+        
+        return ContentType.Live
     }
     
     func log(_ text: String) {

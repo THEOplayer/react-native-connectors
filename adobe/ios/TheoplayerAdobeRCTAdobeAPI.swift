@@ -21,7 +21,7 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(initialize:uri:ecid:sid:trackingUrl:metadata:userAgent:debug:)
-    func initialize(_ node: NSNumber, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: NSDictionary?, userAgent: String?, debug: Bool = false) -> Void {
+    func initialize(_ node: NSNumber, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: [String:Any]?, userAgent: String?, debug: Bool = false) -> Void {
         self.debug = debug
         log("initialize triggered.")
         
@@ -33,7 +33,7 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
                     ecid: ecid,
                     sid: sid,
                     trackingUrl: trackingUrl,
-                    metadata: AdobeMetadata().fromDict(metadata),
+                    metadata: AdobeMetadata(from: metadata),
                     userAgent: userAgent,
                     debug: debug
                 )
@@ -56,29 +56,29 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(updateMetadata:metadata:)
-    func updateMetadata(_ node: NSNumber, metadata: NSDictionary) -> Void {
+    func updateMetadata(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("updateMetadata triggered.")
         
         if let connector = self.connectors[node] {
-            connector.updateMetadata(AdobeMetadata().fromDict(metadata))
+            connector.updateMetadata(AdobeMetadata(from: metadata))
         }
     }
     
     @objc(setError:metadata:)
-    func setError(_ node: NSNumber, metadata: NSDictionary) -> Void {
+    func setError(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("setError triggered.")
         
         if let connector = self.connectors[node] {
-            connector.setError(AdobeMetadata().fromDict(metadata))
+            connector.setError(AdobeMetadata(from: metadata))
         }
     }
     
     @objc(stopAndStartNewSession:metadata:)
-    func stopAndStartNewSession(_ node: NSNumber, metadata: NSDictionary) -> Void {
+    func stopAndStartNewSession(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("stopAndStartNewSession triggered")
         
         if let connector = self.connectors[node] {
-            connector.stopAndStartNewSession(AdobeMetadata().fromDict(metadata))
+            connector.stopAndStartNewSession(AdobeMetadata(from: metadata))
         }
     }
     
