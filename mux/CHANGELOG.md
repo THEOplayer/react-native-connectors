@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.8.0
+
+### ✨ Features
+
+- Updated iOS Mux dependency to v0.13.
+
 ## 1.7.0
 
 ### ✨ Features
