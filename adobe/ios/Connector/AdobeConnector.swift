@@ -4,6 +4,7 @@
 
 import Foundation
 import THEOplayerSDK
+import UIKit
 
 class AdobeConnector {
     private weak var player: THEOplayer?
@@ -11,7 +12,7 @@ class AdobeConnector {
     private var ecid: String
     private var sid: String
     private var trackingUrl: String
-    private var metadata: AdobeMetadata?
+    private var customMetadata: AdobeMetadata?
     private var userAgent: String?
     private var debug: Bool = false
     
@@ -21,13 +22,22 @@ class AdobeConnector {
         self.ecid = ecid
         self.sid = sid
         self.trackingUrl = trackingUrl
-        self.metadata = metadata
-        self.userAgent = userAgent
+        self.customMetadata = metadata
+        self.userAgent = userAgent ?? self.buildUserAgent()
         self.debug = debug
         
         self.addEventListeners()
         
-        self.log("Initialized connector.")
+        self.log("Connector initialized.")
+    }
+    
+    func buildUserAgent() -> String {
+        let device = UIDevice.current
+        let model = device.model
+        let osVersion = device.systemVersion.replacingOccurrences(of: ".", with: "_")
+        let locale = (UserDefaults.standard.array(forKey: "AppleLanguages")?.first as? String) ?? Locale.current.identifier
+        let userAgent = "Mozilla/5.0 (\(model); CPU OS \(osVersion) like Mac OS X; \(locale))"
+        return userAgent
     }
     
     func setDebug(_ debug: Bool) -> Void {

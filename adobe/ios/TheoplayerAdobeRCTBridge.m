@@ -12,8 +12,8 @@ RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   ecid:(nonnull NSString *)ecid
                   sid:(nonnull NSString *)sid
                   trackingUrl:(nonnull NSString *)trackingUrl
-                  metadata:(NSDictionary)metadata
-                  userAgent:(NSString)userAgent
+                  metadata:(nullable NSDictionary*)metadata
+                  userAgent:(nullable NSString*)userAgent
                   debug:(BOOL)debug)
 
 RCT_EXTERN_METHOD(setDebug:(nonnull NSNumber *)node

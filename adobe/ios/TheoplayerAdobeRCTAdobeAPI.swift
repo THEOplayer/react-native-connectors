@@ -21,7 +21,7 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(initialize:uri:ecid:sid:trackingUrl:metadata:userAgent:debug:)
-    func initialize(_ node: NSNumber, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: NSDictionary, userAgent: String, debug: Bool) -> Void {
+    func initialize(_ node: NSNumber, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: NSDictionary?, userAgent: String?, debug: Bool = false) -> Void {
         self.debug = debug
         log("initialize triggered.")
         
