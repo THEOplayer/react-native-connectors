@@ -112,7 +112,7 @@ class AdobeConnector(
 
   private var customUserAgent: String? = null
 
-  private val scope = CoroutineScope(Dispatchers.Default)
+  private val scope = CoroutineScope(Dispatchers.Main)
 
   private val client = OkHttpClient()
 
