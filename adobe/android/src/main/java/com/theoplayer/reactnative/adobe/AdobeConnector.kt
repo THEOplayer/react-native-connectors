@@ -571,7 +571,7 @@ class AdobeConnector(
   }
 
   private fun getContentType(): ContentType {
-    return if (player.currentTime == Double.POSITIVE_INFINITY) ContentType.Live else ContentType.VOD
+    return if (player.duration == Double.POSITIVE_INFINITY) ContentType.Live else ContentType.VOD
   }
 
   fun reset() {
