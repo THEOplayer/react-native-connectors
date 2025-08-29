@@ -9,7 +9,7 @@ export default function (spec: TestScope) {
     testConnector(
       spec,
       (player: THEOplayer) => {
-        connector = new AdobeConnector(player, 'uri', 'ecid', 'sid', 'trackingUrl');
+        connector = new AdobeConnector(player, 'uri', 'ecid', 'sid', 'trackingUrl', null, null, true);
       },
       () => {
         connector.stopAndStartNewSession({
