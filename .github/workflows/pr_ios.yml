@@ -6,10 +6,10 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     strategy:
       matrix:
-        xcode_version: [ '15.4.0' ]
+        xcode_version: [ '16.1.0' ]
         newArchEnabled: [ 0 ]
         platform: [iOS, tvOS]
     name: Build for ${{ matrix.platform }} using XCode version ${{ matrix.xcode_version }} and ${{matrix.newArchEnabled  == 1 && 'New' || 'Old' }} Architecture
@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
 
       - name: Cache Ruby Gems
