@@ -113,6 +113,7 @@ def safeExtGet(prop, fallback) {
 
 dependencies {
     implementation project(path: ':react-native-theoplayer-analytics-adobe')
+    implementation project(path: ':react-native-theoplayer-analytics-adobe-edge')
     implementation project(path: ':react-native-theoplayer-analytics-comscore')
     implementation project(path: ':react-native-theoplayer-analytics-conviva')
     implementation project(path: ':react-native-theoplayer-analytics-nielsen')
