@@ -1,0 +1,356 @@
+package com.theoplayer.reactnative.adobe.edge.api
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+
+class MediaEdgeAPI(
+  private val baseUrl: String,
+  private val configId: String,
+  private val userAgent: String,
+  private var debugSessionId: String? = null
+) {
+  private val client = OkHttpClient()
+  var sessionId: String? = null
+    private set
+
+  var hasSessionFailed = false
+    private set
+
+  private val eventQueue = mutableListOf<() -> Unit>()
+
+  private val scope = CoroutineScope(Dispatchers.Main)
+
+  fun setDebugSessionId(id: String?) {
+    debugSessionId = id
+  }
+
+  fun hasSessionStarted(): Boolean = sessionId != null
+
+  fun reset() {
+    sessionId = null
+    hasSessionFailed = false
+    eventQueue.clear()
+  }
+
+  fun play(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent("/play", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+  }
+
+  fun pause(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/pauseStart",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun error(
+    playhead: Double?,
+    errorDetails: AdobeErrorDetails,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    maybeQueueEvent(
+      "/error",
+      mapOf(
+        "playhead" to playhead,
+        "qoeDataDetails" to qoeDataDetails,
+        "errorDetails" to errorDetails
+      )
+    )
+  }
+
+  fun ping(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    if (hasSessionStarted()) {
+      scope.launch {
+        postEvent("/ping", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+      }
+    }
+  }
+
+  fun bufferStart(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/bufferStart",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun sessionComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/sessionComplete",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun sessionEnd(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/sessionEnd",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+    sessionId = null
+  }
+
+  fun statesUpdate(
+    playhead: Double?,
+    statesStart: List<AdobePlayerStateData>? = null,
+    statesEnd: List<AdobePlayerStateData>? = null,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    maybeQueueEvent(
+      "/statesUpdate",
+      mapOf(
+        "playhead" to playhead,
+        "statesStart" to statesStart,
+        "statesEnd" to statesEnd,
+        "qoeDataDetails" to qoeDataDetails
+      )
+    )
+  }
+
+  fun bitrateChange(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails) {
+    maybeQueueEvent(
+      "/bitrateChange",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun chapterSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/chapterSkip",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun chapterStart(
+    playhead: Double?,
+    chapterDetails: AdobeChapterDetails,
+    customMetadata: List<AdobeCustomMetadataDetails>? = null,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    maybeQueueEvent(
+      "/chapterStart",
+      mapOf(
+        "playhead" to playhead,
+        "chapterDetails" to chapterDetails,
+        "customMetadata" to customMetadata,
+        "qoeDataDetails" to qoeDataDetails
+      )
+    )
+  }
+
+  fun chapterComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/chapterComplete",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun adBreakStart(
+    playhead: Double,
+    advertisingPodDetails: AdobeAdvertisingPodDetails,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    maybeQueueEvent(
+      "/adBreakStart",
+      mapOf(
+        "playhead" to playhead,
+        "advertisingPodDetails" to advertisingPodDetails,
+        "qoeDataDetails" to qoeDataDetails
+      )
+    )
+  }
+
+  fun adBreakComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/adBreakComplete",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  fun adStart(
+    playhead: Double,
+    advertisingDetails: AdobeAdvertisingDetails,
+    customMetadata: List<AdobeCustomMetadataDetails>? = null,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    maybeQueueEvent(
+      "/adStart",
+      mapOf(
+        "playhead" to playhead,
+        "advertisingDetails" to advertisingDetails,
+        "customMetadata" to customMetadata,
+        "qoeDataDetails" to qoeDataDetails
+      )
+    )
+  }
+
+  fun adSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent("/adSkip", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+  }
+
+  fun adComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
+    maybeQueueEvent(
+      "/adComplete",
+      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+    )
+  }
+
+  private fun createUrlWithClientParams(baseUrl: String): HttpUrl {
+    return baseUrl.toHttpUrl().newBuilder().apply {
+      addQueryParameter("configId", configId)
+      debugSessionId?.let { addQueryParameter("configId", it) }
+      }.build()
+  }
+
+  private suspend fun sendRequest(
+    url: String,
+    body: RequestBody
+  ): Response? = withContext(Dispatchers.IO) {
+    return@withContext try {
+      val request = Request.Builder()
+        .url(createUrlWithClientParams(url))
+        .post(body.toString().toRequestBody("application/json".toMediaType()))
+        .header("User-Agent", userAgent)
+        .build()
+
+      val response = client.newCall(request).execute()
+      if (!response.isSuccessful) {
+        throw IOException("Unexpected code $response")
+      } else
+        response
+    } catch (e: Exception) {
+      throw e
+    }
+  }
+
+  suspend fun startSession(
+    sessionDetails: AdobeSessionDetails,
+    customMetadata: List<AdobeCustomMetadataDetails>? = null,
+    qoeDataDetails: AdobeQoeDataDetails? = null
+  ) {
+    try {
+      val body = JSONObject().apply {
+        put("events", JSONArray().apply {
+          put(JSONObject().apply {
+            put("xdm", JSONObject().apply {
+              put("eventType", "media.session_start")
+              put("timestamp", Date().toISOString())
+              put("mediaCollection", JSONObject().apply {
+                put("playhead", 0)
+                put("sessionDetails", JSONObject(sessionDetails.toString()))
+                put("qoeDataDetails", JSONObject(qoeDataDetails.toString()))
+                put("customMetadata", JSONArray(customMetadata?.map { JSONObject(it.toString()) }))
+              })
+            })
+          })
+        })
+      }
+      val response = sendRequest(
+        "$baseUrl/sessionStart?configId=$configId${debugSessionId?.let { "&debugSessionID=$it" } ?: ""}",
+        body.toString().toRequestBody("application/json".toMediaType())
+      )
+
+      val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
+      val jsonResponse = JSONObject(responseBody)
+      val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
+        ?.optJSONArray("errors")
+      if (error != null) {
+        throw Exception(error.toString())
+      }
+
+      val handle = jsonResponse.optJSONObject("data")?.optJSONArray("handle")
+      sessionId = handle?.let { array ->
+        (0 until array.length()).firstNotNullOfOrNull { i ->
+          array.optJSONObject(i)?.takeIf { it.optString("type") == "media-analytics:new-session" }
+            ?.optJSONArray("payload")?.optJSONObject(0)?.optString("sessionId")
+        }
+      }
+
+      if (sessionId != null && eventQueue.isNotEmpty()) {
+        eventQueue.forEach { it() }
+        eventQueue.clear()
+      }
+    } catch (e: Exception) {
+      println("Failed to start session. ${e.message}")
+      hasSessionFailed = true
+    }
+  }
+
+  private fun maybeQueueEvent(path: String, mediaDetails: Map<String, Any?>) {
+    if (hasSessionFailed) return
+    val doPostEvent = { postEventAsync(path, mediaDetails) }
+    if (!hasSessionStarted()) {
+      eventQueue.add { doPostEvent() }
+    } else {
+      doPostEvent()
+    }
+  }
+
+  private fun postEventAsync(path: String, mediaDetails: Map<String, Any?>) {
+    scope.launch {
+      postEvent(path, mediaDetails)
+    }
+  }
+
+  private suspend fun postEvent(path: String, mediaDetails: Map<String, Any?>) {
+    if (sessionId == null) {
+      println("Invalid sessionID")
+      return
+    }
+    try {
+      val body = JSONObject().apply {
+        put("events", JSONArray().apply {
+          put(JSONObject().apply {
+            put("xdm", JSONObject().apply {
+              put("eventType", pathToEventTypeMap[path])
+              put("timestamp", Date().toISOString())
+              put("mediaCollection", JSONObject().apply {
+                mediaDetails.forEach { (key, value) ->
+                  put(key, value)
+                }
+                put("playhead", sanitisePlayhead(mediaDetails["playhead"] as? Double))
+                put("sessionID", sessionId)
+              })
+            })
+          })
+        })
+      }
+
+      val response = sendRequest(
+        "$baseUrl$path?configId=$configId${debugSessionId?.let { "&debugSessionID=$it" } ?: ""}",
+        body.toString().toRequestBody("application/json".toMediaType())
+      )
+
+      val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
+      val jsonResponse = JSONObject(responseBody)
+      val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
+        ?.optJSONArray("errors")
+      if (error != null) {
+        println("Failed to send event. $error")
+      }
+    } catch (e: Exception) {
+      println("Failed to send event: ${e.message}")
+    }
+  }
+}
+
+fun Date.toISOString(): String {
+  return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+    timeZone = TimeZone.getTimeZone("UTC")
+  }.format(this)
+}
