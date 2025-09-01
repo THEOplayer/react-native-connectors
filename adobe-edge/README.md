@@ -34,7 +34,7 @@ Create the connector by providing the `THEOplayer` instance, the Media Collectio
 Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
 
 ```tsx
-import { useAdobe } from '@theoplayer/react-native-analytics-adobe';
+import { useAdobe } from '@theoplayer/react-native-analytics-adobe-edge';
 
 const baseUrl = "https://edge.adobedc.net/ee-pre-prd/va/v1";
 const dataStreamId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
