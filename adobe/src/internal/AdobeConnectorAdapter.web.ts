@@ -94,7 +94,7 @@ export class AdobeConnectorAdapter {
   }
 
   setError(metadata: AdobeMetaData): void {
-    void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
+    void this.sendEventRequest(AdobeEventTypes.ERROR, this.sessionId, metadata);
   }
 
   async stopAndStartNewSession(metadata?: AdobeMetaData): Promise<void> {
@@ -159,23 +159,24 @@ export class AdobeConnectorAdapter {
 
   private onPlaying = () => {
     this.logDebug('onPlaying');
-    void this.sendEventRequest(AdobeEventTypes.PLAY);
+    void this.sendEventRequest(AdobeEventTypes.PLAY, this.sessionId);
   };
 
   private onPause = () => {
     this.logDebug('onPause');
-    void this.sendEventRequest(AdobeEventTypes.PAUSE_START);
+    void this.sendEventRequest(AdobeEventTypes.PAUSE_START, this.sessionId);
   };
 
   private onWaiting = () => {
     this.logDebug('onWaiting');
-    void this.sendEventRequest(AdobeEventTypes.BUFFER_START);
+    void this.sendEventRequest(AdobeEventTypes.BUFFER_START, this.sessionId);
   };
 
   private onEnded = async () => {
     this.logDebug('onEnded');
-    await this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE);
+    const sessionId = this.sessionId;
     this.reset();
+    await this.sendEventRequest(AdobeEventTypes.SESSION_COMPLETE, sessionId);
   };
 
   private onSourceChange = () => {
@@ -185,7 +186,7 @@ export class AdobeConnectorAdapter {
 
   private onMediaTrackEvent = (event: MediaTrackEvent) => {
     if (event.subType === MediaTrackEventType.ACTIVE_QUALITY_CHANGED) {
-      void this.sendEventRequest(AdobeEventTypes.BITRATE_CHANGE);
+      void this.sendEventRequest(AdobeEventTypes.BITRATE_CHANGE, this.sessionId);
     }
   };
 
@@ -197,15 +198,15 @@ export class AdobeConnectorAdapter {
         case TextTrackEventType.ENTER_CUE: {
           const chapterCue = event.cue;
           if (this.currentChapter && this.currentChapter.endTime !== chapterCue.startTime) {
-            void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP);
+            void this.sendEventRequest(AdobeEventTypes.CHAPTER_SKIP, this.sessionId);
           }
           const metadata = calculateChapterStartMetadata(chapterCue);
-          void this.sendEventRequest(AdobeEventTypes.CHAPTER_START, metadata);
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_START, this.sessionId, metadata);
           this.currentChapter = chapterCue;
           break;
         }
         case TextTrackEventType.EXIT_CUE: {
-          void this.sendEventRequest(AdobeEventTypes.CHAPTER_COMPLETE);
+          void this.sendEventRequest(AdobeEventTypes.CHAPTER_COMPLETE, this.sessionId);
           break;
         }
       }
@@ -219,7 +220,7 @@ export class AdobeConnectorAdapter {
         'media.qoe.errorSource': 'player',
       },
     };
-    void this.sendEventRequest(AdobeEventTypes.ERROR, metadata);
+    void this.sendEventRequest(AdobeEventTypes.ERROR, this.sessionId, metadata);
   };
 
   private onAdEvent = (event: AdEvent) => {
@@ -229,7 +230,7 @@ export class AdobeConnectorAdapter {
         this.startPinger(AD_PING_INTERVAL);
         const adBreak = event.ad as AdBreak;
         const metadata = calculateAdBreakBeginMetadata(adBreak, this.adBreakPodIndex);
-        void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, metadata);
+        void this.sendEventRequest(AdobeEventTypes.AD_BREAK_START, this.sessionId, metadata);
         if ((metadata.params as any)['media.ad.podIndex'] > this.adBreakPodIndex) {
           // TODO fix!
           this.adBreakPodIndex++;
@@ -240,22 +241,22 @@ export class AdobeConnectorAdapter {
         this.isPlayingAd = false;
         this.adPodPosition = 1;
         this.startPinger(CONTENT_PING_INTERVAL);
-        void this.sendEventRequest(AdobeEventTypes.AD_BREAK_COMPLETE);
+        void this.sendEventRequest(AdobeEventTypes.AD_BREAK_COMPLETE, this.sessionId);
         break;
       }
       case AdEventType.AD_BEGIN: {
         const ad = event.ad as Ad;
         const metadata = calculateAdBeginMetadata(ad, this.adPodPosition);
-        void this.sendEventRequest(AdobeEventTypes.AD_START, metadata);
+        void this.sendEventRequest(AdobeEventTypes.AD_START, this.sessionId, metadata);
         this.adPodPosition++;
         break;
       }
       case AdEventType.AD_END: {
-        void this.sendEventRequest(AdobeEventTypes.AD_COMPLETE);
+        void this.sendEventRequest(AdobeEventTypes.AD_COMPLETE, this.sessionId);
         break;
       }
       case AdEventType.AD_SKIP: {
-        void this.sendEventRequest(AdobeEventTypes.AD_SKIP);
+        void this.sendEventRequest(AdobeEventTypes.AD_SKIP, this.sessionId);
         break;
       }
     }
@@ -267,12 +268,11 @@ export class AdobeConnectorAdapter {
 
   private async maybeEndSession(): Promise<void> {
     this.logDebug(`maybeEndSession - sessionId: '${this.sessionId}'`);
-    this.sessionInProgress = false;
-    this.isPlayingAd = false;
     if (this.sessionId !== '') {
-      await this.sendEventRequest(AdobeEventTypes.SESSION_END);
+      const sessionId = this.sessionId;
+      this.reset();
+      await this.sendEventRequest(AdobeEventTypes.SESSION_END, sessionId);
     }
-    this.reset();
     return Promise.resolve();
   }
 
@@ -393,15 +393,15 @@ export class AdobeConnectorAdapter {
     return body;
   }
 
-  private async sendEventRequest(eventType: AdobeEventTypes, metadata?: AdobeEventRequestBody): Promise<void> {
+  private async sendEventRequest(eventType: AdobeEventTypes, sessionId: string, metadata?: AdobeEventRequestBody): Promise<void> {
     const initialBody: AdobeEventRequestBody = { ...this.createBaseRequest(eventType), ...metadata };
     const body = this.addCustomMetadata(eventType, initialBody);
-    if (this.sessionId === '') {
+    if (sessionId === '') {
       // Session hasn't started yet but no session id --> add to queue
       this.eventQueue.push(body);
       return;
     }
-    const url = `${this.uri}/${this.sessionId}/events`;
+    const url = `${this.uri}/${sessionId}/events`;
     const response = await this.sendRequest(url, body);
 
     if (response?.status === 404 || response?.status === 410) {
@@ -421,7 +421,7 @@ export class AdobeConnectorAdapter {
       clearInterval(this.pingInterval);
     }
     this.pingInterval = setInterval(() => {
-      void this.sendEventRequest(AdobeEventTypes.PING);
+      void this.sendEventRequest(AdobeEventTypes.PING, this.sessionId);
     }, interval);
   }
 
