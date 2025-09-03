@@ -371,11 +371,11 @@ class AdobeConnector(
   }
 
   private fun createBaseRequest(eventType: AdobeEventTypes): AdobeEventRequestBody {
-    return AdobeEventRequestBody(
-      playerTime = mutableMapOf("playhead" to getCurrentTime(), "ts" to System.currentTimeMillis()),
-      eventType = eventType.value,
-      qoeData = mutableMapOf(),
-    )
+    return AdobeEventRequestBody().apply {
+      this.playerTime = mutableMapOf("playhead" to getCurrentTime(), "ts" to System.currentTimeMillis())
+      this.eventType = eventType.value
+      this.qoeData = mutableMapOf()
+    }
   }
 
   private fun getCurrentTime(): Int {
