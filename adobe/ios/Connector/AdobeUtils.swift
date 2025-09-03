@@ -36,7 +36,7 @@ class AdobeUtils {
                 for (key, value) in responseHeaders {
                     if let headerKey = key as? String,
                        let headerValue = value as? String {
-                        allHeaders[headerKey] = headerValue
+                        allHeaders[headerKey.lowercased()] = headerValue
                     }
                 }
                 completion?(data, statusCode, allHeaders, error)
