@@ -33,5 +33,5 @@ data class AdobeAdvertisingDetails(
   // ID of the ad site.
   val siteID: String? = null,
   // The total amount of time, in seconds, spent watching the ad (i.e., the number of seconds played).
-  val timePlayed: Double? = null
+  val timePlayed: Int? = null
 )
