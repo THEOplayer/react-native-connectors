@@ -13,5 +13,5 @@ data class AdobePlayerStateData(
   // The number of times that player state was set on the stream.
   val count: Int? = null,
   // The total duration of that player state.
-  val time: Double? = null
+  val time: Int? = null
 )

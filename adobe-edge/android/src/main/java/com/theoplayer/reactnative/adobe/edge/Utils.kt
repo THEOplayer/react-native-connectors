@@ -8,8 +8,8 @@ import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingPodDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeChapterDetails
 
-fun sanitiseContentLength(mediaLength: Double?): Double {
-  return if (mediaLength == Double.POSITIVE_INFINITY) { 86400.0 } else mediaLength ?: 0.0
+fun sanitiseContentLength(mediaLength: Double?): Int {
+  return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
 }
 
 fun calculateAdvertisingPodDetails(adBreak: AdBreak?, lastPodIndex: Int): AdobeAdvertisingPodDetails {
@@ -40,8 +40,8 @@ fun calculateChapterDetails(cue: TextTrackCue): AdobeChapterDetails {
     0
   }
   return AdobeChapterDetails(
-    length = cue.endTime - cue.startTime,
-    offset = cue.endTime,
+    length = (cue.endTime - cue.startTime).toInt(),
+    offset = cue.endTime.toInt(),
     index = index
   )
 }

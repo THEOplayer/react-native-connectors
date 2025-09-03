@@ -23,7 +23,7 @@ data class AdobeSessionDetails(
   // Name of the media author.
   val author: String? = null,
   // Describes the average content time spent for a specific media item.
-  val averageMinuteAudience: Double? = null,
+  val averageMinuteAudience: Int? = null,
   // Distribution channel from where the content was played.
   val channel: String,
   // The number of chapters started during the playback.
@@ -77,7 +77,7 @@ data class AdobeSessionDetails(
   // Name of the record label.
   val label: String? = null,
   // Clip Length/Runtime - This is the maximum length (or duration) of the content being consumed (in seconds).
-  val length: Double,
+  val length: Int,
   // MVPD provided via Adobe authentication.
   val mvpd: String? = null,
   // Content ID of the content, which can be used to tie back to other industry / CMS IDs.
@@ -89,7 +89,7 @@ data class AdobeSessionDetails(
   // The number of pause periods that occurred during playback.
   val pauseCount: Int? = null,
   // Describes the duration in seconds in which playback was paused by the user.
-  val pauseTime: Double? = null,
+  val pauseTime: Int? = null,
   // Name of the content player.
   val playerName: String,
   // Name of the audio content publisher.
@@ -99,7 +99,7 @@ data class AdobeSessionDetails(
   // The season number the show belongs to.
   val season: String? = null,
   // Indicates the amount of time, in seconds, that passed between the user's last known interaction and the moment the session was closed.
-  val secondsSinceLastCall: Double? = null,
+  val secondsSinceLastCall: Int? = null,
   // The interval that describes the part of the content that has been viewed in minutes.
   val segment: String? = null,
   // Program/Series Name.
@@ -113,11 +113,11 @@ data class AdobeSessionDetails(
   // The type of the media stream.
   val streamType: StreamType? = null,
   // Sums the event duration (in seconds) for all events of type PLAY on the main content.
-  val timePlayed: Double? = null,
+  val timePlayed: Int? = null,
   // Describes the total amount of time spent by a user on a specific timed media asset, which includes time spent watching ads.
-  val totalTimePlayed: Double? = null,
+  val totalTimePlayed: Int? = null,
   // Describes the sum of the unique intervals seen by a user on a timed media asset.
-  val uniqueTimePlayed: Double? = null
+  val uniqueTimePlayed: Int? = null
 )
 
 /**

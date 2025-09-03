@@ -2,11 +2,8 @@
 
 package com.theoplayer.reactnative.adobe.edge
 
-import android.util.Log
 import com.theoplayer.android.api.ads.Ad
 import com.theoplayer.android.api.ads.AdBreak
-import com.theoplayer.android.api.ads.ima.GoogleImaAdEvent
-import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -64,7 +61,7 @@ class AdobeConnector(
   baseUrl: String,
   configId: String,
   userAgent: String?,
-  private var debug: Boolean? = false,
+  debug: Boolean? = false,
   debugSessionId: String? = null
 ) {
   private var pingJob: Job? = null
@@ -119,24 +116,15 @@ class AdobeConnector(
     EventListener { event -> handleAdBegin(event.ad) }
   private val onAdEnd: EventListener<AdEndEvent> = EventListener { event -> handleAdEnd(event.ad) }
   private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
-  private val onImaAdBreakBegin: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBreakBegin(event.ad?.adBreak) }
-  private val onImaAdBreakEnd: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBreakEnd() }
-  private val onImaAdStarted: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBegin(event.ad) }
-  private val onImaAdCompleted: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdEnd(event.ad) }
-  private val onImaAdSkip: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { handleAdSkip() }
 
   init {
+    setDebug(debug ?: false)
     addEventListeners()
-    logDebug("Initialized connector")
+    Logger.debug("Initialized connector")
   }
 
   fun setDebug(debug: Boolean) {
-    this.debug = debug
+    Logger.debug = debug
   }
 
   fun setDebugSessionId(id: String?) {
@@ -178,11 +166,6 @@ class AdobeConnector(
     player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.addEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      addEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      addEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      addEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      addEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      addEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       addEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       addEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -203,11 +186,6 @@ class AdobeConnector(
     player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.removeEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      removeEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      removeEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      removeEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       removeEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       removeEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -217,7 +195,7 @@ class AdobeConnector(
   }
 
   private fun handleLoadedMetadata() {
-    logDebug("onLoadedMetadata")
+    Logger.debug("onLoadedMetadata")
     scope.launch {
       // NOTE: In case of a pre-roll ad:
       // - on Android & iOS, the onLoadedMetadata is sent *after* a pre-roll has finished;
@@ -228,35 +206,35 @@ class AdobeConnector(
   }
 
   private fun handlePlaying() {
-    logDebug("onPlaying")
+    Logger.debug("onPlaying")
     mediaApi.play(player.currentTime)
   }
 
   private fun handlePause() {
-    logDebug("onPause")
+    Logger.debug("onPause")
     mediaApi.pause(player.currentTime)
   }
 
   private fun handleWaiting() {
-    logDebug("onWaiting")
+    Logger.debug("onWaiting")
     mediaApi.bufferStart(player.currentTime)
   }
 
   private fun handleEnded() {
-    logDebug("onEnded")
+    Logger.debug("onEnded")
     mediaApi.sessionComplete(player.currentTime)
     reset()
   }
 
   private fun handleSourceChange() {
-    logDebug("onSourceChange")
+    Logger.debug("onSourceChange")
     maybeEndSession()
   }
 
   private fun handleQualityChanged(event: ActiveQualityChangedEvent) {
     mediaApi.bitrateChange(
       player.currentTime, AdobeQoeDataDetails(
-        bitrate = event.quality?.bandwidth?.toDouble() ?: 0.0,
+        bitrate = event.quality?.bandwidth?.toInt() ?: 0,
       )
     )
   }
@@ -290,6 +268,7 @@ class AdobeConnector(
   }
 
   private fun handleEnterCue(event: EnterCueEvent) {
+    Logger.debug("handleEnterCue")
     val chapterCue = event.cue
     if (currentChapter != null && currentChapter?.endTime != chapterCue.startTime) {
       mediaApi.chapterSkip(this.player.currentTime)
@@ -300,10 +279,12 @@ class AdobeConnector(
   }
 
   private fun handleExitCue(event: ExitCueEvent) {
+    Logger.debug("handleExitCue")
     mediaApi.chapterComplete(player.currentTime)
   }
 
   private fun handleError(event: ErrorEvent) {
+    Logger.debug("handleError")
     mediaApi.error(
       player.currentTime, AdobeErrorDetails(
         name = event.errorObject.code.toString(),
@@ -313,6 +294,7 @@ class AdobeConnector(
   }
 
   private fun handleAdBreakBegin(adBreak: AdBreak?) {
+    Logger.debug("handleAdBreakBegin")
     isPlayingAd = true
     startPinger(AD_PING_INTERVAL)
     val podDetails = calculateAdvertisingPodDetails(adBreak, adBreakPodIndex)
@@ -323,6 +305,7 @@ class AdobeConnector(
   }
 
   private fun handleAdBreakEnd() {
+    Logger.debug("handleAdBreakEnd")
     isPlayingAd = false
     adPodPosition = 1
     startPinger(CONTENT_PING_INTERVAL)
@@ -330,20 +313,27 @@ class AdobeConnector(
   }
 
   private fun handleAdBegin(ad: Ad?) {
-    mediaApi.adStart(player.currentTime, calculateAdvertisingDetails(ad, adPodPosition), customMetadata)
+    Logger.debug("handleAdBegin")
+    mediaApi.adStart(
+      player.currentTime,
+      calculateAdvertisingDetails(ad, adPodPosition),
+      customMetadata
+    )
     adPodPosition++
   }
 
   private fun handleAdEnd(ad: Ad?) {
+    Logger.debug("handleAdEnd")
     mediaApi.adComplete(player.currentTime)
   }
 
   private fun handleAdSkip() {
+    Logger.debug("handleAdSkip")
     mediaApi.adSkip(player.currentTime)
   }
 
   private fun maybeEndSession() {
-    logDebug("maybeEndSession")
+    Logger.debug("maybeEndSession")
     if (mediaApi.hasSessionStarted()) {
       mediaApi.sessionEnd(player.currentTime)
     }
@@ -357,42 +347,46 @@ class AdobeConnector(
    * - no ad is playing, otherwise the ad's media duration will be picked up;
    * - the player's content media duration is known.
    *
-   * @param mediaLength
+   * @param mediaLengthSec
    * @private
    */
-  private suspend fun maybeStartSession(mediaLength: Double? = null) {
-    val mediaLength = getContentLength(mediaLength)
+  private suspend fun maybeStartSession(mediaLengthSec: Double? = null) {
+    val mediaLength = getContentLength(mediaLengthSec)
     val hasValidSource = player.source !== null
-    val hasValidDuration = isValidDuration(mediaLength)
+    val hasValidDuration = isValidDuration(mediaLengthSec)
 
-    logDebug(
-      "maybeStartSession -" +
-        "mediaLength: $mediaLength," +
-        "hasValidSource: $hasValidSource," +
-        "hasValidDuration: $hasValidDuration" +
+    Logger.debug(
+      "maybeStartSession - " +
+        "mediaLength: $mediaLength, " +
+        "hasValidSource: $hasValidSource, " +
+        "hasValidDuration: $hasValidDuration, " +
         "isPlayingAd: ${player.ads.isPlaying}"
     )
 
     if (sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
-      logDebug("maybeStartSession - NOT started")
+      Logger.debug("maybeStartSession - NOT started")
       return
     }
 
-    mediaApi.startSession(AdobeSessionDetails(
-      ID = "N/A",
-      name = player.source?.metadata?.get("title") ?: "N/A",
-      channel = "N/A",
-      contentType = getContentType(),
-      playerName = "THEOplayer",
-      length = mediaLength
-    ), this.customMetadata)
+    mediaApi.startSession(
+      AdobeSessionDetails(
+        ID = "N/A",
+        name = player.source?.metadata?.get("title") ?: "N/A",
+        channel = "N/A",
+        contentType = getContentType(),
+        playerName = "THEOplayer",
+        length = mediaLength
+      ), this.customMetadata
+    )
+
     if (!mediaApi.hasSessionStarted()) {
+      Logger.debug("maybeStartSession - session was not started")
       return
     }
 
     sessionInProgress = true
 
-    logDebug("maybeStartSession - STARTED sessionId: ${mediaApi.sessionId}")
+    Logger.debug("maybeStartSession - STARTED sessionId: ${mediaApi.sessionId}")
 
     if (!isPlayingAd) {
       startPinger(CONTENT_PING_INTERVAL)
@@ -411,7 +405,7 @@ class AdobeConnector(
     }
   }
 
-  private fun getContentLength(mediaLengthSec: Double?): Double {
+  private fun getContentLength(mediaLengthSec: Double?): Int {
     return sanitiseContentLength(mediaLengthSec)
   }
 
@@ -420,7 +414,7 @@ class AdobeConnector(
   }
 
   fun reset() {
-    logDebug("reset")
+    Logger.debug("reset")
     mediaApi.reset()
     adBreakPodIndex = 0
     adPodPosition = 1
@@ -431,15 +425,10 @@ class AdobeConnector(
   }
 
   fun destroy() {
+    Logger.debug("destroy")
     scope.launch {
       maybeEndSession()
       removeEventListeners()
-    }
-  }
-
-  private fun logDebug(message: String) {
-    if (debug ?: false) {
-      Log.d(TAG, message)
     }
   }
 }
