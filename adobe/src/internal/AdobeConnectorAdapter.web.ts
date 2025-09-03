@@ -267,6 +267,8 @@ export class AdobeConnectorAdapter {
 
   private async maybeEndSession(): Promise<void> {
     this.logDebug(`maybeEndSession - sessionId: '${this.sessionId}'`);
+    this.sessionInProgress = false;
+    this.isPlayingAd = false;
     if (this.sessionId !== '') {
       await this.sendEventRequest(AdobeEventTypes.SESSION_END);
     }
