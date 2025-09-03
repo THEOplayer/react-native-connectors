@@ -14,14 +14,14 @@ fun buildUserAgent(): String {
   return "Mozilla/5.0 (Linux; U; Android ${Build.VERSION.RELEASE}; $locale; ${Build.MODEL} Build/${Build.ID})"
 }
 
-fun sanitisePlayhead(playhead: Double?): Double {
+fun sanitisePlayhead(playhead: Double?): Int {
   if (playhead == null) {
-    return 0.0
+    return 0
   }
   if (playhead == Double.POSITIVE_INFINITY) {
     // If content is live, the playhead must be the current second of the day.
     val now = System.currentTimeMillis()
-    return ((now / 1000) % 86400).toDouble()
+    return ((now / 1000) % 86400).toInt()
   }
-  return playhead
+  return playhead.toInt()
 }

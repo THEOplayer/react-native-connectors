@@ -8,7 +8,7 @@ package com.theoplayer.reactnative.adobe.edge.api
 data class AdobeMediaDetails(
   // If the content is live, the playhead must be the current second of the day, 0 <= playhead < 86400.
   // If the content is recorded, the playhead must be the current second of content, 0 <= playhead < content length.
-  val playhead: Double? = null,
+  val playhead: Int? = null,
   // Identifies an instance of a content stream unique to an individual playback.
   val sessionID: String? = null,
   // Session details information related to the experience event.

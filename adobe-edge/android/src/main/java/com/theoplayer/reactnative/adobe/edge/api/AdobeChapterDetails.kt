@@ -17,9 +17,9 @@ data class AdobeChapterDetails(
   // Chapter is started.
   val isStarted: Boolean? = null,
   // The length of the chapter, in seconds.
-  val length: Double,
+  val length: Int,
   // The offset of the chapter inside the content (in seconds) from the start.
-  val offset: Double,
+  val offset: Int,
   // The time spent on the chapter, in seconds.
-  val timePlayed: Double? = null
+  val timePlayed: Int? = null
 )

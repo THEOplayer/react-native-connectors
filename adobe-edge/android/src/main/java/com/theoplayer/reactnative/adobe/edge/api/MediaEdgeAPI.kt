@@ -1,5 +1,6 @@
 package com.theoplayer.reactnative.adobe.edge.api
 
+import com.theoplayer.reactnative.adobe.edge.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -12,13 +13,15 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import org.json.JSONObject
 
 class MediaEdgeAPI(
   private val baseUrl: String,
@@ -27,6 +30,7 @@ class MediaEdgeAPI(
   private var debugSessionId: String? = null
 ) {
   private val client = OkHttpClient()
+  private val gson = Gson()
   var sessionId: String? = null
     private set
 
@@ -50,13 +54,13 @@ class MediaEdgeAPI(
   }
 
   fun play(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent("/play", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+    maybeQueueEvent("/play", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
   }
 
   fun pause(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/pauseStart",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
@@ -68,7 +72,7 @@ class MediaEdgeAPI(
     maybeQueueEvent(
       "/error",
       mapOf(
-        "playhead" to playhead,
+        "playhead" to sanitisePlayhead(playhead),
         "qoeDataDetails" to qoeDataDetails,
         "errorDetails" to errorDetails
       )
@@ -78,7 +82,7 @@ class MediaEdgeAPI(
   fun ping(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     if (hasSessionStarted()) {
       scope.launch {
-        postEvent("/ping", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+        postEvent("/ping", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
       }
     }
   }
@@ -86,21 +90,21 @@ class MediaEdgeAPI(
   fun bufferStart(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/bufferStart",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
   fun sessionComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/sessionComplete",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
   fun sessionEnd(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/sessionEnd",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
     sessionId = null
   }
@@ -114,7 +118,7 @@ class MediaEdgeAPI(
     maybeQueueEvent(
       "/statesUpdate",
       mapOf(
-        "playhead" to playhead,
+        "playhead" to sanitisePlayhead(playhead),
         "statesStart" to statesStart,
         "statesEnd" to statesEnd,
         "qoeDataDetails" to qoeDataDetails
@@ -125,14 +129,14 @@ class MediaEdgeAPI(
   fun bitrateChange(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails) {
     maybeQueueEvent(
       "/bitrateChange",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
   fun chapterSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/chapterSkip",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
@@ -145,7 +149,7 @@ class MediaEdgeAPI(
     maybeQueueEvent(
       "/chapterStart",
       mapOf(
-        "playhead" to playhead,
+        "playhead" to sanitisePlayhead(playhead),
         "chapterDetails" to chapterDetails,
         "customMetadata" to customMetadata,
         "qoeDataDetails" to qoeDataDetails
@@ -156,7 +160,7 @@ class MediaEdgeAPI(
   fun chapterComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/chapterComplete",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
@@ -168,7 +172,7 @@ class MediaEdgeAPI(
     maybeQueueEvent(
       "/adBreakStart",
       mapOf(
-        "playhead" to playhead,
+        "playhead" to sanitisePlayhead(playhead),
         "advertisingPodDetails" to advertisingPodDetails,
         "qoeDataDetails" to qoeDataDetails
       )
@@ -178,7 +182,7 @@ class MediaEdgeAPI(
   fun adBreakComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/adBreakComplete",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
@@ -191,7 +195,7 @@ class MediaEdgeAPI(
     maybeQueueEvent(
       "/adStart",
       mapOf(
-        "playhead" to playhead,
+        "playhead" to sanitisePlayhead(playhead),
         "advertisingDetails" to advertisingDetails,
         "customMetadata" to customMetadata,
         "qoeDataDetails" to qoeDataDetails
@@ -200,21 +204,21 @@ class MediaEdgeAPI(
   }
 
   fun adSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent("/adSkip", mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails))
+    maybeQueueEvent("/adSkip", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
   }
 
   fun adComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
     maybeQueueEvent(
       "/adComplete",
-      mapOf("playhead" to playhead, "qoeDataDetails" to qoeDataDetails)
+      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
     )
   }
 
   private fun createUrlWithClientParams(baseUrl: String): HttpUrl {
     return baseUrl.toHttpUrl().newBuilder().apply {
       addQueryParameter("configId", configId)
-      debugSessionId?.let { addQueryParameter("configId", it) }
-      }.build()
+      debugSessionId?.let { addQueryParameter("debugSessionId", it) }
+    }.build()
   }
 
   private suspend fun sendRequest(
@@ -244,24 +248,33 @@ class MediaEdgeAPI(
     qoeDataDetails: AdobeQoeDataDetails? = null
   ) {
     try {
-      val body = JSONObject().apply {
-        put("events", JSONArray().apply {
-          put(JSONObject().apply {
-            put("xdm", JSONObject().apply {
-              put("eventType", "media.session_start")
-              put("timestamp", Date().toISOString())
-              put("mediaCollection", JSONObject().apply {
-                put("playhead", 0)
-                put("sessionDetails", JSONObject(sessionDetails.toString()))
-                put("qoeDataDetails", JSONObject(qoeDataDetails.toString()))
-                put("customMetadata", JSONArray(customMetadata?.map { JSONObject(it.toString()) }))
+      val body = JsonObject().apply {
+        add("events", JsonArray().apply {
+          add(JsonObject().apply {
+            add("xdm", JsonObject().apply {
+              addProperty("eventType", EventType.SESSION_START.value)
+              addProperty("timestamp", Date().toISOString())
+              add("mediaCollection", JsonObject().apply {
+                addProperty("playhead", 0)
+                add("sessionDetails", gson.toJsonTree(sessionDetails))
+                qoeDataDetails?.let {
+                  add("qoeDataDetails", gson.toJsonTree(qoeDataDetails))
+                }
+                customMetadata?.let {
+                  add("customMetadata", JsonArray().apply {
+                    it.forEach { metadata ->
+                      add(gson.toJsonTree(metadata))
+                    }
+                  })
+                }
               })
             })
           })
         })
       }
+
       val response = sendRequest(
-        "$baseUrl/sessionStart?configId=$configId${debugSessionId?.let { "&debugSessionID=$it" } ?: ""}",
+        "$baseUrl/sessionStart",
         body.toString().toRequestBody("application/json".toMediaType())
       )
 
@@ -286,7 +299,7 @@ class MediaEdgeAPI(
         eventQueue.clear()
       }
     } catch (e: Exception) {
-      println("Failed to start session. ${e.message}")
+      Logger.error("Failed to start session. ${e.message}")
       hasSessionFailed = true
     }
   }
@@ -309,31 +322,30 @@ class MediaEdgeAPI(
 
   private suspend fun postEvent(path: String, mediaDetails: Map<String, Any?>) {
     if (sessionId == null) {
-      println("Invalid sessionID")
+      Logger.error("Invalid sessionID")
       return
     }
     try {
-      val body = JSONObject().apply {
-        put("events", JSONArray().apply {
-          put(JSONObject().apply {
-            put("xdm", JSONObject().apply {
-              put("eventType", pathToEventTypeMap[path])
-              put("timestamp", Date().toISOString())
-              put("mediaCollection", JSONObject().apply {
-                mediaDetails.forEach { (key, value) ->
-                  put(key, value)
-                }
-                put("playhead", sanitisePlayhead(mediaDetails["playhead"] as? Double))
-                put("sessionID", sessionId)
+      val body = JsonObject().apply {
+        add("events", JsonArray().apply {
+          add(JsonObject().apply {
+            add("xdm", JsonObject().apply {
+              addProperty("eventType", pathToEventTypeMap[path]?.value)
+              addProperty("timestamp", Date().toISOString())
+              add("mediaCollection", JsonObject().apply {
+                add(gson.toJsonTree(mediaDetails))
+                addProperty("sessionID", sessionId)
               })
             })
           })
         })
-      }
+      }.toString()
+
+      Logger.debug("postEvent - $path $body")
 
       val response = sendRequest(
-        "$baseUrl$path?configId=$configId${debugSessionId?.let { "&debugSessionID=$it" } ?: ""}",
-        body.toString().toRequestBody("application/json".toMediaType())
+        "$baseUrl$path",
+        body.toRequestBody("application/json".toMediaType())
       )
 
       val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
@@ -341,10 +353,10 @@ class MediaEdgeAPI(
       val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
         ?.optJSONArray("errors")
       if (error != null) {
-        println("Failed to send event. $error")
+        Logger.error("Failed to send event. $error")
       }
     } catch (e: Exception) {
-      println("Failed to send event: ${e.message}")
+      Logger.error("Failed to send event. ${e.message}")
     }
   }
 }
