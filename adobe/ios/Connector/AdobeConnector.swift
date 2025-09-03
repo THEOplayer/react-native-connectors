@@ -185,8 +185,11 @@ class AdobeConnector {
     }
     
     func onPause(event: PauseEvent) -> Void {
-        self.log("onPause triggered.")
-        self.sendEvent(eventType: AdobeEventTypes.PAUSE_START)
+        if let player = self.player,
+           player.ended == false { // don't process events after ended event.
+            self.log("onPause triggered")
+            self.sendEvent(eventType: AdobeEventTypes.PAUSE_START, sessionId: self.sessionId)
+        }
     }
     
     func onWaiting(event: WaitingEvent) -> Void {
