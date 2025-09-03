@@ -42,7 +42,7 @@ const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-age
 const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, debugSessionID);
+  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, true, debugSessionID);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
