@@ -5,9 +5,6 @@ import org.json.JSONObject
 data class AdobeEventRequestBody(
   var playerTime: MutableMap<String, Any>? = null,
   var eventType: String? = null,
-  override var params: MutableMap<String, Any>? = null,
-  override var qoeData: MutableMap<String, Any>? = null,
-  override var customMetadata: MutableMap<String, Any>? = null,
 ) : AdobeMetaData()
 
 fun AdobeEventRequestBody.toJSONObject(): JSONObject {

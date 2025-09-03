@@ -3,10 +3,9 @@
 package com.theoplayer.reactnative.adobe
 
 import android.util.Log
+import com.google.gson.Gson
 import com.theoplayer.android.api.ads.Ad
 import com.theoplayer.android.api.ads.AdBreak
-import com.theoplayer.android.api.ads.ima.GoogleImaAdEvent
-import com.theoplayer.android.api.ads.ima.GoogleImaAdEventType
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -58,6 +57,7 @@ private const val TAG = "AdobeConnector"
 private const val CONTENT_PING_INTERVAL = 10000L
 private const val AD_PING_INTERVAL = 1000L
 private val JSON_MEDIA_TYPE = "application/json".toMediaType()
+private const val NA = "N/A"
 
 enum class ContentType(val value: String) {
   VOD("VOD"),
@@ -117,6 +117,8 @@ class AdobeConnector(
 
   private val client = OkHttpClient()
 
+  private val gson = Gson()
+
   private val onPlaying: EventListener<PlayingEvent> = EventListener { handlePlaying() }
   private val onPause: EventListener<PauseEvent> = EventListener { handlePause() }
   private val onEnded: EventListener<EndedEvent> = EventListener { handleEnded() }
@@ -146,16 +148,6 @@ class AdobeConnector(
     EventListener { event -> handleAdBegin(event.ad) }
   private val onAdEnd: EventListener<AdEndEvent> = EventListener { event -> handleAdEnd(event.ad) }
   private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
-  private val onImaAdBreakBegin: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBreakBegin(event.ad?.adBreak) }
-  private val onImaAdBreakEnd: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBreakEnd() }
-  private val onImaAdStarted: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdBegin(event.ad) }
-  private val onImaAdCompleted: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { event -> handleAdEnd(event.ad) }
-  private val onImaAdSkip: EventListener<GoogleImaAdEvent> =
-    EventListener<GoogleImaAdEvent> { handleAdSkip() }
 
   init {
     this.customMetadata = metadata ?: AdobeMetaData()
@@ -205,11 +197,6 @@ class AdobeConnector(
     player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.addEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      addEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      addEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      addEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      addEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      addEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       addEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       addEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -230,11 +217,6 @@ class AdobeConnector(
     player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.removeEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      removeEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      removeEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      removeEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       removeEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       removeEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -382,6 +364,8 @@ class AdobeConnector(
 
   private suspend fun maybeEndSession() {
     logDebug("maybeEndSession - sessionId: '$sessionId'")
+    sessionInProgress = false
+    isPlayingAd = false
     if (sessionId.isNotEmpty()) {
       sendEventRequest(AdobeEventTypes.SESSION_END)
     }
@@ -389,11 +373,11 @@ class AdobeConnector(
   }
 
   private fun createBaseRequest(eventType: AdobeEventTypes): AdobeEventRequestBody {
-    return AdobeEventRequestBody(
-      playerTime = mutableMapOf("playhead" to getCurrentTime(), "ts" to System.currentTimeMillis()),
-      eventType = eventType.value,
-      qoeData = mutableMapOf(),
-    )
+    return AdobeEventRequestBody().apply {
+      this.playerTime = mutableMapOf("playhead" to getCurrentTime(), "ts" to System.currentTimeMillis())
+      this.eventType = eventType.value
+      this.qoeData = mutableMapOf()
+    }
   }
 
   private fun getCurrentTime(): Int {
@@ -435,9 +419,9 @@ class AdobeConnector(
     initialBody.params = mutableMapOf(
       "analytics.reportSuite" to sid,
       "analytics.trackingServer" to trackingUrl,
-      "media.channel" to "N/A",
+      "media.channel" to NA,
       "media.contentType" to getContentType().value,
-      "media.id" to "N/A",
+      "media.id" to NA,
       "media.length" to mediaLength,
       "media.playerName" to "THEOplayer",
       "visitor.marketingCloudOrgId" to this.ecid,
@@ -554,7 +538,7 @@ class AdobeConnector(
     body: AdobeEventRequestBody
   ): Response? = withContext(Dispatchers.IO) {
     val response = try {
-      val requestBodyStr = body.toJSONObject().toString()
+      val requestBodyStr = gson.toJson(body)
       logDebug("sendRequest $url - $requestBodyStr")
       val request = Request.Builder()
         .url(url)
