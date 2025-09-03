@@ -364,6 +364,8 @@ class AdobeConnector(
 
   private suspend fun maybeEndSession() {
     logDebug("maybeEndSession - sessionId: '$sessionId'")
+    sessionInProgress = false
+    isPlayingAd = false
     if (sessionId.isNotEmpty()) {
       sendEventRequest(AdobeEventTypes.SESSION_END)
     }
