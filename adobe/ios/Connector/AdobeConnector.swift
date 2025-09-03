@@ -52,6 +52,10 @@ class AdobeConnector {
     private var adBeginListener: EventListener?
     private var adEndListener: EventListener?
     
+    // MARK: MediaTrack listeners
+    private var videoQualityChangeListeners: [Int:EventListener] = [:]
+    private var audioQualityChangeListeners: [Int:EventListener] = [:]
+    
     init(player: THEOplayer, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: AdobeMetadata?, userAgent: String?, debug: Bool) {
         self.player = player
         self.uri = "https://\(uri)/api/v1/sessions"
@@ -119,6 +123,15 @@ class AdobeConnector {
         self.loadedMetadataListener = player.addEventListener(type: PlayerEventTypes.LOADED_META_DATA, listener: self.onLoadedMetadata(event:))
         self.errorListener = player.addEventListener(type: PlayerEventTypes.ERROR, listener: self.onError(event:))
         
+        // Bitrate
+        _ = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.ADD_TRACK) { [weak self] event in
+            guard let welf = self else { return }
+            if let videoTrack = event.track as? VideoTrack {
+                // start listening for qualityChange events on this track
+                welf.videoQualityChangeListeners[videoTrack.uid] = videoTrack.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: welf.onActiveQualityChange(event:))
+            }
+        }
+        
         // Ad events
         self.adBreakBeginListener = player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_BEGIN, listener: self.onAdBreakBegin(event:))
         self.adBreakEndListener = player.ads.addEventListener(type: AdsEventTypes.AD_BREAK_END, listener: self.onAdBreakEnd(event:))
@@ -154,6 +167,17 @@ class AdobeConnector {
         }
         if let errorListener = self.errorListener {
             player.removeEventListener(type: PlayerEventTypes.ERROR, listener: errorListener)
+        }
+        
+        // Bitrate
+        let videoTrackCount = player.videoTracks.count
+        if videoTrackCount > 0 {
+            for i in 0..<videoTrackCount {
+                let videoTrack = player.videoTracks[i]
+                if let videoQualityChangeListener = self.videoQualityChangeListeners.removeValue(forKey: videoTrack.uid) {
+                    videoTrack.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: videoQualityChangeListener)
+                }
+            }
         }
         
         // Ad events
@@ -209,12 +233,12 @@ class AdobeConnector {
         self.maybeEndSession()
     }
     
-    /*func onMediaTrackEvent() -> Void {
-        self.log("onMediaTrackEvent triggered.")
-        // todo
+    func onActiveQualityChange(event: ActiveQualityChangedEvent) -> Void {
+        self.log("onActiveQualityChange triggered.")
+        self.sendEvent(eventType: AdobeEventTypes.BITRATE_CHANGE, sessionId: self.sessionId)
     }
      
-     func onTextTrackEvent() -> Void {
+     /*func onTextTrackEvent() -> Void {
          self.log("onTextTrackEvent triggered.")
          // todo
      }
