@@ -205,11 +205,6 @@ class AdobeConnector(
     player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.addEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      addEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      addEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      addEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      addEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      addEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       addEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       addEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
@@ -230,11 +225,6 @@ class AdobeConnector(
     player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.removeEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_STARTED, onImaAdBreakBegin)
-      removeEventListener(GoogleImaAdEventType.AD_BREAK_ENDED, onImaAdBreakEnd)
-      removeEventListener(GoogleImaAdEventType.STARTED, onImaAdStarted)
-      removeEventListener(GoogleImaAdEventType.COMPLETED, onImaAdCompleted)
-      removeEventListener(GoogleImaAdEventType.SKIPPED, onImaAdSkip)
       removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
       removeEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
       removeEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
