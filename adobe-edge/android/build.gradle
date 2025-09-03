@@ -69,6 +69,7 @@ repositories {
 // The Adobe connector requires at least THEOplayer SDK v9.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.0.0, 10.0.0)')
 def kotlin_version = safeExtGet("THEOplayerAdobeEdge_kotlinVersion", "1.9.10")
+def gsonVersion = safeExtGet('gsonVersion', '2.13.1')
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -77,6 +78,7 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
+  implementation("com.google.code.gson:gson:$gsonVersion")
 
   // THEOplayer dependencies
   compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
