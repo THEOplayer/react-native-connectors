@@ -43,8 +43,8 @@ fun calculateChapterStartMetadata(cue: TextTrackCue): AdobeMetaData {
   }
   return AdobeMetaData(
     params = mutableMapOf(
-      "media.chapter.length" to 1e-3 * (cue.endTime - cue.startTime),
-      "media.chapter.offset" to 1e-3 * (cue.endTime - cue.startTime),
+      "media.chapter.length" to (cue.endTime - cue.startTime).toInt(),
+      "media.chapter.offset" to cue.startTime.toInt(),
       "media.chapter.index" to index
     )
   )

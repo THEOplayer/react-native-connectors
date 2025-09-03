@@ -31,6 +31,7 @@ import com.theoplayer.android.api.event.track.texttrack.TextTrackEventTypes
 import com.theoplayer.android.api.event.track.texttrack.list.TextTrackListEventTypes
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.player.track.texttrack.TextTrackKind
+import com.theoplayer.android.api.player.track.texttrack.TextTrackMode
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -278,11 +279,14 @@ class AdobeConnector(
   }
 
   private fun handleQualityChanged(event: ActiveQualityChangedEvent) {
+    logDebug("onQualityChanged")
     sendEventRequestAsync(AdobeEventTypes.BITRATE_CHANGE)
   }
 
   private fun handleAddTextTrack(event: AddTextTrackEvent) {
-    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.name }?.let { track ->
+    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.type }?.let { track ->
+      logDebug("onAddTextTrack - add chapter track ${track.uid}")
+      track.mode = TextTrackMode.HIDDEN
       track.addEventListener(TextTrackEventTypes.ENTERCUE, onEnterCue)
       track.addEventListener(TextTrackEventTypes.EXITCUE, onExitCue)
     }
@@ -290,12 +294,14 @@ class AdobeConnector(
 
   private fun handleRemoveTextTrack(event: RemoveTextTrackEvent) {
     event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.name }?.let { track ->
+      logDebug("onRemoveTextTrack - remove chapter track ${track.uid}")
       track.removeEventListener(TextTrackEventTypes.ENTERCUE, onEnterCue)
       track.removeEventListener(TextTrackEventTypes.EXITCUE, onExitCue)
     }
   }
 
   private fun handleAddVideoTrack(event: AddVideoTrackEvent) {
+    logDebug("onAddVideoTrack")
     event.track.addEventListener(
       VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
       onActiveVideoQualityChanged
@@ -303,6 +309,7 @@ class AdobeConnector(
   }
 
   private fun handleRemoveVideoTrack(event: RemoveVideoTrackEvent) {
+    logDebug("onRemoveVideoTrack")
     event.track.removeEventListener(
       VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
       onActiveVideoQualityChanged
@@ -311,19 +318,22 @@ class AdobeConnector(
 
   private fun handleEnterCue(event: EnterCueEvent) {
     val chapterCue = event.cue
+    val metadata = calculateChapterStartMetadata(chapterCue)
+    logDebug("onEnterCue $metadata")
     if (currentChapter != null && currentChapter?.endTime != chapterCue.startTime) {
       sendEventRequestAsync(AdobeEventTypes.CHAPTER_SKIP)
     }
-    val metadata = calculateChapterStartMetadata(chapterCue)
     sendEventRequestAsync(AdobeEventTypes.CHAPTER_START, metadata)
     this.currentChapter = chapterCue
   }
 
   private fun handleExitCue(event: ExitCueEvent) {
+    logDebug("onExitCue")
     sendEventRequestAsync(AdobeEventTypes.CHAPTER_COMPLETE)
   }
 
   private fun handleError(event: ErrorEvent) {
+    logDebug("onError ${event.errorObject.message}")
     sendEventRequestAsync(
       AdobeEventTypes.ERROR, AdobeMetaData(
         qoeData = mutableMapOf(
@@ -335,6 +345,7 @@ class AdobeConnector(
   }
 
   private fun handleAdBreakBegin(adBreak: AdBreak?) {
+    logDebug("onAdBreakBegin")
     isPlayingAd = true
     startPinger(AD_PING_INTERVAL)
     val metadata: AdobeMetaData = calculateAdBreakBeginMetadata(adBreak, adBreakPodIndex)
@@ -345,6 +356,7 @@ class AdobeConnector(
   }
 
   private fun handleAdBreakEnd() {
+    logDebug("onAdBreakEnd")
     isPlayingAd = false
     adPodPosition = 1
     startPinger(CONTENT_PING_INTERVAL)
@@ -352,16 +364,19 @@ class AdobeConnector(
   }
 
   private fun handleAdBegin(ad: Ad?) {
+    logDebug("onAdBegin")
     val metadata = calculateAdBeginMetadata(ad, adPodPosition)
     sendEventRequestAsync(AdobeEventTypes.AD_START, metadata)
     adPodPosition++
   }
 
   private fun handleAdEnd(ad: Ad?) {
+    logDebug("onAdEnd")
     sendEventRequestAsync(AdobeEventTypes.AD_COMPLETE)
   }
 
   private fun handleAdSkip() {
+    logDebug("onAdSkip")
     sendEventRequestAsync(AdobeEventTypes.AD_SKIP)
   }
 
@@ -381,12 +396,12 @@ class AdobeConnector(
     )
   }
 
-  private fun getCurrentTime(): Double {
+  private fun getCurrentTime(): Int {
     if (player.currentTime == Double.POSITIVE_INFINITY) {
       val now = System.currentTimeMillis()
-      return ((now / 1000) % 86400).toDouble()
+      return ((now / 1000) % 86400).toInt()
     }
-    return player.currentTime
+    return player.currentTime.toInt()
   }
 
   /**
@@ -396,19 +411,19 @@ class AdobeConnector(
    * - no ad is playing, otherwise the ad's media duration will be picked up;
    * - the player's content media duration is known.
    *
-   * @param mediaLength
+   * @param mediaLengthSec
    * @private
    */
-  private suspend fun maybeStartSession(mediaLength: Double? = null) {
-    val mediaLength = getContentLength(mediaLength)
+  private suspend fun maybeStartSession(mediaLengthSec: Double? = null) {
+    val mediaLength = getContentLength(mediaLengthSec)
     val hasValidSource = player.source !== null
-    val hasValidDuration = isValidDuration(mediaLength)
+    val hasValidDuration = isValidDuration(mediaLengthSec)
 
     logDebug(
       "maybeStartSession -" +
-        "mediaLength: $mediaLength," +
-        "hasValidSource: $hasValidSource," +
-        "hasValidDuration: $hasValidDuration" +
+        "mediaLength: $mediaLength, " +
+        "hasValidSource: $hasValidSource, " +
+        "hasValidDuration: $hasValidDuration, " +
         "isPlayingAd: ${player.ads.isPlaying}"
     )
 
@@ -538,11 +553,12 @@ class AdobeConnector(
     url: String,
     body: AdobeEventRequestBody
   ): Response? = withContext(Dispatchers.IO) {
-    return@withContext try {
-      val requestBody = body.toJSONObject().toString().toRequestBody(JSON_MEDIA_TYPE)
+    val response = try {
+      val requestBodyStr = body.toJSONObject().toString()
+      logDebug("sendRequest $url - $requestBodyStr")
       val request = Request.Builder()
         .url(url)
-        .post(requestBody)
+        .post(requestBodyStr.toRequestBody(JSON_MEDIA_TYPE))
         .addHeader("Content-Type", "application/json")
         .apply {
           customUserAgent?.let {
@@ -552,9 +568,11 @@ class AdobeConnector(
         .build()
       client.newCall(request).execute()
     } catch (e: Exception) {
-      logDebug("Failed to send request: ${e.message}")
-      null
+      logDebug("sendRequest failed: ${e.message}")
+      return@withContext null
     }
+    logDebug("sendRequest result: ${response.code}")
+    return@withContext response
   }
 
   /**
@@ -565,9 +583,9 @@ class AdobeConnector(
    * @param mediaLengthSec optional mediaLength provided by a player event.
    * @private
    */
-  private fun getContentLength(mediaLengthSec: Double?): Double {
+  private fun getContentLength(mediaLengthSec: Double?): Int {
     val length = mediaLengthSec ?: player.duration
-    return if (length == Double.POSITIVE_INFINITY) 86400.0 else length
+    return if (length == Double.POSITIVE_INFINITY) 86400 else length.toInt()
   }
 
   private fun getContentType(): ContentType {
