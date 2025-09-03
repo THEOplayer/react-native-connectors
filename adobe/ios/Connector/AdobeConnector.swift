@@ -12,18 +12,27 @@ enum ContentType: String {
     case Linear = "Linear"
 }
 
+let CONTENT_PING_INTERVAL = 10.0
+let AD_PING_INTERVAL = 1.0
+
 class AdobeConnector {
     private weak var player: THEOplayer?
     private var uri: String
     private var ecid: String
     private var sid: String
     private var trackingUrl: String
-    private var customMetadata: AdobeMetadata?
-    private var userAgent: String?
+    private var currentMetadata: AdobeMetadata?
+    private var userAgent: String
     private var debug: Bool = false
     
     private var sessionInProgress = false
     private var isPlayingAd = false
+    private var sessionId = ""
+    private var eventQueue: [AdobeEventRequestBody] = []
+    private var pingTimer: Timer?
+    private var adBreakPodIndex: Int = 0
+    private var adPodPosition: Int = 0
+    private var currentChapter: TextTrackCue? = nil
     
     // MARK: Player Listeners
     private var playingListener: EventListener?
@@ -45,11 +54,11 @@ class AdobeConnector {
     
     init(player: THEOplayer, uri: String, ecid: String, sid: String, trackingUrl: String, metadata: AdobeMetadata?, userAgent: String?, debug: Bool) {
         self.player = player
-        self.uri = uri
+        self.uri = "https://\(uri)/api/v1/sessions"
         self.ecid = ecid
         self.sid = sid
         self.trackingUrl = trackingUrl
-        self.customMetadata = metadata
+        self.currentMetadata = metadata
         self.userAgent = userAgent ?? AdobeUtils.buildUserAgent()
         self.debug = debug
         
@@ -63,24 +72,37 @@ class AdobeConnector {
     }
     
     func updateMetadata(_ metadata: AdobeMetadata) -> Void {
-        if let currentMetadata = self.customMetadata {
-            currentMetadata.add(metadata)
+        if let currentCustomMetadata = self.currentMetadata {
+            currentCustomMetadata.add(metadata)
             return
         } else {
-            self.customMetadata = metadata
+            self.currentMetadata = metadata
         }
     }
     
     func setError(_ metadata: AdobeMetadata) -> Void {
-        // todo
+        self.sendEvent(eventType: AdobeEventTypes.ERROR, eventMetadata: metadata)
     }
     
     func stopAndStartNewSession(_ metadata: AdobeMetadata) -> Void {
-        // todo
+        self.maybeEndSession {
+            self.updateMetadata(metadata)
+            
+            self.maybeStartSession {
+                if let player = self.player {
+                    if player.paused {
+                        self.onPause(event: PauseEvent(currentTime: player.currentTime))
+                    } else {
+                        self.onPlaying(event: PlayingEvent(currentTime: player.currentTime))
+                    }
+                }
+            }
+        }
     }
     
     func destroy() -> Void {
         self.removeEventListeners()
+        self.maybeEndSession()
     }
     
     func addEventListeners() -> Void {
@@ -152,59 +174,108 @@ class AdobeConnector {
         self.log("Listeners removed.")
     }
     
+    func onLoadedMetadata(event: LoadedMetaDataEvent) -> Void {
+        self.log("onLoadedMetadata triggered.")
+        self.maybeStartSession()
+    }
+    
     func onPlaying(event: PlayingEvent) -> Void {
         self.log("onPlayingEvent triggered.")
-        // todo
+        self.sendEvent(eventType: AdobeEventTypes.PLAY)
     }
     
     func onPause(event: PauseEvent) -> Void {
         self.log("onPause triggered.")
-        // todo
-    }
-    
-    func onEnded(event: EndedEvent) -> Void {
-        self.log("onEnded triggered.")
-        // todo
+        self.sendEvent(eventType: AdobeEventTypes.PAUSE_START)
     }
     
     func onWaiting(event: WaitingEvent) -> Void {
         self.log("onWaiting triggered.")
-        // todo
+        self.sendEvent(eventType: AdobeEventTypes.BUFFER_START)
+    }
+    
+    func onEnded(event: EndedEvent) -> Void {
+        self.log("onEnded triggered.")
+        self.sendEvent(eventType: AdobeEventTypes.SESSION_COMPLETE)
+        self.reset()
     }
     
     func onSourceChange(event: SourceChangeEvent) -> Void {
         self.log("onSourceChange triggered.")
-        // todo
+        self.maybeEndSession()
     }
     
-    func onLoadedMetadata(event: LoadedMetaDataEvent) -> Void {
-        self.log("onLoadedMetadata triggered.")
-        self.maybeStartSession(duration: self.player?.duration)
+    /*func onMediaTrackEvent() -> Void {
+        self.log("onMediaTrackEvent triggered.")
+        // todo
     }
+     
+     func onTextTrackEvent() -> Void {
+         self.log("onTextTrackEvent triggered.")
+         // todo
+     }
+     */
     
     func onError(event: ErrorEvent) -> Void {
         self.log("onError triggered.")
-        // todo
+        var qoeData: [String:Any] = [:]
+        if let errorCode = event.errorObject?.code.rawValue as? Int32 {
+            qoeData["media.qoe.errorID"] = errorCode
+        }
+        qoeData["media.qoe.errorSource"] = "player"
+        
+        self.sendEvent(eventType: AdobeEventTypes.ERROR, eventMetadata: AdobeMetadata(qoeData: qoeData))
     }
     
     func onAdBreakBegin(event: AdBreakBeginEvent) -> Void {
         self.log("onAdBreakBegin triggered.")
-        // todo
+        self.isPlayingAd = true
+        self.startPinger(AD_PING_INTERVAL)
+        if let adBreak = event.ad {
+            let timeOffset = adBreak.timeOffset
+            var podIndex = 0
+            if timeOffset < 0 {
+                podIndex = -1
+            } else if timeOffset > 0 {
+                self.adBreakPodIndex += 1
+                podIndex = self.adBreakPodIndex
+            }
+            
+            var params: [String:Any] = [:]
+            params["media.ad.podIndex"] = podIndex
+            params["media.ad.podSecond"] = adBreak.maxDuration
+            
+            self.sendEvent(eventType: AdobeEventTypes.AD_BREAK_START, eventMetadata: AdobeMetadata(params: params))
+        }
     }
     
     func onAdBreakEnd(event: AdBreakEndEvent) -> Void {
         self.log("onAdBreakEnd triggered.")
-        // todo
+        self.isPlayingAd = false
+        self.adPodPosition = 1
+        self.startPinger(CONTENT_PING_INTERVAL)
+        self.sendEvent(eventType: AdobeEventTypes.AD_BREAK_COMPLETE)
     }
     
     func onAdBegin(event: AdBeginEvent) -> Void {
         self.log("onAdBegin triggered.")
-        // todo
+        if let ad = event.ad {
+            var params: [String:Any] = [:]
+            params["media.ad.podPosition"] = self.adPodPosition
+            params["media.ad.id"] = ad.id
+            if let adDuration = ad.duration {
+                params["media.ad.length"] = adDuration
+            }
+            params["media.ad.playerName"] = "THEOplayer"
+            self.sendEvent(eventType: AdobeEventTypes.AD_START, eventMetadata: AdobeMetadata(params: params))
+            
+            self.adPodPosition += 1
+        }
     }
     
     func onAdEnd(event: AdEndEvent) -> Void {
         self.log("onAdEnd triggered.")
-        // todo
+        self.sendEvent(eventType: AdobeEventTypes.AD_COMPLETE)
     }
     
     /**
@@ -217,17 +288,16 @@ class AdobeConnector {
      * @param mediaLength
      * @private
      */
-    func maybeStartSession(duration: Double?) -> Void {
-        guard let player = self.player else {
+    func maybeStartSession(completion: (()->Void)? = nil) -> Void {
+        guard let player = self.player,
+              let url = URL(string: self.uri) else {
+            completion?()
             return
         }
         
-        let mediaLength = self.getContentLength(mediaLengthInSec: duration)
+        let mediaLength = self.getContentLength()
         let hasValidSource = player.source != nil
-        var hasValidDuration = false
-        if let duration = player.duration {
-            hasValidDuration = !duration.isNaN
-        }
+        let hasValidDuration = player.duration != nil && !(player.duration!.isNaN)
         self.log("maybeStartSession - mediaLength: \(mediaLength)")
         self.log("maybeStartSession - hasValidSource: \(hasValidSource)")
         self.log("maybeStartSession - hasValidDuration: \(hasValidDuration)")
@@ -235,8 +305,205 @@ class AdobeConnector {
         self.log("maybeStartSession - isPlayingAd: \(self.isPlayingAd)")
         
         if (self.sessionInProgress || self.isPlayingAd || !hasValidSource || !hasValidDuration) {
-              self.log("=> maybeStartSession - NOT started")
-              return
+            self.log("=> maybeStartSession - NOT started")
+            completion?()
+            return
+        }
+        
+        let headers = ["Content-Type": "application/json", "User-Agent": self.userAgent]
+        let initialBody = AdobeEventRequestBody(
+            playerTime: AdobeEventRequestBodyPlayerTime (
+                playhead: self.getCurrentTime(),
+                ts: Date().timeIntervalSince1970),
+            eventType: AdobeEventTypes.SESSION_START.rawValue
+        )
+        
+        initialBody.params["analytics.reportSuite"] = self.sid
+        initialBody.params["analytics.trackingServer"] = self.trackingUrl
+        initialBody.params["media.channel"] = "N/A"
+        initialBody.params["media.contentType"] = self.getContentType().rawValue
+        initialBody.params["media.id"] = "N/A"
+        initialBody.params["media.length"] = mediaLength
+        initialBody.params["media.playerName"] = "THEOplayer"
+        initialBody.params["visitor.marketingCloudOrgId"] = self.ecid
+        
+        if let friendlyName = player.source?.metadata?.title {
+            initialBody.params["media.name"] = friendlyName
+        }
+        
+        if let currentCustomMetadata = self.currentMetadata {
+            initialBody.add(currentCustomMetadata)
+        }
+        
+        // send the data
+        self.log("maybeStartSession - Starting session on url: \(self.uri) with body: \(initialBody.toDictionary())")
+        AdobeUtils.shared.sendRequest(
+            url: url,
+            method: "POST",
+            body: initialBody.toDictionary(),
+            headers: headers) {[weak self] data, statusCode, responseHeaders, error in
+                if let welf = self {
+                    if statusCode != 201 {
+                        welf.log("maybeStartSession - Failed to start session (statusCode: \(statusCode)): \(String(describing: error))")
+                        completion?()
+                    } else {
+                        welf.sessionInProgress = true
+                        welf.log("maybeStartSession - sessionInProgress")
+                        
+                        if let sessionId = AdobeUtils.extractSessionId(from: responseHeaders) {
+                            welf.sessionId = sessionId
+                            welf.log("maybeStartSession - STARTED (sessionID: \(welf.sessionId)")
+                            welf.sendQueuedEvents {
+                                if !welf.isPlayingAd {
+                                    welf.startPinger(CONTENT_PING_INTERVAL)
+                                } else {
+                                    welf.startPinger(AD_PING_INTERVAL)
+                                }
+                                completion?()
+                            }
+                        } else {
+                            completion?()
+                        }
+                    }
+                }
+            }
+    }
+    
+    private func sendQueuedEvents(completion: (()->Void)? = nil) -> Void {
+        guard self.eventQueue.count > 0,
+              let url = URL(string: "\(self.uri)/\(self.sessionId)/events") else {
+            completion?()
+            return
+        }
+        
+        let eventBody = self.eventQueue.removeFirst()
+        self.log("Sending queued \(eventBody.eventType ?? " ")event.")
+        AdobeUtils.shared.sendRequest(url: url,
+                                      method: "POST",
+                                      body: eventBody.toDictionary(),
+                                      headers: ["Content-Type": "application/json", "User-Agent": self.userAgent]) { data, statusCode, headers, error in
+            self.sendQueuedEvents(completion: completion)
+        }
+    }
+    
+    private func maybeEndSession(completion: (()->Void)? = nil) -> Void {
+        self.log("maybeEndSession - sessionId: \(self.sessionId)");
+        
+        guard self.sessionId != "" else {
+            completion?()
+            return
+        }
+        
+        self.sendEvent(eventType: AdobeEventTypes.SESSION_END) {
+            self.reset()
+            completion?()
+        }
+    }
+    
+    private func reset() -> Void {
+        self.log("reset");
+        self.isPlayingAd = false;
+        self.sessionId = "";
+        self.sessionInProgress = false;
+        self.pingTimer?.invalidate();
+        self.pingTimer = nil
+        self.adBreakPodIndex = 0;
+        self.adPodPosition = 1;
+        self.currentChapter = nil;
+    }
+    
+    private func startPinger(_ interval: Double) {
+        DispatchQueue.main.async {
+            self.pingTimer?.invalidate()
+            self.pingTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { t in
+                self.sendEvent(eventType: .PING)
+            })
+            self.log("Pinger started with interval \(interval).")
+        }
+    }
+    
+    private func sendEvent(eventType: AdobeEventTypes, eventMetadata: AdobeMetadata? = nil, completion: (()->Void)? = nil) -> Void {
+        let eventRequestBody = AdobeEventRequestBody(
+            playerTime: AdobeEventRequestBodyPlayerTime (
+                playhead: self.getCurrentTime(),
+                ts: Date().timeIntervalSince1970),
+            eventType: eventType.rawValue
+        )
+        
+        // add stored metadata, conditionally
+        if let metaData = self.currentMetadata {
+            // add stored customMetadata
+            if eventType != AdobeEventTypes.PING {
+                if eventType == AdobeEventTypes.AD_BREAK_START ||
+                    eventType == AdobeEventTypes.CHAPTER_START ||
+                    eventType == AdobeEventTypes.AD_START ||
+                    eventType == AdobeEventTypes.SESSION_START {
+                    eventRequestBody.add(AdobeMetadata(customMetadata: metaData.customMetadata))
+                }
+            }
+            // add stored qoeData
+            eventRequestBody.add(AdobeMetadata(qoeData: metaData.qoeData))
+        }
+        
+        // Add passed eventMetadata
+        if let metadata = eventMetadata {
+            eventRequestBody.add(metadata)
+        }
+        
+        // if session hasn't started yet --> add to queue
+        if self.sessionId == "" {
+            self.eventQueue.append(eventRequestBody)
+            self.log("sendEvent - \(eventType.rawValue) event added to event queue.")
+            completion?()
+            return
+        }
+        // else, send...
+        self.log("sendEvent - Sending \(eventType.rawValue) event.")
+        if let url = URL(string: "\(self.uri)/\(self.sessionId)/events") {
+            let headers = ["Content-Type": "application/json", "User-Agent": self.userAgent]
+            AdobeUtils.shared.sendRequest(url: url,
+                                          method: "POST",
+                                          body: eventRequestBody.toDictionary(),
+                                          headers: headers) { data, statusCode, headers, error in
+                if statusCode == 404 || statusCode == 410 {
+                    // Faulty session id, store in queue and restart session
+                    self.eventQueue.append(eventRequestBody)
+                    self.log("sendEvent - \(eventType.rawValue) sending failed. Restarting session.")
+                    if self.sessionId != "" && self.sessionInProgress {
+                        self.sessionId = ""
+                        self.sessionInProgress = false
+                        self.maybeStartSession() {
+                            completion?()
+                        }
+                    }
+                } else {
+                    self.log("sendEvent - \(eventType.rawValue) send successfully with statusCode: \(statusCode).")
+                    completion?()
+                }
+            }
+        } else {
+            completion?()
+        }
+    }
+    
+    private func getCurrentTime() -> Double {
+        guard let player = self.player else {return 0.0}
+        
+        if let player = self.player,
+           let duration = player.duration,
+           duration == Double.infinity {
+            // Live stream: return current second of the day
+            let calendar = Calendar.current
+            let now = Date()
+            let components = calendar.dateComponents([.hour, .minute, .second], from: now)
+            let secondsOfDay =
+                (components.hour ?? 0) * 3600 +
+                (components.minute ?? 0) * 60 +
+                (components.second ?? 0)
+            return Double(secondsOfDay)
+        } else {
+            // VOD: return currentTime in seconds
+            return player.currentTime
         }
     }
     
@@ -248,7 +515,7 @@ class AdobeConnector {
        * @param mediaLengthInMSec optional mediaLengthInMSec provided by a player event.
        * @private
        */
-    private func getContentLength(mediaLengthInSec: Double?) -> Double {
+    private func getContentLength(mediaLengthInSec: Double? = nil) -> Double {
         if let mediaLength = mediaLengthInSec {
             return mediaLength == Double.infinity ? 86400 : mediaLength
         }
