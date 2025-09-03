@@ -5,6 +5,7 @@ import android.os.LocaleList
 import com.theoplayer.android.api.ads.Ad
 import com.theoplayer.android.api.ads.AdBreak
 import com.theoplayer.android.api.ads.LinearAd
+import com.theoplayer.android.api.ads.ima.GoogleImaAd
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
 import java.util.Locale
 
@@ -18,8 +19,8 @@ fun calculateAdBreakBeginMetadata(adBreak: AdBreak?, lastPodIndex: Int): AdobeMe
 
   return AdobeMetaData(
     params = mutableMapOf(
-    "media.ad.podIndex" to podIndex,
-    "media.ad.podSecond" to (adBreak?.maxDuration ?: 0),
+      "media.ad.podIndex" to podIndex,
+      "media.ad.podSecond" to (adBreak?.maxDuration ?: 0),
     )
   )
 }
@@ -28,8 +29,12 @@ fun calculateAdBeginMetadata(ad: Ad?, adPodPosition: Int): AdobeMetaData {
   return AdobeMetaData(
     params = mutableMapOf(
       "media.ad.podPosition" to adPodPosition,
-      "media.ad.id" to (ad?.id ?: "NA"),
-      "media.ad.length" to if (ad is LinearAd) ad.duration else 0,
+      "media.ad.id" to (ad?.id ?: "N/A"),
+      "media.ad.length" to when (ad) {
+        is GoogleImaAd -> ad.imaAd.duration.toInt()
+        is LinearAd -> ad.duration
+        else -> 0
+      },
       "media.ad.playerName" to "THEOplayer",
     )
   )
