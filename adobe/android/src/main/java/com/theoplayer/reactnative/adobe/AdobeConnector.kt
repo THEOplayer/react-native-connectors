@@ -380,12 +380,11 @@ class AdobeConnector(
     }
   }
 
-  private fun getCurrentTime(): Int {
-    if (player.currentTime == Double.POSITIVE_INFINITY) {
-      val now = System.currentTimeMillis()
-      return ((now / 1000) % 86400).toInt()
+  private fun getCurrentTime(): Double {
+    return when (player.currentTime) {
+      Double.POSITIVE_INFINITY -> ((System.currentTimeMillis() / 1000) % 86400).toDouble()
+      else -> player.currentTime
     }
-    return player.currentTime.toInt()
   }
 
   /**
@@ -567,9 +566,9 @@ class AdobeConnector(
    * @param mediaLengthSec optional mediaLength provided by a player event.
    * @private
    */
-  private fun getContentLength(mediaLengthSec: Double?): Int {
+  private fun getContentLength(mediaLengthSec: Double?): Double {
     val length = mediaLengthSec ?: player.duration
-    return if (length == Double.POSITIVE_INFINITY) 86400 else length.toInt()
+    return if (length == Double.POSITIVE_INFINITY) 86400.0 else length
   }
 
   private fun getContentType(): ContentType {
