@@ -15,12 +15,16 @@ import { AdobeEventTypes } from './Types';
 import { calculateAdBeginMetadata, calculateAdBreakBeginMetadata, calculateChapterStartMetadata } from '../utils/Utils';
 import { Platform } from 'react-native';
 import { buildUserAgent } from '../utils/UserAgent';
+import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 
 const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 
-export class AdobeConnectorAdapter {
+/**
+ * An all-TypeScript implementation of the AdobeConnector.
+ */
+export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
   private player: THEOplayer;
 
   /** Media Collection APIs end point */
