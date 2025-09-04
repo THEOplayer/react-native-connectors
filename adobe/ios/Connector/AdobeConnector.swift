@@ -342,7 +342,7 @@ class AdobeConnector {
         let initialBody = AdobeEventRequestBody(
             playerTime: AdobeEventRequestBodyPlayerTime (
                 playhead: self.getCurrentTime(),
-                ts: Int(Date().timeIntervalSince1970)),
+                ts: Int(Date().timeIntervalSince1970 * 1000)),
             eventType: AdobeEventTypes.SESSION_START.rawValue
         )
         
@@ -458,7 +458,7 @@ class AdobeConnector {
         let eventRequestBody = AdobeEventRequestBody(
             playerTime: AdobeEventRequestBodyPlayerTime (
                 playhead: self.getCurrentTime(),
-                ts: Int(Date().timeIntervalSince1970)),
+                ts: Int(Date().timeIntervalSince1970 * 1000)),
             eventType: eventType.rawValue
         )
         
