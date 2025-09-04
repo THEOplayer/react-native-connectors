@@ -248,7 +248,7 @@ class AdobeConnector {
         self.log("onError triggered.")
         var qoeData: [String:Any] = [:]
         if let errorCode = event.errorObject?.code.rawValue as? Int32 {
-            qoeData["media.qoe.errorID"] = errorCode
+            qoeData["media.qoe.errorID"] = String(errorCode)
         }
         qoeData["media.qoe.errorSource"] = "player"
         
