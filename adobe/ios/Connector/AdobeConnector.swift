@@ -247,9 +247,11 @@ class AdobeConnector {
     func onError(event: ErrorEvent) -> Void {
         self.log("onError triggered.")
         var qoeData: [String:Any] = [:]
-        if let errorCode = event.errorObject?.code.rawValue as? Int32 {
-            qoeData["media.qoe.errorID"] = String(errorCode)
-        }
+		var errorCodeString = "-1"
+		if let errorCodeValue = event.errorObject?.code.rawValue as? Int32 {
+		    errorCodeString = String(errorCodeValue)
+		}
+		qoeData["media.qoe.errorID"] = errorCodeString
         qoeData["media.qoe.errorSource"] = "player"
         
         self.sendEvent(eventType: AdobeEventTypes.ERROR, sessionId: self.sessionId, eventMetadata: AdobeMetadata(qoeData: qoeData))
