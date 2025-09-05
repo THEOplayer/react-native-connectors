@@ -1,14 +1,4 @@
-import type {
-  Ad,
-  AdBreak,
-  AdEvent,
-  ErrorEvent,
-  LoadedMetadataEvent,
-  MediaTrackEvent,
-  TextTrackCue,
-  TextTrackEvent,
-  THEOplayer,
-} from 'react-native-theoplayer';
+import type { Ad, AdBreak, AdEvent, ErrorEvent, MediaTrackEvent, TextTrackCue, TextTrackEvent, THEOplayer } from 'react-native-theoplayer';
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from 'react-native-theoplayer';
 import type { AdobeEventRequestBody, AdobeMetaData, ContentType } from './Types';
 import { AdobeEventTypes } from './Types';
@@ -123,9 +113,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
     this.player.addEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.addEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
-    this.player.addEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
-
     this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
@@ -141,9 +129,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
     this.player.removeEventListener(PlayerEventType.SOURCE_CHANGE, this.onSourceChange);
     this.player.removeEventListener(PlayerEventType.TEXT_TRACK, this.onTextTrackEvent);
     this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
-    this.player.removeEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
-
     this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
 
     if (Platform.OS === 'web') {
@@ -151,18 +137,13 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
     }
   }
 
-  private onLoadedMetadata = (e: LoadedMetadataEvent) => {
-    this.logDebug('onLoadedMetadata');
-
-    // NOTE: In case of a pre-roll ad:
-    // - on Android & iOS, the onLoadedMetadata is sent *after* a pre-roll has finished;
-    // - on Web, onLoadedMetadata is sent twice, once before the pre-roll, where player.duration is still NaN,
-    //   and again after the pre-roll with a correct duration.
-    void this.maybeStartSession(e.duration);
-  };
-
-  private onPlaying = () => {
+  private onPlaying = async () => {
     this.logDebug('onPlaying');
+
+    // NOTE: In case of a pre-roll ad, the `playing` event will be sent twice: once starting the re-roll, and once
+    // starting content. During the pre-roll, all events will be queued. The session will be started after the pre-roll,
+    // making sure we can start the session with the correct content duration (not the ad duration).
+    await this.maybeStartSession();
     void this.sendEventRequest(AdobeEventTypes.PLAY, this.sessionId);
   };
 
