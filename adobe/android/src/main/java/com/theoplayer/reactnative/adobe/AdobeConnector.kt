@@ -137,8 +137,6 @@ class AdobeConnector(
     EventListener { handleQualityChanged(it) }
   private val onEnterCue: EventListener<EnterCueEvent> = EventListener { handleEnterCue(it) }
   private val onExitCue: EventListener<ExitCueEvent> = EventListener { handleExitCue(it) }
-  private val onLoadedMetadata: EventListener<LoadedMetadataEvent> =
-    EventListener { handleLoadedMetadata() }
   private val onError: EventListener<ErrorEvent> = EventListener { event -> handleError(event) }
   private val onAdBreakBegin: EventListener<AdBreakBeginEvent> =
     EventListener<AdBreakBeginEvent> { event -> handleAdBreakBegin(event.adBreak) }
@@ -194,7 +192,6 @@ class AdobeConnector(
     player.textTracks.addEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
     player.textTracks.addEventListener(TextTrackListEventTypes.REMOVETRACK, onRemoveTextTrack)
     player.videoTracks.addEventListener(VideoTrackListEventTypes.ADDTRACK, onAddVideoTrack)
-    player.addEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.addEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
       addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
@@ -214,7 +211,6 @@ class AdobeConnector(
     player.textTracks.removeEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
     player.textTracks.removeEventListener(TextTrackListEventTypes.REMOVETRACK, onRemoveTextTrack)
     player.videoTracks.removeEventListener(VideoTrackListEventTypes.ADDTRACK, onAddVideoTrack)
-    player.removeEventListener(PlayerEventTypes.LOADEDMETADATA, onLoadedMetadata)
     player.removeEventListener(PlayerEventTypes.ERROR, onError)
     player.ads.apply {
       removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
@@ -225,16 +221,16 @@ class AdobeConnector(
     }
   }
 
-  private fun handleLoadedMetadata() {
-    logDebug("onLoadedMetadata")
-    scope.launch {
-      maybeStartSession(player.duration)
-    }
-  }
-
   private fun handlePlaying() {
     logDebug("onPlaying")
-    sendEventRequestAsync(AdobeEventTypes.PLAY)
+
+    // NOTE: In case of a pre-roll ad, the `playing` event will be sent twice: once starting the re-roll, and once
+    // starting content. During the pre-roll, all events will be queued. The session will be started after the pre-roll,
+    // making sure we can start the session with the correct content duration (not the ad duration).
+    scope.launch {
+      maybeStartSession(player.duration)
+      sendEventRequest(AdobeEventTypes.PLAY)
+    }
   }
 
   private fun handlePause() {
