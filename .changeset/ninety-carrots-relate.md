@@ -2,4 +2,4 @@
 '@theoplayer/react-native-analytics-adobe': minor
 ---
 
-Added native connector implementations for iOS and Android.
+Added optional native connector implementations for iOS and Android.
