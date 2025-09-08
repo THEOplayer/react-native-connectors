@@ -15,7 +15,7 @@ export function calculateAdBreakBeginMetadata(adBreak: AdBreak, lastPodIndex: nu
   return {
     params: {
       'media.ad.podIndex': podIndex,
-      'media.ad.podSecond': adBreak.maxDuration,
+      'media.ad.podSecond': adBreak.maxDuration ?? 0,
     },
   };
 }

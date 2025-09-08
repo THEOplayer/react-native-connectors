@@ -6,6 +6,8 @@ rootProject.name = 'ReactNativeTHEOplayerE2E'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
 
+include ':react-native-theoplayer-analytics-adobe'
+project(':react-native-theoplayer-analytics-adobe').projectDir = new File(rootProject.projectDir, '../../../adobe/android')
 include ':react-native-theoplayer-analytics-comscore'
 project(':react-native-theoplayer-analytics-comscore').projectDir = new File(rootProject.projectDir, '../../../comscore/android')
 include ':react-native-theoplayer-analytics-conviva'

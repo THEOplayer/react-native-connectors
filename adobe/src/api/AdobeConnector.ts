@@ -1,5 +1,8 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import type { AdobeMetaData } from '../internal/Types';
+import { NativeAdobeConnectorAdapter } from '../internal/NativeAdobeConnectorAdapter';
+import { DefaultAdobeConnectorAdapter } from '../internal/DefaultAdobeConnectorAdapter';
+import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
 
 export { type AdobeMetaData };
@@ -16,8 +19,14 @@ export class AdobeConnector {
     metadata?: AdobeMetaData,
     userAgent?: string,
     useDebug?: boolean,
+    useNative: boolean = false,
   ) {
-    this.connectorAdapter = new AdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
+    // By default, use a default typescript connector on all platforms, unless explicitly requested.
+    if (['ios', 'android'].includes(Platform.OS) && useNative) {
+      this.connectorAdapter = new NativeAdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
+    } else {
+      this.connectorAdapter = new DefaultAdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
+    }
   }
 
   /**
