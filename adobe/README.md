@@ -31,7 +31,7 @@ const trackingUrl = "<Tracking Server URL>";
 const metadata = {}; // Optionally provide initial metadata
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
 const debug = true; // Optionally provide a debug flag for extra logging.
-const useNative = true; // Use a native connector on iOS & Android; `true` by default.
+const useNative = true; // Use a native connector on iOS & Android; `false` by default.
 
 const App = () => {
   const [adobe, initAdobe] = useAdobe(uri, ecid, sid, trackingUrl, metadata, userAgent, debug, useNative);

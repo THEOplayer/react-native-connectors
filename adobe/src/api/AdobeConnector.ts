@@ -19,10 +19,10 @@ export class AdobeConnector {
     metadata?: AdobeMetaData,
     userAgent?: string,
     useDebug?: boolean,
-    useNative: boolean = true,
+    useNative: boolean = false,
   ) {
+    // By default, use a default typescript connector on all platforms, unless explicitly requested.
     if (['ios', 'android'].includes(Platform.OS) && useNative) {
-      // By default, use a native connector unless explicitly requested.
       this.connectorAdapter = new NativeAdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
     } else {
       this.connectorAdapter = new DefaultAdobeConnectorAdapter(player, uri, ecid, sid, trackingUrl, metadata, userAgent, useDebug);
