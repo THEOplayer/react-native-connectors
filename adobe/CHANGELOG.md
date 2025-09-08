@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.11.0
+
+### ✨ Features
+
+- Added optional native connector implementations for iOS and Android.
+
 ## 1.10.0
 
 ### ✨ Features
