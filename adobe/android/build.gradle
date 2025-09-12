@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -68,7 +68,7 @@ repositories {
 
 // The Adobe connector requires at least THEOplayer SDK v9.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.0.0, 11.0.0)')
-def kotlin_version = safeExtGet("THEOplayerAdobe_kotlinVersion", "1.9.10")
+def kotlin_version = safeExtGet("THEOplayerAdobe_kotlinVersion", "2.2.10")
 def gsonVersion = safeExtGet('gsonVersion', '2.13.1')
 
 dependencies {

@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.9.10"
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -63,7 +63,7 @@ repositories {
   maven { url 'https://jitpack.io' }
 }
 
-def kotlin_version = safeExtGet("THEOplayerEngage_kotlinVersion", "1.8.22")
+def kotlin_version = safeExtGet("THEOplayerEngage_kotlinVersion", "2.2.10")
 def work_version = safeExtGet("THEOplayerEngage_workVersion", "2.9.1")
 def coroutines_version = safeExtGet("THEOplayerEngage_coroutinesVersion", "1.7.3")
 def engage_version = safeExtGet("THEOplayerEngage_engageVersion", "1.5.5")

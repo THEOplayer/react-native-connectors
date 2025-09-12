@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion")  : "1.9.10"
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -74,7 +74,7 @@ repositories {
 
 // The Conviva connector requires at least THEOplayer SDK v5.11.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 11.0.0)')
-def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "1.9.10")
+def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "2.2.10")
 def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.36')
 
 // By default, take the connector version that aligns with the THEOplayer SDK version.
