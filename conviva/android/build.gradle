@@ -73,7 +73,7 @@ repositories {
 }
 
 // The Conviva connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 10.0.0)')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 11.0.0)')
 def kotlin_version = safeExtGet("THEOplayerConviva_kotlinVersion", "1.9.10")
 def conviva_version = safeExtGet('THEOplayerConviva_convivaVersion', '4.0.36')
 
