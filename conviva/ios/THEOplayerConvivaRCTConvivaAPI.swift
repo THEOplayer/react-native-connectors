@@ -33,7 +33,6 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                     logLevel: .LOGLEVEL_FUNC
                 )
                 if let connector = ConvivaConnector( configuration: configuration, player: player, externalEventDispatcher: view.broadcastEventHandler) {
-                    connector.setErrorCallback(onNativeError: view.mainEventHandler.onNativeError)
                     self.connectors[node] = connector
                     if let contentInfo = convivaMetadata as? [String: Any] {
                         connector.setContentInfo(contentInfo)

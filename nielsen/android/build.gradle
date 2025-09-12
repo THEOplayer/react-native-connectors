@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.2"
+    classpath "com.android.tools.build:gradle:8.12.3"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerNielsen_compileSdkVersion", 34)
+  compileSdkVersion safeExtGet("THEOplayerNielsen_compileSdkVersion", 35)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerNielsen_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerNielsen_targetSdkVersion", 34)
+    targetSdkVersion safeExtGet("THEOplayerNielsen_targetSdkVersion", 35)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -72,8 +72,8 @@ rootProject.allprojects {
 }
 
 // The Nielsen connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 10.0.0)')
-def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "1.9.10")
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 11.0.0)')
+def kotlin_version = safeExtGet("THEOplayerNielsen_kotlinVersion", "2.2.10")
 def nielsen_version = safeExtGet("THEOplayerNielsen_nielsenVersion", "9.2.0.0")
 
 // By default, take the connector version that aligns with the THEOplayer SDK version.

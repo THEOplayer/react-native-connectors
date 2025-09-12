@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : "1.9.10"
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.2"
+    classpath "com.android.tools.build:gradle:8.12.3"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerMux_compileSdkVersion", 34)
+  compileSdkVersion safeExtGet("THEOplayerMux_compileSdkVersion", 35)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerMux_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerMux_targetSdkVersion", 34)
+    targetSdkVersion safeExtGet("THEOplayerMux_targetSdkVersion", 35)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -72,8 +72,8 @@ repositories {
 }
 
 // The Mux connector requires at least THEOplayer SDK v9.2.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.2.0, 10.0.0)')
-def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "1.9.10")
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.2.0, 11.0.0)')
+def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "2.2.10")
 def mux_version = safeExtGet('THEOplayerMux_muxVersion', '[0.6.0, 0.7.0)')
 def mux_core_version = safeExtGet('Mux_muxVersion', '1.4.11')
 
