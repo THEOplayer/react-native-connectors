@@ -53,8 +53,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@convivainc/conviva-js-coresdk": "^4.7.16",
-    "@theoplayer/conviva-connector-web": "^2.7.0"
+    "@convivainc/conviva-js-coresdk": "^4.8.0",
+    "@theoplayer/conviva-connector-web": "^3.0.0"
   },
   "peerDependencies": {
     "react": "*",
