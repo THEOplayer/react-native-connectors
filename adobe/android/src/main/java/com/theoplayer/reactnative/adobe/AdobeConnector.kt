@@ -4,9 +4,6 @@ package com.theoplayer.reactnative.adobe
 
 import android.util.Log
 import com.google.gson.Gson
-import com.theoplayer.android.api.ads.Ad
-import com.theoplayer.android.api.ads.AdBreak
-import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakEndEvent
@@ -15,7 +12,6 @@ import com.theoplayer.android.api.event.ads.AdSkipEvent
 import com.theoplayer.android.api.event.ads.AdsEventTypes
 import com.theoplayer.android.api.event.player.EndedEvent
 import com.theoplayer.android.api.event.player.ErrorEvent
-import com.theoplayer.android.api.event.player.LoadedMetadataEvent
 import com.theoplayer.android.api.event.player.PauseEvent
 import com.theoplayer.android.api.event.player.PlayerEventTypes
 import com.theoplayer.android.api.event.player.PlayingEvent
@@ -119,34 +115,6 @@ class AdobeConnector(
 
   private val gson = Gson()
 
-  private val onPlaying: EventListener<PlayingEvent> = EventListener { handlePlaying() }
-  private val onPause: EventListener<PauseEvent> = EventListener { handlePause() }
-  private val onEnded: EventListener<EndedEvent> = EventListener { handleEnded() }
-  private val onWaiting: EventListener<WaitingEvent> = EventListener { handleWaiting() }
-  private val onSourceChange: EventListener<SourceChangeEvent> =
-    EventListener { handleSourceChange() }
-  private val onAddTextTrack: EventListener<AddTextTrackEvent> =
-    EventListener { handleAddTextTrack(it) }
-  private val onRemoveTextTrack: EventListener<RemoveTextTrackEvent> =
-    EventListener { handleRemoveTextTrack(it) }
-  private val onAddVideoTrack: EventListener<AddVideoTrackEvent> =
-    EventListener { handleAddVideoTrack(it) }
-  private val onRemoveVideoTrack: EventListener<RemoveVideoTrackEvent> =
-    EventListener { handleRemoveVideoTrack(it) }
-  private val onActiveVideoQualityChanged: EventListener<ActiveQualityChangedEvent> =
-    EventListener { handleQualityChanged(it) }
-  private val onEnterCue: EventListener<EnterCueEvent> = EventListener { handleEnterCue(it) }
-  private val onExitCue: EventListener<ExitCueEvent> = EventListener { handleExitCue(it) }
-  private val onError: EventListener<ErrorEvent> = EventListener { event -> handleError(event) }
-  private val onAdBreakBegin: EventListener<AdBreakBeginEvent> =
-    EventListener<AdBreakBeginEvent> { event -> handleAdBreakBegin(event.adBreak) }
-  private val onAdBreakEnd: EventListener<AdBreakEndEvent> =
-    EventListener { event -> handleAdBreakEnd() }
-  private val onAdBegin: EventListener<AdBeginEvent> =
-    EventListener { event -> handleAdBegin(event.ad) }
-  private val onAdEnd: EventListener<AdEndEvent> = EventListener { event -> handleAdEnd(event.ad) }
-  private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
-
   init {
     this.customMetadata = metadata ?: AdobeMetaData()
     this.customUserAgent = userAgent ?: buildUserAgent()
@@ -184,46 +152,49 @@ class AdobeConnector(
   }
 
   private fun addEventListeners() {
-    player.addEventListener(PlayerEventTypes.PLAYING, onPlaying)
-    player.addEventListener(PlayerEventTypes.PAUSE, onPause)
-    player.addEventListener(PlayerEventTypes.ENDED, onEnded)
-    player.addEventListener(PlayerEventTypes.WAITING, onWaiting)
-    player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
-    player.textTracks.addEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
-    player.textTracks.addEventListener(TextTrackListEventTypes.REMOVETRACK, onRemoveTextTrack)
-    player.videoTracks.addEventListener(VideoTrackListEventTypes.ADDTRACK, onAddVideoTrack)
-    player.addEventListener(PlayerEventTypes.ERROR, onError)
+    player.addEventListener(PlayerEventTypes.PLAYING, this::onPlaying)
+    player.addEventListener(PlayerEventTypes.PAUSE, this::onPause)
+    player.addEventListener(PlayerEventTypes.ENDED, this::onEnded)
+    player.addEventListener(PlayerEventTypes.WAITING, this::onWaiting)
+    player.addEventListener(PlayerEventTypes.SOURCECHANGE, this::onSourceChange)
+    player.textTracks.addEventListener(TextTrackListEventTypes.ADDTRACK, this::onAddTextTrack)
+    player.textTracks.addEventListener(TextTrackListEventTypes.REMOVETRACK, this::onRemoveTextTrack)
+    player.videoTracks.addEventListener(VideoTrackListEventTypes.ADDTRACK, this::onAddVideoTrack)
+    player.addEventListener(PlayerEventTypes.ERROR, this::onError)
     player.ads.apply {
-      addEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
-      addEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
-      addEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
-      addEventListener(AdsEventTypes.AD_END, onAdEnd)
-      addEventListener(AdsEventTypes.AD_SKIP, onAdSkip)
+      addEventListener(AdsEventTypes.AD_BREAK_BEGIN, this@AdobeConnector::onAdBreakBegin)
+      addEventListener(AdsEventTypes.AD_BREAK_END, this@AdobeConnector::onAdBreakEnd)
+      addEventListener(AdsEventTypes.AD_BEGIN, this@AdobeConnector::onAdBegin)
+      addEventListener(AdsEventTypes.AD_END, this@AdobeConnector::onAdEnd)
+      addEventListener(AdsEventTypes.AD_SKIP, this@AdobeConnector::onAdSkip)
     }
   }
 
   private fun removeEventListeners() {
-    player.removeEventListener(PlayerEventTypes.PLAYING, onPlaying)
-    player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
-    player.removeEventListener(PlayerEventTypes.ENDED, onEnded)
-    player.removeEventListener(PlayerEventTypes.WAITING, onWaiting)
-    player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
-    player.textTracks.removeEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
-    player.textTracks.removeEventListener(TextTrackListEventTypes.REMOVETRACK, onRemoveTextTrack)
-    player.videoTracks.removeEventListener(VideoTrackListEventTypes.ADDTRACK, onAddVideoTrack)
-    player.removeEventListener(PlayerEventTypes.ERROR, onError)
+    player.removeEventListener(PlayerEventTypes.PLAYING, this::onPlaying)
+    player.removeEventListener(PlayerEventTypes.PAUSE, this::onPause)
+    player.removeEventListener(PlayerEventTypes.ENDED, this::onEnded)
+    player.removeEventListener(PlayerEventTypes.WAITING, this::onWaiting)
+    player.removeEventListener(PlayerEventTypes.SOURCECHANGE, this::onSourceChange)
+    player.textTracks.removeEventListener(TextTrackListEventTypes.ADDTRACK, this::onAddTextTrack)
+    player.textTracks.removeEventListener(TextTrackListEventTypes.REMOVETRACK, this::onRemoveTextTrack)
+    player.videoTracks.removeEventListener(VideoTrackListEventTypes.ADDTRACK, this::onAddVideoTrack)
+    player.removeEventListener(PlayerEventTypes.ERROR, this::onError)
     player.ads.apply {
-      removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, onAdBreakBegin)
-      removeEventListener(AdsEventTypes.AD_BREAK_END, onAdBreakEnd)
-      removeEventListener(AdsEventTypes.AD_BEGIN, onAdBegin)
-      removeEventListener(AdsEventTypes.AD_END, onAdEnd)
-      removeEventListener(AdsEventTypes.AD_SKIP, onAdSkip)
+      removeEventListener(AdsEventTypes.AD_BREAK_BEGIN, this@AdobeConnector::onAdBreakBegin)
+      removeEventListener(AdsEventTypes.AD_BREAK_END, this@AdobeConnector::onAdBreakEnd)
+      removeEventListener(AdsEventTypes.AD_BEGIN, this@AdobeConnector::onAdBegin)
+      removeEventListener(AdsEventTypes.AD_END, this@AdobeConnector::onAdEnd)
+      removeEventListener(AdsEventTypes.AD_SKIP, this@AdobeConnector::onAdSkip)
     }
   }
 
-  private fun handlePlaying() {
+  private fun onPlaying(event: PlayingEvent) {
     logDebug("onPlaying")
+    handlePlaying()
+  }
 
+  private fun handlePlaying() {
     // NOTE: In case of a pre-roll ad, the `playing` event will be sent twice: once starting the re-roll, and once
     // starting content. During the pre-roll, all events will be queued. The session will be started after the pre-roll,
     // making sure we can start the session with the correct content duration (not the ad duration).
@@ -233,68 +204,72 @@ class AdobeConnector(
     }
   }
 
-  private fun handlePause() {
+  private fun onPause(event: PauseEvent) {
     logDebug("onPause")
+    handlePause()
+  }
+
+  private fun handlePause() {
     sendEventRequestAsync(AdobeEventTypes.PAUSE_START)
   }
 
-  private fun handleWaiting() {
+  private fun onWaiting(event: WaitingEvent) {
     logDebug("onWaiting")
     sendEventRequestAsync(AdobeEventTypes.BUFFER_START)
   }
 
-  private fun handleEnded() {
+  private fun onEnded(event: EndedEvent) {
     logDebug("onEnded")
     sendEventRequestAsync(AdobeEventTypes.SESSION_COMPLETE)
     reset()
   }
 
-  private fun handleSourceChange() {
+  private fun onSourceChange(event: SourceChangeEvent) {
     logDebug("onSourceChange")
     scope.launch {
       maybeEndSession()
     }
   }
 
-  private fun handleQualityChanged(event: ActiveQualityChangedEvent) {
+  private fun onQualityChanged(event: ActiveQualityChangedEvent) {
     logDebug("onQualityChanged")
     sendEventRequestAsync(AdobeEventTypes.BITRATE_CHANGE)
   }
 
-  private fun handleAddTextTrack(event: AddTextTrackEvent) {
+  private fun onAddTextTrack(event: AddTextTrackEvent) {
     event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.type }?.let { track ->
       logDebug("onAddTextTrack - add chapter track ${track.uid}")
       track.mode = TextTrackMode.HIDDEN
-      track.addEventListener(TextTrackEventTypes.ENTERCUE, onEnterCue)
-      track.addEventListener(TextTrackEventTypes.EXITCUE, onExitCue)
+      track.addEventListener(TextTrackEventTypes.ENTERCUE, this::onEnterCue)
+      track.addEventListener(TextTrackEventTypes.EXITCUE, this::onExitCue)
     }
   }
 
-  private fun handleRemoveTextTrack(event: RemoveTextTrackEvent) {
+  private fun onRemoveTextTrack(event: RemoveTextTrackEvent) {
     event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.name }?.let { track ->
       logDebug("onRemoveTextTrack - remove chapter track ${track.uid}")
-      track.removeEventListener(TextTrackEventTypes.ENTERCUE, onEnterCue)
-      track.removeEventListener(TextTrackEventTypes.EXITCUE, onExitCue)
+      track.removeEventListener(TextTrackEventTypes.ENTERCUE, this::onEnterCue)
+      track.removeEventListener(TextTrackEventTypes.EXITCUE, this::onExitCue)
     }
   }
 
-  private fun handleAddVideoTrack(event: AddVideoTrackEvent) {
+  private fun onAddVideoTrack(event: AddVideoTrackEvent) {
     logDebug("onAddVideoTrack")
     event.track.addEventListener(
       VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
-      onActiveVideoQualityChanged
+      this::onQualityChanged
     )
   }
 
-  private fun handleRemoveVideoTrack(event: RemoveVideoTrackEvent) {
+  private fun onRemoveVideoTrack(event: RemoveVideoTrackEvent) {
     logDebug("onRemoveVideoTrack")
     event.track.removeEventListener(
       VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
-      onActiveVideoQualityChanged
+      this::onQualityChanged
     )
   }
 
-  private fun handleEnterCue(event: EnterCueEvent) {
+  private fun onEnterCue(event: EnterCueEvent) {
     val chapterCue = event.cue
     val metadata = calculateChapterStartMetadata(chapterCue)
     logDebug("onEnterCue $metadata")
@@ -305,12 +280,12 @@ class AdobeConnector(
     this.currentChapter = chapterCue
   }
 
-  private fun handleExitCue(event: ExitCueEvent) {
+  private fun onExitCue(event: ExitCueEvent) {
     logDebug("onExitCue")
     sendEventRequestAsync(AdobeEventTypes.CHAPTER_COMPLETE)
   }
 
-  private fun handleError(event: ErrorEvent) {
+  private fun onError(event: ErrorEvent) {
     logDebug("onError ${event.errorObject.message}")
     sendEventRequestAsync(
       AdobeEventTypes.ERROR, AdobeMetaData(
@@ -322,18 +297,18 @@ class AdobeConnector(
     )
   }
 
-  private fun handleAdBreakBegin(adBreak: AdBreak?) {
+  private fun onAdBreakBegin(event: AdBreakBeginEvent) {
     logDebug("onAdBreakBegin")
     isPlayingAd = true
     startPinger(AD_PING_INTERVAL)
-    val metadata: AdobeMetaData = calculateAdBreakBeginMetadata(adBreak, adBreakPodIndex)
+    val metadata: AdobeMetaData = calculateAdBreakBeginMetadata(event.adBreak, adBreakPodIndex)
     sendEventRequestAsync(AdobeEventTypes.AD_BREAK_START, metadata)
     if (((metadata.params?.get("media.ad.podIndex") as? Int) ?: 0) > adBreakPodIndex) {
       adBreakPodIndex++
     }
   }
 
-  private fun handleAdBreakEnd() {
+  private fun onAdBreakEnd(event: AdBreakEndEvent) {
     logDebug("onAdBreakEnd")
     isPlayingAd = false
     adPodPosition = 1
@@ -341,19 +316,19 @@ class AdobeConnector(
     sendEventRequestAsync(AdobeEventTypes.AD_BREAK_COMPLETE)
   }
 
-  private fun handleAdBegin(ad: Ad?) {
+  private fun onAdBegin(event: AdBeginEvent) {
     logDebug("onAdBegin")
-    val metadata = calculateAdBeginMetadata(ad, adPodPosition)
+    val metadata = calculateAdBeginMetadata(event.ad, adPodPosition)
     sendEventRequestAsync(AdobeEventTypes.AD_START, metadata)
     adPodPosition++
   }
 
-  private fun handleAdEnd(ad: Ad?) {
+  private fun onAdEnd(event: AdEndEvent) {
     logDebug("onAdEnd")
     sendEventRequestAsync(AdobeEventTypes.AD_COMPLETE)
   }
 
-  private fun handleAdSkip() {
+  private fun onAdSkip(event: AdSkipEvent) {
     logDebug("onAdSkip")
     sendEventRequestAsync(AdobeEventTypes.AD_SKIP)
   }
