@@ -246,7 +246,7 @@ class AdobeConnector(
   }
 
   private fun onRemoveTextTrack(event: RemoveTextTrackEvent) {
-    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.name }?.let { track ->
+    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.type }?.let { track ->
       logDebug("onRemoveTextTrack - remove chapter track ${track.uid}")
       track.removeEventListener(TextTrackEventTypes.ENTERCUE, this::onEnterCue)
       track.removeEventListener(TextTrackEventTypes.EXITCUE, this::onExitCue)
