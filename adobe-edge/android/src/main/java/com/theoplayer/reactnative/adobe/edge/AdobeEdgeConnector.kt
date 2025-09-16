@@ -146,7 +146,9 @@ class AdobeEdgeConnector(
     player.removeEventListener(PlayerEventTypes.WAITING, this::onWaiting)
     player.removeEventListener(PlayerEventTypes.SOURCECHANGE, this::onSourceChange)
     player.textTracks.removeEventListener(TextTrackListEventTypes.ADDTRACK, this::onAddTextTrack)
-    player.textTracks.removeEventListener(TextTrackListEventTypes.REMOVETRACK, this::onRemoveTextTrack)
+    player.textTracks.removeEventListener(
+      TextTrackListEventTypes.REMOVETRACK, this::onRemoveTextTrack
+    )
     player.videoTracks.removeEventListener(VideoTrackListEventTypes.ADDTRACK, this::onAddVideoTrack)
     player.removeEventListener(PlayerEventTypes.ERROR, this::onError)
     player.ads.apply {
@@ -222,15 +224,13 @@ class AdobeEdgeConnector(
 
   private fun onAddVideoTrack(event: AddVideoTrackEvent) {
     event.track.addEventListener(
-      VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
-      this::onQualityChanged
+      VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT, this::onQualityChanged
     )
   }
 
   private fun onRemoveVideoTrack(event: RemoveVideoTrackEvent) {
     event.track.removeEventListener(
-      VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT,
-      this::onQualityChanged
+      VideoTrackEventTypes.ACTIVEQUALITYCHANGEDEVENT, this::onQualityChanged
     )
   }
 
@@ -254,8 +254,7 @@ class AdobeEdgeConnector(
     Logger.debug("onError")
     mediaApi.error(
       player.currentTime, AdobeErrorDetails(
-        name = event.errorObject.code.toString(),
-        source = ErrorSource.PLAYER
+        name = event.errorObject.code.toString(), source = ErrorSource.PLAYER
       )
     )
   }
@@ -282,9 +281,7 @@ class AdobeEdgeConnector(
   private fun onAdBegin(event: AdBeginEvent) {
     Logger.debug("onAdBegin")
     mediaApi.adStart(
-      player.currentTime,
-      calculateAdvertisingDetails(event.ad, adPodPosition),
-      customMetadata
+      player.currentTime, calculateAdvertisingDetails(event.ad, adPodPosition), customMetadata
     )
     adPodPosition++
   }
@@ -323,15 +320,21 @@ class AdobeEdgeConnector(
     val hasValidDuration = isValidDuration(mediaLengthSec)
 
     Logger.debug(
-      "maybeStartSession - " +
-        "mediaLength: $mediaLength, " +
-        "hasValidSource: $hasValidSource, " +
-        "hasValidDuration: $hasValidDuration, " +
-        "isPlayingAd: ${player.ads.isPlaying}"
+      "maybeStartSession - " + "mediaLength: $mediaLength, " + "hasValidSource: $hasValidSource, " + "hasValidDuration: $hasValidDuration, " + "isPlayingAd: ${player.ads.isPlaying}"
     )
 
-    if (sessionInProgress || !hasValidSource || !hasValidDuration || isPlayingAd) {
-      Logger.debug("maybeStartSession - NOT started")
+    if (sessionInProgress) {
+      Logger.debug("maybeStartSession - NOT started: already in progress")
+      return
+    }
+
+    if (isPlayingAd) {
+      Logger.debug("maybeStartSession - NOT started: playing ad")
+      return
+    }
+
+    if (!hasValidSource || !hasValidDuration) {
+      Logger.debug("maybeStartSession - NOT started: invalid ${if (hasValidSource) "duration" else "source"}")
       return
     }
 
