@@ -13,7 +13,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
 
   private val viewResolver: ViewResolver = ViewResolver(context)
 
-  private var adobeConnectors: HashMap<Int, AdobeConnector> = HashMap()
+  private var adobeConnectors: HashMap<Int, AdobeEdgeConnector> = HashMap()
 
   override fun getName(): String {
     return TAG
@@ -31,7 +31,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
         adobeConnectors[tag] =
-          AdobeConnector(
+          AdobeEdgeConnector(
             player = playerView.player,
             baseUrl = baseUrl,
             configId = configId,
