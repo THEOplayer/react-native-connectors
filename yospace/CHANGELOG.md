@@ -1,5 +1,11 @@
 # @theoplayer/react-native-yospace
 
+## 1.4.0
+
+### ✨ Features
+
+- Add support for THEOplayer v10 and React Native THEOplayer v10.
+
 ## 1.3.1
 
 ### 🐛 Issues

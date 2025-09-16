@@ -1,5 +1,11 @@
 # @theoplayer/react-native-drm
 
+## 1.10.0
+
+### ✨ Features
+
+- Add support for THEOplayer v10 and React Native THEOplayer v10.
+
 ## 1.9.0
 
 ### ✨ Features

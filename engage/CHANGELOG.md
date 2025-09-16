@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.4.0
+
+### ✨ Features
+
+- Add support for THEOplayer v10 and React Native THEOplayer v10.
+
 ## 0.3.0
 
 ### ✨ Features
