@@ -54,8 +54,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^7.5.0 || ^8 || ^9",
-    "theoplayer": "^5 || ^6 || ^7 || ^8 || ^9"
+    "react-native-theoplayer": "^7.5.0 || ^8 || ^9 || ^10",
+    "theoplayer": "^7 || ^8 || ^9 || ^10"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
@@ -81,6 +81,6 @@
     ]
   },
   "dependencies": {
-    "@theoplayer/yospace-connector-web": "^2.6.0"
+    "@theoplayer/yospace-connector-web": "^2.7.0"
   }
 }

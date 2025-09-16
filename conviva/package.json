@@ -53,14 +53,14 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@convivainc/conviva-js-coresdk": "^4.7.16",
-    "@theoplayer/conviva-connector-web": "^2.7.0"
+    "@convivainc/conviva-js-coresdk": "^4.8.0",
+    "@theoplayer/conviva-connector-web": "^3.0.0"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^3 || ^7 || ^8 || ^9",
-    "theoplayer": "^5 || ^6 || ^7 || ^8 || ^9"
+    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10",
+    "theoplayer": "^7 || ^8 || ^9 || ^10"
   },
   "peerDependenciesMeta": {
     "theoplayer": {

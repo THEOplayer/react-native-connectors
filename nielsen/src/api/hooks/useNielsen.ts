@@ -7,8 +7,8 @@ export function useNielsen(
   instanceName: string,
   options: NielsenOptions,
 ): [RefObject<NielsenConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<NielsenConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<NielsenConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

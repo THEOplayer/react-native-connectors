@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         api-level: [ 34 ]
-        newArchEnabled: [ false ]
+        newArchEnabled: [ true ]
     name: Build for API Level ${{ matrix.api-level }} using ${{matrix.newArchEnabled  == true && 'New' || 'Old' }} Architecture
     steps:
       - name: Checkout repository

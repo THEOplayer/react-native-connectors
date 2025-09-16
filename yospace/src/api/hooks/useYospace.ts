@@ -3,8 +3,8 @@ import { RefObject, useEffect, useRef } from 'react';
 import { YospaceConnector } from '@theoplayer/react-native-yospace';
 
 export function useYospace(): [RefObject<YospaceConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<YospaceConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<YospaceConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

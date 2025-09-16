@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "youbora-adapter-theoplayer2": "^6.8.10",
-    "youboralib": "^6.8.57"
+    "youboralib": "^6.8.67"
   },
   "devDependencies": {
     "youboralib-util": "^1.4.3"
@@ -63,8 +63,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^3 || ^7 || ^8 || ^9",
-    "theoplayer": "^5 || ^6 || ^7 || ^8 || ^9"
+    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10",
+    "theoplayer": "^7 || ^8 || ^9 || ^10"
   },
   "peerDependenciesMeta": {
     "theoplayer": {

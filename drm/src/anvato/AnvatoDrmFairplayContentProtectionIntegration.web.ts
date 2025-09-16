@@ -106,6 +106,7 @@ async function readStreamAsArrayBuffer(readable: ReadableStream<Uint8Array>): Pr
   const chunks: Uint8Array[] = [];
   let totalLength = 0;
 
+  // eslint-disable-next-line
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
