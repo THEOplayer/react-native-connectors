@@ -16,12 +16,13 @@ import { MediaEdgeAPI } from './media-edge/MediaEdgeAPI';
 import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
 import { ContentType } from '../api/details/AdobeSessionDetails';
 import { ErrorSource } from '../api/details/AdobeErrorDetails';
+import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 
 const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 
-export class AdobeConnectorAdapter {
+export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
   private player: THEOplayer;
 
   /** Timer handling the ping event request */
