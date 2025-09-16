@@ -223,12 +223,12 @@ class MediaEdgeAPI(
 
   private suspend fun sendRequest(
     url: String,
-    body: RequestBody
+    body: String
   ): Response? = withContext(Dispatchers.IO) {
     return@withContext try {
       val request = Request.Builder()
         .url(createUrlWithClientParams(url))
-        .post(body.toString().toRequestBody("application/json".toMediaType()))
+        .post(body.toRequestBody("application/json".toMediaType()))
         .header("User-Agent", userAgent)
         .build()
 
@@ -273,10 +273,7 @@ class MediaEdgeAPI(
         })
       }
 
-      val response = sendRequest(
-        "$baseUrl/sessionStart",
-        body.toString().toRequestBody("application/json".toMediaType())
-      )
+      val response = sendRequest("$baseUrl/sessionStart", body.toString())
 
       val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
       val jsonResponse = JSONObject(responseBody)
@@ -286,7 +283,7 @@ class MediaEdgeAPI(
         throw Exception(error.toString())
       }
 
-      val handle = jsonResponse.optJSONObject("data")?.optJSONArray("handle")
+      val handle = jsonResponse.optJSONArray("handle")
       sessionId = handle?.let { array ->
         (0 until array.length()).firstNotNullOfOrNull { i ->
           array.optJSONObject(i)?.takeIf { it.optString("type") == "media-analytics:new-session" }
@@ -333,7 +330,9 @@ class MediaEdgeAPI(
               addProperty("eventType", pathToEventTypeMap[path]?.value)
               addProperty("timestamp", Date().toISOString())
               add("mediaCollection", JsonObject().apply {
-                add(gson.toJsonTree(mediaDetails))
+                mediaDetails.forEach { (key, value) ->
+                  add(key, gson.toJsonTree(value))
+                }
                 addProperty("sessionID", sessionId)
               })
             })
@@ -343,17 +342,17 @@ class MediaEdgeAPI(
 
       Logger.debug("postEvent - $path $body")
 
-      val response = sendRequest(
-        "$baseUrl$path",
-        body.toRequestBody("application/json".toMediaType())
-      )
-
+      val response = sendRequest("$baseUrl$path", body)
       val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
-      val jsonResponse = JSONObject(responseBody)
-      val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
-        ?.optJSONArray("errors")
-      if (error != null) {
-        Logger.error("Failed to send event. $error")
+
+      // Optionally parse errors
+      if (responseBody.isNotEmpty()) {
+        val jsonResponse = JSONObject(responseBody)
+        val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
+          ?.optJSONArray("errors")
+        if (error != null) {
+          Logger.error("Failed to send event. $error")
+        }
       }
     } catch (e: Exception) {
       Logger.error("Failed to send event. ${e.message}")
