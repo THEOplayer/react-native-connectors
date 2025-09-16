@@ -10,7 +10,6 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
@@ -22,6 +21,11 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.json.JSONObject
+
+data class QueuedEvent(
+  val path: String,
+  val mediaDetails: Map<String, Any?>
+)
 
 class MediaEdgeAPI(
   private val baseUrl: String,
@@ -37,7 +41,7 @@ class MediaEdgeAPI(
   var hasSessionFailed = false
     private set
 
-  private val eventQueue = mutableListOf<() -> Unit>()
+  private val eventQueue = mutableListOf<QueuedEvent>()
 
   private val scope = CoroutineScope(Dispatchers.Main)
 
@@ -80,9 +84,13 @@ class MediaEdgeAPI(
   }
 
   fun ping(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    if (hasSessionStarted()) {
-      scope.launch {
-        postEvent("/ping", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
+    scope.launch {
+      sessionId?.let { sessionId ->
+        postEvent(
+          sessionId,
+          "/ping",
+          mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
+        )
       }
     }
   }
@@ -291,8 +299,10 @@ class MediaEdgeAPI(
         }
       }
 
-      if (sessionId != null && eventQueue.isNotEmpty()) {
-        eventQueue.forEach { it() }
+      if (eventQueue.isNotEmpty()) {
+        sessionId?.let { sessionId ->
+          eventQueue.forEach { event -> postEvent(sessionId, event.path, event.mediaDetails) }
+        }
         eventQueue.clear()
       }
     } catch (e: Exception) {
@@ -303,25 +313,14 @@ class MediaEdgeAPI(
 
   private fun maybeQueueEvent(path: String, mediaDetails: Map<String, Any?>) {
     if (hasSessionFailed) return
-    val doPostEvent = { postEventAsync(path, mediaDetails) }
-    if (!hasSessionStarted()) {
-      eventQueue.add { doPostEvent() }
-    } else {
-      doPostEvent()
-    }
+    sessionId?.let { sessionId ->
+      scope.launch {
+        postEvent(sessionId, path, mediaDetails)
+      }
+    } ?: eventQueue.add(QueuedEvent(path, mediaDetails))
   }
 
-  private fun postEventAsync(path: String, mediaDetails: Map<String, Any?>) {
-    scope.launch {
-      postEvent(path, mediaDetails)
-    }
-  }
-
-  private suspend fun postEvent(path: String, mediaDetails: Map<String, Any?>) {
-    if (sessionId == null) {
-      Logger.error("Invalid sessionID")
-      return
-    }
+  private suspend fun postEvent(sessionId: String, path: String, mediaDetails: Map<String, Any?>) {
     try {
       val body = JsonObject().apply {
         add("events", JsonArray().apply {
