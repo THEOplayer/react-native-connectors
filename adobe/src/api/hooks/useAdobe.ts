@@ -13,8 +13,8 @@ export function useAdobe(
   useDebug?: boolean,
   useNative: boolean = true,
 ): [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<AdobeConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<AdobeConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

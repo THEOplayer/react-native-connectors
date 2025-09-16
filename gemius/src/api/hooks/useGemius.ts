@@ -4,8 +4,8 @@ import { GemiusConnector } from '../GemiusConnector';
 import { GemiusConfiguration } from '../GemiusConfiguration';
 
 export function useGemius(configuration: GemiusConfiguration): [RefObject<GemiusConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<GemiusConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<GemiusConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

@@ -6,8 +6,8 @@ export function useComscore(
   metadata: ComscoreMetadata,
   config: ComscoreConfiguration,
 ): [RefObject<ComscoreConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<ComscoreConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<ComscoreConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

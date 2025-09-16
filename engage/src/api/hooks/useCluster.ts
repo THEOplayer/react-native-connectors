@@ -1,11 +1,5 @@
-import {
-  Cluster, ClusterConfig,
-  ClusterType,
-  EngageClient,
-  EngageClusterEventType,
-  Entity
-} from "@theoplayer/react-native-engage";
-import { useEffect, useState } from "react";
+import { Cluster, ClusterConfig, ClusterType, EngageClient, EngageClusterEventType, Entity } from '@theoplayer/react-native-engage';
+import { useEffect, useState } from 'react';
 
 /**
  * useCluster is a convenience hook that listens for changes in the cluster instance, triggering a state update.
@@ -16,7 +10,7 @@ import { useEffect, useState } from "react";
  */
 export function useCluster(engage?: EngageClient, type?: ClusterType, config?: ClusterConfig) {
   const [, setEntities] = useState<Entity[]>([]);
-  const [cluster, setCluster] = useState<Cluster | undefined>();
+  const [cluster, setCluster] = useState<Cluster | undefined>(undefined);
 
   useEffect(() => {
     if (engage) {
@@ -37,7 +31,7 @@ export function useCluster(engage?: EngageClient, type?: ClusterType, config?: C
     cluster?.addEventListener(EngageClusterEventType.EntitiesChanged, onEntitiesChanged);
     return () => {
       cluster?.removeEventListener(EngageClusterEventType.EntitiesChanged, onEntitiesChanged);
-    }
+    };
   }, [cluster]);
 
   return cluster;

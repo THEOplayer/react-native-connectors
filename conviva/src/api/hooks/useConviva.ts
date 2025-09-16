@@ -7,8 +7,8 @@ export function useConviva(
   metadata: ConvivaMetadata,
   config: ConvivaConfiguration,
 ): [RefObject<ConvivaConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<ConvivaConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<ConvivaConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector

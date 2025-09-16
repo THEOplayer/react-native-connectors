@@ -8,8 +8,8 @@ export function useAdScript(
   contentMetadata: AdScriptMetadata,
   debug?: boolean,
 ): [RefObject<AdScriptConnector | undefined>, (player: THEOplayer | undefined) => void] {
-  const connector = useRef<AdScriptConnector | undefined>();
-  const theoPlayer = useRef<THEOplayer | undefined>();
+  const connector = useRef<AdScriptConnector | undefined>(undefined);
+  const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
   const initialize = (player: THEOplayer | undefined) => {
     // Optionally destroy existent connector
