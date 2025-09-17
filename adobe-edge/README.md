@@ -40,9 +40,10 @@ const baseUrl = "https://edge.adobedc.net/ee-pre-prd/va/v1";
 const dataStreamId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
 const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
 const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
+const useNative = true; // Use a native connector on iOS & Android; `false` by default.
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, true, debugSessionID);
+  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, true, debugSessionID, useNative);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
