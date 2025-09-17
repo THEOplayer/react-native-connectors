@@ -68,13 +68,6 @@ lib/
 
 # TypeDoc
 /api
-youbora/manifest.json
-agama/src/static/manifest.json
-engage/src/manifest.json
-adobe/src/manifest.json
-comscore/src/manifest.json
-conviva/src/manifest.json
-mux/src/manifest.json
-nielsen/src/manifest.json
+manifest.json
 apps/e2e/cavy_results.md
 apps/e2e/ios/Pods
