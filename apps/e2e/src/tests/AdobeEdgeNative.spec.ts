@@ -4,12 +4,12 @@ import { testConnector } from './ConnectorUtils';
 import { THEOplayer } from 'react-native-theoplayer';
 
 export default function (spec: TestScope) {
-  spec.describe(`Setup Adobe Edge connector`, function () {
+  spec.describe(`Setup Adobe Edge Native connector`, function () {
     let connector: AdobeConnector;
     testConnector(
       spec,
       (player: THEOplayer) => {
-        connector = new AdobeConnector(player, 'https://edge.adobedc.net/ee-pre-prd/va/v1', 'dataStreamId', undefined, true, undefined, false);
+        connector = new AdobeConnector(player, 'https://edge.adobedc.net/ee-pre-prd/va/v1', 'dataStreamId', undefined, true, undefined, true);
       },
       () => {
         connector.stopAndStartNewSession([
