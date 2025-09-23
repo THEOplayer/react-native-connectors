@@ -6,7 +6,7 @@
 struct AdobeErrorDetails: Codable {
     /// The error ID.
     let name: String
-
+    
     /// The error source.
     let source: ErrorSource
 }

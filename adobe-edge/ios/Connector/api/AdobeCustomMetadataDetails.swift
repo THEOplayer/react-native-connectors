@@ -6,7 +6,7 @@
 struct AdobeCustomMetadataDetails: Codable {
     /// The name of the custom field.
     let name: String?
-
+    
     /// The value of the custom field.
     let value: String?
 }
