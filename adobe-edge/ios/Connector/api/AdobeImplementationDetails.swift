@@ -6,10 +6,10 @@
 struct AdobeImplementationDetails: Codable {
     /// The environment of the implementation
     let environment: AdobeEnvironment?
-
+    
     /// SDK or endpoint identifier. All SDKs or endpoints are identified through a URI, including extensions.
     let name: String?
-
+    
     /// The version identifier of the API, e.g h.18.
     let version: String?
 }

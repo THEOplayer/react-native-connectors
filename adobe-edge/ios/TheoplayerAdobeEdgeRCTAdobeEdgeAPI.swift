@@ -52,32 +52,32 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     }
   }
   
-  @objc(setDebugSessionId:id:)
-  func setDebugSessionId(_ node: NSNumber, id: String?) -> Void {
+  @objc(setDebugSessionId:debugSessionId:)
+  func setDebugSessionId(_ node: NSNumber, debugSessionId: String?) -> Void {
     log("setDebugSessionId triggered.")
     
     if let connector = self.connectors[node] {
-      connector.setDebugSessionId(id)
+      connector.setDebugSessionId(debugSessionId)
     }
   }
   
-  @objc(updateMetadata:metadata:)
-  func updateMetadata(_ node: NSNumber, metadataList: [[String: Any]]) -> Void {
-    log("updateMetadata triggered.")
-    
-    if let connector = self.connectors[node] {
-      connector.updateMetadata(
-        metadataList.flatMap { dict in
-          dict.map { (key, value) in
-            AdobeCustomMetadataDetails(
-              name: key,
-              value: "\(value)"
+    @objc(updateMetadata:metadata:)
+    func updateMetadata(_ node: NSNumber, metadata: [NSDictionary]) -> Void {
+        log("updateMetadata triggered.")
+        
+        if let connector = self.connectors[node] {
+            connector.updateMetadata(
+                metadata.flatMap { dict in
+                    dict.map { (key, value) in
+                        AdobeCustomMetadataDetails(
+                            name: key as? String,
+                            value: "\(value)"
+                        )
+                    }
+                }
             )
-          }
         }
-      )
     }
-  }
   
   @objc(setError:errorDetails:)
   func setError(_ node: NSNumber, errorDetails: [String:Any]) -> Void {
@@ -94,7 +94,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
   }
   
   @objc(stopAndStartNewSession:customMetadataDetails:)
-  func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: [[String: Any]]) -> Void {
+  func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: [NSDictionary]) -> Void {
     log("stopAndStartNewSession triggered")
     
     if let connector = self.connectors[node] {
@@ -102,7 +102,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         customMetadataDetails.flatMap { dict in
           dict.map { (key, value) in
             AdobeCustomMetadataDetails(
-              name: key,
+              name: key as? String,
               value: "\(value)"
             )
           }
