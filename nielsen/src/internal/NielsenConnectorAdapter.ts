@@ -1,22 +1,20 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
 import { NielsenOptions } from '@theoplayer/react-native-analytics-nielsen';
 
 export class NielsenConnectorAdapter {
-  constructor(
-    private player: THEOplayer,
-    appId: string,
-    instanceName: string,
-    nielsenOptions: NielsenOptions,
-  ) {
-    NativeModules.NielsenModule.initialize(this.player.nativeHandle, appId, instanceName, nielsenOptions);
+  private readonly nativeHandle: NativeHandleType;
+
+  constructor(player: THEOplayer, appId: string, instanceName: string, nielsenOptions: NielsenOptions) {
+    this.nativeHandle = player.nativeHandle || -1;
+    NativeModules.NielsenModule.initialize(this.nativeHandle, appId, instanceName, nielsenOptions);
   }
 
   updateMetadata(metadata: { [key: string]: string }): void {
-    NativeModules.NielsenModule.updateMetadata(this.player.nativeHandle, metadata);
+    NativeModules.NielsenModule.updateMetadata(this.nativeHandle, metadata);
   }
 
   destroy(): void {
-    NativeModules.NielsenModule.destroy(this.player.nativeHandle || -1);
+    NativeModules.NielsenModule.destroy(this.nativeHandle);
   }
 }
