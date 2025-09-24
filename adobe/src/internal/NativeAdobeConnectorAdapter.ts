@@ -10,10 +10,10 @@ const ERROR_MSG = 'AdobeConnectorAdapter Error';
  * A native iOS & Android implementation of the AdobeConnector.
  */
 export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
-  private nativeHandle: NativeHandleType = -1;
+  private readonly nativeHandle: NativeHandleType;
 
   constructor(
-    private player: THEOplayer,
+    player: THEOplayer,
     uri: string,
     ecid: string,
     sid: string,
