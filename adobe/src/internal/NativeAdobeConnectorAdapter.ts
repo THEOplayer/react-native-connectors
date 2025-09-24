@@ -1,4 +1,4 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import type { AdobeMetaData } from './Types';
 import { NativeModules } from 'react-native';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
@@ -10,6 +10,8 @@ const ERROR_MSG = 'AdobeConnectorAdapter Error';
  * A native iOS & Android implementation of the AdobeConnector.
  */
 export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
+  private nativeHandle: NativeHandleType = -1;
+
   constructor(
     private player: THEOplayer,
     uri: string,
@@ -20,8 +22,9 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
     userAgent?: string,
     debug = false,
   ) {
+    this.nativeHandle = player.nativeHandle || -1;
     try {
-      NativeModules.AdobeModule.initialize(this.player.nativeHandle || -1, uri, ecid, sid, trackingUrl, metadata, userAgent, debug);
+      NativeModules.AdobeModule.initialize(this.nativeHandle, uri, ecid, sid, trackingUrl, metadata, userAgent, debug);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -29,7 +32,7 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   setDebug(debug: boolean) {
     try {
-      NativeModules.AdobeModule.setDebug(this.player.nativeHandle || -1, debug);
+      NativeModules.AdobeModule.setDebug(this.nativeHandle, debug);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -37,7 +40,7 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   updateMetadata(metadata: AdobeMetaData): void {
     try {
-      NativeModules.AdobeModule.updateMetadata(this.player.nativeHandle || -1, metadata);
+      NativeModules.AdobeModule.updateMetadata(this.nativeHandle, metadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -45,7 +48,7 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   setError(metadata: AdobeMetaData): void {
     try {
-      NativeModules.AdobeModule.setError(this.player.nativeHandle || -1, metadata);
+      NativeModules.AdobeModule.setError(this.nativeHandle, metadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -53,7 +56,7 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   async stopAndStartNewSession(metadata?: AdobeMetaData): Promise<void> {
     try {
-      NativeModules.AdobeModule.stopAndStartNewSession(this.player.nativeHandle || -1, metadata);
+      NativeModules.AdobeModule.stopAndStartNewSession(this.nativeHandle, metadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -61,7 +64,7 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   async destroy(): Promise<void> {
     try {
-      NativeModules.AdobeModule.destroy(this.player.nativeHandle || -1);
+      NativeModules.AdobeModule.destroy(this.nativeHandle);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
