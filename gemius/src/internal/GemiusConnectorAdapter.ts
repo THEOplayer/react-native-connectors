@@ -10,8 +10,8 @@ export class GemiusConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
   constructor(player: THEOplayer, configuration: GemiusConfiguration) {
-    this.nativeHandle = player.nativeHandle || -1;
     try {
+      this.nativeHandle = player.nativeHandle || -1;
       NativeModules.GemiusModule.initialize(this.nativeHandle, configuration);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);

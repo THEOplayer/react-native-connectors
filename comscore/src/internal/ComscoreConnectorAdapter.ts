@@ -3,27 +3,50 @@ import type { ComscoreConfiguration } from '../api/ComscoreConfiguration';
 import type { ComscoreMetadata } from '../api/ComscoreMetadata';
 import { NativeModules } from 'react-native';
 
+const TAG = 'ComscoreConnector';
+const ERROR_MSG = 'ComscoreConnectorAdapter Error';
+
 export class ComscoreConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
   constructor(player: THEOplayer, comscoreMetadata: ComscoreMetadata, comscoreConfig: ComscoreConfiguration) {
-    this.nativeHandle = player.nativeHandle || -1;
-    NativeModules.ComscoreModule.initialize(this.nativeHandle, comscoreMetadata, comscoreConfig);
+    try {
+      this.nativeHandle = player.nativeHandle || -1;
+      NativeModules.ComscoreModule.initialize(this.nativeHandle, comscoreMetadata, comscoreConfig);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   update(metadata: ComscoreMetadata): void {
-    NativeModules.ComscoreModule.update(this.nativeHandle, metadata);
+    try {
+      NativeModules.ComscoreModule.update(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setPersistentLabel(label: string, value: string): void {
-    NativeModules.ComscoreModule.setPersistentLabel(this.nativeHandle, label, value);
+    try {
+      NativeModules.ComscoreModule.setPersistentLabel(this.nativeHandle, label, value);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setPersistentLabels(labels: { [key: string]: string }): void {
-    NativeModules.ComscoreModule.setPersistentLabels(this.nativeHandle, labels);
+    try {
+      NativeModules.ComscoreModule.setPersistentLabels(this.nativeHandle, labels);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
-    NativeModules.ComscoreModule.destroy(this.nativeHandle);
+    try {
+      NativeModules.ComscoreModule.destroy(this.nativeHandle);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }

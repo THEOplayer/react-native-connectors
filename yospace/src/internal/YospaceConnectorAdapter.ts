@@ -1,6 +1,9 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules, Platform } from 'react-native';
 
+const TAG = 'YospaceConnector';
+const ERROR_MSG = 'YospaceConnectorAdapter Error';
+
 export class YospaceConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
@@ -10,13 +13,21 @@ export class YospaceConnectorAdapter {
       console.warn(`THEOplayer Yospace connector does not support ${Platform.OS} yet.`);
       return;
     }
-    NativeModules.YospaceModule.initialize(this.nativeHandle, debugFlags);
+    try {
+      NativeModules.YospaceModule.initialize(this.nativeHandle, debugFlags);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
     if (Platform.OS !== 'android') {
       return;
     }
-    NativeModules.YospaceModule.destroy(this.nativeHandle);
+    try {
+      NativeModules.YospaceModule.destroy(this.nativeHandle);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }

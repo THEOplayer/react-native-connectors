@@ -4,35 +4,66 @@ import type { ConvivaMetadata } from '../api/ConvivaMetadata';
 import { NativeModules } from 'react-native';
 import type { ConvivaEventDetail } from '../api/ConvivaEventDetail';
 
+const TAG = 'ConvivaConnector';
+const ERROR_MSG = 'ConvivaConnectorAdapter Error';
+
 export class ConvivaConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
   constructor(player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
-    this.nativeHandle = player.nativeHandle || -1;
-    NativeModules.ConvivaModule.initialize(this.nativeHandle, convivaMetadata, convivaConfig);
+    try {
+      this.nativeHandle = player.nativeHandle || -1;
+      NativeModules.ConvivaModule.initialize(this.nativeHandle, convivaMetadata, convivaConfig);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   stopAndStartNewSession(metadata: ConvivaMetadata): void {
-    NativeModules.ConvivaModule.stopAndStartNewSession(this.nativeHandle, metadata);
+    try {
+      NativeModules.ConvivaModule.stopAndStartNewSession(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   reportPlaybackFailed(errorMessage: string): void {
-    NativeModules.ConvivaModule.reportPlaybackFailed(this.nativeHandle, errorMessage);
+    try {
+      NativeModules.ConvivaModule.reportPlaybackFailed(this.nativeHandle, errorMessage);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   reportPlaybackEvent(eventName: string, eventDetail: ConvivaEventDetail): void {
-    NativeModules.ConvivaModule.reportPlaybackEvent(this.nativeHandle, eventName, eventDetail);
+    try {
+      NativeModules.ConvivaModule.reportPlaybackEvent(this.nativeHandle, eventName, eventDetail);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setContentInfo(metadata: ConvivaMetadata): void {
-    NativeModules.ConvivaModule.setContentInfo(this.nativeHandle, metadata);
+    try {
+      NativeModules.ConvivaModule.setContentInfo(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setAdInfo(metadata: ConvivaMetadata): void {
-    NativeModules.ConvivaModule.setAdInfo(this.nativeHandle, metadata);
+    try {
+      NativeModules.ConvivaModule.setAdInfo(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
-    NativeModules.ConvivaModule.destroy(this.nativeHandle);
+    try {
+      NativeModules.ConvivaModule.destroy(this.nativeHandle);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }
