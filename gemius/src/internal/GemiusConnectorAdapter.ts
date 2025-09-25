@@ -1,4 +1,4 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
 import { GemiusConfiguration } from '../api/GemiusConfiguration';
 import { ProgramData } from '../api/ProgramData';
@@ -7,12 +7,12 @@ const TAG = 'GemiusConnector';
 const ERROR_MSG = 'GemiusConnectorAdapter Error';
 
 export class GemiusConnectorAdapter {
-  constructor(
-    private player: THEOplayer,
-    configuration: GemiusConfiguration,
-  ) {
+  private readonly nativeHandle: NativeHandleType;
+
+  constructor(player: THEOplayer, configuration: GemiusConfiguration) {
     try {
-      NativeModules.GemiusModule.initialize(this.player.nativeHandle || -1, configuration);
+      this.nativeHandle = player.nativeHandle || -1;
+      NativeModules.GemiusModule.initialize(this.nativeHandle, configuration);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -20,7 +20,7 @@ export class GemiusConnectorAdapter {
 
   update(programId: string, programData: ProgramData) {
     try {
-      NativeModules.GemiusModule.update(this.player.nativeHandle || -1, programId, programData);
+      NativeModules.GemiusModule.update(this.nativeHandle, programId, programData);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -28,7 +28,7 @@ export class GemiusConnectorAdapter {
 
   destroy(): void {
     try {
-      NativeModules.GemiusModule.destroy(this.player.nativeHandle || -1);
+      NativeModules.GemiusModule.destroy(this.nativeHandle);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }

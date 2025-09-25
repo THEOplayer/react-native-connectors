@@ -1,30 +1,52 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import type { ComscoreConfiguration } from '../api/ComscoreConfiguration';
 import type { ComscoreMetadata } from '../api/ComscoreMetadata';
 import { NativeModules } from 'react-native';
 
+const TAG = 'ComscoreConnector';
+const ERROR_MSG = 'ComscoreConnectorAdapter Error';
+
 export class ComscoreConnectorAdapter {
-  constructor(
-    private player: THEOplayer,
-    comscoreMetadata: ComscoreMetadata,
-    comscoreConfig: ComscoreConfiguration,
-  ) {
-    NativeModules.ComscoreModule.initialize(this.player.nativeHandle, comscoreMetadata, comscoreConfig);
+  private readonly nativeHandle: NativeHandleType;
+
+  constructor(player: THEOplayer, comscoreMetadata: ComscoreMetadata, comscoreConfig: ComscoreConfiguration) {
+    try {
+      this.nativeHandle = player.nativeHandle || -1;
+      NativeModules.ComscoreModule.initialize(this.nativeHandle, comscoreMetadata, comscoreConfig);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   update(metadata: ComscoreMetadata): void {
-    NativeModules.ComscoreModule.update(this.player.nativeHandle, metadata);
+    try {
+      NativeModules.ComscoreModule.update(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setPersistentLabel(label: string, value: string): void {
-    NativeModules.ComscoreModule.setPersistentLabel(this.player.nativeHandle, label, value);
+    try {
+      NativeModules.ComscoreModule.setPersistentLabel(this.nativeHandle, label, value);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   setPersistentLabels(labels: { [key: string]: string }): void {
-    NativeModules.ComscoreModule.setPersistentLabels(this.player.nativeHandle, labels);
+    try {
+      NativeModules.ComscoreModule.setPersistentLabels(this.nativeHandle, labels);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
-    NativeModules.ComscoreModule.destroy(this.player.nativeHandle || -1);
+    try {
+      NativeModules.ComscoreModule.destroy(this.nativeHandle);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }

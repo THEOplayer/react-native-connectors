@@ -1,22 +1,35 @@
-import type { THEOplayer } from 'react-native-theoplayer';
+import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
 import { NielsenOptions } from '@theoplayer/react-native-analytics-nielsen';
 
+const TAG = 'NielsenConnector';
+const ERROR_MSG = 'NielsenConnectorAdapter Error';
+
 export class NielsenConnectorAdapter {
-  constructor(
-    private player: THEOplayer,
-    appId: string,
-    instanceName: string,
-    nielsenOptions: NielsenOptions,
-  ) {
-    NativeModules.NielsenModule.initialize(this.player.nativeHandle, appId, instanceName, nielsenOptions);
+  private readonly nativeHandle: NativeHandleType;
+
+  constructor(player: THEOplayer, appId: string, instanceName: string, nielsenOptions: NielsenOptions) {
+    try {
+      this.nativeHandle = player.nativeHandle || -1;
+      NativeModules.NielsenModule.initialize(this.nativeHandle, appId, instanceName, nielsenOptions);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   updateMetadata(metadata: { [key: string]: string }): void {
-    NativeModules.NielsenModule.updateMetadata(this.player.nativeHandle, metadata);
+    try {
+      NativeModules.NielsenModule.updateMetadata(this.nativeHandle, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 
   destroy(): void {
-    NativeModules.NielsenModule.destroy(this.player.nativeHandle || -1);
+    try {
+      NativeModules.NielsenModule.destroy(this.nativeHandle);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
   }
 }
