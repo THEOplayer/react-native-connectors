@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-mux",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Mux analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
