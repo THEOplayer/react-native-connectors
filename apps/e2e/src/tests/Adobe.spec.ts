@@ -1,7 +1,7 @@
-import {TestScope} from 'cavy';
-import {AdobeConnector} from '@theoplayer/react-native-analytics-adobe';
-import {testConnector} from "./ConnectorUtils";
-import {THEOplayer} from "react-native-theoplayer";
+import { TestScope } from 'cavy';
+import { AdobeConnector } from '@theoplayer/react-native-analytics-adobe';
+import { testConnector } from './ConnectorUtils';
+import { THEOplayer } from 'react-native-theoplayer';
 
 export default function (spec: TestScope) {
   spec.describe(`Setup Adobe connector`, function () {
@@ -9,12 +9,12 @@ export default function (spec: TestScope) {
     testConnector(
       spec,
       (player: THEOplayer) => {
-        connector = new AdobeConnector(player, 'uri', 'ecid', 'sid', 'trackingUrl', null, null, true);
+        connector = new AdobeConnector(player, 'uri', 'ecid', 'sid', 'trackingUrl', null, null, true, false);
       },
       () => {
         connector.stopAndStartNewSession({
-          qoeData: {customKey: 'customValue'},
-          customMetadata: {customKey: 'customValue'},
+          qoeData: { customKey: 'customValue' },
+          customMetadata: { customKey: 'customValue' },
         });
       },
       () => {
