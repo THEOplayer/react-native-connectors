@@ -1,101 +1,94 @@
 package com.theoplayeryoubora
 
-import android.os.Bundle
+import android.app.Activity
 import com.facebook.react.bridge.*
-import com.npaw.youbora.lib6.YouboraLog
-import com.npaw.youbora.lib6.extensions.putNotNullString
-import com.npaw.youbora.lib6.plugin.Options
-import com.npaw.youbora.lib6.plugin.Plugin
-import com.npaw.youbora.lib6.theoplayer.TheoplayerAdapter
-import com.npaw.youbora.lib6.theoplayer.TheoplayerAdsAdapter
+import com.npaw.NpawPlugin
+import com.npaw.analytics.video.VideoAdapter
+import com.npaw.balancer.BalancerOptions
+import com.npaw.core.options.AnalyticsOptions
+import com.npaw.core.util.extensions.Log
+import com.npaw.diagnostics.DiagnosticOptions
+import com.npaw.theo.TheoAdapter
+import com.npaw.theo.TheoAdsAdapter
 import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.android.api.THEOplayerView
 import com.theoplayer.util.ViewResolver
+import com.theoplayeryoubora.adapter.*
 
 private const val TAG = "YouboraModule"
 
 class ReactTHEOplayerYouboraModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
-  private val viewResolver: ViewResolver
+  private val viewResolver: ViewResolver = ViewResolver(context)
+  private var youboraPlugin: HashMap<Int, VideoAdapter> = HashMap()
 
-  private var youboraPlugin: HashMap<Int, Plugin> = HashMap()
-
-  init {
-    viewResolver = ViewResolver(context)
-  }
-
-  override fun getName(): String {
-    return TAG
-  }
+  override fun getName() = TAG
 
   @ReactMethod
-  fun initialize(tag: Int, options: ReadableMap, debugLevel: Int?) {
+  fun initialize(
+    tag: Int,
+    accountCode: String,
+    analyticsOptions: ReadableMap,
+    balancerOptions: ReadableMap,
+    userAgent: String,
+    debugLevel: Int?
+  ) {
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
-        youboraPlugin[tag] =
-          initializeYoubora(playerView, parseOptions(options), parseDebugLevel(debugLevel))
-      }
-    }
-  }
-
-  @ReactMethod
-  fun setDebugLevel(level: Int?) {
-    YouboraLog.setDebugLevel(parseDebugLevel(level))
-  }
-
-  private fun parseDebugLevel(logLevel: Int?): YouboraLog.Level {
-    return when (logLevel) {
-      1 -> YouboraLog.Level.VERBOSE
-      2 -> YouboraLog.Level.DEBUG
-      3 -> YouboraLog.Level.NOTICE
-      4 -> YouboraLog.Level.WARNING
-      5 -> YouboraLog.Level.ERROR
-      else -> YouboraLog.Level.SILENT
-    }
-  }
-
-  private fun parseOptions(map: ReadableMap): Options {
-    return Options(convertMapToBundle(map.toHashMap()))
-  }
-
-  private fun initializeYoubora(
-    view: THEOplayerView,
-    options: Options,
-    logLevel: YouboraLog.Level
-  ): Plugin {
-    YouboraLog.setDebugLevel(logLevel)
-//    val options: Options? = YouboraConfigManager.Companion.instance.getOptions(reactApplicationContext)
-    val plugin = Plugin(options, reactApplicationContext).apply {
-      activity = reactApplicationContext.currentActivity
-      adapter = TheoplayerAdapter(view)
-      adsAdapter = TheoplayerAdsAdapter(view.player)
-    }
-    return plugin
-  }
-
-  private fun convertMapToBundle(map: HashMap<*, *>): Bundle {
-    return Bundle().apply {
-      for ((key, value) in map.entries) {
-        if (key is String) {
-          when (value) {
-            is String -> putNotNullString(key, value)
-            is Double -> putDouble(key, value)
-            is Int -> putInt(key, value)
-            is Long -> putLong(key, value)
-            is Boolean -> putBoolean(key, value)
-            is HashMap<*, *> -> {
-              val b = convertMapToBundle(value)
-              putBundle(key, b)
-            }
-          }
+        initializeYoubora(
+          view = playerView,
+          accountCode = accountCode,
+          analyticsOptions = AnalyticsOptionsAdapter.fromMap(analyticsOptions),
+          balancerOptions = BalancerOptionsAdapter.fromMap(balancerOptions),
+          diagnosticOptions = DiagnosticOptionsAdapter.fromMap(balancerOptions),
+          userAgent = userAgent,
+          logLevel = parseLogLevel(debugLevel)
+        )?.let {
+          youboraPlugin[tag] = it
         }
       }
     }
   }
 
+  private fun parseLogLevel(logLevel: Int?): Log.Level {
+    return when (logLevel) {
+      1 -> Log.Level.VERBOSE
+      2 -> Log.Level.DEBUG
+      3 -> Log.Level.WARNING
+      4 -> Log.Level.ERROR
+      else -> Log.Level.SILENT
+    }
+  }
+
+  private fun initializeYoubora(
+    view: THEOplayerView,
+    accountCode: String,
+    analyticsOptions: AnalyticsOptions,
+    balancerOptions: BalancerOptions,
+    diagnosticOptions: DiagnosticOptions,
+    userAgent: String,
+    logLevel: Log.Level
+  ): VideoAdapter? {
+    return reactApplicationContext.currentActivity?.let { activity: Activity ->
+      val videoAdapter = NpawPlugin.Builder(activity = activity, accountCode = accountCode)
+        .setAnalyticsOptions(analyticsOptions)
+        .setAnalyticsUserAgent(userAgent)
+        .setBalancerOptions(balancerOptions)
+        .setDiagnosticOptions(diagnosticOptions)
+        .setLogLevel(logLevel)
+        .build()
+      videoAdapter
+        .videoBuilder()
+        .setPlayerAdapter(TheoAdapter(view))
+        .setAdAdapter(TheoAdsAdapter(view))
+        .build()
+    }
+  }
+
   @ReactMethod
   fun destroy(tag: Int) {
-    youboraPlugin[tag]?.disable()
+    youboraPlugin[tag]?.destroy()
+    youboraPlugin.remove(tag)
   }
 }

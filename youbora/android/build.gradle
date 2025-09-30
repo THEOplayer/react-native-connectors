@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerYoubora_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerYoubora_compileSdkVersion", 36)
 
   defaultConfig {
-    minSdkVersion safeExtGet("THEOplayerYoubora_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerYoubora_targetSdkVersion", 35)
+    minSdkVersion safeExtGet("THEOplayerYoubora_minSdkVersion", 23)
+    targetSdkVersion safeExtGet("THEOplayerYoubora_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -67,16 +67,13 @@ repositories {
 
 rootProject.allprojects {
   repositories {
-    maven { url "https://npaw.jfrog.io/artifactory/youbora/" }
-    maven { url("$rootDir/../node_modules/@theoplayer/react-native-analytics-youbora/android/local") }
+    maven { url "https://artifact.plugin.npaw.com/artifactory/plugins/android" }
   }
 }
 
-// The Youbora connector requires at least THEOplayer SDK v5.11.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[5.11.0, 11.0.0)')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 11.0.0)')
 def kotlin_version = safeExtGet("THEOplayerYoubora_kotlinVersion", "2.2.10")
-def youbora_version = safeExtGet("THEOplayerYoubora_youboraVersion", "+")
-def youbora_config_version = safeExtGet("THEOplayerYoubora_youboraConfigVersion", "0.4.7")
+def youbora_version = safeExtGet("THEOplayerYoubora_youboraVersion", "7.3.12")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -91,8 +88,8 @@ dependencies {
   compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"
   implementation project(':react-native-theoplayer')
 
-  implementation "com.nicepeopleatwork:theoplayer-unified-adapter:$youbora_version"
-  implementation "com.nicepeopleatwork:configutil:$youbora_config_version"
+  implementation "com.npaw.plugin:plugin:$youbora_version"
+  implementation "com.npaw.theo:plugin-theo:$youbora_version"
 
   // Align the Kotlin SDK libraries with the same version.
   implementation(platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_version"))
