@@ -1,5 +1,11 @@
 # @theoplayer/react-native-yospace
 
+## 1.4.1
+
+### 🐛 Issues
+
+- Fixed an issue where the native connector would not be properly destroyed in case the player's native handle would become unavailable.
+
 ## 1.4.0
 
 ### ✨ Features
