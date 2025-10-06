@@ -4,8 +4,6 @@ package com.theoplayer.reactnative.adobe
 
 import android.util.Log
 import com.google.gson.Gson
-import com.theoplayer.android.api.ads.Ad
-import com.theoplayer.android.api.ads.AdBreak
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -15,7 +13,6 @@ import com.theoplayer.android.api.event.ads.AdSkipEvent
 import com.theoplayer.android.api.event.ads.AdsEventTypes
 import com.theoplayer.android.api.event.player.EndedEvent
 import com.theoplayer.android.api.event.player.ErrorEvent
-import com.theoplayer.android.api.event.player.LoadedMetadataEvent
 import com.theoplayer.android.api.event.player.PauseEvent
 import com.theoplayer.android.api.event.player.PlayerEventTypes
 import com.theoplayer.android.api.event.player.PlayingEvent
@@ -137,14 +134,14 @@ class AdobeConnector(
     EventListener { handleQualityChanged(it) }
   private val onEnterCue: EventListener<EnterCueEvent> = EventListener { handleEnterCue(it) }
   private val onExitCue: EventListener<ExitCueEvent> = EventListener { handleExitCue(it) }
-  private val onError: EventListener<ErrorEvent> = EventListener { event -> handleError(event) }
+  private val onError: EventListener<ErrorEvent> = EventListener { handleError(it) }
   private val onAdBreakBegin: EventListener<AdBreakBeginEvent> =
-    EventListener<AdBreakBeginEvent> { event -> handleAdBreakBegin(event.adBreak) }
+    EventListener<AdBreakBeginEvent> { event -> handleAdBreakBegin(event) }
   private val onAdBreakEnd: EventListener<AdBreakEndEvent> =
     EventListener { event -> handleAdBreakEnd() }
   private val onAdBegin: EventListener<AdBeginEvent> =
-    EventListener { event -> handleAdBegin(event.ad) }
-  private val onAdEnd: EventListener<AdEndEvent> = EventListener { event -> handleAdEnd(event.ad) }
+    EventListener { event -> handleAdBegin(event) }
+  private val onAdEnd: EventListener<AdEndEvent> = EventListener { handleAdEnd(it) }
   private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
 
   init {
@@ -222,11 +219,10 @@ class AdobeConnector(
   }
 
   private fun handlePlaying() {
-    logDebug("onPlaying")
-
     // NOTE: In case of a pre-roll ad, the `playing` event will be sent twice: once starting the re-roll, and once
     // starting content. During the pre-roll, all events will be queued. The session will be started after the pre-roll,
     // making sure we can start the session with the correct content duration (not the ad duration).
+    logDebug("onPlaying")
     scope.launch {
       maybeStartSession(player.duration)
       sendEventRequest(AdobeEventTypes.PLAY)
@@ -271,7 +267,7 @@ class AdobeConnector(
   }
 
   private fun handleRemoveTextTrack(event: RemoveTextTrackEvent) {
-    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.name }?.let { track ->
+    event.track.takeIf { it.kind == TextTrackKind.CHAPTERS.type }?.let { track ->
       logDebug("onRemoveTextTrack - remove chapter track ${track.uid}")
       track.removeEventListener(TextTrackEventTypes.ENTERCUE, onEnterCue)
       track.removeEventListener(TextTrackEventTypes.EXITCUE, onExitCue)
@@ -322,11 +318,11 @@ class AdobeConnector(
     )
   }
 
-  private fun handleAdBreakBegin(adBreak: AdBreak?) {
+  private fun handleAdBreakBegin(event: AdBreakBeginEvent) {
     logDebug("onAdBreakBegin")
     isPlayingAd = true
     startPinger(AD_PING_INTERVAL)
-    val metadata: AdobeMetaData = calculateAdBreakBeginMetadata(adBreak, adBreakPodIndex)
+    val metadata: AdobeMetaData = calculateAdBreakBeginMetadata(event.adBreak, adBreakPodIndex)
     sendEventRequestAsync(AdobeEventTypes.AD_BREAK_START, metadata)
     if (((metadata.params?.get("media.ad.podIndex") as? Int) ?: 0) > adBreakPodIndex) {
       adBreakPodIndex++
@@ -341,14 +337,14 @@ class AdobeConnector(
     sendEventRequestAsync(AdobeEventTypes.AD_BREAK_COMPLETE)
   }
 
-  private fun handleAdBegin(ad: Ad?) {
+  private fun handleAdBegin(event: AdBeginEvent) {
     logDebug("onAdBegin")
-    val metadata = calculateAdBeginMetadata(ad, adPodPosition)
+    val metadata = calculateAdBeginMetadata(event.ad, adPodPosition)
     sendEventRequestAsync(AdobeEventTypes.AD_START, metadata)
     adPodPosition++
   }
 
-  private fun handleAdEnd(ad: Ad?) {
+  private fun handleAdEnd(event: AdEndEvent) {
     logDebug("onAdEnd")
     sendEventRequestAsync(AdobeEventTypes.AD_COMPLETE)
   }

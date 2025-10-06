@@ -6,6 +6,9 @@
       "@theoplayer/react-native-analytics-adobe": [
         "../../adobe/src/index"
       ],
+      "@theoplayer/react-native-analytics-adobe-edge": [
+        "../../adobe-edge/src/index"
+      ],
       "@theoplayer/react-native-analytics-comscore": [
         "../../comscore/src/index"
       ],
