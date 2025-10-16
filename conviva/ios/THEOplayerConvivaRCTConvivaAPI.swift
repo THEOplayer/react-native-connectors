@@ -76,8 +76,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
             if let connector = self.connectors[node],
-               let contentInfo = metadata as? [String: Any],
-               self.player(for: node)?.paused == false {
+               let contentInfo = metadata as? [String: Any] {
                 log("reporting stopAndStartNewSession")
                 connector.stopAndStartNewSession(contentInfo: contentInfo)
             }
