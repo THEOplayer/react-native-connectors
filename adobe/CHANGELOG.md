@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.12.2
+
+### 🐛 Issues
+
+- Fixed an issue where player API was used on the wrong thread, resulting in a crash due to concurrent access of player internals.
+
 ## 1.12.1
 
 ### 🐛 Issues
