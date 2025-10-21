@@ -49,45 +49,49 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
     func setDebug(_ node: NSNumber, debug: Bool) -> Void {
         log("setDebug triggered.")
         self.debug = debug
-        
-        if let connector = self.connectors[node] {
-            connector.setDebug(debug)
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node] {
+                connector.setDebug(debug)
+            }
         }
     }
     
     @objc(updateMetadata:metadata:)
     func updateMetadata(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("updateMetadata triggered.")
-        
-        if let connector = self.connectors[node] {
-            connector.updateMetadata(AdobeMetadata(from: metadata))
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node] {
+                connector.updateMetadata(AdobeMetadata(from: metadata))
+            }
         }
     }
     
     @objc(setError:metadata:)
     func setError(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("setError triggered.")
-        
-        if let connector = self.connectors[node] {
-            connector.setError(AdobeMetadata(from: metadata))
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node] {
+                connector.setError(AdobeMetadata(from: metadata))
+            }
         }
     }
     
     @objc(stopAndStartNewSession:metadata:)
     func stopAndStartNewSession(_ node: NSNumber, metadata: [String:Any]) -> Void {
         log("stopAndStartNewSession triggered")
-        
-        if let connector = self.connectors[node] {
-            connector.stopAndStartNewSession(AdobeMetadata(from: metadata))
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node] {
+                connector.stopAndStartNewSession(AdobeMetadata(from: metadata))
+            }
         }
     }
     
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {
         log("destroy triggered.")
-        
-        if let connector = self.connectors[node] {
-            connector.destroy()
+        DispatchQueue.main.async {
+            self.connectors[node]?.destroy()
+            self.connectors.removeValue(forKey: node)
         }
     }
     
