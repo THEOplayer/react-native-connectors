@@ -24,6 +24,13 @@ The SDK location needs to be passed to the connector by setting the `gemiusSdkDi
 gemiusSdkDir=./app/libs/
 ```
 
+If a different version of the Gemius SDK is used than the default (v2.0.8),
+make sure to update the version in the `gradle.properties` file accordingly:
+
+```
+THEOplayerGemius_gemiusVersion=2.0.8
+```
+
 ### iOS & tvOS
 
 On Apple platforms, the connector requires downloading the private `GemiusSDK_iOS` archive, which contains
