@@ -33,11 +33,11 @@ def safeExtGet(prop, fallback) {
 
 android {
   namespace = "com.theoplayer.reactnative.gemius"
-  compileSdkVersion safeExtGet("THEOplayerGemius_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerGemius_compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerGemius_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerGemius_targetSdkVersion", 35)
+    targetSdkVersion safeExtGet("THEOplayerGemius_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"

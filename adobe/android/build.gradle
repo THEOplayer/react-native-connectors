@@ -31,11 +31,11 @@ def safeExtGet(prop, fallback) {
 
 android {
   namespace = "com.theoplayer.reactnative.adobe"
-  compileSdkVersion safeExtGet("THEOplayerAdobe_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerAdobe_compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerAdobe_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerAdobe_targetSdkVersion", 35)
+    targetSdkVersion safeExtGet("THEOplayerAdobe_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"

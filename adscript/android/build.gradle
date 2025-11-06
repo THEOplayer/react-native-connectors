@@ -33,11 +33,11 @@ def safeExtGet(prop, fallback) {
 
 android {
   namespace = "com.theoplayer.reactnative.adscript"
-  compileSdkVersion safeExtGet("THEOplayerAdScript_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerAdScript_compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerAdScript_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerAdScript_targetSdkVersion", 35)
+    targetSdkVersion safeExtGet("THEOplayerAdScript_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
