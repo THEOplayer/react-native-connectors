@@ -238,7 +238,7 @@ class AdobeEdgeConnector {
         self.log("onActiveQualityChange triggered.")
         var bitrate = 0
         if let activeTrack = self.activeTrack(tracks: player.videoTracks) {
-            bitrate = activeTrack.activeQualityBandwidth
+            bitrate = activeTrack.activeQuality?.bandwidth ?? 0
         }
         self.mediaApi.bitrateChange(
             playhead: player.currentTime, qoeDataDetails: AdobeQoeDataDetails(bitrate: bitrate)
