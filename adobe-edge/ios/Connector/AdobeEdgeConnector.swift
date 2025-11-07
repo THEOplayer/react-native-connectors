@@ -448,7 +448,7 @@ class AdobeEdgeConnector {
     
     private func log(_ text: String) {
         if self.debug {
-            print("[adobe-connector]", text)
+            print("[adobe-edge-connector]", text)
         }
     }
 }
