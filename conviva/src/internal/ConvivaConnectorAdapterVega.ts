@@ -1,30 +1,28 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import * as THEOplayerConvivaConnector from '@theoplayer/conviva-connector-web';
-import type { ConvivaMetadata as NativeConvivaMetadata } from '@convivainc/conviva-js-coresdk';
+import { Constants, ConvivaMetadata as NativeConvivaMetadata } from '@convivainc/conviva-js-coresdk';
 import type { ConvivaConfiguration } from '../api/ConvivaConfiguration';
 import type { ConvivaMetadata } from '../api/ConvivaMetadata';
-import type { ChromelessPlayer } from 'theoplayer';
 import type { ConvivaEventDetail } from '../api/ConvivaEventDetail';
+import { ConvivaConnectorAdapter } from './ConvivaConnectorAdapter';
+import { ChromelessPlayer } from 'theoplayer';
 
-/**
- * Extend player.ads with a BroadcastReceiver that will dispatch all broadcast ad events to the conviva connector,
- * in addition to the ad events originating from the player.
- */
-function extendPlayer(player: THEOplayer): ChromelessPlayer {
-  const nativePlayer = player.nativeHandle as ChromelessPlayer;
-  if (nativePlayer.ads) {
-    // Route broadcast events towards convivaAdEventsExtension
-    Object.assign(nativePlayer.ads, { convivaAdEventsExtension: player.broadcast });
-  }
-  return nativePlayer;
-}
-
-export class ConvivaConnectorAdapter {
+export class ConvivaConnectorAdapterVega implements ConvivaConnectorAdapter {
   private integration: THEOplayerConvivaConnector.ConvivaConnector;
 
   constructor(player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
-    // Use AdEventsExtension
-    this.integration = new THEOplayerConvivaConnector.ConvivaConnector(extendPlayer(player), convivaMetadata as NativeConvivaMetadata, convivaConfig);
+    this.integration = new THEOplayerConvivaConnector.ConvivaConnector(
+      player.nativeHandle as unknown as ChromelessPlayer,
+      convivaMetadata as NativeConvivaMetadata,
+      {
+        ...convivaConfig,
+        deviceMetadata: {
+          [Constants.DeviceMetadata.TYPE]: Constants.DeviceType.SETTOP,
+          [Constants.DeviceMetadata.CATEGORY]: Constants.DeviceCategory.AMAZON,
+          [Constants.DeviceMetadata.MANUFACTURER]: 'Amazon',
+        },
+      },
+    );
   }
 
   stopAndStartNewSession(metadata: ConvivaMetadata): void {
