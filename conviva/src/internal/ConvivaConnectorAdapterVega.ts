@@ -12,6 +12,7 @@ export class ConvivaConnectorAdapterVega implements ConvivaConnectorAdapter {
 
   constructor(player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
     this.integration = new THEOplayerConvivaConnector.ConvivaConnector(
+      // Cast VegaPlayer to ChromelessPlayer interface
       player.nativeHandle as unknown as ChromelessPlayer,
       convivaMetadata as NativeConvivaMetadata,
       {
