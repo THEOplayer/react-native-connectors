@@ -9,7 +9,7 @@ export default function (spec: TestScope) {
     testConnector(
       spec,
       (player: THEOplayer) => {
-        connector = new AdobeConnector(player, 'https://edge.adobedc.net/ee-pre-prd/va/v1', 'dataStreamId', undefined, true);
+        connector = new AdobeConnector(player, 'https://edge.adobedc.net/ee-pre-prd/va/v1', 'dataStreamId', undefined, true, undefined, false);
       },
       () => {
         connector.stopAndStartNewSession([
