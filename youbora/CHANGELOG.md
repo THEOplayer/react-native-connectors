@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-youbora
 
+## 1.5.0
+
+### ✨ Features
+
+- Updated Android's target SDK version to 36.
+
 ## 1.4.1
 
 ### 🐛 Issues

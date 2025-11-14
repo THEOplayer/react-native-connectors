@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-nielsen",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "Nielsen analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

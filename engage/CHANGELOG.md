@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.5.0
+
+### ✨ Features
+
+- Updated Android's target SDK version to 36.
+
 ## 0.4.0
 
 ### ✨ Features
