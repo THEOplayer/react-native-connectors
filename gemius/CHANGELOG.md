@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-gemius
 
+## 1.2.0
+
+### ✨ Features
+
+- Updated Android's target SDK version to 36.
+
 ## 1.1.1
 
 ### 🐛 Issues

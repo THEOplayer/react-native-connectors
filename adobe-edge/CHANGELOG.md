@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 0.7.0
+
+### ✨ Features
+
+- Added optional native connector implementations for iOS and Android.
+
 ## 0.6.0
 
 ### ✨ Features

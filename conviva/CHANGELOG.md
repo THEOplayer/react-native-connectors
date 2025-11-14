@@ -1,5 +1,16 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.11.0
+
+### ✨ Features
+
+- Added support for Amazon Vega OS.
+- Updated Android's target SDK version to 36.
+
+### 🐛 Issues
+
+- Fixed an issue where on iOS the stopAndStartNewSession was blocked when the player was in a paused state.
+
 ## 1.10.1
 
 ### 🐛 Issues

@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.10.0
+
+### ✨ Features
+
+- Updated Android's target SDK version to 36.
+
 ## 1.9.1
 
 ### 🐛 Issues

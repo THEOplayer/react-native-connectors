@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.12.0
+
+### ✨ Features
+
+- Updated Android's target SDK version to 36.
+
 ## 1.11.1
 
 ### 🐛 Issues

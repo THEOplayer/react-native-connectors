@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.13.0
+
+### ✨ Features
+
+- Fixed an issue on Android where chapter events would not be properly reported.
+- Updated Android's target SDK version to 36.
+
 ## 1.12.2
 
 ### 🐛 Issues
