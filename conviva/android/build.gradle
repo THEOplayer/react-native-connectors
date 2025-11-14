@@ -30,11 +30,11 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-  compileSdkVersion safeExtGet("THEOplayerConviva_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerConviva_compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerConviva_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerConviva_targetSdkVersion", 35)
+    targetSdkVersion safeExtGet("THEOplayerConviva_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
