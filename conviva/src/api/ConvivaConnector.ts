@@ -1,15 +1,12 @@
 import type { THEOplayer } from 'react-native-theoplayer';
+import { ConvivaConnectorAdapterSpec } from '../internal/ConvivaConnectorAdapterSpec';
 import { ConvivaConnectorAdapter } from '../internal/ConvivaConnectorAdapter';
-import { ConvivaConnectorAdapterNative } from '../internal/ConvivaConnectorAdapterNative';
-import { ConvivaConnectorAdapterWeb } from '../internal/ConvivaConnectorAdapterWeb';
 import type { ConvivaConfiguration } from './ConvivaConfiguration';
 import type { ConvivaMetadata } from './ConvivaMetadata';
 import type { ConvivaEventDetail } from './ConvivaEventDetail';
-import { Platform } from 'react-native';
-import { ConvivaConnectorAdapterVega } from '../internal/ConvivaConnectorAdapterVega';
 
 export class ConvivaConnector {
-  private connectorAdapter: ConvivaConnectorAdapter;
+  private connectorAdapter: ConvivaConnectorAdapterSpec;
 
   /**
    * Create a new Conviva connector instance.
@@ -19,20 +16,7 @@ export class ConvivaConnector {
    * @param convivaConfig configuration object.
    */
   constructor(player: THEOplayer, convivaMetadata: ConvivaMetadata, convivaConfig: ConvivaConfiguration) {
-    switch (Platform.OS as string) {
-      case 'ios':
-      case 'android':
-        this.connectorAdapter = new ConvivaConnectorAdapterNative(player, convivaMetadata, convivaConfig);
-        break;
-      case 'vega':
-      case 'kepler':
-        this.connectorAdapter = new ConvivaConnectorAdapterVega(player, convivaMetadata, convivaConfig);
-        break;
-      case 'web':
-      default:
-        this.connectorAdapter = new ConvivaConnectorAdapterWeb(player, convivaMetadata, convivaConfig);
-        break;
-    }
+    this.connectorAdapter = new ConvivaConnectorAdapter(player, convivaMetadata, convivaConfig);
   }
 
   /**
