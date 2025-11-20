@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.11.1
+
+### 🐛 Issues
+
+- Fixed an issue where a platform-based import could cause compilation issues on Android and iOS platforms.
+
 ## 1.11.0
 
 ### ✨ Features
