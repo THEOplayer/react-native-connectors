@@ -84,6 +84,10 @@
     ]
   },
   "dependencies": {
+    "@adobe/alloy": "^2.30.0",
     "openapi-fetch": "^0.9.8"
+  },
+  "devDependencies": {
+    "metro-react-native-babel-preset": "^0.77.0"
   }
 }
