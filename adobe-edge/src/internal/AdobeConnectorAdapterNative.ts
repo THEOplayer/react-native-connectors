@@ -6,7 +6,7 @@ import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 const TAG = 'AdobeEdgeConnector';
 const ERROR_MSG = 'AdobeConnectorAdapter Error';
 
-export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
+export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
   constructor(

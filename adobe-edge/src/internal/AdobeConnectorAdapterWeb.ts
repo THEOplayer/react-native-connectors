@@ -22,7 +22,7 @@ const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
 
-export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
+export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
   private player: THEOplayer;
 
   /** Timer handling the ping event request */
@@ -47,14 +47,14 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   constructor(
     player: THEOplayer,
-    baseUrl: string,
-    configId: string,
-    userAgent?: string,
+    edgeBasePath: string,
+    datastreamId: string,
+    orgId: string,
     debug = false,
     debugSessionId: string | undefined = undefined,
   ) {
     this.player = player;
-    this.mediaApi = new MediaEdgeAPI(baseUrl, configId, userAgent, debugSessionId);
+    this.mediaApi = new MediaEdgeAPI(edgeBasePath, datastreamId, orgId, debug, debugSessionId);
     this.debug = debug;
     this.addEventListeners();
     this.logDebug('Initialized connector');
@@ -62,6 +62,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   setDebug(debug: boolean) {
     this.debug = debug;
+    this.mediaApi.setDebug(debug);
   }
 
   setDebugSessionId(id: string | undefined) {
