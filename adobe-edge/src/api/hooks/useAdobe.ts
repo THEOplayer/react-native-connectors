@@ -3,12 +3,11 @@ import { RefObject, useEffect, useRef } from 'react';
 import { AdobeConnector } from '../AdobeConnector';
 
 export function useAdobe(
-  baseUrl: string,
-  dataStreamId: string,
-  userAgent?: string,
+  edgeBasePath: string,
+  datastreamId: string,
+  orgId: string,
   useDebug?: boolean,
   debugSessionId?: string,
-  useNative: boolean = true,
 ): [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
   const connector = useRef<AdobeConnector | undefined>(undefined);
   const theoPlayer = useRef<THEOplayer | undefined>(undefined);
@@ -19,7 +18,7 @@ export function useAdobe(
 
     theoPlayer.current = player;
     if (player) {
-      connector.current = new AdobeConnector(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId, useNative);
+      connector.current = new AdobeConnector(player, edgeBasePath, datastreamId, orgId, useDebug, debugSessionId);
       player.addEventListener(PlayerEventType.DESTROY, onDestroy);
     } else {
       throw new Error('Invalid THEOplayer instance');
