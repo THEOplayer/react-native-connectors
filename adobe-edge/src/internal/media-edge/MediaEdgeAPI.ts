@@ -16,55 +16,80 @@ import { createInstance } from '@adobe/alloy';
 
 const TAG = 'AdobeEdge';
 
-export class MediaEdgeAPI {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  private readonly _alloyClient: Function;
+// eslint-disable-next-line @typescript-eslint/ban-types
+type AlloyClient = Function;
 
+/**
+ * Alloy globally stores clients by name. We are allowed create clients with the same config only once.
+ */
+interface ClientDescription {
+  datastreamId: string;
+  orgId: string;
+  client: AlloyClient;
+}
+const createdClients: ClientDescription[] = [];
+
+function findAlloyClient(datastreamId: string, orgId: string): AlloyClient | undefined {
+  return createdClients.find((client) => client.datastreamId === datastreamId && client.orgId === orgId)?.client;
+}
+
+export class MediaEdgeAPI {
   private _debugSessionId: string | undefined;
   private _sessionId: string | undefined;
   private _hasSessionFailed: boolean;
   private _eventQueue: (() => Promise<void>)[] = [];
+  private readonly _alloyClient: AlloyClient;
 
   constructor(edgeBasePath: string, datastreamId: string, orgId: string, debugEnabled?: boolean, debugSessionId?: string) {
     this._debugSessionId = debugSessionId;
     this._hasSessionFailed = false;
-    this._alloyClient = createInstance({ name: 'alloy' });
-    this._alloyClient('configure', {
-      /**
-       * The datastreamId property is a string that determines which datastream in Adobe Experience Platform you want
-       * to send data to.
-       * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/datastreamid
-       */
-      datastreamId,
 
-      /**
-       * The orgId property is a string that tells Adobe which organization that data is sent to. This property is
-       * required for all data sent using the Web SDK.
-       * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/orgid
-       */
-      orgId,
+    this._alloyClient = findAlloyClient(datastreamId, orgId);
+    if (!this._alloyClient) {
+      this._alloyClient = createInstance({
+        name: 'alloy',
+        monitors: [
+          {
+            // Optionally configure callbacks.
+            // onInstanceConfigured: function (data: any) {},
+          },
+        ],
+      });
+      this._alloyClient('configure', {
+        /**
+         * The datastreamId property is a string that determines which datastream in Adobe Experience Platform you want
+         * to send data to.
+         * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/datastreamid
+         */
+        datastreamId,
 
-      /**
-       * The edgeBasePath property alters the destination path when you interact with Adobe services.
-       * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/edgebasepath
-       */
-      edgeBasePath,
+        /**
+         * The orgId property is a string that tells Adobe which organization that data is sent to. This property is
+         * required for all data sent using the Web SDK.
+         * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/orgid
+         */
+        orgId,
 
-      /**
-       * The debugEnabled property allows you to enable or disable debugging using Web SDK code.
-       * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/debugenabled
-       */
-      debugEnabled: debugEnabled ?? false,
+        /**
+         * The edgeBasePath property alters the destination path when you interact with Adobe services.
+         * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/edgebasepath
+         */
+        edgeBasePath,
 
-      /**
-       *
-       * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/streamingmedia
-       */
-      streamingMedia: {
-        channel: 'Video channel',
-        playerName: 'THEOplayer',
-      },
-    });
+        /**
+         *
+         * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/streamingmedia
+         */
+        streamingMedia: {
+          channel: 'Video channel',
+          playerName: 'THEOplayer',
+        },
+      });
+
+      // Store created client to prevent creating duplicates.
+      createdClients.push({ datastreamId, orgId, client: this._alloyClient });
+    }
+    this.setDebug(debugEnabled);
   }
 
   setDebug(debug: boolean) {
