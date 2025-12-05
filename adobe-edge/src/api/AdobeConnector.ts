@@ -1,28 +1,20 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { NativeAdobeConnectorAdapter } from '../internal/NativeAdobeConnectorAdapter';
+import { AdobeConnectorAdapterNative } from '../internal/AdobeConnectorAdapterNative';
 import type { AdobeCustomMetadataDetails } from './details/AdobeCustomMetadataDetails';
 import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
-import { DefaultAdobeConnectorAdapter } from '../internal/DefaultAdobeConnectorAdapter';
+import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
 
 export class AdobeConnector {
   private connectorAdapter: AdobeConnectorAdapter;
 
-  constructor(
-    player: THEOplayer,
-    baseUrl: string,
-    dataStreamId: string,
-    userAgent?: string,
-    useDebug?: boolean,
-    debugSessionId?: string,
-    useNative: boolean = false,
-  ) {
+  constructor(player: THEOplayer, edgeBasePath: string, datastreamId: string, orgId: string, debugEnabled?: boolean, debugSessionId?: string) {
     // By default, use a default typescript connector on all platforms, unless explicitly requested.
-    if (['ios', 'android'].includes(Platform.OS) && useNative) {
-      this.connectorAdapter = new NativeAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+    if (['ios', 'android'].includes(Platform.OS)) {
+      this.connectorAdapter = new AdobeConnectorAdapterNative(player, edgeBasePath, datastreamId, orgId, debugEnabled, debugSessionId);
     } else {
-      this.connectorAdapter = new DefaultAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+      this.connectorAdapter = new AdobeConnectorAdapterWeb(player, edgeBasePath, datastreamId, orgId, debugEnabled, debugSessionId);
     }
   }
 
