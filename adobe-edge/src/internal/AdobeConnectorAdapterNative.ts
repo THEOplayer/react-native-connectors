@@ -11,15 +11,15 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
 
   constructor(
     player: THEOplayer,
-    baseUrl: string,
-    configId: string,
-    userAgent?: string,
+    edgeBasePath: string,
+    datastreamId: string,
+    orgId: string,
     debug = false,
     debugSessionId: string | undefined = undefined,
   ) {
     this.nativeHandle = player.nativeHandle || -1;
     try {
-      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, baseUrl, configId, userAgent, debug, debugSessionId);
+      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, edgeBasePath, datastreamId, orgId, debug, debugSessionId);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
