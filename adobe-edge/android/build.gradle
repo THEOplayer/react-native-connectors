@@ -80,6 +80,18 @@ dependencies {
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
   implementation("com.google.code.gson:gson:$gsonVersion")
 
+  implementation(platform("com.adobe.marketing.mobile:sdk-bom:3.+"))
+  implementation("com.adobe.marketing.mobile:core")
+  implementation("com.adobe.marketing.mobile:edge")
+
+  /**
+   * The Identity framework lets your app use Experience Cloud ID (ECID). Using ECIDs improves
+   * synchronization with Adobe and other customer identifiers.
+   * https://developer.adobe.com/client-sdks/home/base/mobile-core/identity/
+   */
+  implementation("com.adobe.marketing.mobile:edgeidentity")
+  implementation("com.adobe.marketing.mobile:edgemedia")
+
   // THEOplayer dependencies
   compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
   compileOnly "com.theoplayer.theoplayer-sdk-android:integration-ads-ima:$theoplayer_sdk_version"

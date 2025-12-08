@@ -2,6 +2,12 @@
 
 package com.theoplayer.reactnative.adobe.edge
 
+import com.adobe.marketing.mobile.LoggingMode
+import com.adobe.marketing.mobile.MobileCore
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+import com.theoplayer.android.api.ads.Ad
+import com.theoplayer.android.api.ads.LinearAd
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -14,7 +20,10 @@ import com.theoplayer.android.api.event.player.ErrorEvent
 import com.theoplayer.android.api.event.player.PauseEvent
 import com.theoplayer.android.api.event.player.PlayerEventTypes
 import com.theoplayer.android.api.event.player.PlayingEvent
+import com.theoplayer.android.api.event.player.SeekedEvent
+import com.theoplayer.android.api.event.player.SeekingEvent
 import com.theoplayer.android.api.event.player.SourceChangeEvent
+import com.theoplayer.android.api.event.player.TimeUpdateEvent
 import com.theoplayer.android.api.event.player.WaitingEvent
 import com.theoplayer.android.api.event.track.mediatrack.video.ActiveQualityChangedEvent
 import com.theoplayer.android.api.event.track.mediatrack.video.VideoTrackEventTypes
@@ -26,6 +35,7 @@ import com.theoplayer.android.api.event.track.texttrack.list.TextTrackListEventT
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.player.track.texttrack.TextTrackKind
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
+import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeCustomMetadataDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeErrorDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeQoeDataDetails
@@ -33,15 +43,10 @@ import com.theoplayer.reactnative.adobe.edge.api.AdobeSessionDetails
 import com.theoplayer.reactnative.adobe.edge.api.ContentType
 import com.theoplayer.reactnative.adobe.edge.api.ErrorSource
 import com.theoplayer.reactnative.adobe.edge.api.MediaEdgeAPI
-import com.theoplayer.reactnative.adobe.edge.api.buildUserAgent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 
 typealias AddTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.AddTrackEvent
 typealias RemoveTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.RemoveTrackEvent
@@ -49,20 +54,13 @@ typealias AddVideoTrackEvent = com.theoplayer.android.api.event.track.mediatrack
 typealias RemoveVideoTrackEvent = com.theoplayer.android.api.event.track.mediatrack.video.list.RemoveTrackEvent
 
 private const val TAG = "AdobeEdgeConnector"
-private const val CONTENT_PING_INTERVAL = 10000L
-private const val AD_PING_INTERVAL = 1000L
 private val JSON_MEDIA_TYPE = "application/json".toMediaType()
 
 class AdobeEdgeConnector(
   private val player: Player,
-  baseUrl: String,
-  configId: String,
-  userAgent: String?,
   debug: Boolean? = false,
   debugSessionId: String? = null
 ) {
-  private var pingJob: Job? = null
-
   private var sessionInProgress = false
 
   private var adBreakPodIndex = 0
@@ -79,38 +77,32 @@ class AdobeEdgeConnector(
 
   private val scope = CoroutineScope(Dispatchers.Main)
 
-  private val client = OkHttpClient()
-
-  private val onPlaying: EventListener<PlayingEvent> = EventListener { handlePlaying() }
-  private val onPause: EventListener<PauseEvent> = EventListener { handlePause() }
-  private val onEnded: EventListener<EndedEvent> = EventListener { handleEnded() }
-  private val onWaiting: EventListener<WaitingEvent> = EventListener { handleWaiting() }
-  private val onSourceChange: EventListener<SourceChangeEvent> =
-    EventListener { handleSourceChange() }
-  private val onAddTextTrack: EventListener<AddTextTrackEvent> =
-    EventListener { handleAddTextTrack(it) }
-  private val onRemoveTextTrack: EventListener<RemoveTextTrackEvent> =
-    EventListener { handleRemoveTextTrack(it) }
-  private val onAddVideoTrack: EventListener<AddVideoTrackEvent> =
-    EventListener { handleAddVideoTrack(it) }
-  private val onRemoveVideoTrack: EventListener<RemoveVideoTrackEvent> =
-    EventListener { handleRemoveVideoTrack(it) }
-  private val onActiveVideoQualityChanged: EventListener<ActiveQualityChangedEvent> =
-    EventListener { handleQualityChanged(it) }
-  private val onEnterCue: EventListener<EnterCueEvent> = EventListener { handleEnterCue(it) }
-  private val onExitCue: EventListener<ExitCueEvent> = EventListener { handleExitCue(it) }
-  private val onError: EventListener<ErrorEvent> = EventListener { handleError(it) }
-  private val onAdBreakBegin: EventListener<AdBreakBeginEvent> =
+  private val onPlaying = EventListener<PlayingEvent> { handlePlaying() }
+  private val onPause = EventListener<PauseEvent> { handlePause() }
+  private val onEnded = EventListener<EndedEvent> { handleEnded() }
+  private val onTimeUpdate = EventListener<TimeUpdateEvent> { handleTimeUpdate(it) }
+  private val onWaiting = EventListener<WaitingEvent> { handleWaiting() }
+  private val onSeeking = EventListener<SeekingEvent> { handleSeeking() }
+  private val onSeeked = EventListener<SeekedEvent> { handleSeeked() }
+  private val onSourceChange = EventListener<SourceChangeEvent> { handleSourceChange() }
+  private val onAddTextTrack = EventListener<AddTextTrackEvent> { handleAddTextTrack(it) }
+  private val onRemoveTextTrack = EventListener<RemoveTextTrackEvent> { handleRemoveTextTrack(it) }
+  private val onAddVideoTrack = EventListener<AddVideoTrackEvent> { handleAddVideoTrack(it) }
+  private val onRemoveVideoTrack =
+    EventListener<RemoveVideoTrackEvent> { handleRemoveVideoTrack(it) }
+  private val onActiveVideoQualityChanged =
+    EventListener<ActiveQualityChangedEvent> { handleQualityChanged(it) }
+  private val onEnterCue = EventListener<EnterCueEvent> { handleEnterCue(it) }
+  private val onExitCue = EventListener<ExitCueEvent> { handleExitCue(it) }
+  private val onError = EventListener<ErrorEvent> { handleError(it) }
+  private val onAdBreakBegin =
     EventListener<AdBreakBeginEvent> { event -> handleAdBreakBegin(event) }
-  private val onAdBreakEnd: EventListener<AdBreakEndEvent> =
-    EventListener { event -> handleAdBreakEnd() }
-  private val onAdBegin: EventListener<AdBeginEvent> =
-    EventListener { event -> handleAdBegin(event) }
-  private val onAdEnd: EventListener<AdEndEvent> = EventListener { handleAdEnd(it) }
-  private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
+  private val onAdBreakEnd = EventListener<AdBreakEndEvent> { event -> handleAdBreakEnd() }
+  private val onAdBegin = EventListener<AdBeginEvent> { event -> handleAdBegin(event) }
+  private val onAdEnd = EventListener<AdEndEvent> { handleAdEnd(it) }
+  private val onAdSkip = EventListener<AdSkipEvent> { event -> handleAdSkip() }
 
-  private val mediaApi: MediaEdgeAPI =
-    MediaEdgeAPI(baseUrl, configId, userAgent ?: buildUserAgent(), debugSessionId)
+  private val mediaApi: MediaEdgeAPI = MediaEdgeAPI("N/A", debugSessionId)
 
   init {
     setDebug(debug ?: false)
@@ -120,6 +112,7 @@ class AdobeEdgeConnector(
 
   fun setDebug(debug: Boolean) {
     Logger.debug = debug
+    MobileCore.setLogLevel(if (debug) LoggingMode.DEBUG else LoggingMode.ERROR)
   }
 
   fun setDebugSessionId(id: String?) {
@@ -131,7 +124,7 @@ class AdobeEdgeConnector(
   }
 
   fun setError(errorDetails: AdobeErrorDetails) {
-    mediaApi.error(player.currentTime, errorDetails)
+    mediaApi.error(errorDetails)
   }
 
   fun stopAndStartNewSession(metadata: List<AdobeCustomMetadataDetails>?) {
@@ -154,6 +147,9 @@ class AdobeEdgeConnector(
     player.addEventListener(PlayerEventTypes.PAUSE, onPause)
     player.addEventListener(PlayerEventTypes.ENDED, onEnded)
     player.addEventListener(PlayerEventTypes.WAITING, onWaiting)
+    player.addEventListener(PlayerEventTypes.SEEKING, onSeeking)
+    player.addEventListener(PlayerEventTypes.SEEKED, onSeeked)
+    player.addEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
     player.addEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.textTracks.addEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
     player.textTracks.addEventListener(TextTrackListEventTypes.REMOVETRACK, onRemoveTextTrack)
@@ -173,6 +169,9 @@ class AdobeEdgeConnector(
     player.removeEventListener(PlayerEventTypes.PAUSE, onPause)
     player.removeEventListener(PlayerEventTypes.ENDED, onEnded)
     player.removeEventListener(PlayerEventTypes.WAITING, onWaiting)
+    player.removeEventListener(PlayerEventTypes.SEEKING, onSeeking)
+    player.removeEventListener(PlayerEventTypes.SEEKED, onSeeked)
+    player.removeEventListener(PlayerEventTypes.TIMEUPDATE, onTimeUpdate)
     player.removeEventListener(PlayerEventTypes.SOURCECHANGE, onSourceChange)
     player.textTracks.removeEventListener(TextTrackListEventTypes.ADDTRACK, onAddTextTrack)
     player.textTracks.removeEventListener(
@@ -196,23 +195,38 @@ class AdobeEdgeConnector(
     Logger.debug("onPlaying")
     scope.launch {
       maybeStartSession(player.duration)
-      mediaApi.play(player.currentTime)
+      mediaApi.play()
     }
   }
 
   private fun handlePause() {
     Logger.debug("onPause")
-    mediaApi.pause(player.currentTime)
+    mediaApi.pause()
+  }
+
+  private fun handleTimeUpdate(event: TimeUpdateEvent) {
+    Logger.debug("onWaiting")
+    mediaApi.updateCurrentPlayhead(event.currentTime)
   }
 
   private fun handleWaiting() {
     Logger.debug("onWaiting")
-    mediaApi.bufferStart(player.currentTime)
+    mediaApi.bufferStart()
+  }
+
+  private fun handleSeeking() {
+    Logger.debug("handleSeeking")
+    mediaApi.seekStart()
+  }
+
+  private fun handleSeeked() {
+    Logger.debug("handleSeeked")
+    mediaApi.seekComplete()
   }
 
   private fun handleEnded() {
     Logger.debug("onEnded")
-    mediaApi.sessionComplete(player.currentTime)
+    mediaApi.sessionComplete()
     reset()
   }
 
@@ -223,7 +237,7 @@ class AdobeEdgeConnector(
 
   private fun handleQualityChanged(event: ActiveQualityChangedEvent) {
     mediaApi.bitrateChange(
-      player.currentTime, AdobeQoeDataDetails(
+      AdobeQoeDataDetails(
         bitrate = event.quality?.bandwidth?.toInt() ?: 0,
       )
     )
@@ -263,22 +277,22 @@ class AdobeEdgeConnector(
     Logger.debug("onEnterCue")
     val chapterCue = event.cue
     if (currentChapter != null && currentChapter?.endTime != chapterCue.startTime) {
-      mediaApi.chapterSkip(this.player.currentTime)
+      mediaApi.chapterSkip()
     }
     val chapterDetails = calculateChapterDetails(chapterCue)
-    mediaApi.chapterStart(this.player.currentTime, chapterDetails, customMetadata)
+    mediaApi.chapterStart(chapterDetails, customMetadata)
     currentChapter = chapterCue
   }
 
   private fun handleExitCue(event: ExitCueEvent) {
     Logger.debug("onExitCue")
-    mediaApi.chapterComplete(player.currentTime)
+    mediaApi.chapterComplete()
   }
 
   private fun handleError(event: ErrorEvent) {
     Logger.debug("onError")
     mediaApi.error(
-      player.currentTime, AdobeErrorDetails(
+      AdobeErrorDetails(
         name = event.errorObject.code.toString(), source = ErrorSource.PLAYER
       )
     )
@@ -287,9 +301,8 @@ class AdobeEdgeConnector(
   private fun handleAdBreakBegin(event: AdBreakBeginEvent) {
     Logger.debug("onAdBreakBegin")
     isPlayingAd = true
-    startPinger(AD_PING_INTERVAL)
     val podDetails = calculateAdvertisingPodDetails(event.adBreak, adBreakPodIndex)
-    mediaApi.adBreakStart(player.currentTime, podDetails)
+    mediaApi.adBreakStart(podDetails)
     if (podDetails.index > adBreakPodIndex) {
       adBreakPodIndex++
     }
@@ -299,32 +312,29 @@ class AdobeEdgeConnector(
     Logger.debug("onAdBreakEnd")
     isPlayingAd = false
     adPodPosition = 1
-    startPinger(CONTENT_PING_INTERVAL)
-    mediaApi.adBreakComplete(player.currentTime)
+    mediaApi.adBreakComplete()
   }
 
   private fun handleAdBegin(event: AdBeginEvent) {
     Logger.debug("onAdBegin")
-    mediaApi.adStart(
-      player.currentTime, calculateAdvertisingDetails(event.ad, adPodPosition), customMetadata
-    )
+    mediaApi.adStart(calculateAdvertisingDetails(event.ad, adPodPosition), customMetadata)
     adPodPosition++
   }
 
   private fun handleAdEnd(event: AdEndEvent) {
     Logger.debug("onAdEnd")
-    mediaApi.adComplete(player.currentTime)
+    mediaApi.adComplete()
   }
 
   private fun handleAdSkip() {
     Logger.debug("onAdSkip")
-    mediaApi.adSkip(player.currentTime)
+    mediaApi.adSkip()
   }
 
   private fun maybeEndSession() {
     Logger.debug("maybeEndSession")
     if (mediaApi.hasSessionStarted()) {
-      mediaApi.sessionEnd(player.currentTime)
+      mediaApi.sessionEnd()
     }
     reset()
   }
@@ -382,22 +392,6 @@ class AdobeEdgeConnector(
     sessionInProgress = true
 
     Logger.debug("maybeStartSession - STARTED sessionId: ${mediaApi.sessionId}")
-
-    if (!isPlayingAd) {
-      startPinger(CONTENT_PING_INTERVAL)
-    } else {
-      startPinger(AD_PING_INTERVAL)
-    }
-  }
-
-  private fun startPinger(intervalMs: Long) {
-    pingJob?.cancel()
-    pingJob = scope.launch {
-      while (isActive) {
-        mediaApi.ping(player.currentTime)
-        delay(intervalMs)
-      }
-    }
   }
 
   private fun getContentLength(mediaLengthSec: Double?): Int {
@@ -415,7 +409,6 @@ class AdobeEdgeConnector(
     adPodPosition = 1
     isPlayingAd = false
     sessionInProgress = false
-    pingJob?.cancel()
     currentChapter = null
   }
 

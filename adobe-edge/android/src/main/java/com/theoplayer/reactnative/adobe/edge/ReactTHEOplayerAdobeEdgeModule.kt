@@ -1,6 +1,7 @@
-
 package com.theoplayer.reactnative.adobe.edge
 
+import android.app.Application
+import com.adobe.marketing.mobile.MobileCore
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.util.ViewResolver
@@ -22,20 +23,22 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   @ReactMethod
   fun initialize(
     tag: Int,
-    baseUrl: String,
-    configId: String,
-    userAgent: String?,
+    edgeBasePath: String,
+    datastreamId: String,
+    orgId: String?,
     debug: Boolean?,
     debugSessionId: String?
   ) {
+    MobileCore.initialize(
+      reactApplicationContext.applicationContext as Application,
+      datastreamId
+    )
+
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
         adobeConnectors[tag] =
           AdobeEdgeConnector(
             player = playerView.player,
-            baseUrl = baseUrl,
-            configId = configId,
-            userAgent = userAgent,
             debug = debug,
             debugSessionId = debugSessionId
           )

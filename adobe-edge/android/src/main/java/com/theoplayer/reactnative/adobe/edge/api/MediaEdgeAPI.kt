@@ -1,49 +1,33 @@
 package com.theoplayer.reactnative.adobe.edge.api
 
-import com.theoplayer.reactnative.adobe.edge.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import org.json.JSONObject
+import com.adobe.marketing.mobile.edge.media.Media
+import com.adobe.marketing.mobile.edge.media.MediaConstants
+import kotlin.Any
+import kotlin.String
 
-data class QueuedEvent(
-  val path: String,
-  val mediaDetails: Map<String, Any?>
-)
+private const val MAIN_PING_INTERVAL = 10000L
+private const val AD_PING_INTERVAL = 1000L
 
 class MediaEdgeAPI(
-  private val baseUrl: String,
-  private val configId: String,
-  private val userAgent: String,
+  channel: String,
   private var debugSessionId: String? = null
 ) {
-  private val client = OkHttpClient()
-  private val gson = Gson()
+  /**
+   * https://developer.adobe.com/client-sdks/edge/media-for-edge-network/api-reference/#createtrackerwithconfig
+   */
+  private val tracker = Media.createTracker(
+    mutableMapOf<String, Any>(
+      MediaConstants.TrackerConfig.CHANNEL to channel,
+      MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to MAIN_PING_INTERVAL,
+      MediaConstants.TrackerConfig.AD_PING_INTERVAL to AD_PING_INTERVAL,
+    )
+  )
+
   var sessionId: String? = null
     private set
 
   var hasSessionFailed = false
     private set
-
-  private val eventQueue = mutableListOf<QueuedEvent>()
-
-  private val scope = CoroutineScope(Dispatchers.Main)
 
   fun setDebugSessionId(id: String?) {
     debugSessionId = id
@@ -54,313 +38,159 @@ class MediaEdgeAPI(
   fun reset() {
     sessionId = null
     hasSessionFailed = false
-    eventQueue.clear()
   }
 
-  fun play(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent("/play", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
+  fun play() {
+    tracker.trackPlay()
   }
 
-  fun pause(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/pauseStart",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
+  fun pause() {
+    tracker.trackPause()
   }
 
-  fun error(
-    playhead: Double?,
-    errorDetails: AdobeErrorDetails,
-    qoeDataDetails: AdobeQoeDataDetails? = null
-  ) {
-    maybeQueueEvent(
-      "/error",
-      mapOf(
-        "playhead" to sanitisePlayhead(playhead),
-        "qoeDataDetails" to qoeDataDetails,
-        "errorDetails" to errorDetails
+  fun error(errorDetails: AdobeErrorDetails) {
+    tracker.trackError(errorDetails.name)
+  }
+
+  fun bufferStart() {
+    tracker.trackEvent(Media.Event.BufferStart, null, null)
+  }
+
+  fun bufferComplete() {
+    tracker.trackEvent(Media.Event.BufferComplete, null, null)
+  }
+
+  fun seekComplete() {
+    tracker.trackEvent(Media.Event.SeekStart, null, null)
+  }
+
+  fun seekStart() {
+    tracker.trackEvent(Media.Event.SeekComplete, null, null)
+  }
+
+  /**
+   * Tracks the completion of the media playback session. Call this method only when the media has
+   * been completely viewed. If the viewing session is ended before the media is completely viewed,
+   * use trackSessionEnd instead.
+   */
+  fun sessionComplete() {
+    tracker.trackComplete()
+  }
+
+  /**
+   * Tracks the end of a media playback session. Call this method when the viewing session ends,
+   * even if the user has not viewed the media to completion. If the media is viewed to completion,
+   * use trackComplete instead.
+   */
+  fun sessionEnd() {
+    tracker.trackSessionEnd()
+  }
+
+  /**
+   * Provides the current media playhead value to the MediaTracker instance. For accurate tracking,
+   * call this method every time the playhead value changes. If the player does not notify playhead
+   * value changes, call this method once every second with the most recent playhead value.
+   */
+  fun updateCurrentPlayhead(playhead: Double?) {
+    tracker.updateCurrentPlayhead(sanitisePlayhead(playhead))
+  }
+
+  fun statesUpdate() {
+    // TODO
+//    Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN)
+  }
+
+  fun bitrateChange(qoeDataDetails: AdobeQoeDataDetails) {
+    tracker.updateQoEObject(
+      Media.createQoEObject(
+        qoeDataDetails.bitrate ?: 0,
+        qoeDataDetails.timeToStart ?: 0,
+        qoeDataDetails.framesPerSecond ?: 0,
+        qoeDataDetails.droppedFrames ?: 0
       )
     )
   }
 
-  fun ping(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    scope.launch {
-      sessionId?.let { sessionId ->
-        postEvent(
-          sessionId,
-          "/ping",
-          mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-        )
-      }
-    }
-  }
-
-  fun bufferStart(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/bufferStart",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
-  }
-
-  fun sessionComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/sessionComplete",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
-  }
-
-  fun sessionEnd(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/sessionEnd",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
-    sessionId = null
-  }
-
-  fun statesUpdate(
-    playhead: Double?,
-    statesStart: List<AdobePlayerStateData>? = null,
-    statesEnd: List<AdobePlayerStateData>? = null,
-    qoeDataDetails: AdobeQoeDataDetails? = null
-  ) {
-    maybeQueueEvent(
-      "/statesUpdate",
-      mapOf(
-        "playhead" to sanitisePlayhead(playhead),
-        "statesStart" to statesStart,
-        "statesEnd" to statesEnd,
-        "qoeDataDetails" to qoeDataDetails
-      )
-    )
-  }
-
-  fun bitrateChange(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails) {
-    maybeQueueEvent(
-      "/bitrateChange",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
-  }
-
-  fun chapterSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/chapterSkip",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
+  fun chapterSkip() {
+    tracker.trackEvent(Media.Event.ChapterSkip, null, null)
   }
 
   fun chapterStart(
-    playhead: Double?,
     chapterDetails: AdobeChapterDetails,
-    customMetadata: List<AdobeCustomMetadataDetails>? = null,
-    qoeDataDetails: AdobeQoeDataDetails? = null
+    customMetadata: List<AdobeCustomMetadataDetails>? = null
   ) {
-    maybeQueueEvent(
-      "/chapterStart",
-      mapOf(
-        "playhead" to sanitisePlayhead(playhead),
-        "chapterDetails" to chapterDetails,
-        "customMetadata" to customMetadata,
-        "qoeDataDetails" to qoeDataDetails
-      )
+    tracker.trackEvent(
+      Media.Event.ChapterStart,
+      Media.createChapterObject(
+        chapterDetails.friendlyName ?: "",
+        chapterDetails.index,
+        chapterDetails.length,
+        chapterDetails.offset
+      ),
+      customMetadata?.associate { it.name to (it.value ?: "") }
     )
   }
 
-  fun chapterComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/chapterComplete",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
+  fun chapterComplete() {
+    tracker.trackEvent(Media.Event.ChapterComplete, null, null)
+  }
+
+  fun adBreakStart(advertisingPodDetails: AdobeAdvertisingPodDetails) {
+    tracker.trackEvent(
+      Media.Event.AdBreakStart,
+      Media.createAdBreakObject(
+        advertisingPodDetails.friendlyName ?: "",
+        advertisingPodDetails.index,
+        advertisingPodDetails.offset
+      ),
+      null
     )
   }
 
-  fun adBreakStart(
-    playhead: Double,
-    advertisingPodDetails: AdobeAdvertisingPodDetails,
-    qoeDataDetails: AdobeQoeDataDetails? = null
-  ) {
-    maybeQueueEvent(
-      "/adBreakStart",
-      mapOf(
-        "playhead" to sanitisePlayhead(playhead),
-        "advertisingPodDetails" to advertisingPodDetails,
-        "qoeDataDetails" to qoeDataDetails
-      )
-    )
-  }
-
-  fun adBreakComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/adBreakComplete",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
+  fun adBreakComplete() {
+    tracker.trackEvent(Media.Event.AdBreakComplete, null, null)
   }
 
   fun adStart(
-    playhead: Double,
     advertisingDetails: AdobeAdvertisingDetails,
     customMetadata: List<AdobeCustomMetadataDetails>? = null,
-    qoeDataDetails: AdobeQoeDataDetails? = null
   ) {
-    maybeQueueEvent(
-      "/adStart",
-      mapOf(
-        "playhead" to sanitisePlayhead(playhead),
-        "advertisingDetails" to advertisingDetails,
-        "customMetadata" to customMetadata,
-        "qoeDataDetails" to qoeDataDetails
-      )
+    tracker.trackEvent(
+      Media.Event.AdStart,
+      Media.createAdObject(
+        advertisingDetails.name,
+        advertisingDetails.id ?: "",
+        advertisingDetails.podPosition,
+        advertisingDetails.length
+      ),
+      customMetadata?.associate { it.name to (it.value ?: "") }
     )
   }
 
-  fun adSkip(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent("/adSkip", mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails))
+  fun adSkip() {
+    tracker.trackEvent(Media.Event.AdSkip, null, null)
   }
 
-  fun adComplete(playhead: Double?, qoeDataDetails: AdobeQoeDataDetails? = null) {
-    maybeQueueEvent(
-      "/adComplete",
-      mapOf("playhead" to sanitisePlayhead(playhead), "qoeDataDetails" to qoeDataDetails)
-    )
+  fun adComplete() {
+    tracker.trackEvent(Media.Event.AdComplete, null, null)
   }
 
-  private fun createUrlWithClientParams(baseUrl: String): HttpUrl {
-    return baseUrl.toHttpUrl().newBuilder().apply {
-      addQueryParameter("configId", configId)
-      debugSessionId?.let { addQueryParameter("debugSessionId", it) }
-    }.build()
-  }
-
-  private suspend fun sendRequest(
-    url: String,
-    body: String
-  ): Response? = withContext(Dispatchers.IO) {
-    return@withContext try {
-      val request = Request.Builder()
-        .url(createUrlWithClientParams(url))
-        .post(body.toRequestBody("application/json".toMediaType()))
-        .header("User-Agent", userAgent)
-        .build()
-
-      val response = client.newCall(request).execute()
-      if (!response.isSuccessful) {
-        throw IOException("Unexpected code $response")
-      } else
-        response
-    } catch (e: Exception) {
-      throw e
-    }
-  }
-
-  suspend fun startSession(
+  fun startSession(
     sessionDetails: AdobeSessionDetails,
-    customMetadata: List<AdobeCustomMetadataDetails>? = null,
-    qoeDataDetails: AdobeQoeDataDetails? = null
+    customMetadata: List<AdobeCustomMetadataDetails>? = null
   ) {
-    try {
-      val body = JsonObject().apply {
-        add("events", JsonArray().apply {
-          add(JsonObject().apply {
-            add("xdm", JsonObject().apply {
-              addProperty("eventType", EventType.SESSION_START.value)
-              addProperty("timestamp", Date().toISOString())
-              add("mediaCollection", JsonObject().apply {
-                addProperty("playhead", 0)
-                add("sessionDetails", gson.toJsonTree(sessionDetails))
-                qoeDataDetails?.let {
-                  add("qoeDataDetails", gson.toJsonTree(qoeDataDetails))
-                }
-                customMetadata?.let {
-                  add("customMetadata", JsonArray().apply {
-                    it.forEach { metadata ->
-                      add(gson.toJsonTree(metadata))
-                    }
-                  })
-                }
-              })
-            })
-          })
-        })
-      }
-
-      val response = sendRequest("$baseUrl/sessionStart", body.toString())
-
-      val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
-      val jsonResponse = JSONObject(responseBody)
-      val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
-        ?.optJSONArray("errors")
-      if (error != null) {
-        throw Exception(error.toString())
-      }
-
-      val handle = jsonResponse.optJSONArray("handle")
-      sessionId = handle?.let { array ->
-        (0 until array.length()).firstNotNullOfOrNull { i ->
-          array.optJSONObject(i)?.takeIf { it.optString("type") == "media-analytics:new-session" }
-            ?.optJSONArray("payload")?.optJSONObject(0)?.optString("sessionId")
+    tracker.trackSessionStart(
+      Media.createMediaObject(
+        sessionDetails.friendlyName ?: "",
+        sessionDetails.assetID ?: "",
+        sessionDetails.length,
+        sessionDetails.contentType.name,
+        when (sessionDetails.streamType) {
+          StreamType.AUDIO ->Media.MediaType.Audio
+          else -> Media.MediaType.Video
         }
-      }
-
-      if (eventQueue.isNotEmpty()) {
-        sessionId?.let { sessionId ->
-          eventQueue.forEach { event -> postEvent(sessionId, event.path, event.mediaDetails) }
-        }
-        eventQueue.clear()
-      }
-    } catch (e: Exception) {
-      Logger.error("Failed to start session. ${e.message}")
-      hasSessionFailed = true
-    }
+      ),
+      customMetadata?.associate { it.name to (it.value ?: "") }
+    )
   }
-
-  private fun maybeQueueEvent(path: String, mediaDetails: Map<String, Any?>) {
-    if (hasSessionFailed) return
-    sessionId?.let { sessionId ->
-      scope.launch {
-        postEvent(sessionId, path, mediaDetails)
-      }
-    } ?: eventQueue.add(QueuedEvent(path, mediaDetails))
-  }
-
-  private suspend fun postEvent(sessionId: String, path: String, mediaDetails: Map<String, Any?>) {
-    try {
-      val body = JsonObject().apply {
-        add("events", JsonArray().apply {
-          add(JsonObject().apply {
-            add("xdm", JsonObject().apply {
-              addProperty("eventType", pathToEventTypeMap[path]?.value)
-              addProperty("timestamp", Date().toISOString())
-              add("mediaCollection", JsonObject().apply {
-                mediaDetails.forEach { (key, value) ->
-                  add(key, gson.toJsonTree(value))
-                }
-                addProperty("sessionID", sessionId)
-              })
-            })
-          })
-        })
-      }.toString()
-
-      Logger.debug("postEvent - $path $body")
-
-      val response = sendRequest("$baseUrl$path", body)
-      val responseBody = response?.body?.string() ?: throw IOException("Empty response body")
-
-      // Optionally parse errors
-      if (responseBody.isNotEmpty()) {
-        val jsonResponse = JSONObject(responseBody)
-        val error = jsonResponse.optJSONObject("error") ?: jsonResponse.optJSONObject("data")
-          ?.optJSONArray("errors")
-        if (error != null) {
-          Logger.error("Failed to send event. $error")
-        }
-      }
-    } catch (e: Exception) {
-      Logger.error("Failed to send event. ${e.message}")
-    }
-  }
-}
-
-fun Date.toISOString(): String {
-  return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
-    timeZone = TimeZone.getTimeZone("UTC")
-  }.format(this)
 }
