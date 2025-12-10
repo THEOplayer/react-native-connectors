@@ -7,8 +7,6 @@ export interface AdobeConnectorAdapter {
 
   setError(metadata: AdobeErrorDetails): void;
 
-  setDebugSessionId(id: string | undefined): void;
-
   stopAndStartNewSession(metadata?: AdobeCustomMetadataDetails[]): Promise<void>;
 
   destroy(): Promise<void>;

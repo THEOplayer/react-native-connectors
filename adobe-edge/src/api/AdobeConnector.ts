@@ -5,16 +5,24 @@ import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
 import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
+import { AdobeEdgeConfig } from './AdobeEdgeConfig';
 
 export class AdobeConnector {
-  private connectorAdapter: AdobeConnectorAdapter;
+  private connectorAdapter?: AdobeConnectorAdapter;
 
-  constructor(player: THEOplayer, edgeBasePath: string, datastreamId: string, orgId: string, debugEnabled?: boolean, debugSessionId?: string) {
-    // By default, use a default typescript connector on all platforms, unless explicitly requested.
+  constructor(player: THEOplayer, config: AdobeEdgeConfig) {
     if (['ios', 'android'].includes(Platform.OS)) {
-      this.connectorAdapter = new AdobeConnectorAdapterNative(player, edgeBasePath, datastreamId, orgId, debugEnabled, debugSessionId);
+      if (config.mobileConfig) {
+        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobileConfig);
+      } else {
+        console.error('AdobeConnector Error: Missing mobileConfig for mobile platform');
+      }
     } else {
-      this.connectorAdapter = new AdobeConnectorAdapterWeb(player, edgeBasePath, datastreamId, orgId, debugEnabled, debugSessionId);
+      if (config.webConfig) {
+        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.webConfig);
+      } else {
+        console.error('AdobeConnector Error: Missing webConfig for Web platform');
+      }
     }
   }
 
@@ -22,14 +30,14 @@ export class AdobeConnector {
    * Sets customMetadataDetails which will be passed for the session start request.
    */
   updateMetadata(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    this.connectorAdapter.updateMetadata(customMetadataDetails);
+    this.connectorAdapter?.updateMetadata(customMetadataDetails);
   }
 
   /**
    * Dispatch error event to adobe
    */
   setError(errorDetails: AdobeErrorDetails): void {
-    this.connectorAdapter.setError(errorDetails);
+    this.connectorAdapter?.setError(errorDetails);
   }
 
   /**
@@ -38,14 +46,7 @@ export class AdobeConnector {
    * @param debug whether to write debug info or not.
    */
   setDebug(debug: boolean) {
-    this.connectorAdapter.setDebug(debug);
-  }
-
-  /**
-   * Set a debugSessionID query parameter that is added to all outgoing requests.
-   */
-  setDebugSessionId(id: string | undefined) {
-    this.connectorAdapter.setDebugSessionId(id);
+    this.connectorAdapter?.setDebug(debug);
   }
 
   /**
@@ -57,13 +58,13 @@ export class AdobeConnector {
    * @param customMetadataDetails media details information.
    */
   stopAndStartNewSession(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    void this.connectorAdapter.stopAndStartNewSession(customMetadataDetails);
+    void this.connectorAdapter?.stopAndStartNewSession(customMetadataDetails);
   }
 
   /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
-    void this.connectorAdapter.destroy();
+    void this.connectorAdapter?.destroy();
   }
 }

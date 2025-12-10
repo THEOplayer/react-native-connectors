@@ -34,7 +34,7 @@
     "manifest": "node manifest.js > src/manifest.json",
     "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
-    "generate-types": "openapi-typescript ./src/internal/media-edge/media-edge-0.1.json -o ./src/internal/media-edge/MediaEdge.d.ts"
+    "generate-types": "openapi-typescript src/internal/web/media-edge-0.1.json -o src/internal/web/MediaEdge.d.ts"
   },
   "keywords": [
     "react-native",

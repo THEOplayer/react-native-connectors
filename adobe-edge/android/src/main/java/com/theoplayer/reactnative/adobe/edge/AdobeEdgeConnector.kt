@@ -4,10 +4,6 @@ package com.theoplayer.reactnative.adobe.edge
 
 import com.adobe.marketing.mobile.LoggingMode
 import com.adobe.marketing.mobile.MobileCore
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
-import com.theoplayer.android.api.ads.Ad
-import com.theoplayer.android.api.ads.LinearAd
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -35,7 +31,6 @@ import com.theoplayer.android.api.event.track.texttrack.list.TextTrackListEventT
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.player.track.texttrack.TextTrackKind
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
-import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeCustomMetadataDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeErrorDetails
 import com.theoplayer.reactnative.adobe.edge.api.AdobeQoeDataDetails
@@ -56,11 +51,7 @@ typealias RemoveVideoTrackEvent = com.theoplayer.android.api.event.track.mediatr
 private const val TAG = "AdobeEdgeConnector"
 private val JSON_MEDIA_TYPE = "application/json".toMediaType()
 
-class AdobeEdgeConnector(
-  private val player: Player,
-  debug: Boolean? = false,
-  debugSessionId: String? = null
-) {
+class AdobeEdgeConnector(private val player: Player, debug: Boolean? = false) {
   private var sessionInProgress = false
 
   private var adBreakPodIndex = 0
@@ -102,7 +93,7 @@ class AdobeEdgeConnector(
   private val onAdEnd = EventListener<AdEndEvent> { handleAdEnd(it) }
   private val onAdSkip = EventListener<AdSkipEvent> { event -> handleAdSkip() }
 
-  private val mediaApi: MediaEdgeAPI = MediaEdgeAPI("N/A", debugSessionId)
+  private val mediaApi: MediaEdgeAPI = MediaEdgeAPI("N/A")
 
   init {
     setDebug(debug ?: false)
@@ -113,10 +104,6 @@ class AdobeEdgeConnector(
   fun setDebug(debug: Boolean) {
     Logger.debug = debug
     MobileCore.setLogLevel(if (debug) LoggingMode.DEBUG else LoggingMode.ERROR)
-  }
-
-  fun setDebugSessionId(id: String?) {
-    mediaApi.setDebugSessionId(id)
   }
 
   fun updateMetadata(metadata: List<AdobeCustomMetadataDetails>) {
@@ -349,7 +336,7 @@ class AdobeEdgeConnector(
    * @param mediaLengthSec
    * @private
    */
-  private suspend fun maybeStartSession(mediaLengthSec: Double? = null) {
+  private fun maybeStartSession(mediaLengthSec: Double? = null) {
     val mediaLength = getContentLength(mediaLengthSec)
     val hasValidSource = player.source !== null
     val hasValidDuration = isValidDuration(mediaLengthSec)
