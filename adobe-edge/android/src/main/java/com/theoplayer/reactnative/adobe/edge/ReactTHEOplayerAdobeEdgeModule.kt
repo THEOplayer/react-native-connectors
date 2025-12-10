@@ -8,6 +8,9 @@ import com.theoplayer.util.ViewResolver
 
 private const val TAG = "AdobeEdgeModule"
 
+private const val PROP_APP_ID = "appId"
+private const val PROP_DEBUG_ENABLED = "debugEnabled"
+
 @Suppress("unused")
 class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
@@ -23,25 +26,19 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   @ReactMethod
   fun initialize(
     tag: Int,
-    edgeBasePath: String,
-    datastreamId: String,
-    orgId: String?,
-    debug: Boolean?,
-    debugSessionId: String?
+    config: ReadableMap,
   ) {
     MobileCore.initialize(
       reactApplicationContext.applicationContext as Application,
-      datastreamId
+      config.getString(PROP_APP_ID) ?: "N/A"
     )
 
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
-        adobeConnectors[tag] =
-          AdobeEdgeConnector(
-            player = playerView.player,
-            debug = debug,
-            debugSessionId = debugSessionId
-          )
+        adobeConnectors[tag] = AdobeEdgeConnector(
+          player = playerView.player,
+          debug = if (config.hasKey(PROP_DEBUG_ENABLED)) config.getBoolean(PROP_DEBUG_ENABLED) else false,
+        )
       }
     }
   }
@@ -54,14 +51,6 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   @ReactMethod
   fun setDebug(tag: Int, debug: Boolean) {
     adobeConnectors[tag]?.setDebug(debug)
-  }
-
-  /**
-   * Set a debugSessionID query parameter that is added to all outgoing requests.
-   */
-  @ReactMethod
-  fun setDebugSessionId(tag: Int, id: String?) {
-    adobeConnectors[tag]?.setDebugSessionId(id)
   }
 
   /**

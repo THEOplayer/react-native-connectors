@@ -10,13 +10,13 @@ import type {
   THEOplayer,
 } from 'react-native-theoplayer';
 import { AdEventType, MediaTrackEventType, PlayerEventType, TextTrackEventType } from 'react-native-theoplayer';
-import { calculateAdvertisingPodDetails, calculateAdvertisingDetails, calculateChapterDetails, sanitiseContentLength } from '../utils/Utils';
-import { Platform } from 'react-native';
-import { MediaEdgeAPI } from './media-edge/MediaEdgeAPI';
+import { calculateAdvertisingPodDetails, calculateAdvertisingDetails, calculateChapterDetails, sanitiseContentLength } from './web/Utils';
+import { MediaEdgeAPI } from './web/MediaEdgeAPI';
 import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
 import { ContentType } from '../api/details/AdobeSessionDetails';
 import { ErrorSource } from '../api/details/AdobeErrorDetails';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
+import { AdobeEdgeWebConfig } from '../api/AdobeEdgeWebConfig';
 
 const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
@@ -45,17 +45,10 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
 
   private mediaApi: MediaEdgeAPI;
 
-  constructor(
-    player: THEOplayer,
-    edgeBasePath: string,
-    datastreamId: string,
-    orgId: string,
-    debug = false,
-    debugSessionId: string | undefined = undefined,
-  ) {
+  constructor(player: THEOplayer, config: AdobeEdgeWebConfig) {
     this.player = player;
-    this.mediaApi = new MediaEdgeAPI(edgeBasePath, datastreamId, orgId, debug, debugSessionId);
-    this.debug = debug;
+    this.mediaApi = new MediaEdgeAPI(config);
+    this.debug = config.debugEnabled || false;
     this.addEventListeners();
     this.logDebug('Initialized connector');
   }
@@ -63,10 +56,6 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
   setDebug(debug: boolean) {
     this.debug = debug;
     this.mediaApi.setDebug(debug);
-  }
-
-  setDebugSessionId(id: string | undefined) {
-    this.mediaApi.setDebugSessionId(id);
   }
 
   updateMetadata(metadata: AdobeCustomMetadataDetails[]): void {
@@ -101,12 +90,8 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
     this.player.addEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.addEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.addEventListener(PlayerEventType.ERROR, this.onError);
-
     this.player.addEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
-
-    if (Platform.OS === 'web') {
-      window.addEventListener('beforeunload', this.onBeforeUnload);
-    }
+    window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
   private removeEventListeners(): void {
@@ -119,12 +104,8 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
     this.player.removeEventListener(PlayerEventType.MEDIA_TRACK, this.onMediaTrackEvent);
     this.player.removeEventListener(PlayerEventType.LOADED_METADATA, this.onLoadedMetadata);
     this.player.removeEventListener(PlayerEventType.ERROR, this.onError);
-
     this.player.removeEventListener(PlayerEventType.AD_EVENT, this.onAdEvent);
-
-    if (Platform.OS === 'web') {
-      window.removeEventListener('beforeunload', this.onBeforeUnload);
-    }
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
   }
 
   private onLoadedMetadata = (e: LoadedMetadataEvent) => {

@@ -8,10 +8,7 @@ import kotlin.String
 private const val MAIN_PING_INTERVAL = 10000L
 private const val AD_PING_INTERVAL = 1000L
 
-class MediaEdgeAPI(
-  channel: String,
-  private var debugSessionId: String? = null
-) {
+class MediaEdgeAPI(channel: String) {
   /**
    * https://developer.adobe.com/client-sdks/edge/media-for-edge-network/api-reference/#createtrackerwithconfig
    */
@@ -29,9 +26,6 @@ class MediaEdgeAPI(
   var hasSessionFailed = false
     private set
 
-  fun setDebugSessionId(id: String?) {
-    debugSessionId = id
-  }
 
   fun hasSessionStarted(): Boolean = sessionId != null
 

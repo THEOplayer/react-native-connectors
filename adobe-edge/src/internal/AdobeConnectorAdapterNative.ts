@@ -2,6 +2,7 @@ import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
 import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
+import { AdobeEdgeMobileConfig } from '../api/AdobeEdgeMobileConfig';
 
 const TAG = 'AdobeEdgeConnector';
 const ERROR_MSG = 'AdobeConnectorAdapter Error';
@@ -9,17 +10,10 @@ const ERROR_MSG = 'AdobeConnectorAdapter Error';
 export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
-  constructor(
-    player: THEOplayer,
-    edgeBasePath: string,
-    datastreamId: string,
-    orgId: string,
-    debug = false,
-    debugSessionId: string | undefined = undefined,
-  ) {
+  constructor(player: THEOplayer, config: AdobeEdgeMobileConfig) {
     this.nativeHandle = player.nativeHandle || -1;
     try {
-      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, edgeBasePath, datastreamId, orgId, debug, debugSessionId);
+      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, config);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -44,14 +38,6 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   setError(errorDetails: AdobeErrorDetails) {
     try {
       NativeModules.AdobeEdgeModule.setError(this.nativeHandle || -1, errorDetails);
-    } catch (error: unknown) {
-      console.error(TAG, `${ERROR_MSG}: ${error}`);
-    }
-  }
-
-  setDebugSessionId(id: string | undefined) {
-    try {
-      NativeModules.AdobeEdgeModule.setDebugSessionId(this.nativeHandle || -1, id);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
