@@ -378,7 +378,7 @@ class AdobeEdgeConnector(private val player: Player, debug: Boolean? = false) {
 
     sessionInProgress = true
 
-    Logger.debug("maybeStartSession - STARTED sessionId: ${mediaApi.sessionId}")
+    Logger.debug("maybeStartSession - STARTED")
   }
 
   private fun getContentLength(mediaLengthSec: Double?): Int {
