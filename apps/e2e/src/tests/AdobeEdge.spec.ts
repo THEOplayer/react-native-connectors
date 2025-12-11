@@ -9,7 +9,18 @@ export default function (spec: TestScope) {
     testConnector(
       spec,
       (player: THEOplayer) => {
-        connector = new AdobeConnector(player, 'https://edge.adobedc.net/ee-pre-prd/va/v1', 'dataStreamId', undefined, true, undefined, false);
+        connector = new AdobeConnector(player, {
+          web: {
+            datastreamId: 'abcde123-abcd-1234-abcd-abcde1234567',
+            orgId: 'ADB3LETTERSANDNUMBERS@AdobeOrg',
+            edgeBasePath: 'ee',
+            debugEnabled: true,
+          },
+          mobile: {
+            appId: 'launch-1234567890abcdef1234567890abcdef12',
+            debugEnabled: true,
+          },
+        });
       },
       () => {
         connector.stopAndStartNewSession([
