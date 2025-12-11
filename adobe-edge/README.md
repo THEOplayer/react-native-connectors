@@ -32,13 +32,13 @@ Web and mobile platforms.
 import { useAdobe } from '@theoplayer/react-native-analytics-adobe-edge';
 
 const config = {
-  webConfig: {
+  web: {
     datastreamId: 'abcde123-abcd-1234-abcd-abcde1234567',
     orgId: 'ADB3LETTERSANDNUMBERS@AdobeOrg',
     edgeBasePath: 'ee',
     debugEnabled: true,
   },
-  mobileConfig: {
+  mobile: {
     appId: 'launch-1234567890abcdef1234567890abcdef12',
     debugEnabled: true,
   },
