@@ -288,8 +288,8 @@ function sanitiseConfig(config: AdobeEdgeWebConfig): AdobeEdgeWebConfig {
     ...config,
     streamingMedia: {
       ...config.streamingMedia,
-      channel: config.streamingMedia.channel || 'defaultChannel',
-      playerName: config.streamingMedia.playerName || 'THEOplayer',
+      channel: config.streamingMedia?.channel || 'defaultChannel',
+      playerName: config.streamingMedia?.playerName || 'THEOplayer',
     },
   };
 }
