@@ -15,13 +15,8 @@ To set up terminology, in chronological order, media tracking solutions were:
 
 ## Installation
 
-The `@theoplayer/react-native` package has a peer dependency on `react-native-device-info`, which has to be installed as
-well:
-
 ```sh
-npm install \
-  react-native-device-info \
-  @theoplayer/react-native-analytics-adobe-edge
+npm install @theoplayer/react-native-analytics-adobe-edge
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
@@ -30,20 +25,27 @@ npm install \
 
 ### Configuring the connector
 
-Create the connector by providing the `THEOplayer` instance, the Media Collection API's end point,
-Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
+Create the connector by providing the `THEOplayer` instance and a configuration object with separate parts for
+Web and mobile platforms.
 
 ```tsx
 import { useAdobe } from '@theoplayer/react-native-analytics-adobe-edge';
 
-const baseUrl = "https://edge.adobedc.net/ee-pre-prd/va/v1";
-const dataStreamId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
-const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
-const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
-const useNative = true; // Use a native connector on iOS & Android; `false` by default.
+const config = {
+  webConfig: {
+    datastreamId: 'abcde123-abcd-1234-abcd-abcde1234567',
+    orgId: 'ADB3LETTERSANDNUMBERS@AdobeOrg',
+    edgeBasePath: 'ee',
+    debugEnabled: true,
+  },
+  mobileConfig: {
+    appId: 'launch-1234567890abcdef1234567890abcdef12',
+    debugEnabled: true,
+  },
+};
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, true, debugSessionID, useNative);
+  const [adobe, initAdobe] = useAdobe(config);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
