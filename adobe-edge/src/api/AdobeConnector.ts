@@ -12,16 +12,16 @@ export class AdobeConnector {
 
   constructor(player: THEOplayer, config: AdobeEdgeConfig) {
     if (['ios', 'android'].includes(Platform.OS)) {
-      if (config.mobileConfig) {
-        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobileConfig);
+      if (config.mobile) {
+        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobile);
       } else {
-        console.error('AdobeConnector Error: Missing mobileConfig for mobile platform');
+        console.error('AdobeConnector Error: Missing config for mobile platform');
       }
     } else {
-      if (config.webConfig) {
-        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.webConfig);
+      if (config.web) {
+        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.web);
       } else {
-        console.error('AdobeConnector Error: Missing webConfig for Web platform');
+        console.error('AdobeConnector Error: Missing config for Web platform');
       }
     }
   }
