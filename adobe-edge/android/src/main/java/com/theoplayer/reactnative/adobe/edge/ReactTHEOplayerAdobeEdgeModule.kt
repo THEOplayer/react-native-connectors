@@ -1,6 +1,7 @@
 package com.theoplayer.reactnative.adobe.edge
 
 import android.app.Application
+import com.adobe.marketing.mobile.InitOptions
 import com.adobe.marketing.mobile.MobileCore
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
@@ -9,6 +10,7 @@ import com.theoplayer.util.ViewResolver
 private const val TAG = "AdobeEdgeModule"
 
 private const val PROP_APP_ID = "appId"
+private const val PROP_CONFIG_ASSET = "configAsset"
 private const val PROP_DEBUG_ENABLED = "debugEnabled"
 
 @Suppress("unused")
@@ -28,10 +30,24 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
     tag: Int,
     config: ReadableMap,
   ) {
-    MobileCore.initialize(
-      reactApplicationContext.applicationContext as Application,
-      config.getString(PROP_APP_ID) ?: "N/A"
-    )
+    /**
+     * If an asset config file is provided, use it to initialize the MobileCore SDK, otherwise use
+     * the App ID.
+     * {@link https://developer.adobe.com/client-sdks/home/base/mobile-core/configuration/api-reference/}
+     */
+    val configAsset = config.getString(PROP_CONFIG_ASSET)
+    if (configAsset != null) {
+      MobileCore.initialize(
+        reactApplicationContext.applicationContext as Application,
+        InitOptions.configureWithFileInAssets(configAsset),
+        null
+      )
+    } else {
+      MobileCore.initialize(
+        reactApplicationContext.applicationContext as Application,
+        config.getString(PROP_APP_ID) ?: "MissingAppID"
+      )
+    }
 
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->

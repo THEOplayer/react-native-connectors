@@ -20,18 +20,13 @@ class MediaEdgeAPI(channel: String) {
     )
   )
 
-  var sessionId: String? = null
+  var hasSession = false
     private set
 
-  var hasSessionFailed = false
-    private set
-
-
-  fun hasSessionStarted(): Boolean = sessionId != null
+  fun hasSessionStarted(): Boolean = hasSession
 
   fun reset() {
-    sessionId = null
-    hasSessionFailed = false
+    hasSession = false
   }
 
   fun play() {
@@ -175,8 +170,8 @@ class MediaEdgeAPI(channel: String) {
   ) {
     tracker.trackSessionStart(
       Media.createMediaObject(
-        sessionDetails.friendlyName ?: "",
-        sessionDetails.assetID ?: "",
+        sessionDetails.friendlyName ?: "N/A",
+        sessionDetails.assetID ?: "N/A",
         sessionDetails.length,
         sessionDetails.contentType.name,
         when (sessionDetails.streamType) {
@@ -186,5 +181,6 @@ class MediaEdgeAPI(channel: String) {
       ),
       customMetadata?.associate { it.name to (it.value ?: "") }
     )
+    hasSession = true
   }
 }
