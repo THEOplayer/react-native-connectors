@@ -362,9 +362,9 @@ class AdobeEdgeConnector(private val player: Player, debug: Boolean? = false) {
 
     mediaApi.startSession(
       AdobeSessionDetails(
-        ID = "N/A",
+        ID = player.source?.metadata?.get("id") ?: "N/A",
         name = player.source?.metadata?.get("title") ?: "N/A",
-        channel = "N/A",
+        channel = player.source?.metadata?.get("channel") ?: "N/A",
         contentType = getContentType(),
         playerName = "THEOplayer",
         length = mediaLength
