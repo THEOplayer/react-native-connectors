@@ -1,51 +1,35 @@
 package com.theoplayer.reactnative.adobe.edge
 
-import com.theoplayer.android.api.ads.Ad
-import com.theoplayer.android.api.ads.AdBreak
-import com.theoplayer.android.api.ads.LinearAd
-import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
-import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingDetails
-import com.theoplayer.reactnative.adobe.edge.api.AdobeAdvertisingPodDetails
-import com.theoplayer.reactnative.adobe.edge.api.AdobeChapterDetails
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+
+private const val PROP_NAME = "name"
+private const val PROP_VALUE = "value"
 
 fun sanitiseContentLength(mediaLength: Double?): Int {
   return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
 }
 
-fun calculateAdvertisingPodDetails(adBreak: AdBreak?, lastPodIndex: Int): AdobeAdvertisingPodDetails {
-  val currentAdBreakTimeOffset = adBreak?.timeOffset ?: 0
-  return AdobeAdvertisingPodDetails(
-    index = when {
-      currentAdBreakTimeOffset == 0 -> 0
-      currentAdBreakTimeOffset < 0 -> -1
-      else ->lastPodIndex + 1
-    },
-    offset = currentAdBreakTimeOffset
-  )
-}
-
-fun calculateAdvertisingDetails(ad: Ad?, podPosition: Int): AdobeAdvertisingDetails {
-  return AdobeAdvertisingDetails(
-    podPosition = podPosition,
-    length = if (ad is LinearAd) ad.duration else 0,
-    name = "NA",
-    playerName = "THEOplayer"
-  )
-}
-
-fun calculateChapterDetails(cue: TextTrackCue): AdobeChapterDetails {
-  val index = try {
-    cue.id.toInt()
-  } catch (_: NumberFormatException) {
-    0
+fun sanitisePlayhead(playhead: Double?): Int {
+  if (playhead == null) {
+    return 0
   }
-  return AdobeChapterDetails(
-    length = (cue.endTime - cue.startTime).toInt(),
-    offset = cue.endTime.toInt(),
-    index = index
-  )
+  if (playhead == Double.POSITIVE_INFINITY) {
+    // If content is live, the playhead must be the current second of the day.
+    val now = System.currentTimeMillis()
+    return ((now / 1000) % 86400).toInt()
+  }
+  return playhead.toInt()
 }
 
 fun isValidDuration(v: Double?): Boolean {
   return v != null && !v.isNaN()
+}
+
+fun ReadableArray.toAdobeCustomMetadataDetails() : HashMap<String, String> {
+  return hashMapOf<String, String>().apply {
+    toArrayList()
+      .map { e -> (e as? ReadableMap) }
+      .filter { e -> e != null && e.hasKey(PROP_NAME) && e.hasKey(PROP_VALUE) }
+  }
 }

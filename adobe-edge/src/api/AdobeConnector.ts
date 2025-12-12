@@ -1,28 +1,28 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { NativeAdobeConnectorAdapter } from '../internal/NativeAdobeConnectorAdapter';
+import { AdobeConnectorAdapterNative } from '../internal/AdobeConnectorAdapterNative';
 import type { AdobeCustomMetadataDetails } from './details/AdobeCustomMetadataDetails';
 import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
-import { DefaultAdobeConnectorAdapter } from '../internal/DefaultAdobeConnectorAdapter';
+import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
+import { AdobeEdgeConfig } from './AdobeEdgeConfig';
 
 export class AdobeConnector {
-  private connectorAdapter: AdobeConnectorAdapter;
+  private connectorAdapter?: AdobeConnectorAdapter;
 
-  constructor(
-    player: THEOplayer,
-    baseUrl: string,
-    dataStreamId: string,
-    userAgent?: string,
-    useDebug?: boolean,
-    debugSessionId?: string,
-    useNative: boolean = false,
-  ) {
-    // By default, use a default typescript connector on all platforms, unless explicitly requested.
-    if (['ios', 'android'].includes(Platform.OS) && useNative) {
-      this.connectorAdapter = new NativeAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+  constructor(player: THEOplayer, config: AdobeEdgeConfig) {
+    if (['ios', 'android'].includes(Platform.OS)) {
+      if (config.mobile) {
+        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobile);
+      } else {
+        console.error('AdobeConnector Error: Missing config for mobile platform');
+      }
     } else {
-      this.connectorAdapter = new DefaultAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+      if (config.web) {
+        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.web);
+      } else {
+        console.error('AdobeConnector Error: Missing config for Web platform');
+      }
     }
   }
 
@@ -30,14 +30,14 @@ export class AdobeConnector {
    * Sets customMetadataDetails which will be passed for the session start request.
    */
   updateMetadata(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    this.connectorAdapter.updateMetadata(customMetadataDetails);
+    this.connectorAdapter?.updateMetadata(customMetadataDetails);
   }
 
   /**
    * Dispatch error event to adobe
    */
   setError(errorDetails: AdobeErrorDetails): void {
-    this.connectorAdapter.setError(errorDetails);
+    this.connectorAdapter?.setError(errorDetails);
   }
 
   /**
@@ -46,14 +46,7 @@ export class AdobeConnector {
    * @param debug whether to write debug info or not.
    */
   setDebug(debug: boolean) {
-    this.connectorAdapter.setDebug(debug);
-  }
-
-  /**
-   * Set a debugSessionID query parameter that is added to all outgoing requests.
-   */
-  setDebugSessionId(id: string | undefined) {
-    this.connectorAdapter.setDebugSessionId(id);
+    this.connectorAdapter?.setDebug(debug);
   }
 
   /**
@@ -65,13 +58,13 @@ export class AdobeConnector {
    * @param customMetadataDetails media details information.
    */
   stopAndStartNewSession(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    void this.connectorAdapter.stopAndStartNewSession(customMetadataDetails);
+    void this.connectorAdapter?.stopAndStartNewSession(customMetadataDetails);
   }
 
   /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
-    void this.connectorAdapter.destroy();
+    void this.connectorAdapter?.destroy();
   }
 }

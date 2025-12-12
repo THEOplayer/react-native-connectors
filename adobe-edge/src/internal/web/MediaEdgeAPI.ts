@@ -1,6 +1,4 @@
 import type { paths } from './MediaEdge';
-import createClient, { type ClientMethod } from 'openapi-fetch';
-import type { MediaType } from 'openapi-typescript-helpers';
 import type {
   AdobeAdvertisingDetails,
   AdobeAdvertisingPodDetails,
@@ -13,40 +11,74 @@ import type {
 } from '@theoplayer/react-native-analytics-adobe-edge';
 import { pathToEventTypeMap } from './PathToEventTypeMap';
 import type { AdobePlayerStateData } from '../../api/details/AdobePlayerStateData';
-import { sanitisePlayhead } from '../../utils/Utils';
-import { buildUserAgent } from '../../utils/UserAgent';
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-type PostRequestType<Paths extends {}, Media extends MediaType = MediaType> = ClientMethod<Paths, 'post', Media>;
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-interface MediaEdgeClient<Paths extends {}, Media extends MediaType = MediaType> {
-  /** Call a POST endpoint */
-  POST: PostRequestType<Paths, Media>;
-}
+import { sanitisePlayhead } from './Utils';
+import { createInstance } from '@adobe/alloy';
+import { AdobeEdgeWebConfig } from '../../api/AdobeEdgeWebConfig';
 
 const TAG = 'AdobeEdge';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+type AlloyClient = Function;
+
+/**
+ * Alloy globally stores clients by name. We are allowed create clients with the same config only once.
+ */
+interface ClientDescription {
+  datastreamId: string;
+  orgId: string;
+  client: AlloyClient;
+}
+const createdClients: ClientDescription[] = [];
+
+/**
+ * The MediaEdgeAPI class is responsible for communicating media events to Adobe Experience Platform.
+ *
+ * Event handling for manually-tracked sessions is used. In this mode you need to pass the sessionID to the media event,
+ * along with the playhead value (integer value). You could also pass the Quality of Experience data details, if needed.
+ *
+ * {@link https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/js-overview}
+ * {@link https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/configure/streamingmedia}
+ */
 export class MediaEdgeAPI {
-  private readonly _client: MediaEdgeClient<paths, 'application/json'>;
-  private readonly _configId: string;
-  private _debugSessionId: string | undefined;
   private _sessionId: string | undefined;
   private _hasSessionFailed: boolean;
   private _eventQueue: (() => Promise<void>)[] = [];
+  private readonly _alloyClient: AlloyClient;
 
-  constructor(baseUrl: string, configId: string, userAgent?: string, debugSessionId?: string) {
-    this._configId = configId;
-    this._debugSessionId = debugSessionId;
+  constructor(config: AdobeEdgeWebConfig) {
     this._hasSessionFailed = false;
-    this._client = createClient<paths, 'application/json'>({
-      baseUrl,
-      headers: { 'User-Agent': userAgent || buildUserAgent() },
-    });
+    const sanitisedConfig = sanitiseConfig(config);
+    const { datastreamId, orgId, debugEnabled } = sanitisedConfig;
+
+    this._alloyClient = findAlloyClient(datastreamId, orgId);
+    if (!this._alloyClient) {
+      this._alloyClient = createInstance({
+        name: 'alloy',
+        monitors: [
+          {
+            // Optionally configure callbacks.
+            // onInstanceConfigured: function (data: any) {},
+          },
+        ],
+      });
+      this._alloyClient('configure', sanitisedConfig);
+
+      // Store created client to prevent creating duplicates.
+      createdClients.push({ datastreamId, orgId, client: this._alloyClient });
+    }
+    this.setDebug(debugEnabled);
   }
 
-  setDebugSessionId(id: string | undefined) {
-    this._debugSessionId = id;
+  /**
+   * The appendIdentityToUrl command allows you to add a user identifier to the URL as a query string.
+   * {@link https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/appendidentitytourl}
+   */
+  appendIdentityToUrl(url: string) {
+    this._alloyClient('appendIdentityToUrl', { url });
+  }
+
+  setDebug(debug: boolean) {
+    this._alloyClient('setDebug', { enabled: debug });
   }
 
   get sessionId(): string | undefined {
@@ -54,7 +86,7 @@ export class MediaEdgeAPI {
   }
 
   hasSessionStarted(): boolean {
-    return !!this._sessionId;
+    return this._sessionId !== undefined;
   }
 
   hasSessionFailed(): boolean {
@@ -82,7 +114,7 @@ export class MediaEdgeAPI {
   async ping(playhead: number | undefined, qoeDataDetails?: AdobeQoeDataDetails) {
     // Only send pings if the session has started, never queue them.
     if (this.hasSessionStarted()) {
-      void this.postEvent('/ping', { playhead, qoeDataDetails });
+      void this.sendMediaEvent('/ping', { playhead, qoeDataDetails });
     }
   }
 
@@ -168,50 +200,27 @@ export class MediaEdgeAPI {
     return this.maybeQueueEvent('/adComplete', { playhead, qoeDataDetails });
   }
 
-  private createClientParams() {
-    const params = {
-      query: {
-        configId: this._configId,
-      } as { configId: string; debugSessionID?: string },
-    };
-    if (this._debugSessionId) {
-      params.query.debugSessionID = this._debugSessionId;
-    }
-    return params;
-  }
-
+  /**
+   * Start a manually-tracked media sessions.
+   *
+   * {@link }https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/createmediasession}
+   */
   async startSession(sessionDetails: AdobeSessionDetails, customMetadata?: AdobeCustomMetadataDetails[], qoeDataDetails?: AdobeQoeDataDetails) {
     try {
-      const result = await this._client.POST('/sessionStart', {
-        params: this.createClientParams(),
-        body: {
-          events: [
-            {
-              xdm: {
-                eventType: pathToEventTypeMap['/sessionStart'],
-                timestamp: new Date().toISOString(),
-                mediaCollection: {
-                  playhead: 0,
-                  sessionDetails,
-                  qoeDataDetails,
-                  customMetadata,
-                },
-              },
-            },
-          ],
+      const result = await this._alloyClient('createMediaSession', {
+        xdm: {
+          eventType: pathToEventTypeMap['/sessionStart'],
+          timestamp: new Date().toISOString(),
+          mediaCollection: {
+            playhead: 0,
+            sessionDetails,
+            qoeDataDetails,
+            customMetadata,
+          },
         },
       });
 
-      // @ts-ignore
-      const error = result.error || result.data.errors;
-      if (error) {
-        // noinspection ExceptionCaughtLocallyJS
-        throw Error(error);
-      }
-      // @ts-ignore
-      this._sessionId = result.data?.handle?.find((h: { type: string }) => {
-        return h.type === 'media-analytics:new-session';
-      })?.payload?.[0]?.sessionId;
+      this._sessionId = result.sessionId;
 
       // empty queue
       if (this._sessionId && this._eventQueue.length !== 0) {
@@ -230,7 +239,7 @@ export class MediaEdgeAPI {
       return;
     }
     const doPostEvent = () => {
-      return this.postEvent(path, mediaDetails);
+      return this.sendMediaEvent(path, mediaDetails);
     };
 
     // If the session has already started, do not queue but send it directly.
@@ -241,38 +250,46 @@ export class MediaEdgeAPI {
     }
   }
 
-  async postEvent(path: keyof paths, mediaDetails: AdobeMediaDetails) {
+  /**
+   * Use the sendMediaEvent command to track media playbacks, pauses, completions, player state updates, and other
+   * related events.
+   * {@link https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/sendmediaevent}
+   */
+  private async sendMediaEvent(path: keyof paths, mediaDetails: AdobeMediaDetails) {
     // Make sure we are positing data with a valid sessionID.
     if (!this._sessionId) {
       console.error(TAG, 'Invalid sessionID');
       return;
     }
+
     try {
-      const result = await this._client.POST(path, {
-        params: this.createClientParams(),
-        body: {
-          events: [
-            {
-              xdm: {
-                eventType: pathToEventTypeMap[path],
-                timestamp: new Date().toISOString(),
-                mediaCollection: {
-                  ...mediaDetails,
-                  playhead: sanitisePlayhead(mediaDetails.playhead),
-                  sessionID: this._sessionId,
-                },
-              },
-            },
-          ],
+      this._alloyClient('sendMediaEvent', {
+        xdm: {
+          eventType: pathToEventTypeMap[path],
+          mediaCollection: {
+            ...mediaDetails,
+            playhead: sanitisePlayhead(mediaDetails.playhead),
+            sessionID: this._sessionId,
+          },
         },
       });
-      // @ts-ignore
-      const error = result.error || result.data.errors;
-      if (error) {
-        console.error(TAG, `Failed to send event. ${JSON.stringify(error)}`);
-      }
     } catch (e) {
       console.error(TAG, `Failed to send event: ${JSON.stringify(e)}`);
     }
   }
+}
+
+function findAlloyClient(datastreamId: string, orgId: string): AlloyClient | undefined {
+  return createdClients.find((client) => client.datastreamId === datastreamId && client.orgId === orgId)?.client;
+}
+
+function sanitiseConfig(config: AdobeEdgeWebConfig): AdobeEdgeWebConfig {
+  return {
+    ...config,
+    streamingMedia: {
+      ...config.streamingMedia,
+      channel: config.streamingMedia?.channel || 'defaultChannel',
+      playerName: config.streamingMedia?.playerName || 'THEOplayer',
+    },
+  };
 }
