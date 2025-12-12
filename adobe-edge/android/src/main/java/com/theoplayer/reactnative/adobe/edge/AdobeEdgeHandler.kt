@@ -272,7 +272,7 @@ class AdobeEdgeHandler(
       Media.Event.ChapterStart,
       Media.createChapterObject(
         chapterCue.id.ifEmpty { "NA" },
-        chapterCue.id.toIntOrNull() ?: 0,
+        chapterCue.id.toIntOrNull() ?: 1,
         chapterCue.endTime.toInt(),
         (chapterCue.endTime - chapterCue.startTime).toInt()
       ),
