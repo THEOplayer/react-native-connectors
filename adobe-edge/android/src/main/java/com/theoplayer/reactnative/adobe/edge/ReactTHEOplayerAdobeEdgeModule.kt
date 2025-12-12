@@ -1,7 +1,7 @@
 package com.theoplayer.reactnative.adobe.edge
 
 import android.app.Application
-import com.adobe.marketing.mobile.InitOptions
+import com.adobe.marketing.mobile.LoggingMode
 import com.adobe.marketing.mobile.MobileCore
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
@@ -9,16 +9,15 @@ import com.theoplayer.util.ViewResolver
 
 private const val TAG = "AdobeEdgeModule"
 
-private const val PROP_APP_ID = "appId"
-private const val PROP_CONFIG_ASSET = "configAsset"
+private const val PROP_ENVIRONMENT_ID = "environmentId"
 private const val PROP_DEBUG_ENABLED = "debugEnabled"
+private const val PROP_NAME = "name"
 
 @Suppress("unused")
 class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
   private val viewResolver: ViewResolver = ViewResolver(context)
-
   private var adobeConnectors: HashMap<Int, AdobeEdgeConnector> = HashMap()
 
   override fun getName(): String {
@@ -33,28 +32,22 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
     /**
      * If an asset config file is provided, use it to initialize the MobileCore SDK, otherwise use
      * the App ID.
-     * {@link https://developer.adobe.com/client-sdks/home/base/mobile-core/configuration/api-reference/}
+     * {@link https://developer.adobe.com/client-sdks/edge/media-for-edge-network/}
      */
-    val configAsset = config.getString(PROP_CONFIG_ASSET)
-    if (configAsset != null) {
-      MobileCore.initialize(
-        reactApplicationContext.applicationContext as Application,
-        InitOptions.configureWithFileInAssets(configAsset),
-        null
-      )
-    } else {
-      MobileCore.initialize(
-        reactApplicationContext.applicationContext as Application,
-        config.getString(PROP_APP_ID) ?: "MissingAppID"
-      )
-    }
+    MobileCore.initialize(
+      reactApplicationContext.applicationContext as Application,
+      config.getString(PROP_ENVIRONMENT_ID) ?: "MissingEnvironmentID"
+    )
 
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
         adobeConnectors[tag] = AdobeEdgeConnector(
           player = playerView.player,
-          debug = if (config.hasKey(PROP_DEBUG_ENABLED)) config.getBoolean(PROP_DEBUG_ENABLED) else false,
+          trackerConfig = config.toHashMap().mapValues { it.value?.toString() ?: "" }
         )
+        if (config.hasKey(PROP_DEBUG_ENABLED)) {
+          setDebug(tag, config.getBoolean(PROP_DEBUG_ENABLED))
+        }
       }
     }
   }
@@ -66,7 +59,10 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun setDebug(tag: Int, debug: Boolean) {
-    adobeConnectors[tag]?.setDebug(debug)
+    adobeConnectors[tag]?.setLoggingMode(when (debug) {
+      true -> LoggingMode.DEBUG
+      false -> LoggingMode.ERROR
+    })
   }
 
   /**
@@ -74,9 +70,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun updateMetadata(tag: Int, metadataList: ReadableArray) {
-    adobeConnectors[tag]?.updateMetadata(
-      metadataList.toAdobeCustomMetadataDetails()
-    )
+    adobeConnectors[tag]?.updateMetadata(metadataList.toAdobeCustomMetadataDetails())
   }
 
   /**
@@ -84,7 +78,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun setError(tag: Int, errorDetails: ReadableMap) {
-    adobeConnectors[tag]?.setError(errorDetails.toAdobeErrorDetails())
+    adobeConnectors[tag]?.setError(errorDetails.getString(PROP_NAME) ?: "NA")
   }
 
   /**
