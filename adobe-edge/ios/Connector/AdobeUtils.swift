@@ -4,52 +4,50 @@ import Foundation
 import THEOplayerSDK
 
 class AdobeUtils {
-    class func calculateAdvertisingPodDetails(adBreak: AdBreak?, lastPodIndex: Int) -> AdobeAdvertisingPodDetails {
-        let currentAdBreakTimeOffset = adBreak?.timeOffset ?? 0
-        
-        let index: Int
-        if currentAdBreakTimeOffset == 0 {
-            index = 0
-        } else if currentAdBreakTimeOffset < 0 {
-            index = -1
-        } else {
-            index = lastPodIndex + 1
+    class func toAdobeCustomMetadataDetails(_ array: [[String: Any]]) -> [String: String] {
+        var result = [String: String]()
+        for item in array {
+            let stringsItem = AdobeUtils.toStringMap(item)
+            if let name = stringsItem["name"], let value = stringsItem["value"] {
+                result[name] = value
+            }
+        }
+        return result
+    }
+    
+    class func toStringMap(_ map: [String: Any]) -> [String: String] {
+        var result = [String: String]()
+        for (key, value) in map {
+            if let stringValue = value as? String {
+                result[key] = stringValue
+            } else if let optionalValue = value as? CustomStringConvertible {
+                // Convert other types (Int, Bool, Double, etc.) to String
+                result[key] = String(describing: optionalValue)
+            } else {
+                // If value is nil or not convertible, use empty string
+                result[key] = ""
+            }
         }
         
-        return AdobeAdvertisingPodDetails(
-            index: index,
-            offset: currentAdBreakTimeOffset
-        )
+        return result
     }
     
-    class func calculateAdvertisingDetails(ad: Ad?, podPosition: Int) -> AdobeAdvertisingDetails {
-        let length = (ad as? LinearAd)?.duration ?? 0
-        
-        return AdobeAdvertisingDetails(
-            length: length,
-            name: "NA",
-            playerName: "THEOplayer",
-            podPosition: podPosition
-        )
-    }
-    
-    class func buildUserAgent() -> String {
-        let device = UIDevice.current
-        let model = device.model
-        let osVersion = device.systemVersion.replacingOccurrences(of: ".", with: "_")
-        let locale = (UserDefaults.standard.array(forKey: "AppleLanguages")?.first as? String) ?? Locale.current.identifier
-        let userAgent = "Mozilla/5.0 (\(model); CPU OS \(osVersion) like Mac OS X; \(locale))"
-        return userAgent
-    }
-    
-    class func toDictionary<T: Encodable>(_ value: T) -> [String: Any] {
-        let encoder = JSONEncoder()
-        guard let data = try? encoder.encode(value),
-              let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
-              let dictionary = jsonObject as? [String: Any] else {
-            return [:]
+    class func sanitisePlayhead(_ playhead: Double?) -> Int {
+        guard let playhead = playhead else {
+            return 0
         }
-        return dictionary
+        
+        if playhead == Double.infinity {
+            // If content is live, the playhead must be the current second of the day.
+            let now = Date().timeIntervalSince1970
+            return Int(now.truncatingRemainder(dividingBy: 86400))
+        }
+        
+        return Int(playhead)
+    }
+    
+    class func sanitiseContentLength(_ mediaLength: Double?) -> Int {
+        mediaLength == .infinity ? 86400 : Int(mediaLength ?? 0)
     }
 }
 
