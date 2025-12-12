@@ -271,7 +271,7 @@ class AdobeEdgeHandler(
     tracker.trackEvent(
       Media.Event.ChapterStart,
       Media.createChapterObject(
-        chapterCue.id,
+        chapterCue.id.ifEmpty { "NA" },
         chapterCue.id.toIntOrNull() ?: 0,
         chapterCue.endTime.toInt(),
         (chapterCue.endTime - chapterCue.startTime).toInt()
