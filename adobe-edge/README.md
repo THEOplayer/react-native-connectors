@@ -39,7 +39,7 @@ const config = {
     debugEnabled: true,
   },
   mobile: {
-    appId: 'launch-1234567890abcdef1234567890abcdef12',
+    environmentId: 'abcdef123456/abcdef123456/launch-1234567890abcdef1234567890abcdef12',
     debugEnabled: true,
   },
 };
