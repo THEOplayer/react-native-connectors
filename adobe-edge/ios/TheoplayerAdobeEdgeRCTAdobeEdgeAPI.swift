@@ -33,7 +33,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         
         DispatchQueue.main.async {
             if let view = self.view(for: node), let player = view.player {
-                let trackerConfig: [String: String] = AdobeUtils.toStringMap(config as? [String: Any] ?? [:])
+                let trackerConfig: [String: String] = TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toStringMap(config as? [String: Any] ?? [:])
                 let connector = AdobeEdgeConnector(player: player, trackerConfig: trackerConfig)
                 self.connectors[node] = connector
                 self.log("added connector to view \(node)")
@@ -60,7 +60,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             if let connector = self.connectors[node],
                let newMetadata = metadata as? [[String: Any]] {
-                connector.updateMetadata(AdobeUtils.toAdobeCustomMetadataDetails(newMetadata))
+                connector.updateMetadata(TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toAdobeCustomMetadataDetails(newMetadata))
             }
         }
     }
@@ -81,7 +81,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             if let connector = self.connectors[node],
                let newMetadata = customMetadataDetails as? [[String: Any]] {
-                connector.stopAndStartNewSession(AdobeUtils.toAdobeCustomMetadataDetails(newMetadata))
+                connector.stopAndStartNewSession(TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toAdobeCustomMetadataDetails(newMetadata))
             }
         }
     }
