@@ -21,7 +21,7 @@ class AdobeEdgeHandler {
     private var isPlayingAd = false
     private var customMetadata: [String:String] = [:]
     private var currentChapter: TextTrackCue? = nil
-    private var loggingMode: LogLevel = .error
+    private var loggingMode: LogLevel = .debug
     private var tracker: MediaTracker = Media.createTracker()
 
     // MARK: Player Listeners
@@ -78,7 +78,7 @@ class AdobeEdgeHandler {
     }
     
     func stopAndStartNewSession(_ metadata: [String:String]) -> Void {
-        guard let player = self.player else {return}
+        guard let player = self.player else { return }
         self.maybeEndSession()
         self.updateMetadata(metadata)
         self.maybeStartSession()
@@ -86,7 +86,7 @@ class AdobeEdgeHandler {
     }
     
     func addEventListeners() -> Void {
-        guard let player = self.player else {return}
+        guard let player = self.player else { return }
         
         // Player events
         self.playingListener = player.addEventListener(type: PlayerEventTypes.PLAYING, listener: self.handlePlaying(event:))
@@ -203,6 +203,7 @@ class AdobeEdgeHandler {
         guard let player = self.player else { return }
         self.logDebug("onPlaying")
         self.maybeStartSession(mediaLengthSec: player.duration)
+        
         self.tracker.trackPlay()
     }
 
@@ -211,8 +212,9 @@ class AdobeEdgeHandler {
     }
     
     private func onPause() {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onPause")
+        
         self.tracker.trackPause()
     }
     
@@ -222,25 +224,28 @@ class AdobeEdgeHandler {
     }
     
     func handleWaiting(event: WaitingEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onWaiting")
+        
         self.tracker.trackEvent(event: MediaEvent.BufferStart, info: nil, metadata: nil)
     }
     
     func handleSeeking(event: SeekingEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onSeeking")
+        
         self.tracker.trackEvent(event: MediaEvent.SeekStart, info: nil, metadata: nil)
     }
     
     func handleSeeked(event: SeekedEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onSeeked")
+        
         self.tracker.trackEvent(event: MediaEvent.SeekComplete, info: nil, metadata: nil)
     }
     
     func handleEnded(event: EndedEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onEnded")
         self.tracker.trackComplete()
         self.reset()
@@ -254,6 +259,7 @@ class AdobeEdgeHandler {
     func handleActiveQualityChange(event: ActiveQualityChangedEvent) -> Void {
         guard let player = self.player else { return }
         self.logDebug("onActiveQualityChange")
+        
         var bitrate = 0
         if let activeTrack = self.activeTrack(tracks: player.videoTracks) {
             bitrate = activeTrack.activeQuality?.bandwidth ?? 0
@@ -278,7 +284,7 @@ class AdobeEdgeHandler {
     }
     
     func handleError(event: ErrorEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onError")
         var errorCodeString = "-1"
         if let errorCodeValue = event.errorObject?.code.rawValue as? Int32 {
@@ -288,7 +294,7 @@ class AdobeEdgeHandler {
     }
     
     func handleAdBreakBegin(event: AdBreakBeginEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onAdBreakBegin")
         self.isPlayingAd = true
         let currentAdBreakTimeOffset = event.ad?.timeOffset ?? 0
@@ -301,7 +307,7 @@ class AdobeEdgeHandler {
     }
     
     func handleAdBreakEnd(event: AdBreakEndEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onAdBreakEnd")
         self.isPlayingAd = false
         self.adPodPosition = 1
@@ -309,31 +315,30 @@ class AdobeEdgeHandler {
     }
     
     func handleAdBegin(event: AdBeginEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onAdBegin")
         let duration = event.ad?.duration ?? 0
         let adObject = Media.createAdObjectWith(name: "NA", id: "NA", position: self.adPodPosition, length: duration)
         self.tracker.trackEvent(event: MediaEvent.AdBreakStart, info: adObject, metadata: nil)
-        
         self.adPodPosition += 1
     }
     
     func handleAdEnd(event: AdEndEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onAdEnd")
         self.tracker.trackEvent(event: MediaEvent.AdComplete, info: nil, metadata: nil)
     }
     
     func handleAdSkip(event: AdSkipEvent) -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("onAdSkip")
         self.tracker.trackEvent(event: MediaEvent.AdSkip, info: nil, metadata: nil)
     }
     
     private func maybeEndSession() -> Void {
-        guard let player = self.player else { return }
+        guard self.player != nil else { return }
         self.logDebug("maybeEndSession")
-        if (self.sessionInProgress) {
+        if self.sessionInProgress {
             self.tracker.trackSessionEnd()
         }
         self.reset()
@@ -355,18 +360,20 @@ class AdobeEdgeHandler {
         let mediaLength = AdobeUtils.sanitiseContentLength(mediaLengthSec)
         let hasValidSource = player.source != nil
         let hasValidDuration = player.duration != nil && !(player.duration!.isNaN)
+        let streamType = self.getStreamType()
         self.logDebug("maybeStartSession - mediaLength: \(mediaLength)")
         self.logDebug("maybeStartSession - hasValidSource: \(hasValidSource)")
         self.logDebug("maybeStartSession - hasValidDuration: \(hasValidDuration)")
         self.logDebug("maybeStartSession - sessionInProgress: \(self.sessionInProgress)")
         self.logDebug("maybeStartSession - isPlayingAd: \(self.isPlayingAd)")
+        self.logDebug("maybeStartSession - streamType: \(streamType)")
         
-        guard !sessionInProgress else {
+        guard !self.sessionInProgress else {
             self.logDebug("maybeStartSession - NOT started: already in progress")
             return
         }
         
-        guard !isPlayingAd else {
+        guard !self.isPlayingAd else {
             self.logDebug("maybeStartSession - NOT started: playing ad")
             return
         }
@@ -377,17 +384,16 @@ class AdobeEdgeHandler {
             return
         }
         
-        
+        let metadata: [String: Any] = player.source?.metadata?.metadataKeys ?? [:]
         if let mediaObject = Media.createMediaObjectWith(
-            name: player.source?.metadata?.title ?? "N/A",
-            id: "N/A",
+            name: metadata["title"] as? String ?? "N/A",
+            id: metadata["id"] as? String ?? "N/A",
             length: mediaLength,
-            streamType: self.getStreamType(),
+            streamType: streamType,
             mediaType: MediaType.Video
         ) {
             self.tracker.trackSessionStart(info: mediaObject, metadata: self.customMetadata)
-            
-            sessionInProgress = true
+            self.sessionInProgress = true
             self.logDebug("maybeStartSession - STARTED")
         }
     }
