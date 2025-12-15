@@ -360,7 +360,7 @@ class AdobeEdgeHandler {
     func maybeStartSession(mediaLengthSec: Double? = nil) -> Void {
         guard let player = self.player else { return }
         
-        let mediaLength = AdobeUtils.sanitiseContentLength(mediaLengthSec)
+        let mediaLength = self.sanitiseContentLength(mediaLengthSec)
         let hasValidSource = player.source != nil
         let hasValidDuration = player.duration != nil && !(player.duration!.isNaN)
         let streamType = self.getStreamType()
@@ -424,5 +424,23 @@ class AdobeEdgeHandler {
             }
         }
         return MediaConstants.StreamType.LIVE
+    }
+    
+    private func sanitisePlayhead(_ playhead: Double?) -> Int {
+        guard let playhead = playhead else {
+            return 0
+        }
+        
+        if playhead == Double.infinity {
+            // If content is live, the playhead must be the current second of the day.
+            let now = Date().timeIntervalSince1970
+            return Int(now.truncatingRemainder(dividingBy: 86400))
+        }
+        
+        return Int(playhead)
+    }
+    
+    private func sanitiseContentLength(_ mediaLength: Double?) -> Int {
+        mediaLength == .infinity ? 86400 : Int(mediaLength ?? 0)
     }
 }

@@ -1,13 +1,13 @@
-// AdobeUtils.swift
+// TheoplayerAdobeEdgeRCTAdobeEdgeUtils.swift
 
 import Foundation
 import THEOplayerSDK
 
-class AdobeUtils {
+class TheoplayerAdobeEdgeRCTAdobeEdgeUtils {
     class func toAdobeCustomMetadataDetails(_ array: [[String: Any]]) -> [String: String] {
         var result = [String: String]()
         for item in array {
-            let stringsItem = AdobeUtils.toStringMap(item)
+            let stringsItem = TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toStringMap(item)
             if let name = stringsItem["name"], let value = stringsItem["value"] {
                 result[name] = value
             }
@@ -30,24 +30,6 @@ class AdobeUtils {
         }
         
         return result
-    }
-    
-    class func sanitisePlayhead(_ playhead: Double?) -> Int {
-        guard let playhead = playhead else {
-            return 0
-        }
-        
-        if playhead == Double.infinity {
-            // If content is live, the playhead must be the current second of the day.
-            let now = Date().timeIntervalSince1970
-            return Int(now.truncatingRemainder(dividingBy: 86400))
-        }
-        
-        return Int(playhead)
-    }
-    
-    class func sanitiseContentLength(_ mediaLength: Double?) -> Int {
-        mediaLength == .infinity ? 86400 : Int(mediaLength ?? 0)
     }
 }
 
