@@ -8,4 +8,5 @@ export type { AdobeImplementationDetails, AdobeEnvironment } from './AdobeImplem
 export type { AdobeMediaDetails } from './AdobeMediaDetails';
 export type { AdobePlayerStateData } from './AdobePlayerStateData';
 export type { AdobeQoeDataDetails } from './AdobeQoeDataDetails';
-export type { AdobeSessionDetails, ContentType, StreamType } from './AdobeSessionDetails';
+export { ContentType, StreamType } from './AdobeSessionDetails';
+export type { AdobeSessionDetails } from './AdobeSessionDetails';
