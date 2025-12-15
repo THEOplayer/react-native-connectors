@@ -219,8 +219,10 @@ class AdobeEdgeHandler {
     }
     
     private func handleTimeUpdate(event: TimeUpdateEvent) {
-        self.logDebug("onTimeUpdate")
-        self.tracker.updateCurrentPlayhead(time: AdobeUtils.sanitisePlayhead(event.currentTime))
+        guard self.player != nil else { return }
+        //self.logDebug("onTimeUpdate")
+        
+        self.tracker.updateCurrentPlayhead(time: self.sanitisePlayhead(event.currentTime))
     }
     
     func handleWaiting(event: WaitingEvent) -> Void {
