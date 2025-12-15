@@ -340,6 +340,7 @@ class AdobeEdgeHandler {
         self.logDebug("maybeEndSession")
         if self.sessionInProgress {
             self.tracker.trackSessionEnd()
+            self.sessionInProgress = false
         }
         self.reset()
     }
