@@ -12,6 +12,12 @@ import AEPEdgeMedia
 let CONTENT_PING_INTERVAL = 10.0
 let AD_PING_INTERVAL = 1.0
 
+let PROP_NA: String = "NA"
+let PROP_CURRENTTIME: String = "currentTime"
+let PROP_ERRORID: String = "errorId"
+
+let TAG: String = "[AdobeEdgeConnector]"
+
 class AdobeEdgeHandler {
     private weak var player: THEOplayer?
     private var trackerConfig: [String:String]
@@ -23,6 +29,7 @@ class AdobeEdgeHandler {
     private var currentChapter: TextTrackCue? = nil
     private var loggingMode: LogLevel = .debug
     private var tracker: MediaTracker = Media.createTracker()
+    private var eventQueue: [AdobeEdgeEvent] = []
 
     // MARK: Player Listeners
     private var playingListener: THEOplayerSDK.EventListener?
@@ -53,7 +60,7 @@ class AdobeEdgeHandler {
     
     private func logDebug(_ text: String) {
         if self.loggingMode >= .debug {
-            print("[AdobeEdgeConnector]", text)
+            print(TAG, text)
         }
     }
     
@@ -74,7 +81,7 @@ class AdobeEdgeHandler {
     }
     
     func setError(_ errorId: String) -> Void {
-        self.tracker.trackError(errorId: errorId)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .ERROR, info: [PROP_ERRORID: errorId]))
     }
     
     func stopAndStartNewSession(_ metadata: [String:String]) -> Void {
@@ -204,7 +211,7 @@ class AdobeEdgeHandler {
         self.logDebug("onPlaying")
         self.maybeStartSession(mediaLengthSec: player.duration)
         
-        self.tracker.trackPlay()
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .PLAYING))
     }
 
     private func handlePause(event: PauseEvent) {
@@ -214,42 +221,42 @@ class AdobeEdgeHandler {
     private func onPause() {
         guard self.player != nil else { return }
         self.logDebug("onPause")
-        
-        self.tracker.trackPause()
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .PAUSE))
     }
     
     private func handleTimeUpdate(event: TimeUpdateEvent) {
         guard self.player != nil else { return }
         //self.logDebug("onTimeUpdate")
         
-        self.tracker.updateCurrentPlayhead(time: self.sanitisePlayhead(event.currentTime))
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .PLAYHEAD_UPDATE, info: [PROP_CURRENTTIME: self.sanitisePlayhead(event.currentTime)]))
     }
     
     func handleWaiting(event: WaitingEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onWaiting")
         
-        self.tracker.trackEvent(event: MediaEvent.BufferStart, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .BUFFER_START))
     }
     
     func handleSeeking(event: SeekingEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onSeeking")
         
-        self.tracker.trackEvent(event: MediaEvent.SeekStart, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .SEEK_START))
     }
     
     func handleSeeked(event: SeekedEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onSeeked")
         
-        self.tracker.trackEvent(event: MediaEvent.SeekComplete, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .SEEK_COMPLETE))
     }
     
     func handleEnded(event: EndedEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onEnded")
-        self.tracker.trackComplete()
+        
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .COMPLETE))
         self.reset()
     }
     
@@ -267,7 +274,7 @@ class AdobeEdgeHandler {
             bitrate = activeTrack.activeQuality?.bandwidth ?? 0
         }
         if let qoe = Media.createQoEObjectWith(bitrate: bitrate, startupTime: 0, fps: 0, droppedFrames: 0) {
-            self.tracker.updateQoEObject(qoe: qoe)
+            self.queueOrSendEvent(event: AdobeEdgeEvent(type: .QOE_UPDATE, info: qoe))
         }
     }
     
@@ -292,7 +299,7 @@ class AdobeEdgeHandler {
         if let errorCodeValue = event.errorObject?.code.rawValue as? Int32 {
             errorCodeString = String(errorCodeValue)
         }
-        self.tracker.trackError(errorId: errorCodeString)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .ERROR, info: [PROP_ERRORID: errorCodeString]))
     }
     
     func handleAdBreakBegin(event: AdBreakBeginEvent) -> Void {
@@ -301,8 +308,8 @@ class AdobeEdgeHandler {
         self.isPlayingAd = true
         let currentAdBreakTimeOffset = event.ad?.timeOffset ?? 0
         let breakIndex = currentAdBreakTimeOffset < 0 ? -1 : (currentAdBreakTimeOffset == 0 ? 0 : self.adBreakPodIndex + 1)
-        let adBreakObject = Media.createAdBreakObjectWith(name: "NA", position: breakIndex, startTime: currentAdBreakTimeOffset)
-        self.tracker.trackEvent(event: MediaEvent.AdBreakStart, info: adBreakObject, metadata: nil)
+        let adBreakObject = Media.createAdBreakObjectWith(name: PROP_NA, position: breakIndex, startTime: currentAdBreakTimeOffset)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_BREAK_START, info: adBreakObject))
         if (breakIndex > self.adBreakPodIndex) {
             self.adBreakPodIndex += 1
         }
@@ -313,35 +320,35 @@ class AdobeEdgeHandler {
         self.logDebug("onAdBreakEnd")
         self.isPlayingAd = false
         self.adPodPosition = 1
-        self.tracker.trackEvent(event: MediaEvent.AdBreakComplete, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_BREAK_COMPLETE))
     }
     
     func handleAdBegin(event: AdBeginEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onAdBegin")
         let duration = event.ad?.duration ?? 0
-        let adObject = Media.createAdObjectWith(name: "NA", id: "NA", position: self.adPodPosition, length: duration)
-        self.tracker.trackEvent(event: MediaEvent.AdBreakStart, info: adObject, metadata: nil)
+        let adObject = Media.createAdObjectWith(name: PROP_NA, id: PROP_NA,  position: self.adPodPosition, length: duration)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_START, info: adObject))
         self.adPodPosition += 1
     }
     
     func handleAdEnd(event: AdEndEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onAdEnd")
-        self.tracker.trackEvent(event: MediaEvent.AdComplete, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_COMPLETE))
     }
     
     func handleAdSkip(event: AdSkipEvent) -> Void {
         guard self.player != nil else { return }
         self.logDebug("onAdSkip")
-        self.tracker.trackEvent(event: MediaEvent.AdSkip, info: nil, metadata: nil)
+        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_SKIP))
     }
     
     private func maybeEndSession() -> Void {
         guard self.player != nil else { return }
         self.logDebug("maybeEndSession")
         if self.sessionInProgress {
-            self.tracker.trackSessionEnd()
+            self.queueOrSendEvent(event: AdobeEdgeEvent(type: .SESSION_END))
             self.sessionInProgress = false
         }
         self.reset()
@@ -389,8 +396,8 @@ class AdobeEdgeHandler {
         
         let metadata: [String: Any] = player.source?.metadata?.metadataKeys ?? [:]
         if let mediaObject = Media.createMediaObjectWith(
-            name: metadata["title"] as? String ?? "N/A",
-            id: metadata["id"] as? String ?? "N/A",
+            name: metadata["title"] as? String ?? PROP_NA,
+            id: metadata["id"] as? String ?? PROP_NA,
             length: mediaLength,
             streamType: streamType,
             mediaType: MediaType.Video
@@ -398,6 +405,52 @@ class AdobeEdgeHandler {
             self.tracker.trackSessionStart(info: mediaObject, metadata: self.customMetadata)
             self.sessionInProgress = true
             self.logDebug("maybeStartSession - STARTED")
+            
+            // Send any queued events
+            if !self.eventQueue.isEmpty {
+                self.logDebug("Sending \(self.eventQueue.count) queued events.")
+                for event in self.eventQueue {
+                    self.sendEvent(event: event)
+                }
+                self.eventQueue.removeAll()
+            }
+        }
+    }
+    
+    private func sendEvent(event: AdobeEdgeEvent) {
+        if event.type != AdobeEdgeEventType.PLAYHEAD_UPDATE { // don't clutter output with timeUpdates...
+            self.logDebug("sendEvent: \(event.type)")
+        }
+        
+        switch event.type {
+        case .AD_BREAK_START: self.tracker.trackEvent(event: MediaEvent.AdBreakStart, info: event.info, metadata: event.metadata)
+        case .AD_BREAK_COMPLETE: self.tracker.trackEvent(event: MediaEvent.AdBreakComplete, info: event.info, metadata: event.metadata)
+        case .AD_START: self.tracker.trackEvent(event: MediaEvent.AdStart, info: event.info, metadata: event.metadata)
+        case .AD_COMPLETE: self.tracker.trackEvent(event: MediaEvent.AdComplete, info: event.info, metadata: event.metadata)
+        case .AD_SKIP: self.tracker.trackEvent(event: MediaEvent.AdSkip, info: event.info, metadata: event.metadata)
+        case .SEEK_START: self.tracker.trackEvent(event: MediaEvent.SeekStart, info: event.info, metadata: event.metadata)
+        case .SEEK_COMPLETE: self.tracker.trackEvent(event: MediaEvent.SeekComplete, info: event.info, metadata: event.metadata)
+        case .BUFFER_START: self.tracker.trackEvent(event: MediaEvent.BufferStart, info: event.info, metadata: event.metadata)
+        case .BUFFER_COMPLETE: self.tracker.trackEvent(event: MediaEvent.BufferComplete, info: event.info, metadata: event.metadata)
+        case .BITRATE_CHANGE: self.tracker.trackEvent(event: MediaEvent.BitrateChange, info: event.info, metadata: event.metadata)
+        case .STATE_START: self.tracker.trackEvent(event: MediaEvent.StateStart, info: event.info, metadata: event.metadata)
+        case .STATE_END: self.tracker.trackEvent(event: MediaEvent.StateEnd, info: event.info, metadata: event.metadata)
+        case .PLAYHEAD_UPDATE: self.tracker.updateCurrentPlayhead(time: event.info?[PROP_CURRENTTIME] as? Int ?? 0)
+        case .ERROR: self.tracker.trackError(errorId: event.info?[PROP_ERRORID] as? String ?? PROP_NA)
+        case .COMPLETE: self.tracker.trackComplete()
+        case .QOE_UPDATE: self.tracker.updateQoEObject(qoe: event.info ?? [:])
+        case .SESSION_END: self.tracker.trackSessionEnd()
+        case .PLAYING: self.tracker.trackPlay()
+        case .PAUSE: self.tracker.trackPause()
+        }
+    }
+    
+    private func queueOrSendEvent(event: AdobeEdgeEvent) {
+        if self.sessionInProgress {
+            self.sendEvent(event: event)
+        } else {
+            self.logDebug("Queueing event: \(event.type)")
+            self.eventQueue.append(event)
         }
     }
     
@@ -408,6 +461,7 @@ class AdobeEdgeHandler {
         self.isPlayingAd = false
         self.sessionInProgress = false
         self.currentChapter = nil
+        self.eventQueue.removeAll()
     }
     
     func destroy() -> Void {
