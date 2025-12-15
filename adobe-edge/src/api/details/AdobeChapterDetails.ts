@@ -1,7 +1,7 @@
 /**
  * Chapter details information.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/chapterdetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/chapterdetails.schema.md}
  */
 export interface AdobeChapterDetails {
   // The ID of the ad break.

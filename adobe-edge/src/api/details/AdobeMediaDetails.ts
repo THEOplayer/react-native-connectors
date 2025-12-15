@@ -10,7 +10,7 @@ import type { AdobePlayerStateData } from './AdobePlayerStateData';
 /**
  * Media details information.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/mediadetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/mediadetails.schema.md}
  */
 export interface AdobeMediaDetails {
   // If the content is live, the playhead must be the current second of the day, 0 <= playhead < 86400.

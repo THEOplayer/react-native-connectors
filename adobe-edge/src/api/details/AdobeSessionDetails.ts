@@ -1,7 +1,7 @@
 /**
  * Session details information related to the experience event.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/sessiondetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/sessiondetails.schema.md}
  */
 export interface AdobeSessionDetails {
   // This identifies an instance of a content stream unique to an individual playback.
