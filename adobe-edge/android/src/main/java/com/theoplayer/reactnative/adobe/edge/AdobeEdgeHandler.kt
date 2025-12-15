@@ -4,6 +4,7 @@ import android.util.Log
 import com.adobe.marketing.mobile.LoggingMode
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.edge.media.Media
+import com.adobe.marketing.mobile.edge.media.Media.Event
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.theoplayer.android.api.ads.LinearAd
 import com.theoplayer.android.api.event.EventListener
@@ -40,6 +41,41 @@ typealias AddVideoTrackEvent = com.theoplayer.android.api.event.track.mediatrack
 typealias RemoveVideoTrackEvent = com.theoplayer.android.api.event.track.mediatrack.video.list.RemoveTrackEvent
 
 private const val TAG = "AdobeEdgeConnector"
+
+enum class EventType {
+  PLAY,
+  PAUSE,
+  AD_BREAK_START,
+  AD_BREAK_COMPLETE,
+  AD_START,
+  AD_COMPLETE,
+  AD_SKIP,
+  CHAPTER_START,
+  CHAPTER_COMPLETE,
+  CHAPTER_SKIP,
+  SEEK_START,
+  SEEK_COMPLETE,
+  BUFFER_START,
+  BUFFER_COMPLETE,
+  BITRATE_CHANGE,
+  STATE_START,
+  STATE_END,
+  PLAYHEAD_UPDATE,
+  ERROR,
+  COMPLETE,
+  QOE_UPDATE,
+  SESSION_END,
+}
+
+data class QueuedEvent(
+  val type: EventType,
+  val info: Map<String, Any>?,
+  val metadata: Map<String, String>?
+)
+
+const val PROP_CURRENT_TIME = "currentTime"
+const val PROP_ERROR_ID = "errorId"
+const val PROP_NA = "NA"
 
 class AdobeEdgeHandler(
   private val player: Player,
@@ -85,6 +121,7 @@ class AdobeEdgeHandler(
   private val onAdSkip = EventListener<AdSkipEvent> { handleAdSkip() }
 
   private val tracker = Media.createTracker(trackerConfig)
+  private val eventQueue = mutableListOf<QueuedEvent>()
 
   private fun logDebug(message: String) {
     if (loggingMode >= LoggingMode.DEBUG) {
@@ -107,7 +144,7 @@ class AdobeEdgeHandler(
   }
 
   fun setError(errorId: String) {
-    tracker.trackError(errorId)
+    queueOrSendEvent(EventType.ERROR, mapOf(PROP_ERROR_ID to errorId), null)
   }
 
   fun stopAndStartNewSession(metadata: Map<String, String>?) {
@@ -171,38 +208,87 @@ class AdobeEdgeHandler(
     }
   }
 
+  private fun sendEvent(
+    event: EventType,
+    info: Map<String, Any>? = null,
+    metadata: Map<String, String>? = null
+  ) {
+    when (event) {
+      EventType.AD_BREAK_START -> tracker.trackEvent(Event.AdBreakStart, info, metadata)
+      EventType.AD_BREAK_COMPLETE -> tracker.trackEvent(Event.AdBreakComplete, info, metadata)
+      EventType.AD_START -> tracker.trackEvent(Event.AdStart, info, metadata)
+      EventType.AD_COMPLETE -> tracker.trackEvent(Event.AdComplete, info, metadata)
+      EventType.AD_SKIP -> tracker.trackEvent(Event.AdSkip, info, metadata)
+      EventType.CHAPTER_START -> tracker.trackEvent(Event.ChapterStart, info, metadata)
+      EventType.CHAPTER_COMPLETE -> tracker.trackEvent(Event.ChapterComplete, info, metadata)
+      EventType.CHAPTER_SKIP -> tracker.trackEvent(Event.ChapterSkip, info, metadata)
+      EventType.SEEK_START -> tracker.trackEvent(Event.SeekStart, info, metadata)
+      EventType.SEEK_COMPLETE -> tracker.trackEvent(Event.SeekComplete, info, metadata)
+      EventType.BUFFER_START -> tracker.trackEvent(Event.BufferStart, info, metadata)
+      EventType.BUFFER_COMPLETE -> tracker.trackEvent(Event.BufferComplete, info, metadata)
+      EventType.BITRATE_CHANGE -> tracker.trackEvent(Event.BitrateChange, info, metadata)
+      EventType.STATE_START -> tracker.trackEvent(Event.StateStart, info, metadata)
+      EventType.STATE_END -> tracker.trackEvent(Event.StateEnd, info, metadata)
+      EventType.PLAYHEAD_UPDATE -> tracker.updateCurrentPlayhead(
+        (info?.get(PROP_CURRENT_TIME) as Int?) ?: 0
+      )
+
+      EventType.ERROR -> tracker.trackError(info?.get(PROP_ERROR_ID) as String? ?: PROP_NA)
+      EventType.COMPLETE -> tracker.trackComplete()
+      EventType.QOE_UPDATE -> tracker.updateQoEObject(info ?: emptyMap())
+      EventType.SESSION_END -> tracker.trackSessionEnd()
+      EventType.PLAY -> tracker.trackPlay()
+      EventType.PAUSE -> tracker.trackPause()
+    }
+  }
+
+  private fun queueOrSendEvent(
+    type: EventType,
+    info: Map<String, Any>? = null,
+    metadata: Map<String, String>? = null
+  ) {
+    if (sessionInProgress) {
+      sendEvent(type, info, metadata)
+    } else {
+      eventQueue.add(QueuedEvent(type, info, metadata))
+    }
+  }
+
   private fun handlePlaying() {
     // NOTE: In case of a pre-roll ad, the `playing` event will be sent twice: once starting the re-roll, and once
     // starting content. During the pre-roll, all events will be queued. The session will be started after the pre-roll,
     // making sure we can start the session with the correct content duration (not the ad duration).
     logDebug("onPlaying")
     maybeStartSession(player.duration)
-    tracker.trackPlay()
+    queueOrSendEvent(EventType.PLAY)
   }
 
   private fun handlePause() {
     logDebug("onPause")
-    tracker.trackPause()
+    queueOrSendEvent(EventType.PAUSE)
   }
 
   private fun handleTimeUpdate(event: TimeUpdateEvent) {
     logDebug("onTimeUpdate")
-    tracker.updateCurrentPlayhead(sanitisePlayhead(event.currentTime))
+    queueOrSendEvent(
+      EventType.PLAYHEAD_UPDATE,
+      mapOf(PROP_CURRENT_TIME to sanitisePlayhead(event.currentTime))
+    )
   }
 
   private fun handleWaiting() {
     logDebug("onWaiting")
-    tracker.trackEvent(Media.Event.BufferStart, null, null)
+    queueOrSendEvent(EventType.BUFFER_START)
   }
 
   private fun handleSeeking() {
     logDebug("handleSeeking")
-    tracker.trackEvent(Media.Event.SeekStart, null, null)
+    queueOrSendEvent(EventType.SEEK_START)
   }
 
   private fun handleSeeked() {
     logDebug("handleSeeked")
-    tracker.trackEvent(Media.Event.SeekComplete, null, null)
+    queueOrSendEvent(EventType.SEEK_COMPLETE)
   }
 
   private fun handleEnded() {
@@ -212,7 +298,7 @@ class AdobeEdgeHandler(
      * been completely viewed. If the viewing session is ended before the media is completely viewed,
      * use trackSessionEnd instead.
      */
-    tracker.trackComplete()
+    queueOrSendEvent(EventType.COMPLETE)
     reset()
   }
 
@@ -222,8 +308,8 @@ class AdobeEdgeHandler(
   }
 
   private fun handleQualityChanged(event: ActiveQualityChangedEvent) {
-    tracker.updateQoEObject(
-      Media.createQoEObject(
+    queueOrSendEvent(
+      EventType.QOE_UPDATE, Media.createQoEObject(
         event.quality?.bandwidth?.toInt() ?: 0,
         0,
         0,
@@ -266,12 +352,12 @@ class AdobeEdgeHandler(
     logDebug("onEnterCue")
     val chapterCue = event.cue
     if (currentChapter != null && currentChapter?.endTime != chapterCue.startTime) {
-      tracker.trackEvent(Media.Event.ChapterSkip, null, null)
+      queueOrSendEvent(EventType.CHAPTER_SKIP)
     }
-    tracker.trackEvent(
-      Media.Event.ChapterStart,
+    queueOrSendEvent(
+      EventType.CHAPTER_START,
       Media.createChapterObject(
-        chapterCue.id.ifEmpty { "NA" },
+        chapterCue.id.ifEmpty { PROP_NA },
         chapterCue.id.toIntOrNull() ?: 1,
         chapterCue.endTime.toInt(),
         (chapterCue.endTime - chapterCue.startTime).toInt()
@@ -283,12 +369,12 @@ class AdobeEdgeHandler(
 
   private fun handleExitCue() {
     logDebug("onExitCue")
-    tracker.trackEvent(Media.Event.ChapterComplete, null, null)
+    queueOrSendEvent(EventType.CHAPTER_COMPLETE)
   }
 
   private fun handleError(event: ErrorEvent) {
     logDebug("onError")
-    tracker.trackError(event.errorObject.code.toString())
+    queueOrSendEvent(EventType.ERROR, mapOf("errorId" to event.errorObject.code.toString()))
   }
 
   private fun handleAdBreakBegin(event: AdBreakBeginEvent) {
@@ -300,15 +386,14 @@ class AdobeEdgeHandler(
       currentAdBreakTimeOffset < 0 -> -1
       else -> adBreakPodIndex + 1
     }
-    tracker.trackEvent(
-      Media.Event.AdBreakStart,
-      Media.createAdBreakObject(
-        "NA",
+    queueOrSendEvent(
+      EventType.AD_BREAK_START, Media.createAdBreakObject(
+        PROP_NA,
         index,
         currentAdBreakTimeOffset
-      ),
-      null
+      )
     )
+
     if (index > adBreakPodIndex) {
       adBreakPodIndex++
     }
@@ -318,16 +403,16 @@ class AdobeEdgeHandler(
     logDebug("onAdBreakEnd")
     isPlayingAd = false
     adPodPosition = 1
-    tracker.trackEvent(Media.Event.AdBreakComplete, null, null)
+    queueOrSendEvent(EventType.AD_BREAK_COMPLETE)
   }
 
   private fun handleAdBegin(event: AdBeginEvent) {
     logDebug("onAdBegin")
-    tracker.trackEvent(
-      Media.Event.AdStart,
+    queueOrSendEvent(
+      EventType.AD_START,
       Media.createAdObject(
-        "NA",
-        "NA",
+        PROP_NA,
+        PROP_NA,
         adPodPosition,
         (event.ad as? LinearAd)?.duration ?: 0
       ),
@@ -338,12 +423,12 @@ class AdobeEdgeHandler(
 
   private fun handleAdEnd() {
     logDebug("onAdEnd")
-    tracker.trackEvent(Media.Event.AdComplete, null, null)
+    queueOrSendEvent(EventType.AD_COMPLETE)
   }
 
   private fun handleAdSkip() {
     logDebug("onAdSkip")
-    tracker.trackEvent(Media.Event.AdSkip, null, null)
+    queueOrSendEvent(EventType.AD_SKIP)
   }
 
   private fun maybeEndSession() {
@@ -354,7 +439,7 @@ class AdobeEdgeHandler(
        * even if the user has not viewed the media to completion. If the media is viewed to completion,
        * use trackComplete instead.
        */
-      tracker.trackSessionEnd()
+      queueOrSendEvent(EventType.SESSION_END)
     }
     reset()
   }
@@ -406,6 +491,12 @@ class AdobeEdgeHandler(
 
     sessionInProgress = true
 
+    // Post any queued events now that the session has started.
+    if (eventQueue.isNotEmpty()) {
+      eventQueue.forEach { event -> sendEvent(event.type, event.info, event.metadata) }
+      eventQueue.clear()
+    }
+
     logDebug("maybeStartSession - STARTED")
   }
 
@@ -422,6 +513,7 @@ class AdobeEdgeHandler(
 
   fun reset() {
     logDebug("reset")
+    eventQueue.clear()
     adBreakPodIndex = 0
     adPodPosition = 1
     isPlayingAd = false
