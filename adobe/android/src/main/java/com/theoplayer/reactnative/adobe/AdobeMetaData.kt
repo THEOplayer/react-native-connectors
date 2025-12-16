@@ -2,9 +2,6 @@ package com.theoplayer.reactnative.adobe
 
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.ReadableType
-import kotlin.collections.orEmpty
-import kotlin.collections.plus
-import kotlin.collections.toMutableMap
 import kotlinx.serialization.*
 
 @Serializable
@@ -19,13 +16,13 @@ open class AdobeMetaData(
 
 fun AdobeMetaData.add(metadata: AdobeMetaData): AdobeMetaData {
   metadata.params?.let {
-    this.params = (this.params.orEmpty() + it).toMutableMap()
+    this.params = (this.params ?: mutableMapOf()).apply { putAll(it) }
   }
   metadata.customMetadata?.let {
-    this.customMetadata = (this.customMetadata.orEmpty() + it).toMutableMap()
+    this.customMetadata = (this.customMetadata ?: mutableMapOf()).apply { putAll(it) }
   }
   metadata.qoeData?.let {
-    this.qoeData = (this.qoeData.orEmpty() + it).toMutableMap()
+    this.qoeData = (this.qoeData ?: mutableMapOf()).apply { putAll(it) }
   }
   return this
 }
