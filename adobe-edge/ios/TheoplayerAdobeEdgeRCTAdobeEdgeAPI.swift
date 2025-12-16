@@ -2,8 +2,6 @@ import Foundation
 import UIKit
 import react_native_theoplayer
 import THEOplayerSDK
-import AEPCore
-import AEPServices
 
 @objc(THEOplayerAdobeEdgeRCTAdobeEdgeAPI)
 class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
@@ -24,17 +22,14 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     @objc(initialize:config:)
     func initialize(_ node: NSNumber, config: NSDictionary) -> Void {
         log("initialize triggered.")
-        let environmentId = config["environmentId"] as? String ?? "MissingEnvironmentID"
-        let debugEnabled = config["debugEnabled"] as? Bool ?? false
         
-        MobileCore.setLogLevel(.debug)
-        MobileCore.initialize(appId: environmentId)
-        self.debug = debugEnabled
+        self.debug = config["debugEnabled"] as? Bool ?? false
         
         DispatchQueue.main.async {
             if let view = self.view(for: node), let player = view.player {
                 let trackerConfig: [String: String] = TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toStringMap(config as? [String: Any] ?? [:])
                 let connector = AdobeEdgeConnector(player: player, trackerConfig: trackerConfig)
+                connector.setLoggingMode(self.debug ? .debug : .error)
                 self.connectors[node] = connector
                 self.log("added connector to view \(node)")
             } else {

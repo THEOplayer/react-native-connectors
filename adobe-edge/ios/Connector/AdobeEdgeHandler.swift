@@ -27,7 +27,7 @@ class AdobeEdgeHandler {
     private var isPlayingAd = false
     private var customMetadata: [String:String] = [:]
     private var currentChapter: TextTrackCue? = nil
-    private var loggingMode: LogLevel = .debug
+    private var loggingMode: LogLevel = .error
     private var tracker: MediaTracker = Media.createTracker()
     private var eventQueue: [AdobeEdgeEvent] = []
 
@@ -68,6 +68,13 @@ class AdobeEdgeHandler {
         self.player = player
         self.trackerConfig = trackerConfig
         self.addEventListeners()
+        
+        let environmentId = trackerConfig["environmentId"] ?? "MissingEnvironmentID"
+        MobileCore.setLogLevel(.error)
+        MobileCore.initialize(appId: environmentId) {
+            self.logDebug("MobileCore successfully initialized with App ID: \(environmentId)")
+        }
+        
         self.logDebug("Initialized Connector.")
     }
     
