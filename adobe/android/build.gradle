@@ -18,8 +18,11 @@ def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+  id 'com.android.library'
+  id 'kotlin-android'
+  id 'org.jetbrains.kotlin.plugin.serialization' version '2.2.0'
+}
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
@@ -69,7 +72,7 @@ repositories {
 // The Adobe connector requires at least THEOplayer SDK v9.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.0.0, 11.0.0)')
 def kotlin_version = safeExtGet("THEOplayerAdobe_kotlinVersion", "2.2.10")
-def gsonVersion = safeExtGet('gsonVersion', '2.13.1')
+def serialization_version = '1.9.0'
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
@@ -78,7 +81,7 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
-  implementation("com.google.code.gson:gson:$gsonVersion")
+  implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
 
   // THEOplayer dependencies
   compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"
