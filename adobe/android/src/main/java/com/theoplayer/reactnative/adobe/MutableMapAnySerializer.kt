@@ -5,11 +5,11 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 
-object MutableMapAnySerializer : KSerializer<MutableMap<String, Any>> {
+object MutableMapAnySerializer : KSerializer<MutableMap<String, Any?>> {
   override val descriptor: SerialDescriptor =
     buildClassSerialDescriptor("MutableMap<String, Any>")
 
-  override fun serialize(encoder: Encoder, value: MutableMap<String, Any>) {
+  override fun serialize(encoder: Encoder, value: MutableMap<String, Any?>) {
     val jsonEncoder = encoder as? JsonEncoder
       ?: throw SerializationException("This serializer can only be used with JSON")
 
@@ -17,12 +17,13 @@ object MutableMapAnySerializer : KSerializer<MutableMap<String, Any>> {
     jsonEncoder.encodeJsonElement(jsonObject)
   }
 
-  override fun deserialize(decoder: Decoder): MutableMap<String, Any> {
+  override fun deserialize(decoder: Decoder): MutableMap<String, Any?> {
     // We don't need to deserialize
     throw SerializationException("Deserialization is not supported")
   }
 
-  private fun anyToJson(v: Any): JsonElement = when (v) {
+  private fun anyToJson(v: Any?): JsonElement = when (v) {
+    null -> JsonNull
     is String -> JsonPrimitive(v)
     is Int -> JsonPrimitive(v)
     is Boolean -> JsonPrimitive(v)
@@ -31,9 +32,9 @@ object MutableMapAnySerializer : KSerializer<MutableMap<String, Any>> {
     is Long -> JsonPrimitive(v)
     is MutableMap<*, *> -> {
       @Suppress("UNCHECKED_CAST")
-      JsonObject((v as MutableMap<String, Any>).mapValues { anyToJson(it.value) })
+      JsonObject((v as MutableMap<String, Any?>).mapValues { anyToJson(it.value) })
     }
-    is List<*> -> JsonArray(v.map { anyToJson(it!!) })
+    is List<*> -> JsonArray(v.map { anyToJson(it) })
     else -> JsonPrimitive(v.toString())
   }
 }
