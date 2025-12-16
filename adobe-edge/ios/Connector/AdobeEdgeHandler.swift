@@ -8,6 +8,7 @@ import UIKit
 import AEPServices
 import AEPCore
 import AEPEdgeMedia
+import AEPEdgeConsent
 
 let CONTENT_PING_INTERVAL = 10.0
 let AD_PING_INTERVAL = 1.0
@@ -73,9 +74,11 @@ class AdobeEdgeHandler {
         MobileCore.setLogLevel(.error)
         MobileCore.initialize(appId: environmentId) {
             self.logDebug("MobileCore successfully initialized with App ID: \(environmentId)")
+            // let collectConsent = ["collect": ["val": "y"]]
+            // Consent.update(with: ["consents": collectConsent])
         }
         
-        self.logDebug("Initialized Connector.")
+        self.logDebug("Connector Initialized.")
     }
     
     func setLoggingMode(_ debug: LogLevel) -> Void {
