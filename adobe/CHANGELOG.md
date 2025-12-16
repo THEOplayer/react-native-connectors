@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.14.0
+
+### ✨ Features
+
+- Fixed an issue on Android where the event payload would be partially obfuscated when enabling minification with R8.
+- Fixed an issue on Android where the `playhead` and `contentLength` payload properties should be integers.
+
 ## 1.13.0
 
 ### ✨ Features
