@@ -3,7 +3,6 @@
 package com.theoplayer.reactnative.adobe
 
 import android.util.Log
-import com.google.gson.Gson
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.ads.AdBeginEvent
 import com.theoplayer.android.api.event.ads.AdBreakBeginEvent
@@ -44,6 +43,7 @@ import okhttp3.Response
 import kotlin.collections.orEmpty
 import kotlin.collections.plus
 import kotlin.collections.toMutableMap
+import kotlinx.serialization.json.*
 
 typealias AddTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.AddTrackEvent
 typealias RemoveTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.RemoveTrackEvent
@@ -113,8 +113,6 @@ class AdobeConnector(
   private val scope = CoroutineScope(Dispatchers.Main)
 
   private val client = OkHttpClient()
-
-  private val gson = Gson()
 
   private val onPlaying: EventListener<PlayingEvent> = EventListener { handlePlaying() }
   private val onPause: EventListener<PauseEvent> = EventListener { handlePause() }
@@ -372,11 +370,11 @@ class AdobeConnector(
     }
   }
 
-  private fun getCurrentTime(): Double {
+  private fun getCurrentTime(): Int {
     return when (player.currentTime) {
-      Double.POSITIVE_INFINITY -> ((System.currentTimeMillis() / 1000) % 86400).toDouble()
+      Double.POSITIVE_INFINITY -> (System.currentTimeMillis() / 1000) % 86400
       else -> player.currentTime
-    }
+    }.toInt()
   }
 
   /**
@@ -529,7 +527,7 @@ class AdobeConnector(
     body: AdobeEventRequestBody
   ): Response? = withContext(Dispatchers.IO) {
     val response = try {
-      val requestBodyStr = gson.toJson(body)
+      val requestBodyStr = Json.encodeToString(body)
       logDebug("sendRequest $url - $requestBodyStr")
       val request = Request.Builder()
         .url(url)
@@ -558,9 +556,13 @@ class AdobeConnector(
    * @param mediaLengthSec optional mediaLength provided by a player event.
    * @private
    */
-  private fun getContentLength(mediaLengthSec: Double?): Double {
+  private fun getContentLength(mediaLengthSec: Double?): Int {
     val length = mediaLengthSec ?: player.duration
-    return if (length == Double.POSITIVE_INFINITY) 86400.0 else length
+    return when {
+      length == Double.POSITIVE_INFINITY -> 86400
+      length.isNaN() -> 0
+      else -> length.toInt()
+    }
   }
 
   private fun getContentType(): ContentType {
