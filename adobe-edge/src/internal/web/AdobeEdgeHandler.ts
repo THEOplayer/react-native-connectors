@@ -1,6 +1,7 @@
 import {
   AdobeCustomMetadataDetails,
   AdobeErrorDetails,
+  AdobeIdentityMap,
   AdobeMediaDetails,
   AdobeQoeDataDetails,
   AdobeSessionDetails,
@@ -74,14 +75,16 @@ export class AdobeEdgeHandler {
   private _adPodPosition = 1;
   private _isPlayingAd = false;
   private _customMetadata: AdobeCustomMetadataDetails[] = [];
+  private _customIdentityMap: AdobeIdentityMap | undefined;
   private _currentChapter: TextTrackCue | undefined;
   private _eventQueue: (() => Promise<void>)[] = [];
   private _debug = false;
   private readonly _alloyClient: AlloyClient;
 
-  constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig) {
+  constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig, customIdentityMap?: AdobeIdentityMap) {
     this._player = player;
     this._hasSessionFailed = false;
+    this._customIdentityMap = customIdentityMap;
     const sanitisedConfig = sanitiseConfig(config);
     const { datastreamId, orgId, debugEnabled } = sanitisedConfig;
 
@@ -122,6 +125,10 @@ export class AdobeEdgeHandler {
 
   updateMetadata(metadata: AdobeCustomMetadataDetails[]): void {
     this._customMetadata = [...this._customMetadata, ...metadata];
+  }
+
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    this._customIdentityMap = customIdentityMap;
   }
 
   private addEventListeners(): void {
@@ -452,6 +459,7 @@ export class AdobeEdgeHandler {
             qoeDataDetails,
             customMetadata,
           },
+          identityMap: this._customIdentityMap,
         },
       });
 
@@ -506,6 +514,7 @@ export class AdobeEdgeHandler {
             playhead: sanitisePlayhead(mediaDetails.playhead),
             sessionID: this._sessionId,
           },
+          identityMap: this._customIdentityMap,
         },
       });
     } catch (e) {

@@ -1,6 +1,6 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeCustomMetadataDetails, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 import { AdobeEdgeMobileConfig } from '../api/AdobeEdgeMobileConfig';
 
@@ -10,10 +10,10 @@ const ERROR_MSG = 'AdobeConnectorAdapter Error';
 export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
-  constructor(player: THEOplayer, config: AdobeEdgeMobileConfig) {
+  constructor(player: THEOplayer, config: AdobeEdgeMobileConfig, customIdentityMap?: AdobeIdentityMap) {
     this.nativeHandle = player.nativeHandle || -1;
     try {
-      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, config);
+      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, config, customIdentityMap);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -30,6 +30,14 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   updateMetadata(metadata: AdobeCustomMetadataDetails[]) {
     try {
       NativeModules.AdobeEdgeModule.updateMetadata(this.nativeHandle || -1, metadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
+  }
+
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    try {
+      NativeModules.AdobeEdgeModule.setCustomIdentityMap(this.nativeHandle || -1, customIdentityMap);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
