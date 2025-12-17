@@ -1,5 +1,5 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeCustomMetadataDetails, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 import { AdobeEdgeWebConfig } from '../api/AdobeEdgeWebConfig';
 import { AdobeEdgeConnector } from './web/AdobeEdgeConnector';
@@ -8,8 +8,8 @@ import { ChromelessPlayer } from 'theoplayer';
 export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
   private connector: AdobeEdgeConnector;
 
-  constructor(player: THEOplayer, config: AdobeEdgeWebConfig) {
-    this.connector = new AdobeEdgeConnector(player.nativeHandle as ChromelessPlayer, config);
+  constructor(player: THEOplayer, config: AdobeEdgeWebConfig, customIdentityMap?: AdobeIdentityMap) {
+    this.connector = new AdobeEdgeConnector(player.nativeHandle as ChromelessPlayer, config, customIdentityMap);
   }
 
   setDebug(debug: boolean) {
@@ -18,6 +18,10 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
 
   updateMetadata(metadata: AdobeCustomMetadataDetails[]): void {
     this.connector.updateMetadata(metadata);
+  }
+
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    this.connector?.setCustomIdentityMap(customIdentityMap);
   }
 
   setError(errorDetails: AdobeErrorDetails): void {

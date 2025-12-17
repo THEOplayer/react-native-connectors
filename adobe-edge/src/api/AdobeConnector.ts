@@ -6,20 +6,24 @@ import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
 import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
 import { AdobeEdgeConfig } from './AdobeEdgeConfig';
+import { AdobeIdentityMap } from './details/AdobeIdentityMap';
 
 export class AdobeConnector {
   private connectorAdapter?: AdobeConnectorAdapter;
 
-  constructor(player: THEOplayer, config: AdobeEdgeConfig) {
+  /**
+   * Creates an instance of AdobeConnector.
+   */
+  constructor(player: THEOplayer, config: AdobeEdgeConfig, customIdentityMap?: AdobeIdentityMap) {
     if (['ios', 'android'].includes(Platform.OS)) {
       if (config.mobile) {
-        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobile);
+        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobile, customIdentityMap);
       } else {
         console.error('AdobeConnector Error: Missing config for mobile platform');
       }
     } else {
       if (config.web) {
-        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.web);
+        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.web, customIdentityMap);
       } else {
         console.error('AdobeConnector Error: Missing config for Web platform');
       }
@@ -31,6 +35,37 @@ export class AdobeConnector {
    */
   updateMetadata(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
     this.connectorAdapter?.updateMetadata(customMetadataDetails);
+  }
+
+  /**
+   * Sets custom identity map.
+   *
+   * @example
+   * ```typescript
+   * {
+   *  "EMAIL": [
+   *    {
+   *      "id": "user@example.com",
+   *      "authenticatedState": "authenticated",
+   *      "primary": "false"
+   *    },
+   *    {
+   *      "id" : "useralias@example.com",
+   *      "authenticatedState": "ambiguous",
+   *      "primary": false
+   *    }
+   *  ],
+   *  "Email_LC_SHA256": [
+   *    {
+   *      "id": "2394509340-9b942f32f709db2c57e79cecec4462836ca1efef1c336a939c4b1674bcc74320",
+   *      "authenticatedState": "authenticated",
+   *      "primary": "false"
+   *    }
+   *  ]
+   * }
+   */
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    this.connectorAdapter?.setCustomIdentityMap(customIdentityMap);
   }
 
   /**

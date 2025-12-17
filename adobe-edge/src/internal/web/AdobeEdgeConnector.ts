@@ -3,6 +3,7 @@ import {
   AdobeCustomMetadataDetails,
   AdobeEdgeWebConfig,
   AdobeErrorDetails,
+  AdobeIdentityMap,
   AdobeQoeDataDetails,
 } from '@theoplayer/react-native-analytics-adobe-edge';
 import { ChromelessPlayer } from 'theoplayer';
@@ -10,8 +11,8 @@ import { ChromelessPlayer } from 'theoplayer';
 export class AdobeEdgeConnector {
   private _handler: AdobeEdgeHandler;
 
-  constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig) {
-    this._handler = new AdobeEdgeHandler(player, config);
+  constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig, customIdentityMap?: AdobeIdentityMap) {
+    this._handler = new AdobeEdgeHandler(player, config, customIdentityMap);
   }
 
   /**
@@ -29,6 +30,10 @@ export class AdobeEdgeConnector {
 
   updateMetadata(metadata: AdobeCustomMetadataDetails[]) {
     this._handler.updateMetadata(metadata);
+  }
+
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    this._handler.setCustomIdentityMap(customIdentityMap);
   }
 
   setDebug(debug: boolean) {
