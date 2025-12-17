@@ -3,6 +3,8 @@ package com.theoplayer.reactnative.adobe.edge
 import android.util.Log
 import com.adobe.marketing.mobile.LoggingMode
 import com.adobe.marketing.mobile.MobileCore
+import com.adobe.marketing.mobile.edge.identity.Identity
+import com.adobe.marketing.mobile.edge.identity.IdentityMap
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.Media.Event
 import com.adobe.marketing.mobile.edge.media.MediaConstants
@@ -79,7 +81,8 @@ const val PROP_NA = "NA"
 
 class AdobeEdgeHandler(
   private val player: Player,
-  trackerConfig: Map<String, String> = emptyMap()
+  trackerConfig: Map<String, String> = emptyMap(),
+  customIdentityMap: IdentityMap? = null
 ) {
   private var sessionInProgress = false
 
@@ -88,13 +91,9 @@ class AdobeEdgeHandler(
   private var adPodPosition = 1
 
   private var isPlayingAd = false
-
   private var customMetadata = mutableMapOf<String, String>()
-
   private var currentChapter: TextTrackCue? = null
-
   private var loggingMode: LoggingMode = LoggingMode.ERROR
-
   private val onPlaying = EventListener<PlayingEvent> { handlePlaying() }
   private val onPause = EventListener<PauseEvent> { handlePause() }
   private val onEnded = EventListener<EndedEvent> { handleEnded() }
@@ -131,6 +130,7 @@ class AdobeEdgeHandler(
 
   init {
     addEventListeners()
+    customIdentityMap?.let { setCustomIdentityMap(it) }
     logDebug("Initialized connector")
   }
 
@@ -141,6 +141,13 @@ class AdobeEdgeHandler(
 
   fun updateMetadata(metadata: Map<String, String>) {
     customMetadata += metadata
+  }
+
+  fun setCustomIdentityMap(customIdentityMap: IdentityMap) {
+    /**
+     * https://developer.adobe.com/client-sdks/edge/identity-for-edge-network/api-reference/#updateidentities
+     */
+    Identity.updateIdentities(customIdentityMap)
   }
 
   fun setError(errorId: String) {

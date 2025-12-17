@@ -1,7 +1,10 @@
 package com.theoplayer.reactnative.adobe.edge
 
+import com.adobe.marketing.mobile.edge.identity.AuthenticatedState
+import com.adobe.marketing.mobile.edge.identity.IdentityItem
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.adobe.marketing.mobile.edge.identity.IdentityMap
 
 private const val PROP_NAME = "name"
 private const val PROP_VALUE = "value"
@@ -31,5 +34,25 @@ fun ReadableArray.toAdobeCustomMetadataDetails() : HashMap<String, String> {
     toArrayList()
       .map { e -> (e as? ReadableMap) }
       .filter { e -> e != null && e.hasKey(PROP_NAME) && e.hasKey(PROP_VALUE) }
+  }
+}
+
+fun ReadableMap.toAdobeIdentityMap(): IdentityMap {
+  return IdentityMap().apply {
+    toHashMap().forEach { (namespace, items) ->
+      val itemList = items as? List<*> ?: return@forEach
+      itemList.forEach { item ->
+        val itemMap = item as? Map<*, *> ?: return@forEach
+        addItem(IdentityItem(
+          itemMap["id"] as? String ?: "",
+          when (itemMap["authenticatedState"] as? String) {
+            "authenticated" -> AuthenticatedState.AUTHENTICATED
+            "loggedOut" -> AuthenticatedState.LOGGED_OUT
+            else -> AuthenticatedState.AMBIGUOUS
+          },
+          itemMap["primary"] as? Boolean ?: false
+        ), namespace)
+      }
+    }
   }
 }
