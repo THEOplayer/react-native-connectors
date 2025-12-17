@@ -28,6 +28,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   fun initialize(
     tag: Int,
     config: ReadableMap,
+    customIdentityMap: ReadableMap?
   ) {
     /**
      * If an asset config file is provided, use it to initialize the MobileCore SDK, otherwise use
@@ -43,7 +44,8 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
       view?.playerContext?.playerView?.let { playerView ->
         adobeConnectors[tag] = AdobeEdgeConnector(
           player = playerView.player,
-          trackerConfig = config.toHashMap().mapValues { it.value?.toString() ?: "" }
+          trackerConfig = config.toHashMap().mapValues { it.value?.toString() ?: "" },
+          customIdentityMap = customIdentityMap?.toAdobeIdentityMap()
         )
         if (config.hasKey(PROP_DEBUG_ENABLED)) {
           setDebug(tag, config.getBoolean(PROP_DEBUG_ENABLED))
@@ -71,6 +73,14 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   @ReactMethod
   fun updateMetadata(tag: Int, metadataList: ReadableArray) {
     adobeConnectors[tag]?.updateMetadata(metadataList.toAdobeCustomMetadataDetails())
+  }
+
+  /**
+   * Sets customMetadataDetails which will be passed for the session start request.
+   */
+  @ReactMethod
+  fun setCustomIdentityMap(tag: Int, customIdentityMap: ReadableMap) {
+    adobeConnectors[tag]?.setCustomIdentityMap(customIdentityMap.toAdobeIdentityMap())
   }
 
   /**
