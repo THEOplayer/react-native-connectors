@@ -36,8 +36,6 @@ import {
 import { EventType } from './EventType';
 
 const TAG = 'AdobeConnector';
-const CONTENT_PING_INTERVAL = 10000;
-const AD_PING_INTERVAL = 1000;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type AlloyClient = Function;
@@ -65,9 +63,6 @@ export class AdobeEdgeHandler {
   private _player: ChromelessPlayer;
   private _sessionId: string | undefined;
   private _hasSessionFailed: boolean;
-
-  /** Timer handling the ping event request */
-  private _pingInterval: ReturnType<typeof setInterval> | undefined;
 
   /** Whether we are in a current session or not */
   private _sessionInProgress = false;
@@ -266,7 +261,6 @@ export class AdobeEdgeHandler {
 
   private onAdBreakBegin = (event: AdBreakEvent<'adbreakbegin'>) => {
     this._isPlayingAd = true;
-    this.startPinger(AD_PING_INTERVAL);
     const podDetails = calculateAdvertisingPodDetails(event.adBreak, this._adBreakPodIndex);
     void this.queueOrSendEvent(EventType.adBreakStart, {
       playhead: this._player.currentTime,
@@ -297,7 +291,6 @@ export class AdobeEdgeHandler {
   private onAdBreakEnd = () => {
     this._isPlayingAd = false;
     this._adPodPosition = 1;
-    this.startPinger(CONTENT_PING_INTERVAL);
     void this.queueOrSendEvent(EventType.adBreakComplete, { playhead: this._player.currentTime });
   };
 
@@ -360,24 +353,6 @@ export class AdobeEdgeHandler {
 
     this._sessionInProgress = true;
     this.logDebug('maybeStartSession - STARTED', `sessionId: ${this.sessionId}`);
-
-    if (!this._isPlayingAd) {
-      this.startPinger(CONTENT_PING_INTERVAL);
-    } else {
-      this.startPinger(AD_PING_INTERVAL);
-    }
-  }
-
-  private startPinger(interval: number): void {
-    if (this._pingInterval !== undefined) {
-      clearInterval(this._pingInterval);
-    }
-    this._pingInterval = setInterval(() => {
-      // Only send pings if the session has started, never queue them.
-      if (this.hasSessionStarted()) {
-        void this.sendMediaEvent(EventType.ping, { playhead: this._player.currentTime });
-      }
-    }, interval);
   }
 
   private getContentLength(mediaLengthSec?: number): number {
@@ -394,8 +369,6 @@ export class AdobeEdgeHandler {
     this._adPodPosition = 1;
     this._isPlayingAd = false;
     this._sessionInProgress = false;
-    clearInterval(this._pingInterval);
-    this._pingInterval = undefined;
     this._currentChapter = undefined;
     this._sessionId = undefined;
     this._hasSessionFailed = false;
