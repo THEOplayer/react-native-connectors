@@ -1,7 +1,7 @@
 /**
  * Qoe data details information related to the experience event.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/qoedatadetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/qoedatadetails.schema.md}
  */
 export interface AdobeQoeDataDetails {
   // The average bitrate (in kbps). The value is predefined buckets at 100kbps intervals. The Average Bitrate is

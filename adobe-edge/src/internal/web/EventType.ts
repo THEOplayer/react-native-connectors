@@ -1,7 +1,6 @@
 export enum EventType {
   sessionStart = 'media.sessionStart',
   play = 'media.play',
-  ping = 'media.ping',
   bitrateChange = 'media.bitrateChange',
   bufferStart = 'media.bufferStart',
   pauseStart = 'media.pauseStart',

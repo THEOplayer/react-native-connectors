@@ -1,7 +1,7 @@
 /**
  * Advertising Pod details information.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/advertisingpoddetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/advertisingpoddetails.schema.md}
  */
 export interface AdobeAdvertisingPodDetails {
   // The ID of the ad break.

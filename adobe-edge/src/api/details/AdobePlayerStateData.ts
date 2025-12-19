@@ -1,7 +1,7 @@
 /**
  * Player state data information.
  *
- * https://github.com/adobe/xdm/blob/master/components/datatypes/playerstatedata.schema.json
+ * {@link https://github.com/adobe/xdm/blob/master/components/datatypes/playerstatedata.schema.json}
  */
 export interface AdobePlayerStateData {
   // The name of the player state.

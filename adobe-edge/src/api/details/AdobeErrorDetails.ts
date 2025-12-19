@@ -1,7 +1,7 @@
 /**
  * Error details information.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/errordetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/errordetails.schema.md}
  */
 export interface AdobeErrorDetails {
   // The error ID.
