@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.14.1
+
+### 🐛 Issues
+
+- Fixed an issue on Android where the connector could crash when adding new events because of a `ConcurrentModificationException`.
+
 ## 1.14.0
 
 ### ✨ Features
