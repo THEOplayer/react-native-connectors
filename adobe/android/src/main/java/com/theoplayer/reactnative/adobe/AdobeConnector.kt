@@ -439,10 +439,13 @@ class AdobeConnector(
 
     if (eventQueue.isNotEmpty()) {
       val url = "$uri/$sessionId/events"
-      this.eventQueue.forEach { body ->
+      // toList is added to copy the collection and avoid ConcurrentModificationException
+      val queuedEvents = eventQueue.toList()
+      eventQueue.clear()
+      queuedEvents.forEach { body ->
         sendRequest(url, body)
       }
-      eventQueue.clear()
+
     }
 
     if (!isPlayingAd) {
