@@ -10,6 +10,7 @@ import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
+const NA = 'N/A';
 
 /**
  * An all-TypeScript implementation of the AdobeConnector.
@@ -47,7 +48,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   private isPlayingAd = false;
 
-  private customMetadata: AdobeMetaData = {};
+  private currentMetadata: AdobeMetaData = {};
 
   private currentChapter: TextTrackCue | undefined;
 
@@ -71,7 +72,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
     this.sid = sid;
     this.debug = debug;
     this.trackingUrl = trackingUrl;
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.currentMetadata = { ...this.currentMetadata, ...metadata };
     this.customUserAgent = userAgent || buildUserAgent();
 
     this.addEventListeners();
@@ -84,7 +85,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
   }
 
   updateMetadata(metadata: AdobeMetaData): void {
-    this.customMetadata = { ...this.customMetadata, ...metadata };
+    this.currentMetadata = { ...this.currentMetadata, ...metadata };
   }
 
   setError(metadata: AdobeMetaData): void {
@@ -316,17 +317,21 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
         'media.name': this.player.source.metadata.title,
       };
     }
+    /**
+     * https://experienceleague.adobe.com/en/docs/media-analytics/using/implementation/analytics-only/streaming-media-apis/mc-api-req-params
+     */
     initialBody.params = {
       'analytics.reportSuite': this.sid,
       'analytics.trackingServer': this.trackingUrl,
-      'media.channel': 'N/A',
+      'media.channel': NA,
       'media.contentType': this.getContentType(),
-      'media.id': 'N/A',
+      'media.id': NA,
       'media.length': mediaLength,
       'media.playerName': 'THEOplayer', // TODO make distinctions between platforms?
       'visitor.marketingCloudOrgId': this.ecid,
+      'visitor.marketingCloudUserId': this.currentMetadata.customMetadata?.['visitorMID'] || NA,
       ...friendlyName,
-      ...this.customMetadata.params,
+      ...this.currentMetadata.params,
     };
     const body = this.addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody);
 
@@ -370,11 +375,11 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
         eventType === AdobeEventTypes.AD_START ||
         eventType === AdobeEventTypes.SESSION_START
       ) {
-        body.customMetadata = { ...this.customMetadata.customMetadata };
+        body.customMetadata = { ...this.currentMetadata.customMetadata };
       }
       // TODO check params which are fine and which need more limitations?
     }
-    body.qoeData = { ...body.qoeData, ...this.customMetadata.qoeData };
+    body.qoeData = { ...body.qoeData, ...this.currentMetadata.qoeData };
     return body;
   }
 

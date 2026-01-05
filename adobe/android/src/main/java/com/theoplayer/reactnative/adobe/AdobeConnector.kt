@@ -104,7 +104,7 @@ class AdobeConnector(
 
   private var isPlayingAd = false
 
-  private var customMetadata: AdobeMetaData = AdobeMetaData()
+  private var currentMetadata: AdobeMetaData = AdobeMetaData()
 
   private var currentChapter: TextTrackCue? = null
 
@@ -143,7 +143,7 @@ class AdobeConnector(
   private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
 
   init {
-    this.customMetadata = metadata ?: AdobeMetaData()
+    this.currentMetadata = metadata ?: AdobeMetaData()
     this.customUserAgent = userAgent ?: buildUserAgent()
 
     addEventListeners()
@@ -156,7 +156,7 @@ class AdobeConnector(
   }
 
   fun updateMetadata(metadata: AdobeMetaData) {
-    customMetadata.add(metadata)
+    currentMetadata.add(metadata)
   }
 
   fun setError(metadata: AdobeMetaData) {
@@ -405,6 +405,9 @@ class AdobeConnector(
       return
     }
     val initialBody = createBaseRequest(AdobeEventTypes.SESSION_START)
+    /**
+     * https://experienceleague.adobe.com/en/docs/media-analytics/using/implementation/analytics-only/streaming-media-apis/mc-api-req-params
+     */
     initialBody.params = mutableMapOf(
       "analytics.reportSuite" to sid,
       "analytics.trackingServer" to trackingUrl,
@@ -414,10 +417,12 @@ class AdobeConnector(
       "media.length" to mediaLength,
       "media.playerName" to "THEOplayer",
       "visitor.marketingCloudOrgId" to this.ecid,
+      "visitor.marketingCloudUserId" to (currentMetadata.customMetadata?.get("visitorMID") ?: NA)
     )
     player.source?.metadata?.get<String>("title")?.let {
       initialBody.params?.put("media.name", it)
     }
+    currentMetadata.params?.forEach { initialBody.params?.set(it.key, it.value) }
 
     val body = addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody)
 
@@ -467,9 +472,9 @@ class AdobeConnector(
         AdobeEventTypes.SESSION_START
       )
     ) {
-      body.customMetadata = customMetadata.customMetadata ?: mutableMapOf()
+      body.customMetadata = currentMetadata.customMetadata ?: mutableMapOf()
     }
-    body.qoeData = (body.qoeData.orEmpty() + customMetadata.qoeData.orEmpty()).toMutableMap()
+    body.qoeData = (body.qoeData.orEmpty() + currentMetadata.qoeData.orEmpty()).toMutableMap()
     return body
   }
 
