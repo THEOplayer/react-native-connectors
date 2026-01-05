@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.14.2
+
+### 🐛 Issues
+
+- Fixed an issue on Android where the properties from the passed metadata was not included with the `sessions` request.
+- Fixed an issue where the required `visitor.marketingCloudUserId` property was not included with the `sessions` request.
+
 ## 1.14.1
 
 ### 🐛 Issues
