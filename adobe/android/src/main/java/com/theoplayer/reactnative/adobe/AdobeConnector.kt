@@ -422,6 +422,7 @@ class AdobeConnector(
     player.source?.metadata?.get<String>("title")?.let {
       initialBody.params?.put("media.name", it)
     }
+    currentMetadata.params?.forEach { initialBody.params?.set(it.key, it.value) }
 
     val body = addCustomMetadata(AdobeEventTypes.SESSION_START, initialBody)
 
