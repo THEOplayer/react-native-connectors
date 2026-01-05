@@ -329,6 +329,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
       'media.length': mediaLength,
       'media.playerName': 'THEOplayer', // TODO make distinctions between platforms?
       'visitor.marketingCloudOrgId': this.ecid,
+      'visitor.marketingCloudUserId': this.currentMetadata.customMetadata?.['visitorMID'] || NA,
       ...friendlyName,
       ...this.currentMetadata.params,
     };

@@ -405,6 +405,9 @@ class AdobeConnector(
       return
     }
     val initialBody = createBaseRequest(AdobeEventTypes.SESSION_START)
+    /**
+     * https://experienceleague.adobe.com/en/docs/media-analytics/using/implementation/analytics-only/streaming-media-apis/mc-api-req-params
+     */
     initialBody.params = mutableMapOf(
       "analytics.reportSuite" to sid,
       "analytics.trackingServer" to trackingUrl,
@@ -414,6 +417,7 @@ class AdobeConnector(
       "media.length" to mediaLength,
       "media.playerName" to "THEOplayer",
       "visitor.marketingCloudOrgId" to this.ecid,
+      "visitor.marketingCloudUserId" to (currentMetadata.customMetadata?.get("visitorMID") ?: NA)
     )
     player.source?.metadata?.get<String>("title")?.let {
       initialBody.params?.put("media.name", it)

@@ -368,6 +368,7 @@ class AdobeConnector {
         params["media.length"] = mediaLength
         params["media.playerName"] = "THEOplayer"
         params["visitor.marketingCloudOrgId"] = self.ecid
+        params["visitor.marketingCloudUserId"] = self.currentMetadata?.customMetadata?["visitorMID"] ?? NA
         if let friendlyName = player.source?.metadata?.title {
             params["media.name"] = friendlyName
         }
