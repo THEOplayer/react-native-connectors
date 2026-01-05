@@ -104,7 +104,7 @@ class AdobeConnector(
 
   private var isPlayingAd = false
 
-  private var customMetadata: AdobeMetaData = AdobeMetaData()
+  private var currentMetadata: AdobeMetaData = AdobeMetaData()
 
   private var currentChapter: TextTrackCue? = null
 
@@ -143,7 +143,7 @@ class AdobeConnector(
   private val onAdSkip: EventListener<AdSkipEvent> = EventListener { event -> handleAdSkip() }
 
   init {
-    this.customMetadata = metadata ?: AdobeMetaData()
+    this.currentMetadata = metadata ?: AdobeMetaData()
     this.customUserAgent = userAgent ?: buildUserAgent()
 
     addEventListeners()
@@ -156,7 +156,7 @@ class AdobeConnector(
   }
 
   fun updateMetadata(metadata: AdobeMetaData) {
-    customMetadata.add(metadata)
+    currentMetadata.add(metadata)
   }
 
   fun setError(metadata: AdobeMetaData) {
@@ -467,9 +467,9 @@ class AdobeConnector(
         AdobeEventTypes.SESSION_START
       )
     ) {
-      body.customMetadata = customMetadata.customMetadata ?: mutableMapOf()
+      body.customMetadata = currentMetadata.customMetadata ?: mutableMapOf()
     }
-    body.qoeData = (body.qoeData.orEmpty() + customMetadata.qoeData.orEmpty()).toMutableMap()
+    body.qoeData = (body.qoeData.orEmpty() + currentMetadata.qoeData.orEmpty()).toMutableMap()
     return body
   }
 
