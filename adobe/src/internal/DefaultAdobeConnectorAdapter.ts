@@ -10,6 +10,7 @@ import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 const TAG = 'AdobeConnector';
 const CONTENT_PING_INTERVAL = 10000;
 const AD_PING_INTERVAL = 1000;
+const NA = 'N/A';
 
 /**
  * An all-TypeScript implementation of the AdobeConnector.
@@ -316,12 +317,15 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
         'media.name': this.player.source.metadata.title,
       };
     }
+    /**
+     * https://experienceleague.adobe.com/en/docs/media-analytics/using/implementation/analytics-only/streaming-media-apis/mc-api-req-params
+     */
     initialBody.params = {
       'analytics.reportSuite': this.sid,
       'analytics.trackingServer': this.trackingUrl,
-      'media.channel': 'N/A',
+      'media.channel': NA,
       'media.contentType': this.getContentType(),
-      'media.id': 'N/A',
+      'media.id': NA,
       'media.length': mediaLength,
       'media.playerName': 'THEOplayer', // TODO make distinctions between platforms?
       'visitor.marketingCloudOrgId': this.ecid,

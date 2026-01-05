@@ -14,6 +14,7 @@ enum ContentType: String {
 
 let CONTENT_PING_INTERVAL = 10.0
 let AD_PING_INTERVAL = 1.0
+let NA = "N/A"
 
 class AdobeConnector {
     private weak var player: THEOplayer?
@@ -361,9 +362,9 @@ class AdobeConnector {
         var params: [String:Any] = [:]
         params["analytics.reportSuite"] = self.sid
         params["analytics.trackingServer"] = self.trackingUrl
-        params["media.channel"] = "N/A"
+        params["media.channel"] = NA
         params["media.contentType"] = self.getContentType().rawValue
-        params["media.id"] = "N/A"
+        params["media.id"] = NA
         params["media.length"] = mediaLength
         params["media.playerName"] = "THEOplayer"
         params["visitor.marketingCloudOrgId"] = self.ecid
