@@ -1,7 +1,7 @@
 /**
  * Details about the SDK, library, or service used in an application or web page implementation of a service.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/implementationdetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/implementationdetails.schema.md}
  */
 export interface AdobeImplementationDetails {
   // The environment of the implementation

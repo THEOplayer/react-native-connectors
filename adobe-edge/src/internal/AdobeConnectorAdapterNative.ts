@@ -1,25 +1,19 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeCustomMetadataDetails, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
+import { AdobeEdgeMobileConfig } from '../api/AdobeEdgeMobileConfig';
 
 const TAG = 'AdobeEdgeConnector';
 const ERROR_MSG = 'AdobeConnectorAdapter Error';
 
-export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
+export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
-  constructor(
-    player: THEOplayer,
-    baseUrl: string,
-    configId: string,
-    userAgent?: string,
-    debug = false,
-    debugSessionId: string | undefined = undefined,
-  ) {
+  constructor(player: THEOplayer, config: AdobeEdgeMobileConfig, customIdentityMap?: AdobeIdentityMap) {
     this.nativeHandle = player.nativeHandle || -1;
     try {
-      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, baseUrl, configId, userAgent, debug, debugSessionId);
+      NativeModules.AdobeEdgeModule.initialize(this.nativeHandle, config, customIdentityMap);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -41,17 +35,17 @@ export class NativeAdobeConnectorAdapter implements AdobeConnectorAdapter {
     }
   }
 
-  setError(errorDetails: AdobeErrorDetails) {
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
     try {
-      NativeModules.AdobeEdgeModule.setError(this.nativeHandle || -1, errorDetails);
+      NativeModules.AdobeEdgeModule.setCustomIdentityMap(this.nativeHandle || -1, customIdentityMap);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
   }
 
-  setDebugSessionId(id: string | undefined) {
+  setError(errorDetails: AdobeErrorDetails) {
     try {
-      NativeModules.AdobeEdgeModule.setDebugSessionId(this.nativeHandle || -1, id);
+      NativeModules.AdobeEdgeModule.setError(this.nativeHandle || -1, errorDetails);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }

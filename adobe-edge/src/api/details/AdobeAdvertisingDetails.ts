@@ -1,7 +1,7 @@
 /**
  * Advertising details information.
  *
- * https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/advertisingdetails.schema.md
+ * {@link https://github.com/adobe/xdm/blob/master/docs/reference/datatypes/advertisingdetails.schema.md}
  */
 export interface AdobeAdvertisingDetails {
   // ID of the ad. Any integer and/or letter combination.
