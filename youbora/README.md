@@ -17,8 +17,8 @@ npm install @theoplayer/react-native-analytics-youbora
 Create the connector by providing the `THEOplayer` instance, the `appId` provided by Youbora, and `instanceName`
 that describes the player or site, and an optional set of `YouboraOptions`:
 
-```jsx
-import { useYoubora } from '@theoplayer/react-native-analytics-youbora';
+```tsx
+import { useYoubora, youbora } from '@theoplayer/react-native-analytics-youbora';
 
 const youboraOptions: youbora.Options = {
   'accountCode': 'powerdev',
@@ -50,7 +50,7 @@ const youboraOptions: youbora.Options = {
 };
 
 const App = () => {
-  const [youbora, initYoubora] = useYoubora(youboraOptions, youbora.Log.Level.DEBUG);
+  const [_youboraConnector, initYoubora] = useYoubora(youboraOptions, youbora.Log.Level.DEBUG);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Youbora connector
@@ -78,7 +78,7 @@ the app's Podfile still needs to include a dependency to the THEOplayerSDK by ad
     tvos_youbora_target.dependent_targets <<= tvos_theoplayer_target
   end
 ```
-If you are using a single target project this reduces to 
+If you are using a single target project this reduces to
 ```ruby
   pre_install do |installer|
     youbora_target = installer.pod_targets.find { |t| t.name == "YouboraTHEOPlayerAdapter" }
