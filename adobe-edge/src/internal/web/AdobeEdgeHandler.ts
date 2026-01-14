@@ -68,7 +68,6 @@ export class AdobeEdgeHandler {
   private _sessionInProgress = false;
   private _adBreakPodIndex = 0;
   private _adPodPosition = 1;
-  private _isPlayingAd = false;
   private _customMetadata: AdobeCustomMetadataDetails[] = [];
   private _customIdentityMap: AdobeIdentityMap | undefined;
   private _currentChapter: TextTrackCue | undefined;
@@ -260,7 +259,6 @@ export class AdobeEdgeHandler {
   };
 
   private onAdBreakBegin = (event: AdBreakEvent<'adbreakbegin'>) => {
-    this._isPlayingAd = true;
     const podDetails = calculateAdvertisingPodDetails(event.adBreak, this._adBreakPodIndex);
     void this.queueOrSendEvent(EventType.adBreakStart, {
       playhead: this._player.currentTime,
@@ -289,7 +287,6 @@ export class AdobeEdgeHandler {
   };
 
   private onAdBreakEnd = () => {
-    this._isPlayingAd = false;
     this._adPodPosition = 1;
     void this.queueOrSendEvent(EventType.adBreakComplete, { playhead: this._player.currentTime });
   };
@@ -367,7 +364,6 @@ export class AdobeEdgeHandler {
     this.logDebug('reset');
     this._adBreakPodIndex = 0;
     this._adPodPosition = 1;
-    this._isPlayingAd = false;
     this._sessionInProgress = false;
     this._currentChapter = undefined;
     this._sessionId = undefined;
