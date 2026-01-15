@@ -1,11 +1,5 @@
 import { AdobeEdgeHandler } from './AdobeEdgeHandler';
-import {
-  AdobeCustomMetadataDetails,
-  AdobeEdgeWebConfig,
-  AdobeErrorDetails,
-  AdobeIdentityMap,
-  AdobeQoeDataDetails,
-} from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeCustomMetadataDetails, AdobeEdgeWebConfig, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
 import { ChromelessPlayer } from 'theoplayer';
 
 export class AdobeEdgeConnector {
@@ -40,8 +34,8 @@ export class AdobeEdgeConnector {
     this._handler.setDebug(debug);
   }
 
-  setError(errorDetails: AdobeErrorDetails, qoeDataDetails?: AdobeQoeDataDetails) {
-    return this._handler.setError(errorDetails, qoeDataDetails);
+  setError(errorDetails: AdobeErrorDetails) {
+    return this._handler.setError(errorDetails.name);
   }
 
   destroy() {

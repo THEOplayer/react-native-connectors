@@ -1,10 +1,15 @@
-import type { Ad, AdBreak, TextTrackCue } from 'react-native-theoplayer';
-import type {
-  AdobeAdvertisingDetails,
-  AdobeAdvertisingPodDetails,
-  AdobeChapterDetails,
-  AdobeEdgeWebConfig,
-} from '@theoplayer/react-native-analytics-adobe-edge';
+import type { AdobeCustomMetadataDetails, AdobeEdgeWebConfig } from '@theoplayer/react-native-analytics-adobe-edge';
+
+const PROP_NA = 'N/A';
+
+/**
+ * Sanitise the current media length.
+ *
+ * - In case of a live stream, set it to 24h.
+ */
+export function sanitiseContentLength(mediaLengthSec: number): number {
+  return mediaLengthSec === Infinity ? 86400 : Math.trunc(mediaLengthSec);
+}
 
 /**
  * Sanitise the current playhead in seconds. Adobe expects an integer value.
@@ -26,13 +31,30 @@ export function sanitisePlayhead(playheadInSec?: number): number {
   return Math.trunc(playheadInSec);
 }
 
-/**
- * Sanitise the current media length.
- *
- * - In case of a live stream, set it to 24h.
- */
-export function sanitiseContentLength(mediaLengthSec: number): number {
-  return mediaLengthSec === Infinity ? 86400 : Math.trunc(mediaLengthSec);
+export function isValidDuration(v: number | undefined): boolean {
+  return v !== undefined && !Number.isNaN(v);
+}
+
+export function toAdobeCustomMetadataDetails(details: AdobeCustomMetadataDetails[]): { [key: string]: string } {
+  const map: { [key: string]: string } = {};
+  for (const item of details) {
+    if (item.name && item.value) {
+      map[item.name] = item.value;
+    }
+  }
+  return map;
+}
+
+export function sanitiseChapterId(id?: string): string {
+  if (!id || id.trim().length === 0) {
+    return PROP_NA;
+  }
+  return id;
+}
+
+export function idToInt(id?: string, otherwise: number = 0): number {
+  const intId = Number(id);
+  return isNaN(intId) ? otherwise : intId;
 }
 
 export function sanitiseConfig(config: AdobeEdgeWebConfig): AdobeEdgeWebConfig {
@@ -43,44 +65,5 @@ export function sanitiseConfig(config: AdobeEdgeWebConfig): AdobeEdgeWebConfig {
       channel: config.streamingMedia?.channel || 'defaultChannel',
       playerName: config.streamingMedia?.playerName || 'THEOplayer',
     },
-  };
-}
-
-export function isValidDuration(v: number | undefined): boolean {
-  return v !== undefined && !Number.isNaN(v);
-}
-
-export function calculateAdvertisingPodDetails(adBreak: AdBreak, lastPodIndex: number): AdobeAdvertisingPodDetails {
-  const currentAdBreakTimeOffset = adBreak.timeOffset;
-  let podIndex: number;
-  if (currentAdBreakTimeOffset === 0) {
-    podIndex = 0;
-  } else if (currentAdBreakTimeOffset < 0) {
-    podIndex = -1;
-  } else {
-    podIndex = lastPodIndex++;
-  }
-  return {
-    index: podIndex ?? 0,
-    offset: Math.trunc(currentAdBreakTimeOffset),
-  };
-}
-
-export function calculateAdvertisingDetails(ad: Ad, podPosition: number): AdobeAdvertisingDetails {
-  return {
-    podPosition,
-    length: ad.duration ? Math.trunc(ad.duration) : 0,
-    name: 'NA',
-    playerName: 'THEOplayer',
-  };
-}
-
-export function calculateChapterDetails(cue: TextTrackCue): AdobeChapterDetails {
-  const id = Number(cue.id);
-  const index = isNaN(id) ? 0 : id;
-  return {
-    length: Math.trunc(cue.endTime - cue.startTime),
-    offset: Math.trunc(cue.startTime),
-    index,
   };
 }
