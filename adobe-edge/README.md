@@ -29,7 +29,7 @@ Create the connector by providing the `THEOplayer` instance and a configuration 
 Web and mobile platforms.
 
 ```tsx
-import { useAdobe } from '@theoplayer/react-native-analytics-adobe-edge';
+import {useAdobe} from '@theoplayer/react-native-analytics-adobe-edge';
 
 const config = {
   web: {
@@ -42,10 +42,23 @@ const config = {
     environmentId: 'abcdef123456/abcdef123456/launch-1234567890abcdef1234567890abcdef12',
     debugEnabled: true,
   },
-};
+}
+
+/**
+ * An optional custom identity map to associate the media session with user identities.
+ */
+const customIdentityMap = {
+  EMAIL: [
+    {
+      id: 'user@example.com',
+      authenticatedState: 'authenticated',
+      primary: false,
+    },
+  ],
+}
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(config);
+  const [adobe, initAdobe] = useAdobe(config, customIdentityMap);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
@@ -64,7 +77,7 @@ such as duration or whether it is a live or vod.
 The connector allows passing or updating the current asset's metadata at any time:
 
 ```typescript
-import { AdobeCustomMetadataDetails } from "@theoplayer/react-native-analytics-adobe-edge";
+import {AdobeCustomMetadataDetails} from "@theoplayer/react-native-analytics-adobe-edge";
 
 const onUpdateMetadata = () => {
   const metadata: AdobeCustomMetadataDetails[] = [

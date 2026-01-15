@@ -2,8 +2,12 @@ import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { RefObject, useEffect, useRef } from 'react';
 import { AdobeConnector } from '../AdobeConnector';
 import { AdobeEdgeConfig } from '../AdobeEdgeConfig';
+import { AdobeIdentityMap } from '../details/AdobeIdentityMap';
 
-export function useAdobe(config: AdobeEdgeConfig): [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
+export function useAdobe(
+  config: AdobeEdgeConfig,
+  customIdentityMap?: AdobeIdentityMap,
+): [RefObject<AdobeConnector | undefined>, (player: THEOplayer | undefined) => void] {
   const connector = useRef<AdobeConnector | undefined>(undefined);
   const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
@@ -13,7 +17,7 @@ export function useAdobe(config: AdobeEdgeConfig): [RefObject<AdobeConnector | u
 
     theoPlayer.current = player;
     if (player) {
-      connector.current = new AdobeConnector(player, config);
+      connector.current = new AdobeConnector(player, config, customIdentityMap);
       player.addEventListener(PlayerEventType.DESTROY, onDestroy);
     } else {
       throw new Error('Invalid THEOplayer instance');
