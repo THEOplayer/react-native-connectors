@@ -413,10 +413,15 @@ class AdobeEdgeHandler {
       return;
     }
 
+    // Allow overriding metadata with custom metadata set via updateMetadata().
+    const mergedMetadata = {
+      ...this._player?.source?.metadata,
+      ...this._customMetadata,
+    };
     this._tracker?.trackSessionStart(
       this._media?.createMediaObject(
-        this._player?.source?.metadata?.title ?? PROP_NA,
-        this._player?.source?.metadata?.id ?? PROP_NA,
+        mergedMetadata.friendlyName || mergedMetadata.title || PROP_NA,
+        mergedMetadata.name || mergedMetadata.id || PROP_NA,
         mediaLength,
         this.getContentType(),
         this._media.MediaType.Video,
