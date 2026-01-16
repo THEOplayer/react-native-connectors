@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.0.0
+
+### 💥 Breaking Changes
+
+- Updated the connector to use the latest Adobe Experience Platform Mobile and Web SDKs.
+
 ## 0.7.0
 
 ### ✨ Features
