@@ -505,10 +505,10 @@ class AdobeEdgeHandler(
 
     sessionInProgress = true
 
-    // Post any queued events now that the session has started.
     if (eventQueue.isNotEmpty()) {
-      eventQueue.forEach { event -> sendEvent(event.type, event.info, event.metadata) }
+      val queuedEvents = eventQueue.toList()
       eventQueue.clear()
+      queuedEvents.forEach { event -> sendEvent(event.type, event.info, event.metadata) }
     }
 
     logDebug("maybeStartSession - STARTED")
