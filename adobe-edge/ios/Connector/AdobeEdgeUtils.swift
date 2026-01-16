@@ -1,13 +1,12 @@
-// TheoplayerAdobeEdgeRCTAdobeEdgeUtils.swift
-
 import Foundation
 import THEOplayerSDK
+import AEPEdgeIdentity
 
-class TheoplayerAdobeEdgeRCTAdobeEdgeUtils {
+class AdobeEdgeUtils {
     class func toAdobeCustomMetadataDetails(_ array: [[String: Any]]) -> [String: String] {
         var result = [String: String]()
         for item in array {
-            let stringsItem = TheoplayerAdobeEdgeRCTAdobeEdgeUtils.toStringMap(item)
+            let stringsItem = AdobeEdgeUtils.toStringMap(item)
             if let name = stringsItem["name"], let value = stringsItem["value"] {
                 result[name] = value
             }
