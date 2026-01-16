@@ -77,8 +77,6 @@ class AdobeEdgeHandler {
         MobileCore.setLogLevel(.error)
         MobileCore.initialize(appId: environmentId) {
             self.logDebug("MobileCore successfully initialized with App ID: \(environmentId)")
-            // let collectConsent = ["collect": ["val": "y"]]
-            // Consent.update(with: ["consents": collectConsent])
         }
         
         self.logDebug("Connector Initialized.")
