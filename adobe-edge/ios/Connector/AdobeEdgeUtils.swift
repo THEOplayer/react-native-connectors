@@ -1,3 +1,5 @@
+// AdobeEdgeUtils.swift
+
 import Foundation
 import THEOplayerSDK
 import AEPEdgeIdentity
@@ -29,6 +31,16 @@ class AdobeEdgeUtils {
         }
         
         return result
+    }
+    
+    class func toIdentityMap(_ map: [String: Any]) -> IdentityMap? {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: map) else {
+            return nil
+        }
+        guard let identityMap = try? JSONDecoder().decode(IdentityMap.self, from: jsonData) else {
+            return nil
+        }
+        return identityMap
     }
 }
 
