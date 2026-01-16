@@ -218,7 +218,7 @@ class AdobeEdgeHandler {
   }
 
   private queueOrSendEvent(type: EventType, info: EventInfo = {}, metadata: EventMetadata = {}) {
-    const extendedInfo = { ...info, [PROP_PLAYHEAD]: sanitisePlayhead(this._player.currentTime) };
+    const extendedInfo = { ...info, [PROP_PLAYHEAD]: sanitisePlayhead(this._player.currentTime, this._player.duration) };
     if (this._sessionInProgress) {
       this.sendEvent(type, extendedInfo, metadata);
     } else {

@@ -18,12 +18,13 @@ export function sanitiseContentLength(mediaLengthSec: number): number {
  * - If infinite (live stream), set it to the current second of the day.
  *
  * @param playheadInSec
+ * @param mediaLengthSec
  */
-export function sanitisePlayhead(playheadInSec?: number): number {
-  if (!playheadInSec || isNaN(playheadInSec)) {
+export function sanitisePlayhead(playheadInSec?: number, mediaLengthSec?: number): number {
+  if (!playheadInSec || isNaN(playheadInSec) || !mediaLengthSec) {
     return 0;
   }
-  if (playheadInSec === Infinity) {
+  if (mediaLengthSec === Infinity) {
     // If content is live, the playhead must be the current second of the day.
     const date = new Date();
     return date.getSeconds() + 60 * (date.getMinutes() + 60 * date.getHours());

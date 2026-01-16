@@ -9,11 +9,11 @@ fun sanitiseContentLength(mediaLength: Double?): Int {
   return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
 }
 
-fun sanitisePlayhead(playhead: Double?): Int {
-  if (playhead == null) {
+fun sanitisePlayhead(playhead: Double?, mediaLength: Double?): Int {
+  if (playhead == null || mediaLength == null) {
     return 0
   }
-  if (playhead == Double.POSITIVE_INFINITY) {
+  if (mediaLength == Double.POSITIVE_INFINITY) {
     // If content is live, the playhead must be the current second of the day.
     val now = System.currentTimeMillis()
     return ((now / 1000) % 86400).toInt()

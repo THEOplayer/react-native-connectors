@@ -284,7 +284,7 @@ class AdobeEdgeHandler(
     logDebug("onTimeUpdate")
     queueOrSendEvent(
       EventType.PLAYHEAD_UPDATE,
-      mapOf(PROP_CURRENT_TIME to sanitisePlayhead(event.currentTime))
+      mapOf(PROP_CURRENT_TIME to sanitisePlayhead(event.currentTime, player.duration))
     )
   }
 
