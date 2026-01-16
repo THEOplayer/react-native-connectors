@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.14.3
+
+### 🐛 Issues
+
+- Fixed an issue on Android where the playhead for Live events would exceed the maximum value.
+
 ## 1.14.2
 
 ### 🐛 Issues
