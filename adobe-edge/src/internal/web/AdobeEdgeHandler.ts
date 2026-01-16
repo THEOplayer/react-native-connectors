@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AdobeIdentityMap, AdobeMetadata } from '@theoplayer/react-native-analytics-adobe-edge';
-import { idToInt, isValidDuration, sanitiseChapterId, sanitiseConfig, sanitiseContentLength, sanitisePlayhead } from './Utils';
+import { idToInt, isValidDuration, sanitiseChapterId, sanitiseConfig, sanitiseContentLength, sanitiseNumber, sanitisePlayhead } from './Utils';
 import { createInstance } from '@adobe/alloy';
 import { AdobeEdgeWebConfig } from '../../api/AdobeEdgeWebConfig';
 import {
@@ -269,7 +269,7 @@ class AdobeEdgeHandler {
   private handleQualityChanged = (event: QualityEvent<'activequalitychanged'>) => {
     const quality = event.quality as VideoQuality;
     void this.queueOrSendEvent(EventType.bitrateChange, {
-      qoeDataDetails: this._media?.createQoEObject(quality?.bandwidth ?? 0, 0, quality?.frameRate ?? 0, 0),
+      qoeDataDetails: this._media?.createQoEObject(sanitiseNumber(quality?.bandwidth), 0, sanitiseNumber(quality?.frameRate), 0),
     });
   };
 

@@ -32,6 +32,13 @@ export function sanitisePlayhead(playheadInSec?: number, mediaLengthSec?: number
   return Math.trunc(playheadInSec);
 }
 
+export function sanitiseNumber(v?: number): number {
+  if (v === undefined || v === null || Number.isNaN(v)) {
+    return 0;
+  }
+  return v;
+}
+
 export function isValidDuration(v: number | undefined): boolean {
   return v !== undefined && !Number.isNaN(v);
 }
