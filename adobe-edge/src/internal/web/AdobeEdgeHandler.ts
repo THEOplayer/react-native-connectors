@@ -467,6 +467,7 @@ class AdobeEdgeHandler {
     this._adPodPosition = 1;
     this._sessionInProgress = false;
     this._currentChapter = undefined;
+    this._customMetadata = {};
   }
 
   destroy() {

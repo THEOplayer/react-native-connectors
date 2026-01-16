@@ -94,7 +94,7 @@ class AdobeEdgeHandler(
   private var adPodPosition = 1
 
   private var isPlayingAd = false
-  private var customMetadata = mutableMapOf<String, String>()
+  private var customMetadata: MutableMap<String, String> = mutableMapOf()
   private var currentChapter: TextTrackCue? = null
   private var loggingMode: LoggingMode = LoggingMode.ERROR
   private val onPlaying = EventListener<PlayingEvent> { handlePlaying() }
@@ -533,6 +533,7 @@ class AdobeEdgeHandler(
     isPlayingAd = false
     sessionInProgress = false
     currentChapter = null
+    customMetadata = mutableMapOf()
   }
 
   fun destroy() {
