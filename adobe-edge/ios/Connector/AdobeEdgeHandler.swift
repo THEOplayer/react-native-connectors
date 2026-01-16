@@ -244,10 +244,15 @@ class AdobeEdgeHandler {
     }
     
     private func handleTimeUpdate(event: TimeUpdateEvent) {
-        guard self.player != nil else { return }
+        guard let player = self.player else { return }
         //self.logDebug("onTimeUpdate")
         
-        self.queueOrSendEvent(event: AdobeEdgeEvent(type: .PLAYHEAD_UPDATE, info: [PROP_CURRENTTIME: self.sanitisePlayhead(event.currentTime)]))
+        self.queueOrSendEvent(
+            event: AdobeEdgeEvent(
+                type: .PLAYHEAD_UPDATE,
+                info: [PROP_CURRENTTIME: self.sanitisePlayhead(playhead: event.currentTime, mediaLength: player.duration)]
+            )
+        )
     }
     
     func handleWaiting(event: WaitingEvent) -> Void {
@@ -502,12 +507,12 @@ class AdobeEdgeHandler {
         return MediaConstants.StreamType.LIVE
     }
     
-    private func sanitisePlayhead(_ playhead: Double?) -> Int {
-        guard let playhead = playhead else {
+    private func sanitisePlayhead(playhead: Double?, mediaLength: Double?) -> Int {
+        guard let playhead = playhead, let mediaLength = mediaLength else {
             return 0
         }
         
-        if playhead == Double.infinity {
+        if mediaLength == Double.infinity {
             // If content is live, the playhead must be the current second of the day.
             let now = Date().timeIntervalSince1970
             return Int(now.truncatingRemainder(dividingBy: 86400))
