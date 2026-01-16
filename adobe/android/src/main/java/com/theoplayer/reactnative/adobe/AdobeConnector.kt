@@ -44,6 +44,7 @@ import kotlin.collections.orEmpty
 import kotlin.collections.plus
 import kotlin.collections.toMutableMap
 import kotlinx.serialization.json.*
+import java.util.Calendar
 
 typealias AddTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.AddTrackEvent
 typealias RemoveTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.RemoveTrackEvent
@@ -371,8 +372,14 @@ class AdobeConnector(
   }
 
   private fun getCurrentTime(): Int {
-    return when (player.currentTime) {
-      Double.POSITIVE_INFINITY -> (System.currentTimeMillis() / 1000) % 86400
+    return when (player.duration) {
+      Double.POSITIVE_INFINITY -> {
+        // Return seconds since start of day for live streams
+        val calendar = Calendar.getInstance()
+        calendar.get(Calendar.SECOND) +
+          60 * (calendar.get(Calendar.MINUTE) +
+          60 * calendar.get(Calendar.HOUR_OF_DAY))
+      }
       else -> player.currentTime
     }.toInt()
   }
