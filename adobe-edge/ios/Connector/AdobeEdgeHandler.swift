@@ -331,10 +331,10 @@ class AdobeEdgeHandler {
         self.logDebug("onAdBreakBegin")
         self.isPlayingAd = true
         let currentAdBreakTimeOffset = event.ad?.timeOffset ?? 0
-        let breakIndex = currentAdBreakTimeOffset < 0 ? -1 : (currentAdBreakTimeOffset == 0 ? 0 : self.adBreakPodIndex + 1)
-        let adBreakObject = Media.createAdBreakObjectWith(name: PROP_NA, position: breakIndex, startTime: currentAdBreakTimeOffset)
+        let position = currentAdBreakTimeOffset <= 0 ? 1 : self.adBreakPodIndex + 1
+        let adBreakObject = Media.createAdBreakObjectWith(name: PROP_NA, position: position, startTime: currentAdBreakTimeOffset)
         self.queueOrSendEvent(event: AdobeEdgeEvent(type: .AD_BREAK_START, info: adBreakObject))
-        if (breakIndex > self.adBreakPodIndex) {
+        if (position > self.adBreakPodIndex) {
             self.adBreakPodIndex += 1
         }
     }
