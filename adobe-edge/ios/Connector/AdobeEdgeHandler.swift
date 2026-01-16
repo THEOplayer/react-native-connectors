@@ -413,10 +413,12 @@ class AdobeEdgeHandler {
             return
         }
         
-        let metadata: [String: Any] = player.source?.metadata?.metadataKeys ?? [:]
+        var metadata: [String: Any] = player.source?.metadata?.metadataKeys ?? [:]
+        metadata.merge(self.customMetadata) { (_, new) in new }
+        
         if let mediaObject = Media.createMediaObjectWith(
-            name: metadata["title"] as? String ?? PROP_NA,
-            id: metadata["id"] as? String ?? PROP_NA,
+            name: metadata["friendlyName"] as? String ?? metadata["title"] as? String ?? PROP_NA,
+            id: metadata["name"] as? String ?? metadata["id"] as? String ?? PROP_NA,
             length: mediaLength,
             streamType: streamType,
             mediaType: MediaType.Video
