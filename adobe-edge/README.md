@@ -36,6 +36,7 @@ const config = {
     datastreamId: 'abcde123-abcd-1234-abcd-abcde1234567',
     orgId: 'ADB3LETTERSANDNUMBERS@AdobeOrg',
     edgeBasePath: 'ee',
+    edgeDomain: 'my.domain.com',
     debugEnabled: true,
   },
   mobile: {
@@ -58,7 +59,7 @@ const customIdentityMap = {
 }
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(config, customIdentityMap);
+  const [adobe, initAdobe] = useAdobe(config, /* optional */ customIdentityMap);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
@@ -85,5 +86,41 @@ const onUpdateMetadata = () => {
     {name: 'custom1', value: 'value1'},
   ]
   adobe.current?.updateMetadata(metadata);
+};
+```
+
+### Setting an custom identity map
+
+Besides passing a custom identity map during initialization, you can also set or update the identity map at any time:
+
+```typescript
+import {AdobeIdentityMap} from "@theoplayer/react-native-analytics-adobe-edge";
+
+const onUpdateIdentityMap = () => {
+  const identityMap: AdobeIdentityMap = {
+    CUSTOMER_ID: [
+      {
+        id: 'customer-12345',
+        authenticatedState: 'authenticated',
+        primary: true,
+      },
+    ],
+  };
+  adobe.current?.setIdentityMap(identityMap);
+};
+```
+
+### Starting a new session during a live stream
+
+By default, the connector will start a new session when a new asset is loaded. However, during live streams, you might
+want to start a new session
+periodically when a new program starts. You can do this by calling `stopAndStartNewSession` with the new program's
+metadata:
+
+```typescript
+const onNewProgram = () => {
+  adobe.current?.stopAndStartNewSession({
+    'friendlyName': 'Evening News',
+  });
 };
 ```
