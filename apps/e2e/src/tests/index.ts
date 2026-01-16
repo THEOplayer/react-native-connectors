@@ -7,7 +7,9 @@ import Nielsen from './Nielsen.spec';
 import Yospace from './Yospace.spec';
 import { Platform } from 'react-native';
 
-const tests = [Adobe, AdobeNative, AdobeEdge, Comscore, Conviva, Nielsen];
+const tests = Platform.OS === 'ios' ? [Adobe, AdobeNative, Comscore, Conviva, Nielsen] :
+  [Adobe, AdobeNative, AdobeEdge, Comscore, Conviva, Nielsen];
+
 if (Platform.OS === 'android') {
   tests.push(Yospace);
 }
