@@ -129,7 +129,7 @@ class AdobeEdgeHandler {
   }
 
   setError(errorId: string) {
-    this.queueOrSendEvent(EventType.error, { PROP_ERROR_ID: errorId });
+    this.queueOrSendEvent(EventType.error, { [PROP_ERROR_ID]: errorId });
   }
 
   stopAndStartNewSession(metadata?: AdobeMetadata) {
@@ -218,7 +218,7 @@ class AdobeEdgeHandler {
   }
 
   private queueOrSendEvent(type: EventType, info: EventInfo = {}, metadata: EventMetadata = {}) {
-    const extendedInfo = { ...info, playhead: sanitisePlayhead(this._player.currentTime) };
+    const extendedInfo = { ...info, [PROP_PLAYHEAD]: sanitisePlayhead(this._player.currentTime) };
     if (this._sessionInProgress) {
       this.sendEvent(type, extendedInfo, metadata);
     } else {
