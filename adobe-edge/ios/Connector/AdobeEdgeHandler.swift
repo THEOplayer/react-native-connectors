@@ -8,7 +8,7 @@ import UIKit
 import AEPServices
 import AEPCore
 import AEPEdgeMedia
-import AEPEdgeConsent
+import AEPEdgeIdentity
 
 let CONTENT_PING_INTERVAL = 10.0
 let AD_PING_INTERVAL = 1.0
@@ -65,9 +65,12 @@ class AdobeEdgeHandler {
         }
     }
     
-    init(player: THEOplayer, trackerConfig: [String:String]) {
+    init(player: THEOplayer, trackerConfig: [String:String], customIdentityMap: [String:Any]? = nil) {
         self.player = player
         self.trackerConfig = trackerConfig
+        if let identityMap = customIdentityMap {
+            self.setCustomIdentityMap(identityMap)
+        }
         self.addEventListeners()
         
         let environmentId = trackerConfig["environmentId"] ?? "MissingEnvironmentID"
@@ -88,6 +91,12 @@ class AdobeEdgeHandler {
     
     func updateMetadata(_ metadata: [String:String]) -> Void {
         self.customMetadata.merge(metadata) { (_, new) in new }
+    }
+    
+    func setCustomIdentityMap(_ customIdentityMap: [String:Any]) -> Void {
+        if let identityMap = AdobeEdgeUtils.toIdentityMap(customIdentityMap) {
+            Identity.updateIdentities(with: identityMap)
+        }
     }
     
     func setError(_ errorId: String) -> Void {
