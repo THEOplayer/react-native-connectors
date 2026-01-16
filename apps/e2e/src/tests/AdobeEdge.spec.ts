@@ -39,6 +39,7 @@ export default function (spec: TestScope) {
             },
           ],
         });
+        connector.setError('testError');
       },
       () => {
         connector.destroy();
