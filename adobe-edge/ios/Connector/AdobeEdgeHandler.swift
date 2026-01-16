@@ -514,8 +514,14 @@ class AdobeEdgeHandler {
         
         if mediaLength == Double.infinity {
             // If content is live, the playhead must be the current second of the day.
-            let now = Date().timeIntervalSince1970
-            return Int(now.truncatingRemainder(dividingBy: 86400))
+            let now = Date()
+            let calendar = Calendar.current
+            let seconds =
+                calendar.component(.hour, from: now) * 3600 +
+                calendar.component(.minute, from: now) * 60 +
+                calendar.component(.second, from: now)
+
+            return seconds
         }
         
         return Int(playhead)
