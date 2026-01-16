@@ -78,7 +78,7 @@ data class QueuedEvent(
 
 const val PROP_CURRENT_TIME = "currentTime"
 const val PROP_ERROR_ID = "errorId"
-const val PROP_NA = "N/A"
+const val PROP_NA = "NA"
 
 class AdobeEdgeHandler(
   private val player: Player,

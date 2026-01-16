@@ -24,7 +24,7 @@ const TAG = 'AdobeConnector';
 
 const PROP_PLAYHEAD = 'playhead';
 const PROP_ERROR_ID = 'errorId';
-const PROP_NA = 'N/A';
+const PROP_NA = 'NA';
 
 /**
  * Alloy globally stores clients by name. We are allowed create clients with the same config only once.

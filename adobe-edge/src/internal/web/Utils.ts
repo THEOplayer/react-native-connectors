@@ -1,6 +1,6 @@
 import type { AdobeEdgeWebConfig } from '@theoplayer/react-native-analytics-adobe-edge';
 
-const PROP_NA = 'N/A';
+const PROP_NA = 'NA';
 
 /**
  * Sanitise the current media length.
