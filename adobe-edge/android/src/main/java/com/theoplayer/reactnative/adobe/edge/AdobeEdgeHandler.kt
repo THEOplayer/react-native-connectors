@@ -36,7 +36,9 @@ import com.theoplayer.android.api.event.track.texttrack.list.TextTrackListEventT
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.player.track.texttrack.TextTrackKind
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
-import kotlin.collections.toMutableMap
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 typealias AddTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.AddTrackEvent
 typealias RemoveTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.RemoveTrackEvent
@@ -120,9 +122,9 @@ class AdobeEdgeHandler(
   private val onAdEnd = EventListener<AdEndEvent> { handleAdEnd() }
   private val onAdSkip = EventListener<AdSkipEvent> { handleAdSkip() }
 
+  private val scope = CoroutineScope(Dispatchers.Main)
   private val tracker = Media.createTracker(trackerConfig)
   private val eventQueue = mutableListOf<QueuedEvent>()
-
   private fun logDebug(message: String) {
     if (loggingMode >= LoggingMode.DEBUG) {
       Log.d(TAG, message)
@@ -156,15 +158,17 @@ class AdobeEdgeHandler(
   }
 
   fun stopAndStartNewSession(metadata: Map<String, String>?) {
-    maybeEndSession()
-    metadata?.let {
-      updateMetadata(it)
-    }
-    maybeStartSession()
-    if (player.isPaused) {
-      handlePause()
-    } else {
-      handlePlaying()
+    scope.launch {
+      maybeEndSession()
+      metadata?.let {
+        updateMetadata(it)
+      }
+      maybeStartSession()
+      if (player.isPaused) {
+        handlePause()
+      } else {
+        handlePlaying()
+      }
     }
   }
 
