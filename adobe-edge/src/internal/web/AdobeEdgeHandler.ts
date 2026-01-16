@@ -326,16 +326,15 @@ class AdobeEdgeHandler {
   private handleAdBreakBegin = (event: AdBreakEvent<'adbreakbegin'>) => {
     this.logDebug('onAdBreakBegin');
     const currentAdBreakTimeOffset = event.adBreak.timeOffset;
-    let index: number;
-    if (currentAdBreakTimeOffset === 0) {
-      index = 0;
-    } else if (currentAdBreakTimeOffset < 0) {
-      index = -1;
+    let position: number;
+    // The pod position should start at 1.
+    if (currentAdBreakTimeOffset <= 0) {
+      position = 1;
     } else {
-      index = this._adBreakPodIndex + 1;
+      position = this._adBreakPodIndex + 1;
     }
-    this.queueOrSendEvent(EventType.adBreakStart, this._media?.createAdBreakObject(PROP_NA, index, currentAdBreakTimeOffset));
-    if (index > this._adBreakPodIndex) {
+    this.queueOrSendEvent(EventType.adBreakStart, this._media?.createAdBreakObject(PROP_NA, position, currentAdBreakTimeOffset));
+    if (position > this._adBreakPodIndex) {
       this._adBreakPodIndex++;
     }
   };

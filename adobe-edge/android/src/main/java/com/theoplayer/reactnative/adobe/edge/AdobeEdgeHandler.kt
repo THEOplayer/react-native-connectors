@@ -393,20 +393,20 @@ class AdobeEdgeHandler(
     logDebug("onAdBreakBegin")
     isPlayingAd = true
     val currentAdBreakTimeOffset = event.adBreak.timeOffset
-    val index = when {
-      currentAdBreakTimeOffset == 0 -> 0
-      currentAdBreakTimeOffset < 0 -> -1
+    // The pod position should start at 1.
+    val position = when {
+      currentAdBreakTimeOffset <= 0 -> 1
       else -> adBreakPodIndex + 1
     }
     queueOrSendEvent(
       EventType.AD_BREAK_START, Media.createAdBreakObject(
         PROP_NA,
-        index,
+        position,
         currentAdBreakTimeOffset
       )
     )
 
-    if (index > adBreakPodIndex) {
+    if (position > adBreakPodIndex) {
       adBreakPodIndex++
     }
   }
