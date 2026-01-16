@@ -4,6 +4,7 @@ import com.adobe.marketing.mobile.edge.identity.AuthenticatedState
 import com.adobe.marketing.mobile.edge.identity.IdentityItem
 import com.facebook.react.bridge.ReadableMap
 import com.adobe.marketing.mobile.edge.identity.IdentityMap
+import java.util.Calendar
 
 fun sanitiseContentLength(mediaLength: Double?): Int {
   return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
@@ -15,8 +16,10 @@ fun sanitisePlayhead(playhead: Double?, mediaLength: Double?): Int {
   }
   if (mediaLength == Double.POSITIVE_INFINITY) {
     // If content is live, the playhead must be the current second of the day.
-    val now = System.currentTimeMillis()
-    return ((now / 1000) % 86400).toInt()
+    val calendar = Calendar.getInstance()
+    return calendar.get(Calendar.SECOND) +
+      60 * (calendar.get(Calendar.MINUTE) +
+      60 * calendar.get(Calendar.HOUR_OF_DAY))
   }
   return playhead.toInt()
 }
