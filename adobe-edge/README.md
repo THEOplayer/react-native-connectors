@@ -15,13 +15,8 @@ To set up terminology, in chronological order, media tracking solutions were:
 
 ## Installation
 
-The `@theoplayer/react-native` package has a peer dependency on `react-native-device-info`, which has to be installed as
-well:
-
 ```sh
-npm install \
-  react-native-device-info \
-  @theoplayer/react-native-analytics-adobe-edge
+npm install @theoplayer/react-native-analytics-adobe-edge
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
@@ -30,20 +25,41 @@ npm install \
 
 ### Configuring the connector
 
-Create the connector by providing the `THEOplayer` instance, the Media Collection API's end point,
-Visitor Experience Cloud Org ID, Analytics Report Suite ID and the Analytics Tracking Server URL.
+Create the connector by providing the `THEOplayer` instance and a configuration object with separate parts for
+Web and mobile platforms.
 
 ```tsx
-import { useAdobe } from '@theoplayer/react-native-analytics-adobe-edge';
+import {useAdobe} from '@theoplayer/react-native-analytics-adobe-edge';
 
-const baseUrl = "https://edge.adobedc.net/ee-pre-prd/va/v1";
-const dataStreamId = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX";
-const userAgent = "<Custom User-Agent>"; // Optionally provide a custom user-agent header value.
-const debugSessionID = "<debugSessionID>"; // Optionally provide a query parameter to be added to outgoing requests.
-const useNative = true; // Use a native connector on iOS & Android; `false` by default.
+const config = {
+  web: {
+    datastreamId: 'abcde123-abcd-1234-abcd-abcde1234567',
+    orgId: 'ADB3LETTERSANDNUMBERS@AdobeOrg',
+    edgeBasePath: 'ee',
+    edgeDomain: 'my.domain.com',
+    debugEnabled: true,
+  },
+  mobile: {
+    environmentId: 'abcdef123456/abcdef123456/launch-1234567890abcdef1234567890abcdef12',
+    debugEnabled: true,
+  },
+}
+
+/**
+ * An optional custom identity map to associate the media session with user identities.
+ */
+const customIdentityMap = {
+  EMAIL: [
+    {
+      id: 'user@example.com',
+      authenticatedState: 'authenticated',
+      primary: false,
+    },
+  ],
+}
 
 const App = () => {
-  const [adobe, initAdobe] = useAdobe(baseUrl, dataStreamId, userAgent, true, debugSessionID, useNative);
+  const [adobe, initAdobe] = useAdobe(config, /* optional */ customIdentityMap);
 
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize Adobe connector
@@ -62,7 +78,7 @@ such as duration or whether it is a live or vod.
 The connector allows passing or updating the current asset's metadata at any time:
 
 ```typescript
-import { AdobeCustomMetadataDetails } from "@theoplayer/react-native-analytics-adobe-edge";
+import {AdobeCustomMetadataDetails} from "@theoplayer/react-native-analytics-adobe-edge";
 
 const onUpdateMetadata = () => {
   const metadata: AdobeCustomMetadataDetails[] = [
@@ -70,5 +86,41 @@ const onUpdateMetadata = () => {
     {name: 'custom1', value: 'value1'},
   ]
   adobe.current?.updateMetadata(metadata);
+};
+```
+
+### Setting an custom identity map
+
+Besides passing a custom identity map during initialization, you can also set or update the identity map at any time:
+
+```typescript
+import {AdobeIdentityMap} from "@theoplayer/react-native-analytics-adobe-edge";
+
+const onUpdateIdentityMap = () => {
+  const identityMap: AdobeIdentityMap = {
+    CUSTOMER_ID: [
+      {
+        id: 'customer-12345',
+        authenticatedState: 'authenticated',
+        primary: true,
+      },
+    ],
+  };
+  adobe.current?.setIdentityMap(identityMap);
+};
+```
+
+### Starting a new session during a live stream
+
+By default, the connector will start a new session when a new asset is loaded. However, during live streams, you might
+want to start a new session
+periodically when a new program starts. You can do this by calling `stopAndStartNewSession` with the new program's
+metadata:
+
+```typescript
+const onNewProgram = () => {
+  adobe.current?.stopAndStartNewSession({
+    'friendlyName': 'Evening News',
+  });
 };
 ```

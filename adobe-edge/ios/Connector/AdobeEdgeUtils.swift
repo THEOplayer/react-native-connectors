@@ -1,0 +1,35 @@
+// AdobeEdgeUtils.swift
+
+import Foundation
+import THEOplayerSDK
+import AEPEdgeIdentity
+
+class AdobeEdgeUtils {
+    class func toStringMap(_ map: [String: Any]) -> [String: String] {
+        var result = [String: String]()
+        for (key, value) in map {
+            if let stringValue = value as? String {
+                result[key] = stringValue
+            } else if let optionalValue = value as? CustomStringConvertible {
+                // Convert other types (Int, Bool, Double, etc.) to String
+                result[key] = String(describing: optionalValue)
+            } else {
+                // If value is nil or not convertible, use empty string
+                result[key] = ""
+            }
+        }
+        
+        return result
+    }
+    
+    class func toIdentityMap(_ map: [String: Any]) -> IdentityMap? {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: map) else {
+            return nil
+        }
+        guard let identityMap = try? JSONDecoder().decode(IdentityMap.self, from: jsonData) else {
+            return nil
+        }
+        return identityMap
+    }
+}
+

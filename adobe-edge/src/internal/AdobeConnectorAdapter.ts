@@ -1,15 +1,15 @@
-import type { AdobeCustomMetadataDetails, AdobeErrorDetails } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeIdentityMap, AdobeMetadata } from '@theoplayer/react-native-analytics-adobe-edge';
 
 export interface AdobeConnectorAdapter {
   setDebug(debug: boolean): void;
 
-  updateMetadata(metadata: AdobeCustomMetadataDetails[]): void;
+  updateMetadata(metadata: AdobeMetadata): void;
 
-  setError(metadata: AdobeErrorDetails): void;
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void;
 
-  setDebugSessionId(id: string | undefined): void;
+  setError(errorId: string): void;
 
-  stopAndStartNewSession(metadata?: AdobeCustomMetadataDetails[]): Promise<void>;
+  stopAndStartNewSession(metadata?: AdobeMetadata): Promise<void>;
 
   destroy(): Promise<void>;
 }

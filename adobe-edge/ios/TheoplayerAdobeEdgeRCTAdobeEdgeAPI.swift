@@ -19,20 +19,19 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         return false
     }
     
-    @objc(initialize:baseUrl:configId:userAgent:debug:debugSessionId:)
-    func initialize(_ node: NSNumber, baseUrl: String, configId: String, userAgent: String?, debug: Bool = false, debugSessionId: String?) -> Void {
-        self.debug = debug
+    @objc(initialize:config:customIdentityMap:)
+    func initialize(_ node: NSNumber, config: NSDictionary, customIdentityMap: NSDictionary) -> Void {
         log("initialize triggered.")
+        
+        self.debug = config["debugEnabled"] as? Bool ?? false
+        
+        
         DispatchQueue.main.async {
             if let view = self.view(for: node), let player = view.player {
-                let connector = AdobeEdgeConnector(
-                    player: player,
-                    baseUrl: baseUrl,
-                    configId: configId,
-                    userAgent: userAgent,
-                    debug: debug,
-                    debugSessionId: debugSessionId
-                )
+                let trackerConfig: [String: String] = AdobeEdgeUtils.toStringMap(config as? [String: Any] ?? [:])
+                let customIdentityMap = customIdentityMap as? [String: Any]
+                let connector = AdobeEdgeConnector(player: player, trackerConfig: trackerConfig, customIdentityMap: customIdentityMap)
+                connector.setLoggingMode(self.debug ? .debug : .error)
                 self.connectors[node] = connector
                 self.log("added connector to view \(node)")
             } else {
@@ -47,70 +46,50 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         self.debug = debug
         DispatchQueue.main.async {
             if let connector = self.connectors[node] {
-                connector.setDebug(debug)
-            }
-        }
-    }
-    
-    @objc(setDebugSessionId:debugSessionId:)
-    func setDebugSessionId(_ node: NSNumber, debugSessionId: String?) -> Void {
-        log("setDebugSessionId triggered.")
-        DispatchQueue.main.async {
-            if let connector = self.connectors[node] {
-                connector.setDebugSessionId(debugSessionId)
+                connector.setLoggingMode(debug ? .debug : .error)
             }
         }
     }
     
     @objc(updateMetadata:metadata:)
-    func updateMetadata(_ node: NSNumber, metadata: [NSDictionary]) -> Void {
+    func updateMetadata(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("updateMetadata triggered.")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node] {
-                connector.updateMetadata(
-                    metadata.flatMap { dict in
-                        dict.map { (key, value) in
-                            AdobeCustomMetadataDetails(
-                                name: key as? String,
-                                value: "\(value)"
-                            )
-                        }
-                    }
-                )
+            if let connector = self.connectors[node],
+               let newMetadata = metadata as? [String: Any] {
+                connector.updateMetadata(AdobeEdgeUtils.toStringMap(newMetadata))
             }
         }
     }
     
-    @objc(setError:errorDetails:)
-    func setError(_ node: NSNumber, errorDetails: [String:Any]) -> Void {
+    @objc(setCustomIdentityMap:customIdentityMap:)
+    func setCustomIdentityMap(_ node: NSNumber, customIdentityMap: NSDictionary) -> Void {
+        log("setCustomIdentityMap triggered.")
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node],
+               let newCustomIdentityMap = customIdentityMap as? [String: Any] {
+                connector.setCustomIdentityMap(newCustomIdentityMap)
+            }
+        }
+    }
+    
+    @objc(setError:errorId:)
+    func setError(_ node: NSNumber, errorId: String) -> Void {
         log("setError triggered.")
         DispatchQueue.main.async {
             if let connector = self.connectors[node] {
-                connector.setError(
-                    AdobeErrorDetails(
-                        name: errorDetails["name"] as? String ?? "",
-                        source: (errorDetails["source"] as? String ?? "") == "player" ? .player : .external
-                    )
-                )
+                connector.setError(errorId)
             }
         }
     }
     
     @objc(stopAndStartNewSession:customMetadataDetails:)
-    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: [NSDictionary]) -> Void {
+    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: NSDictionary) -> Void {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node] {
-                connector.stopAndStartNewSession(
-                    customMetadataDetails.flatMap { dict in
-                        dict.map { (key, value) in
-                            AdobeCustomMetadataDetails(
-                                name: key as? String,
-                                value: "\(value)"
-                            )
-                        }
-                    }
-                )
+            if let connector = self.connectors[node],
+               let newMetadata = customMetadataDetails as? [String: Any] {
+                connector.stopAndStartNewSession(AdobeEdgeUtils.toStringMap(newMetadata))
             }
         }
     }

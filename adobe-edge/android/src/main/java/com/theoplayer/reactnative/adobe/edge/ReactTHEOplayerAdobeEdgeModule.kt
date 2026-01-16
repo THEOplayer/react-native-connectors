@@ -1,18 +1,22 @@
-
 package com.theoplayer.reactnative.adobe.edge
 
+import android.app.Application
+import com.adobe.marketing.mobile.LoggingMode
+import com.adobe.marketing.mobile.MobileCore
 import com.facebook.react.bridge.*
 import com.theoplayer.ReactTHEOplayerView
 import com.theoplayer.util.ViewResolver
 
 private const val TAG = "AdobeEdgeModule"
 
+private const val PROP_ENVIRONMENT_ID = "environmentId"
+private const val PROP_DEBUG_ENABLED = "debugEnabled"
+
 @Suppress("unused")
 class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   ReactContextBaseJavaModule(context) {
 
   private val viewResolver: ViewResolver = ViewResolver(context)
-
   private var adobeConnectors: HashMap<Int, AdobeEdgeConnector> = HashMap()
 
   override fun getName(): String {
@@ -22,23 +26,29 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
   @ReactMethod
   fun initialize(
     tag: Int,
-    baseUrl: String,
-    configId: String,
-    userAgent: String?,
-    debug: Boolean?,
-    debugSessionId: String?
+    config: ReadableMap,
+    customIdentityMap: ReadableMap?
   ) {
+    /**
+     * If an asset config file is provided, use it to initialize the MobileCore SDK, otherwise use
+     * the App ID.
+     * {@link https://developer.adobe.com/client-sdks/edge/media-for-edge-network/}
+     */
+    MobileCore.initialize(
+      reactApplicationContext.applicationContext as Application,
+      config.getString(PROP_ENVIRONMENT_ID) ?: "MissingEnvironmentID"
+    )
+
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.playerContext?.playerView?.let { playerView ->
-        adobeConnectors[tag] =
-          AdobeEdgeConnector(
-            player = playerView.player,
-            baseUrl = baseUrl,
-            configId = configId,
-            userAgent = userAgent,
-            debug = debug,
-            debugSessionId = debugSessionId
-          )
+        adobeConnectors[tag] = AdobeEdgeConnector(
+          player = playerView.player,
+          trackerConfig = config.toHashMap().mapValues { it.value?.toString() ?: "" },
+          customIdentityMap = customIdentityMap?.toAdobeIdentityMap()
+        )
+        if (config.hasKey(PROP_DEBUG_ENABLED)) {
+          setDebug(tag, config.getBoolean(PROP_DEBUG_ENABLED))
+        }
       }
     }
   }
@@ -50,33 +60,36 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun setDebug(tag: Int, debug: Boolean) {
-    adobeConnectors[tag]?.setDebug(debug)
-  }
-
-  /**
-   * Set a debugSessionID query parameter that is added to all outgoing requests.
-   */
-  @ReactMethod
-  fun setDebugSessionId(tag: Int, id: String?) {
-    adobeConnectors[tag]?.setDebugSessionId(id)
+    adobeConnectors[tag]?.setLoggingMode(
+      when (debug) {
+        true -> LoggingMode.DEBUG
+        false -> LoggingMode.ERROR
+      }
+    )
   }
 
   /**
    * Sets customMetadataDetails which will be passed for the session start request.
    */
   @ReactMethod
-  fun updateMetadata(tag: Int, metadataList: ReadableArray) {
-    adobeConnectors[tag]?.updateMetadata(
-      metadataList.toAdobeCustomMetadataDetails()
-    )
+  fun updateMetadata(tag: Int, customMetadataDetails: ReadableMap) {
+    adobeConnectors[tag]?.updateMetadata(customMetadataDetails.toAdobeCustomMetadataDetails())
+  }
+
+  /**
+   * Sets customMetadataDetails which will be passed for the session start request.
+   */
+  @ReactMethod
+  fun setCustomIdentityMap(tag: Int, customIdentityMap: ReadableMap) {
+    adobeConnectors[tag]?.setCustomIdentityMap(customIdentityMap.toAdobeIdentityMap())
   }
 
   /**
    * Dispatch error event to adobe
    */
   @ReactMethod
-  fun setError(tag: Int, errorDetails: ReadableMap) {
-    adobeConnectors[tag]?.setError(errorDetails.toAdobeErrorDetails())
+  fun setError(tag: Int, errorId: String) {
+    adobeConnectors[tag]?.setError(errorId)
   }
 
   /**
@@ -88,7 +101,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    * @param customMetadataDetails media details information.
    */
   @ReactMethod
-  fun stopAndStartNewSession(tag: Int, customMetadataDetails: ReadableArray) {
+  fun stopAndStartNewSession(tag: Int, customMetadataDetails: ReadableMap) {
     adobeConnectors[tag]?.stopAndStartNewSession(customMetadataDetails.toAdobeCustomMetadataDetails())
   }
 

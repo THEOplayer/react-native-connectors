@@ -1,43 +1,77 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { NativeAdobeConnectorAdapter } from '../internal/NativeAdobeConnectorAdapter';
-import type { AdobeCustomMetadataDetails } from './details/AdobeCustomMetadataDetails';
-import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
+import { AdobeConnectorAdapterNative } from '../internal/AdobeConnectorAdapterNative';
 import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
-import { DefaultAdobeConnectorAdapter } from '../internal/DefaultAdobeConnectorAdapter';
+import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
+import { AdobeEdgeConfig } from './AdobeEdgeConfig';
+import { AdobeIdentityMap } from './details/AdobeIdentityMap';
+import { AdobeMetadata } from './details/AdobeMetadata';
 
 export class AdobeConnector {
-  private connectorAdapter: AdobeConnectorAdapter;
+  private connectorAdapter?: AdobeConnectorAdapter;
 
-  constructor(
-    player: THEOplayer,
-    baseUrl: string,
-    dataStreamId: string,
-    userAgent?: string,
-    useDebug?: boolean,
-    debugSessionId?: string,
-    useNative: boolean = false,
-  ) {
-    // By default, use a default typescript connector on all platforms, unless explicitly requested.
-    if (['ios', 'android'].includes(Platform.OS) && useNative) {
-      this.connectorAdapter = new NativeAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+  /**
+   * Creates an instance of AdobeConnector.
+   */
+  constructor(player: THEOplayer, config: AdobeEdgeConfig, customIdentityMap?: AdobeIdentityMap) {
+    if (['ios', 'android'].includes(Platform.OS)) {
+      if (config.mobile) {
+        this.connectorAdapter = new AdobeConnectorAdapterNative(player, config.mobile, customIdentityMap);
+      } else {
+        console.error('AdobeConnector Error: Missing config for mobile platform');
+      }
     } else {
-      this.connectorAdapter = new DefaultAdobeConnectorAdapter(player, baseUrl, dataStreamId, userAgent, useDebug, debugSessionId);
+      if (config.web) {
+        this.connectorAdapter = new AdobeConnectorAdapterWeb(player, config.web, customIdentityMap);
+      } else {
+        console.error('AdobeConnector Error: Missing config for Web platform');
+      }
     }
   }
 
   /**
    * Sets customMetadataDetails which will be passed for the session start request.
    */
-  updateMetadata(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    this.connectorAdapter.updateMetadata(customMetadataDetails);
+  updateMetadata(customMetadataDetails: AdobeMetadata): void {
+    this.connectorAdapter?.updateMetadata(customMetadataDetails);
+  }
+
+  /**
+   * Sets custom identity map.
+   *
+   * @example
+   * ```typescript
+   * {
+   *  "EMAIL": [
+   *    {
+   *      "id": "user@example.com",
+   *      "authenticatedState": "authenticated",
+   *      "primary": "false"
+   *    },
+   *    {
+   *      "id" : "useralias@example.com",
+   *      "authenticatedState": "ambiguous",
+   *      "primary": false
+   *    }
+   *  ],
+   *  "Email_LC_SHA256": [
+   *    {
+   *      "id": "2394509340-9b942f32f709db2c57e79cecec4462836ca1efef1c336a939c4b1674bcc74320",
+   *      "authenticatedState": "authenticated",
+   *      "primary": "false"
+   *    }
+   *  ]
+   * }
+   */
+  setCustomIdentityMap(customIdentityMap: AdobeIdentityMap): void {
+    this.connectorAdapter?.setCustomIdentityMap(customIdentityMap);
   }
 
   /**
    * Dispatch error event to adobe
    */
-  setError(errorDetails: AdobeErrorDetails): void {
-    this.connectorAdapter.setError(errorDetails);
+  setError(errorId: string): void {
+    this.connectorAdapter?.setError(errorId);
   }
 
   /**
@@ -46,14 +80,7 @@ export class AdobeConnector {
    * @param debug whether to write debug info or not.
    */
   setDebug(debug: boolean) {
-    this.connectorAdapter.setDebug(debug);
-  }
-
-  /**
-   * Set a debugSessionID query parameter that is added to all outgoing requests.
-   */
-  setDebugSessionId(id: string | undefined) {
-    this.connectorAdapter.setDebugSessionId(id);
+    this.connectorAdapter?.setDebug(debug);
   }
 
   /**
@@ -64,14 +91,14 @@ export class AdobeConnector {
    *
    * @param customMetadataDetails media details information.
    */
-  stopAndStartNewSession(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
-    void this.connectorAdapter.stopAndStartNewSession(customMetadataDetails);
+  stopAndStartNewSession(customMetadataDetails: AdobeMetadata): void {
+    void this.connectorAdapter?.stopAndStartNewSession(customMetadataDetails);
   }
 
   /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
-    void this.connectorAdapter.destroy();
+    void this.connectorAdapter?.destroy();
   }
 }
