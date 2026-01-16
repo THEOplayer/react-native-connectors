@@ -491,7 +491,8 @@ class AdobeEdgeHandler(
     }
 
     // Allow overriding metadata with custom metadata set via updateMetadata().
-    val mergedMetadata = (player.source?.metadata?.data?.mapValues { it.value as String } ?: emptyMap()) + customMetadata
+    val mergedMetadata = (player.source?.metadata?.data?.mapValues { it.value.toString() }
+      ?: emptyMap()) + customMetadata
     tracker.trackSessionStart(
       Media.createMediaObject(
         mergedMetadata["friendlyName"] ?: mergedMetadata["title"] ?: PROP_NA,
