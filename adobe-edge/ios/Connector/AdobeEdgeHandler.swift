@@ -483,6 +483,7 @@ class AdobeEdgeHandler {
         self.sessionInProgress = false
         self.currentChapter = nil
         self.eventQueue.removeAll()
+        self.customMetadata.removeAll()
     }
     
     func destroy() -> Void {
