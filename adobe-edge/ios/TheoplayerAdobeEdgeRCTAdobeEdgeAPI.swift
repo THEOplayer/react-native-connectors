@@ -19,16 +19,18 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         return false
     }
     
-    @objc(initialize:config:)
-    func initialize(_ node: NSNumber, config: NSDictionary) -> Void {
+    @objc(initialize:config:customIdentityMap:)
+    func initialize(_ node: NSNumber, config: NSDictionary, customIdentityMap: NSDictionary) -> Void {
         log("initialize triggered.")
         
         self.debug = config["debugEnabled"] as? Bool ?? false
         
+        
         DispatchQueue.main.async {
             if let view = self.view(for: node), let player = view.player {
-                let connector = AdobeEdgeConnector(player: player, trackerConfig: trackerConfig)
                 let trackerConfig: [String: String] = AdobeEdgeUtils.toStringMap(config as? [String: Any] ?? [:])
+                let customIdentityMap = customIdentityMap as? [String: Any]
+                let connector = AdobeEdgeConnector(player: player, trackerConfig: trackerConfig, customIdentityMap: customIdentityMap)
                 connector.setLoggingMode(self.debug ? .debug : .error)
                 self.connectors[node] = connector
                 self.log("added connector to view \(node)")
@@ -56,6 +58,17 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
             if let connector = self.connectors[node],
                let newMetadata = metadata as? [[String: Any]] {
                 connector.updateMetadata(AdobeEdgeUtils.toAdobeCustomMetadataDetails(newMetadata))
+            }
+        }
+    }
+    
+    @objc(setCustomIdentityMap:customIdentityMap:)
+    func setCustomIdentityMap(_ node: NSNumber, customIdentityMap: NSDictionary) -> Void {
+        log("setCustomIdentityMap triggered.")
+        DispatchQueue.main.async {
+            if let connector = self.connectors[node],
+               let newCustomIdentityMap = customIdentityMap as? [String: Any] {
+                connector.setCustomIdentityMap(newCustomIdentityMap)
             }
         }
     }
