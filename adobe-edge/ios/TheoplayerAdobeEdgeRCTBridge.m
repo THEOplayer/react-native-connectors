@@ -15,16 +15,16 @@ RCT_EXTERN_METHOD(setDebug:(nonnull NSNumber *)node
                   debug:(BOOL)debug)
 
 RCT_EXTERN_METHOD(updateMetadata:(nonnull NSNumber *)node
-                  metadata:(NSArray *)metadata)
+                  metadata:(NSDictionary *)metadata)
 
 RCT_EXTERN_METHOD(setCustomIdentityMap:(nonnull NSNumber *)node
                   customIdentityMap:(NSDictionary *)customIdentityMap)
 
 RCT_EXTERN_METHOD(setError:(nonnull NSNumber *)node
-                  errorDetails:(NSDictionary *)errorDetails)
+                  errorId:(NSString *)errorId)
 
 RCT_EXTERN_METHOD(stopAndStartNewSession:(nonnull NSNumber *)node
-                  customMetadataDetails:(NSArray *)customMetadataDetails)
+                  customMetadataDetails:(NSDictionary *)customMetadataDetails)
 
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 

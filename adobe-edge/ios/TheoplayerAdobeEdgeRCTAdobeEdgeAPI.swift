@@ -52,12 +52,12 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(updateMetadata:metadata:)
-    func updateMetadata(_ node: NSNumber, metadata: [NSDictionary]) -> Void {
+    func updateMetadata(_ node: NSNumber, metadata: NSDictionary) -> Void {
         log("updateMetadata triggered.")
         DispatchQueue.main.async {
             if let connector = self.connectors[node],
-               let newMetadata = metadata as? [[String: Any]] {
-                connector.updateMetadata(AdobeEdgeUtils.toAdobeCustomMetadataDetails(newMetadata))
+               let newMetadata = metadata as? [String: Any] {
+                connector.updateMetadata(AdobeEdgeUtils.toStringMap(newMetadata))
             }
         }
     }
@@ -73,23 +73,23 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
         }
     }
     
-    @objc(setError:errorDetails:)
-    func setError(_ node: NSNumber, errorDetails: [String:Any]) -> Void {
+    @objc(setError:errorId:)
+    func setError(_ node: NSNumber, errorId: String) -> Void {
         log("setError triggered.")
         DispatchQueue.main.async {
             if let connector = self.connectors[node] {
-                connector.setError(errorDetails["name"] as? String ?? "NA")
+                connector.setError(errorId)
             }
         }
     }
     
     @objc(stopAndStartNewSession:customMetadataDetails:)
-    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: [NSDictionary]) -> Void {
+    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: NSDictionary) -> Void {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
             if let connector = self.connectors[node],
-               let newMetadata = customMetadataDetails as? [[String: Any]] {
-                connector.stopAndStartNewSession(AdobeEdgeUtils.toAdobeCustomMetadataDetails(newMetadata))
+               let newMetadata = customMetadataDetails as? [String: Any] {
+                connector.stopAndStartNewSession(AdobeEdgeUtils.toStringMap(newMetadata))
             }
         }
     }
