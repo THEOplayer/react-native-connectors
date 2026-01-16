@@ -17,16 +17,28 @@ export default function (spec: TestScope) {
             debugEnabled: true,
           },
           mobile: {
-            appId: 'launch-1234567890abcdef1234567890abcdef12',
+            environmentId: 'abcdef012345/abcdef012345/launch-abcdef012345-development',
             debugEnabled: true,
           },
         });
       },
       () => {
-        connector.stopAndStartNewSession([
-          { name: 'title', value: 'test' },
-          { name: 'custom1', value: 'value1' },
-        ]);
+        connector.stopAndStartNewSession({
+          friendlyName: 'New Session',
+        });
+        connector.updateMetadata({
+          custom1: 'value1',
+          custom2: 'value2',
+        });
+        connector.setCustomIdentityMap({
+          EMAIL: [
+            {
+              id: 'user@example.com',
+              authenticatedState: 'authenticated',
+              primary: false,
+            },
+          ],
+        });
       },
       () => {
         connector.destroy();
