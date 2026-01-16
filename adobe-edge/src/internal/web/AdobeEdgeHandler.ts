@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AdobeCustomMetadataDetails, AdobeIdentityMap, ContentType } from '@theoplayer/react-native-analytics-adobe-edge';
-import {
-  idToInt,
-  isValidDuration,
-  sanitiseChapterId,
-  sanitiseConfig,
-  sanitiseContentLength,
-  sanitisePlayhead,
-  toAdobeCustomMetadataDetails,
-} from './Utils';
+import { AdobeIdentityMap, AdobeMetadata } from '@theoplayer/react-native-analytics-adobe-edge';
+import { idToInt, isValidDuration, sanitiseChapterId, sanitiseConfig, sanitiseContentLength, sanitisePlayhead } from './Utils';
 import { createInstance } from '@adobe/alloy';
 import { AdobeEdgeWebConfig } from '../../api/AdobeEdgeWebConfig';
 import {
@@ -128,8 +120,8 @@ class AdobeEdgeHandler {
     this.setDebug(debugEnabled || false);
   }
 
-  updateMetadata(metadata: AdobeCustomMetadataDetails[]) {
-    this._customMetadata = { ...this._customMetadata, ...toAdobeCustomMetadataDetails(metadata) };
+  updateMetadata(metadata: AdobeMetadata) {
+    this._customMetadata = { ...this._customMetadata, ...metadata };
   }
 
   setCustomIdentityMap(customIdentityMap: AdobeIdentityMap) {
@@ -140,7 +132,7 @@ class AdobeEdgeHandler {
     this.queueOrSendEvent(EventType.error, { PROP_ERROR_ID: errorId });
   }
 
-  stopAndStartNewSession(metadata?: AdobeCustomMetadataDetails[]) {
+  stopAndStartNewSession(metadata?: AdobeMetadata) {
     this.maybeEndSession();
     if (metadata) {
       this.updateMetadata(metadata);
@@ -464,8 +456,8 @@ class AdobeEdgeHandler {
     return sanitiseContentLength(mediaLengthSec !== undefined ? mediaLengthSec : this._player.duration);
   }
 
-  private getContentType(): ContentType {
-    return this._player.duration === Infinity ? ContentType.LIVE : ContentType.VOD;
+  private getContentType(): string {
+    return this._player.duration === Infinity ? 'Live' : 'VOD';
   }
 
   reset() {

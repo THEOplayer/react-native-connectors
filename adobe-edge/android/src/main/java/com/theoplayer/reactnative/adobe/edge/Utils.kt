@@ -2,12 +2,8 @@ package com.theoplayer.reactnative.adobe.edge
 
 import com.adobe.marketing.mobile.edge.identity.AuthenticatedState
 import com.adobe.marketing.mobile.edge.identity.IdentityItem
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.adobe.marketing.mobile.edge.identity.IdentityMap
-
-private const val PROP_NAME = "name"
-private const val PROP_VALUE = "value"
 
 fun sanitiseContentLength(mediaLength: Double?): Int {
   return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
@@ -29,12 +25,8 @@ fun isValidDuration(v: Double?): Boolean {
   return v != null && !v.isNaN()
 }
 
-fun ReadableArray.toAdobeCustomMetadataDetails() : HashMap<String, String> {
-  return hashMapOf<String, String>().apply {
-    toArrayList()
-      .map { e -> (e as? ReadableMap) }
-      .filter { e -> e != null && e.hasKey(PROP_NAME) && e.hasKey(PROP_VALUE) }
-  }
+fun ReadableMap.toAdobeCustomMetadataDetails() : HashMap<String, String> {
+  return toHashMap().mapValues { it.value?.toString() ?: "" } as HashMap<String, String>
 }
 
 fun ReadableMap.toAdobeIdentityMap(): IdentityMap {

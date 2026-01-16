@@ -1,4 +1,4 @@
-import type { AdobeCustomMetadataDetails, AdobeEdgeWebConfig } from '@theoplayer/react-native-analytics-adobe-edge';
+import type { AdobeEdgeWebConfig } from '@theoplayer/react-native-analytics-adobe-edge';
 
 const PROP_NA = 'N/A';
 
@@ -33,16 +33,6 @@ export function sanitisePlayhead(playheadInSec?: number): number {
 
 export function isValidDuration(v: number | undefined): boolean {
   return v !== undefined && !Number.isNaN(v);
-}
-
-export function toAdobeCustomMetadataDetails(details: AdobeCustomMetadataDetails[]): { [key: string]: string } {
-  const map: { [key: string]: string } = {};
-  for (const item of details) {
-    if (item.name && item.value) {
-      map[item.name] = item.value;
-    }
-  }
-  return map;
 }
 
 export function sanitiseChapterId(id?: string): string {

@@ -36,6 +36,7 @@ import com.theoplayer.android.api.event.track.texttrack.list.TextTrackListEventT
 import com.theoplayer.android.api.player.Player
 import com.theoplayer.android.api.player.track.texttrack.TextTrackKind
 import com.theoplayer.android.api.player.track.texttrack.cue.TextTrackCue
+import kotlin.collections.toMutableMap
 
 typealias AddTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.AddTrackEvent
 typealias RemoveTextTrackEvent = com.theoplayer.android.api.event.track.texttrack.list.RemoveTrackEvent
@@ -77,7 +78,7 @@ data class QueuedEvent(
 
 const val PROP_CURRENT_TIME = "currentTime"
 const val PROP_ERROR_ID = "errorId"
-const val PROP_NA = "NA"
+const val PROP_NA = "N/A"
 
 class AdobeEdgeHandler(
   private val player: Player,
@@ -485,10 +486,12 @@ class AdobeEdgeHandler(
       return
     }
 
+    // Allow overriding metadata with custom metadata set via updateMetadata().
+    val mergedMetadata = (player.source?.metadata?.data?.mapValues { it.value as String } ?: emptyMap()) + customMetadata
     tracker.trackSessionStart(
       Media.createMediaObject(
-        player.source?.metadata?.get("title") ?: "N/A",
-        player.source?.metadata?.get("id") ?: "N/A",
+        mergedMetadata["friendlyName"] ?: mergedMetadata["title"] ?: PROP_NA,
+        mergedMetadata["name"] ?: mergedMetadata["id"] ?: PROP_NA,
         mediaLength,
         calculateStreamType(),
         Media.MediaType.Video,

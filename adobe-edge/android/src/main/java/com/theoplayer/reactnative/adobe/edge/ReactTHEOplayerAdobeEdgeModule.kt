@@ -11,7 +11,6 @@ private const val TAG = "AdobeEdgeModule"
 
 private const val PROP_ENVIRONMENT_ID = "environmentId"
 private const val PROP_DEBUG_ENABLED = "debugEnabled"
-private const val PROP_NAME = "name"
 
 @Suppress("unused")
 class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
@@ -61,18 +60,20 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun setDebug(tag: Int, debug: Boolean) {
-    adobeConnectors[tag]?.setLoggingMode(when (debug) {
-      true -> LoggingMode.DEBUG
-      false -> LoggingMode.ERROR
-    })
+    adobeConnectors[tag]?.setLoggingMode(
+      when (debug) {
+        true -> LoggingMode.DEBUG
+        false -> LoggingMode.ERROR
+      }
+    )
   }
 
   /**
    * Sets customMetadataDetails which will be passed for the session start request.
    */
   @ReactMethod
-  fun updateMetadata(tag: Int, metadataList: ReadableArray) {
-    adobeConnectors[tag]?.updateMetadata(metadataList.toAdobeCustomMetadataDetails())
+  fun updateMetadata(tag: Int, customMetadataDetails: ReadableMap) {
+    adobeConnectors[tag]?.updateMetadata(customMetadataDetails.toAdobeCustomMetadataDetails())
   }
 
   /**
@@ -87,8 +88,8 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    * Dispatch error event to adobe
    */
   @ReactMethod
-  fun setError(tag: Int, errorDetails: ReadableMap) {
-    adobeConnectors[tag]?.setError(errorDetails.getString(PROP_NAME) ?: "NA")
+  fun setError(tag: Int, errorId: String) {
+    adobeConnectors[tag]?.setError(errorId)
   }
 
   /**
@@ -100,7 +101,7 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    * @param customMetadataDetails media details information.
    */
   @ReactMethod
-  fun stopAndStartNewSession(tag: Int, customMetadataDetails: ReadableArray) {
+  fun stopAndStartNewSession(tag: Int, customMetadataDetails: ReadableMap) {
     adobeConnectors[tag]?.stopAndStartNewSession(customMetadataDetails.toAdobeCustomMetadataDetails())
   }
 

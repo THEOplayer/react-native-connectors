@@ -1,5 +1,5 @@
 import type { THEOplayer } from 'react-native-theoplayer';
-import { AdobeCustomMetadataDetails, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeIdentityMap, AdobeMetadata } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 import { AdobeEdgeWebConfig } from '../api/AdobeEdgeWebConfig';
 import { AdobeEdgeConnector } from './web/AdobeEdgeConnector';
@@ -16,7 +16,7 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
     this.connector.setDebug(debug);
   }
 
-  updateMetadata(metadata: AdobeCustomMetadataDetails[]): void {
+  updateMetadata(metadata: AdobeMetadata): void {
     this.connector.updateMetadata(metadata);
   }
 
@@ -24,12 +24,12 @@ export class AdobeConnectorAdapterWeb implements AdobeConnectorAdapter {
     this.connector?.setCustomIdentityMap(customIdentityMap);
   }
 
-  setError(errorDetails: AdobeErrorDetails): void {
-    void this.connector.setError(errorDetails);
+  setError(errorId: string): void {
+    void this.connector.setError(errorId);
   }
 
-  async stopAndStartNewSession(metadata?: AdobeCustomMetadataDetails[]): Promise<void> {
-    await this.connector.stopAndStartNewSession(metadata);
+  async stopAndStartNewSession(metadata?: AdobeMetadata): Promise<void> {
+    this.connector.stopAndStartNewSession(metadata);
   }
 
   async destroy(): Promise<void> {

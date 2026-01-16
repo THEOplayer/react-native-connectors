@@ -1,6 +1,6 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
 import { NativeModules } from 'react-native';
-import { AdobeCustomMetadataDetails, AdobeErrorDetails, AdobeIdentityMap } from '@theoplayer/react-native-analytics-adobe-edge';
+import { AdobeIdentityMap, AdobeMetadata } from '@theoplayer/react-native-analytics-adobe-edge';
 import { AdobeConnectorAdapter } from './AdobeConnectorAdapter';
 import { AdobeEdgeMobileConfig } from '../api/AdobeEdgeMobileConfig';
 
@@ -27,7 +27,7 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
     }
   }
 
-  updateMetadata(metadata: AdobeCustomMetadataDetails[]) {
+  updateMetadata(metadata: AdobeMetadata) {
     try {
       NativeModules.AdobeEdgeModule.updateMetadata(this.nativeHandle || -1, metadata);
     } catch (error: unknown) {
@@ -43,15 +43,15 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
     }
   }
 
-  setError(errorDetails: AdobeErrorDetails) {
+  setError(errorId: string) {
     try {
-      NativeModules.AdobeEdgeModule.setError(this.nativeHandle || -1, errorDetails);
+      NativeModules.AdobeEdgeModule.setError(this.nativeHandle || -1, errorId);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
   }
 
-  async stopAndStartNewSession(metadata?: AdobeCustomMetadataDetails[]) {
+  async stopAndStartNewSession(metadata?: AdobeMetadata) {
     try {
       NativeModules.AdobeEdgeModule.stopAndStartNewSession(this.nativeHandle || -1, metadata ?? []);
     } catch (error: unknown) {

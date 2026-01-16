@@ -1,12 +1,11 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import { AdobeConnectorAdapterNative } from '../internal/AdobeConnectorAdapterNative';
-import type { AdobeCustomMetadataDetails } from './details/AdobeCustomMetadataDetails';
-import type { AdobeErrorDetails } from './details/AdobeErrorDetails';
 import { Platform } from 'react-native';
 import { AdobeConnectorAdapter } from '../internal/AdobeConnectorAdapter';
 import { AdobeConnectorAdapterWeb } from '../internal/AdobeConnectorAdapterWeb';
 import { AdobeEdgeConfig } from './AdobeEdgeConfig';
 import { AdobeIdentityMap } from './details/AdobeIdentityMap';
+import { AdobeMetadata } from './details/AdobeMetadata';
 
 export class AdobeConnector {
   private connectorAdapter?: AdobeConnectorAdapter;
@@ -33,7 +32,7 @@ export class AdobeConnector {
   /**
    * Sets customMetadataDetails which will be passed for the session start request.
    */
-  updateMetadata(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
+  updateMetadata(customMetadataDetails: AdobeMetadata): void {
     this.connectorAdapter?.updateMetadata(customMetadataDetails);
   }
 
@@ -71,8 +70,8 @@ export class AdobeConnector {
   /**
    * Dispatch error event to adobe
    */
-  setError(errorDetails: AdobeErrorDetails): void {
-    this.connectorAdapter?.setError(errorDetails);
+  setError(errorId: string): void {
+    this.connectorAdapter?.setError(errorId);
   }
 
   /**
@@ -92,7 +91,7 @@ export class AdobeConnector {
    *
    * @param customMetadataDetails media details information.
    */
-  stopAndStartNewSession(customMetadataDetails: AdobeCustomMetadataDetails[]): void {
+  stopAndStartNewSession(customMetadataDetails: AdobeMetadata): void {
     void this.connectorAdapter?.stopAndStartNewSession(customMetadataDetails);
   }
 
