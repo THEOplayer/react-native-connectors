@@ -30,6 +30,7 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
+  namespace "com.theoplayer.reactnative.bitmovin"
   compileSdkVersion safeExtGet("THEOplayerBitmovin_compileSdkVersion", 36)
 
   defaultConfig {
@@ -67,14 +68,17 @@ repositories {
 
 rootProject.allprojects {
   repositories {
-//     maven { url 'https://bitmovin-repo' }
+    mavenLocal()
+    google()
+    mavenCentral()
+    maven { url 'https://artifacts.bitmovin.com/artifactory/public-releases' }
   }
 }
 
 // The Bitmovin connector requires at least THEOplayer SDK v10.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 11.0.0)')
 def kotlin_version = safeExtGet("THEOplayerBitmovin_kotlinVersion", "2.2.10")
-def bitmovin_version = safeExtGet("THEOplayerBitmovin_bitmovinVersion", "+")
+def bitmovin_version = safeExtGet("THEOplayerBitmovin_bitmovinVersion", "3.23.0-alpha2")
 
 // By default, take the connector version that aligns with the THEOplayer SDK version.
 def theoplayer_bitmovin_connector_version = safeExtGet('THEOplayerBitmovin_connectorVersion', theoplayer_sdk_version)
@@ -86,6 +90,8 @@ dependencies {
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
+
+  implementation "com.bitmovin.analytics:collector-theoplayer:$bitmovin_version"
 
   // THEOplayer dependencies
   compileOnly "com.theoplayer.theoplayer-sdk-android:core:$theoplayer_sdk_version"

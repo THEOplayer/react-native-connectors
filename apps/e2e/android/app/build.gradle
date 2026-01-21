@@ -117,6 +117,7 @@ dependencies {
      implementation project(path: ':react-native-theoplayer-analytics-comscore')
      implementation project(path: ':react-native-theoplayer-analytics-conviva')
      implementation project(path: ':react-native-theoplayer-analytics-nielsen')
+     implementation project(path: ':react-native-theoplayer-analytics-bitmovin')
      implementation project(path: ':react-native-theoplayer-yospace')
 //     implementation project(path: ':react-native-theoplayer-analytics-adscript')
 //     implementation project(path: ':react-native-theoplayer-analytics-gemius')

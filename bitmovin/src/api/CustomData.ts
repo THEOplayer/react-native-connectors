@@ -1,25 +1,4 @@
-export interface BitmovinAnalyticsConfig extends BitmovinCustomData {
-  licenseKey: string;
-  adTrackingDisabled?: boolean;
-  randomizeUserId?: boolean;
-  backendUrl?: string;
-  cdnProvider?: string;
-  customUserId?: string;
-  sourceMetadata?: BitmovinSourceMetadata;
-  cookiesEnabled?: boolean;
-  cookiesDomain?: string;
-  cookiesMaxAge?: number;
-}
-
-export interface BitmovinSourceMetadata {
-  title?: string;
-  videoId?: string;
-  cdnProvider?: string;
-  path?: string;
-  isLive?: boolean;
-}
-
-export interface BitmovinCustomData {
+export interface CustomData {
   customData1?: string;
   customData2?: string;
   customData3?: string;
