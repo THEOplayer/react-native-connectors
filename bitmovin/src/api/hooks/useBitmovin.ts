@@ -3,14 +3,13 @@ import { RefObject, useEffect, useRef } from 'react';
 import { AnalyticsConfig, BitmovinConnector } from '@theoplayer/react-native-analytics-bitmovin';
 import { SourceMetadata } from '../SourceMetadata';
 
-export function useBitmovin(
-  config: AnalyticsConfig,
-  sourceMetadata?: SourceMetadata,
-): [RefObject<BitmovinConnector | undefined>, (player: THEOplayer | undefined) => void] {
+type InitBitmovin = (player: THEOplayer | undefined, sourceMetadata?: SourceMetadata) => void;
+
+export function useBitmovin(config: AnalyticsConfig): [RefObject<BitmovinConnector | undefined>, InitBitmovin] {
   const connector = useRef<BitmovinConnector | undefined>(undefined);
   const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
-  const initialize = (player: THEOplayer | undefined) => {
+  const initialize: InitBitmovin = (player: THEOplayer | undefined, sourceMetadata?: SourceMetadata) => {
     // Optionally destroy existent connector
     onDestroy();
 
