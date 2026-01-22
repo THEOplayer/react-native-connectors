@@ -32,13 +32,13 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
                     gatewayURL: convivaConfig["gatewayUrl"] as? String,
                     logLevel: .LOGLEVEL_FUNC
                 )
-                if let connector = ConvivaConnector( configuration: configuration, player: player, externalEventDispatcher: view.broadcastEventHandler) {
+                if let connector = ConvivaConnector(
+                    configuration: configuration,
+                    player: player,
+                    convivaMetadata: convivaMetadata as? [String: Any] ?? [:],
+                    externalEventDispatcher: view.broadcastEventHandler
+                ) {
                     self.connectors[node] = connector
-                    if let contentInfo = convivaMetadata as? [String: Any] {
-                        connector.setContentInfo(contentInfo)
-                    } else {
-                        log("Received metadata in wrong format. Received \(convivaMetadata), expected [String: Any]")
-                    }
                     log("Added connector to view \(node)")
                 } else {
                     log("Cannot create Conviva connector for node \(node)")
