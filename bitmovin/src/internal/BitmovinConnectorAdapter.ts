@@ -1,5 +1,5 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import { AnalyticsConfig } from '../api/AnalyticsConfig';
 import { SourceMetadata } from '../api/SourceMetadata';
 import { CustomData } from '../api/CustomData';
@@ -13,7 +13,9 @@ export class BitmovinConnectorAdapter {
   constructor(player: THEOplayer, config: AnalyticsConfig, sourceMetadata?: SourceMetadata) {
     try {
       this.nativeHandle = player.nativeHandle || -1;
-      NativeModules.BitmovinModule.initialize(this.nativeHandle, config, sourceMetadata);
+      if (Platform.OS === 'android') {
+        NativeModules.BitmovinModule.initialize(this.nativeHandle, config, sourceMetadata);
+      }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -21,7 +23,9 @@ export class BitmovinConnectorAdapter {
 
   updateSourceMetadata(metadata: SourceMetadata): void {
     try {
-      NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, metadata);
+      if (Platform.OS === 'android') {
+        NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, metadata);
+      }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -29,7 +33,9 @@ export class BitmovinConnectorAdapter {
 
   updateCustomData(customData: CustomData): void {
     try {
-      NativeModules.BitmovinModule.updateCustomData(this.nativeHandle, customData);
+      if (Platform.OS === 'android') {
+        NativeModules.BitmovinModule.updateCustomData(this.nativeHandle, customData);
+      }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -37,7 +43,9 @@ export class BitmovinConnectorAdapter {
 
   sendCustomDataEvent(customData: CustomData): void {
     try {
-      NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);
+      if (Platform.OS === 'android') {
+        NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);
+      }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -45,7 +53,9 @@ export class BitmovinConnectorAdapter {
 
   destroy(): void {
     try {
-      NativeModules.BitmovinModule.destroy(this.nativeHandle);
+      if (Platform.OS === 'android') {
+        NativeModules.BitmovinModule.destroy(this.nativeHandle);
+      }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
