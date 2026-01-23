@@ -2,7 +2,6 @@
 import Foundation
 import UIKit
 import react_native_theoplayer
-import THEOplayerConnectorBitmovin
 import THEOplayerSDK
 
 func log(_ text: String) {
@@ -29,13 +28,13 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
     func initialize(_ node: NSNumber, bitmovinConfig: NSDictionary) -> Void {
         log("initialize triggered.")
 
-        DispatchQueue.main.async {
+        /*DispatchQueue.main.async {
             log("\(bitmovinConfig)")
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
             if let player = theView?.player,
 			      var options = bitmovinConfig as? [String:Any] {
             }
-        }
+        }*/
     }
 
     @objc(updateMetadata:metadata:)
