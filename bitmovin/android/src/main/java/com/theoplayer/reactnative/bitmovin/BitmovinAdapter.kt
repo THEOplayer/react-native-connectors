@@ -2,6 +2,7 @@ package com.theoplayer.reactnative.bitmovin
 
 import com.bitmovin.analytics.api.AnalyticsConfig
 import com.bitmovin.analytics.api.CustomData
+import com.bitmovin.analytics.api.DefaultMetadata
 import com.bitmovin.analytics.api.LogLevel
 import com.bitmovin.analytics.api.RetryPolicy
 import com.bitmovin.analytics.api.SourceMetadata
@@ -20,6 +21,7 @@ private const val PROP_CDN_PROVIDER = "cdnProvider"
 private const val PROP_PATH = "path"
 private const val PROP_IS_LIVE = "isLive"
 private const val PROP_CUSTOM_DATA = "customData"
+private const val PROP_CUSTOM_USER_ID = "customUserId"
 
 object BitmovinAdapter {
 
@@ -78,6 +80,28 @@ object BitmovinAdapter {
         }
         if (metadata.hasKey(PROP_IS_LIVE)) {
           setIsLive(metadata.getBoolean(PROP_IS_LIVE))
+        }
+        if (metadata.hasKey(PROP_CUSTOM_DATA)) {
+          setCustomData(parseCustomData(metadata.getMap(PROP_CUSTOM_DATA)))
+        }
+      }
+      .build()
+  }
+
+  /**
+   * Create a DefaultMetadata object.
+   * DefaultMetadata can be set during player creation, and this contains source independent data.
+   *
+   * https://developer.bitmovin.com/playback/docs/setup-analytics-android-v3
+   */
+  fun parseDefaultMetadata(metadata: ReadableMap): DefaultMetadata {
+    return DefaultMetadata.Builder()
+      .apply {
+        if (metadata.hasKey(PROP_CDN_PROVIDER)) {
+          setCdnProvider(metadata.getString(PROP_CDN_PROVIDER) ?: "")
+        }
+        if (metadata.hasKey(PROP_CUSTOM_USER_ID)) {
+          setCdnProvider(metadata.getString(PROP_CUSTOM_USER_ID) ?: "")
         }
         if (metadata.hasKey(PROP_CUSTOM_DATA)) {
           setCustomData(parseCustomData(metadata.getMap(PROP_CUSTOM_DATA)))

@@ -3,6 +3,7 @@ import { NativeModules, Platform } from 'react-native';
 import { AnalyticsConfig } from '../api/AnalyticsConfig';
 import { SourceMetadata } from '../api/SourceMetadata';
 import { CustomData } from '../api/CustomData';
+import { DefaultMetadata } from '../api/DefaultMetadata';
 
 const TAG = 'BitmovinConnector';
 const ERROR_MSG = 'BitmovinConnectorAdapter Error';
@@ -10,21 +11,21 @@ const ERROR_MSG = 'BitmovinConnectorAdapter Error';
 export class BitmovinConnectorAdapter {
   private readonly nativeHandle: NativeHandleType;
 
-  constructor(player: THEOplayer, config: AnalyticsConfig, sourceMetadata?: SourceMetadata) {
+  constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
     try {
       this.nativeHandle = player.nativeHandle || -1;
       if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.initialize(this.nativeHandle, config, sourceMetadata);
+        NativeModules.BitmovinModule.initialize(this.nativeHandle, config, defaultMetadata);
       }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
   }
 
-  updateSourceMetadata(metadata: SourceMetadata): void {
+  updateSourceMetadata(sourceMetadata: SourceMetadata): void {
     try {
       if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, metadata);
+        NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, sourceMetadata);
       }
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);

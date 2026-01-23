@@ -1,21 +1,21 @@
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { RefObject, useEffect, useRef } from 'react';
 import { AnalyticsConfig, BitmovinConnector } from '@theoplayer/react-native-analytics-bitmovin';
-import { SourceMetadata } from '../SourceMetadata';
+import { DefaultMetadata } from '../DefaultMetadata';
 
-type InitBitmovin = (player: THEOplayer | undefined, sourceMetadata?: SourceMetadata) => void;
+type InitBitmovin = (player: THEOplayer | undefined, defaultMetadata?: DefaultMetadata) => void;
 
 export function useBitmovin(config: AnalyticsConfig): [RefObject<BitmovinConnector | undefined>, InitBitmovin] {
   const connector = useRef<BitmovinConnector | undefined>(undefined);
   const theoPlayer = useRef<THEOplayer | undefined>(undefined);
 
-  const initialize: InitBitmovin = (player: THEOplayer | undefined, sourceMetadata?: SourceMetadata) => {
+  const initialize: InitBitmovin = (player: THEOplayer | undefined, defaultMetadata?: DefaultMetadata) => {
     // Optionally destroy existent connector
     onDestroy();
 
     theoPlayer.current = player;
     if (player) {
-      connector.current = new BitmovinConnector(player, config, sourceMetadata);
+      connector.current = new BitmovinConnector(player, config, defaultMetadata);
       player.addEventListener(PlayerEventType.DESTROY, onDestroy);
     } else {
       throw new Error('Invalid THEOplayer instance');

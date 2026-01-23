@@ -18,7 +18,7 @@ class ReactTHEOplayerBitmovinModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun initialize(tag: Int, config: ReadableMap, sourceMetadata: ReadableMap?) {
+  fun initialize(tag: Int, config: ReadableMap, defaultMetadata: ReadableMap?) {
     viewResolver.resolveViewByTag(tag) { view: ReactTHEOplayerView? ->
       view?.player?.let { player ->
         // Optionally destroy any existing connector for this player.
@@ -27,8 +27,8 @@ class ReactTHEOplayerBitmovinModule(context: ReactApplicationContext) :
           view.context,
           BitmovinAdapter.parseConfig(config)
         )
-        sourceMetadata?.let {
-          connector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(it)
+        defaultMetadata?.let {
+          connector.defaultMetadata = BitmovinAdapter.parseDefaultMetadata(it)
         }
         connector.attachPlayer(player)
         bitmovinConnectors[tag] = connector
@@ -40,7 +40,6 @@ class ReactTHEOplayerBitmovinModule(context: ReactApplicationContext) :
   fun updateSourceMetadata(tag: Int, metadata: ReadableMap) {
     bitmovinConnectors[tag]?.sourceMetadata = BitmovinAdapter.parseSourceMetadata(metadata)
   }
-
 
   @ReactMethod
   fun updateCustomData(tag: Int, customData: ReadableMap) {

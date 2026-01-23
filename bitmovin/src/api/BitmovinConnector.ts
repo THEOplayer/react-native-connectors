@@ -3,6 +3,7 @@ import { BitmovinConnectorAdapter } from '../internal/BitmovinConnectorAdapter';
 import { AnalyticsConfig } from './AnalyticsConfig';
 import { SourceMetadata } from './SourceMetadata';
 import { CustomData } from './CustomData';
+import { DefaultMetadata } from './DefaultMetadata';
 
 export class BitmovinConnector {
   private connectorAdapter: BitmovinConnectorAdapter;
@@ -12,18 +13,18 @@ export class BitmovinConnector {
    *
    * @param player          THEOplayer instance.
    * @param config          Configuration for Bitmovin Analytics.
-   * @param sourceMetadata  Optional initial source metadata.
+   * @param defaultMetadata Initial source-independent data.
    */
-  constructor(player: THEOplayer, config: AnalyticsConfig, sourceMetadata?: SourceMetadata) {
-    this.connectorAdapter = new BitmovinConnectorAdapter(player, config, sourceMetadata);
+  constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
+    this.connectorAdapter = new BitmovinConnectorAdapter(player, config, defaultMetadata);
   }
 
   /**
    * Set or update metadata for the current source.
-   * @param metadata contains the key value pairs with data.
+   * @param sourceMetadata contains the key value pairs with data.
    */
-  updateSourceMetadata(metadata: SourceMetadata): void {
-    this.connectorAdapter.updateSourceMetadata(metadata);
+  updateSourceMetadata(sourceMetadata: SourceMetadata): void {
+    this.connectorAdapter.updateSourceMetadata(sourceMetadata);
   }
 
   /**
