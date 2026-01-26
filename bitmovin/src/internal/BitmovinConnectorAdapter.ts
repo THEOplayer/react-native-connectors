@@ -14,9 +14,7 @@ export class BitmovinConnectorAdapter {
   constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
     try {
       this.nativeHandle = player.nativeHandle || -1;
-      if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.initialize(this.nativeHandle, config, defaultMetadata);
-      }
+      NativeModules.BitmovinModule.initialize(this.nativeHandle, config, defaultMetadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -24,9 +22,7 @@ export class BitmovinConnectorAdapter {
 
   updateSourceMetadata(sourceMetadata: SourceMetadata): void {
     try {
-      if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, sourceMetadata);
-      }
+      NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, sourceMetadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -34,9 +30,7 @@ export class BitmovinConnectorAdapter {
 
   updateCustomData(customData: CustomData): void {
     try {
-      if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.updateCustomData(this.nativeHandle, customData);
-      }
+      NativeModules.BitmovinModule.updateCustomData(this.nativeHandle, customData);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -44,9 +38,7 @@ export class BitmovinConnectorAdapter {
 
   sendCustomDataEvent(customData: CustomData): void {
     try {
-      if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);
-      }
+      NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -54,9 +46,7 @@ export class BitmovinConnectorAdapter {
 
   destroy(): void {
     try {
-      if (Platform.OS === 'android') {
-        NativeModules.BitmovinModule.destroy(this.nativeHandle);
-      }
+      NativeModules.BitmovinModule.destroy(this.nativeHandle);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
