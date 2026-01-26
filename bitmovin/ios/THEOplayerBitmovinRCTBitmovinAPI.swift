@@ -31,7 +31,7 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
         DispatchQueue.main.async {
             let theView = self.bridge.uiManager.view(forReactTag: node) as? THEOplayerRCTView
             if let player = theView?.player,
-               var config = bitmovinConfig as? [String:Any] {
+               let config = bitmovinConfig as? [String:Any] {
                 let metadata = defaultMetadata as? [String:Any]
                 let connector = BitmovinConnector(player: player, bitmovinConfig: config, defaultMetadata: metadata)
                 self.connectors[node] = connector
