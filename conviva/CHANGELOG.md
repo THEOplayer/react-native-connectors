@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.12.0
+
+### ✨ Features
+
+- Passing initial metadata as persistent conviva metadata on iOS
+
 ## 1.11.1
 
 ### 🐛 Issues
