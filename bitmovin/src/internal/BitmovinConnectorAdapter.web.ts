@@ -22,6 +22,10 @@ export class BitmovinConnectorAdapter {
     // Not supported in web SDK
   }
 
+  programChange(sourceMetadata: SourceMetadata): void {
+    // NYI
+  }
+
   sendCustomDataEvent(customData: CustomData): void {
     // Not supported in web SDK
   }

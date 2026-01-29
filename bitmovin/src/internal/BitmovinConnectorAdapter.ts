@@ -36,6 +36,14 @@ export class BitmovinConnectorAdapter {
     }
   }
 
+  programChange(sourceMetadata: SourceMetadata): void {
+    try {
+      NativeModules.BitmovinModule.programChange(this.nativeHandle, sourceMetadata);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
+  }
+
   sendCustomDataEvent(customData: CustomData): void {
     try {
       NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);

@@ -36,6 +36,14 @@ export class BitmovinConnector {
   }
 
   /**
+   * Notifies the connector about a program change in a live stream.
+   * @param sourceMetadata
+   */
+  programChange(sourceMetadata: SourceMetadata): void {
+    this.connectorAdapter.programChange(sourceMetadata);
+  }
+
+  /**
    * Sends a custom data event with the provided custom data.
    * @param customData
    */
