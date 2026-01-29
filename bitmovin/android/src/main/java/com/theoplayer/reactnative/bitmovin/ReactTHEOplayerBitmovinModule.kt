@@ -47,6 +47,12 @@ class ReactTHEOplayerBitmovinModule(context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun programChange(tag: Int, sourceMetadata: ReadableMap) {
+    val t = "NYI"
+//    bitmovinConnectors[tag]?.programChange(BitmovinAdapter.parseSourceMetadata(sourceMetadata))
+  }
+
+  @ReactMethod
   fun sendCustomDataEvent(tag: Int, customData: ReadableMap) {
     bitmovinConnectors[tag]?.sendCustomDataEvent(BitmovinAdapter.parseCustomData(customData))
   }

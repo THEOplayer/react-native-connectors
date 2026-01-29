@@ -33,6 +33,14 @@ import {convivaConfig} from "./constants/conviva.config";
 import {convivaMetadata} from "./constants/conviva.metadata";
 import { useBitmovin } from '@theoplayer/react-native-analytics-bitmovin';
 import { bitmovinConfig, bitmovinDefaultMetadata } from './constants/bitmovin.config';
+import { BackgroundAudioSubMenu } from './components/menu/BackgroundAudioSubMenu';
+import { PiPSubMenu } from './components/menu/PipSubMenu';
+import { AutoPlaySubMenu } from './components/menu/AutoPlaySubMenu';
+import { RenderingTargetSubMenu } from './components/menu/RenderingTargetSubMenu';
+import { SourceMenuButton, SOURCES } from './components/menu/SourceMenuButton';
+import { ConnectorSvg } from './res/ConnectorSvg';
+import { ConnectorSubMenu } from './components/menu/ConnectorSubMenu';
+import { ConnectorsMenuButton } from './components/menu/ConnectorMenu';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -54,7 +62,20 @@ export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   const [, initConviva] = useConviva(convivaMetadata, convivaConfig);
-  const [, initBitmovin] = useBitmovin(bitmovinConfig);
+  const [bitmovin, initBitmovin] = useBitmovin(bitmovinConfig);
+
+  const onBitmovinProgramChange = () => {
+    bitmovin.current?.programChange({
+      title: 'New title',
+    });
+  };
+
+  const onBitmovinUpdateCustomData = () => {
+    bitmovin.current?.updateCustomData({
+      customData0: 'customData0 value',
+      customData1: 'customData1 value',
+    });
+  };
 
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
@@ -76,22 +97,7 @@ export default function App() {
     player.muted = true;
     player.autoplay = true;
 
-    player.source = {
-      sources: [
-        {
-          src: 'https://cdn.theoplayer.com/video/sintel/nosubs.m3u8',
-          type: 'application/x-mpegurl',
-        },
-      ],
-      metadata: {
-        title: 'Sintel',
-        subtitle: 'HLS - Sideloaded Chapters',
-        album: 'React-Native THEOplayer demos',
-        mediaUri: 'https://theoplayer.com',
-        displayIconUri: 'https://cdn.theoplayer.com/video/sintel_old/poster.jpg',
-        artist: 'THEOplayer',
-      }
-    };
+    player.source = SOURCES[0].source;
 
     player.backgroundAudioConfiguration = { enabled: true };
     player.pipConfiguration = { startsAutomatically: true };
@@ -118,11 +124,20 @@ export default function App() {
                   <AutoFocusGuide>
                     <ControlBar>
                       <Spacer />
+                      <SourceMenuButton />
                       <LanguageMenuButton />
+                      <ConnectorsMenuButton>
+                        <ConnectorSubMenu title={'Bitmovin - programChange'} onPress={onBitmovinProgramChange} />
+                        <ConnectorSubMenu title={'Bitmovin - updateCustomData'} onPress={onBitmovinUpdateCustomData} />
+                      </ConnectorsMenuButton>
                       <SettingsMenuButton>
                         {/*Note: quality selection is not available on iOS */}
                         <QualitySubMenu />
                         <PlaybackRateSubMenu />
+                        <BackgroundAudioSubMenu />
+                        <PiPSubMenu />
+                        <AutoPlaySubMenu />
+                        {Platform.OS === 'android' && <RenderingTargetSubMenu />}
                       </SettingsMenuButton>
                     </ControlBar>
                   </AutoFocusGuide>
