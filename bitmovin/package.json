@@ -52,9 +52,6 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "dependencies": {
-    "@qualabs/bitmovin-analytics-collector-theoplayer": "^1.0.4"
-  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
@@ -64,11 +61,6 @@
   "peerDependenciesMeta": {
     "theoplayer": {
       "optional": true
-    }
-  },
-  "overrides": {
-    "@qualabs/bitmovin-analytics-collector-theoplayer": {
-      "theoplayer": "^10"
     }
   },
   "eslintIgnore": [
