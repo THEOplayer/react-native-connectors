@@ -38,7 +38,6 @@ import { PiPSubMenu } from './components/menu/PipSubMenu';
 import { AutoPlaySubMenu } from './components/menu/AutoPlaySubMenu';
 import { RenderingTargetSubMenu } from './components/menu/RenderingTargetSubMenu';
 import { SourceMenuButton, SOURCES } from './components/menu/SourceMenuButton';
-import { ConnectorSvg } from './res/ConnectorSvg';
 import { ConnectorSubMenu } from './components/menu/ConnectorSubMenu';
 import { ConnectorsMenuButton } from './components/menu/ConnectorMenu';
 
