@@ -11,9 +11,11 @@ RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   bitmovinConfig:(nonnull NSDictionary *)bitmovinConfig
                   defaultMetadata:(nullable NSDictionary *)defaultMetadata)
 
-RCT_EXTERN_METHOD(updateSourceMetadata:(nonnull NSNumber *)node metadata:(nonnull NSDictionary *)metadata)
+RCT_EXTERN_METHOD(updateSourceMetadata:(nonnull NSNumber *)node sourceMetadata:(nonnull NSDictionary *)sourceMetadata)
 
 RCT_EXTERN_METHOD(updateCustomMetadata:(nonnull NSNumber *)node customData:(nonnull NSDictionary *)customData)
+
+RCT_EXTERN_METHOD(programChange:(nonnull NSNumber *)node sourceMetadata:(nonnull NSDictionary *)sourceMetadata)
 
 RCT_EXTERN_METHOD(sendCustomDataEvent:(nonnull NSNumber *)node customData:(nonnull NSDictionary *)customData)
 

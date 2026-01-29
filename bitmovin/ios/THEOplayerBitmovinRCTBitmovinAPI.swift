@@ -42,12 +42,22 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
         }
     }
     
-    @objc(updateSourceMetadata:metadata:)
-    func updateSourceMetadata(_ node: NSNumber, metadata: NSDictionary) {
+    @objc(updateSourceMetadata:sourceMetadata:)
+    func updateSourceMetadata(_ node: NSNumber, sourceMetadata: NSDictionary) {
         log("updateSourceMetadata triggered.")
         DispatchQueue.main.async {
-            if let sourceMetadata = metadata as? [String:Any] {
+            if let sourceMetadata = sourceMetadata as? [String:Any] {
                 self.connectors[node]?.updateSourceMetadata(sourceMetadata)
+            }
+        }
+    }
+    
+    @objc(programChange:sourceMetadata:)
+    func programChange(_ node: NSNumber, sourceMetadata: NSDictionary) {
+        log("programChange triggered.")
+        DispatchQueue.main.async {
+            if let sourceMetadata = sourceMetadata as? [String:Any] {
+                self.connectors[node]?.programChange(sourceMetadata)
             }
         }
     }

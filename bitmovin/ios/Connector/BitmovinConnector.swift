@@ -18,23 +18,29 @@ class BitmovinConnector {
         self.theoplayerCollector.attach(to: player)
     }
     
-    func updateSourceMetadata(_ metadata: [String:Any]) -> Void {
-        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(metadata)
-        log("Updated source metadata: \(self.theoplayerCollector.sourceMetadata)")
+    func updateSourceMetadata(_ sourceMetadata: [String:Any]) -> Void {
+        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
+        log("Updated source metadata: \(sourceMetadata)")
+    }
+    
+    func programChange(_ sourceMetadata: [String:Any]) -> Void {
+        // let newSourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
+        // TODO: self.theoplayerCollector.programChange(newSourceMetadata)
+        log("TODO: Notifying program change with source metadata: \(sourceMetadata)")
     }
     
     func updateCustomMetadata(_ customData: [String:Any]) -> Void {
         self.theoplayerCollector.customData = BitmovinAdapter.parseCustomData(customData)
-        log("Updated custom data: \(self.theoplayerCollector.customData)")
+        log("Updated custom data: \(customData)")
     }
     
     func sendCustomDataEvent(_ customData: [String:Any]) -> Void {
-        log("Sending custom data event is not yet implemented.")
+        log("TODO: Sending custom data event is not yet implemented.")
         // TODO: Implement when THEOplayerCollector supports sending custom data events
     }
     
     func destroy() -> Void {
-        log("Destroying Bitmovin Connector is not yet implemented.")
+        log("TODO: Destroying Bitmovin Connector is not yet implemented.")
         // TODO: Implement when THEOplayerCollector supports detaching
     }
 }
