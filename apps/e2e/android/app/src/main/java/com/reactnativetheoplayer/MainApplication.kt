@@ -11,10 +11,11 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.theoplayer.reactnative.bitmovin.ReactTHEOplayerBitmovinPackage
 import com.theoplayercomscore.ReactTHEOplayerComscorePackage
 import com.theoplayerconviva.ReactTHEOplayerConvivaPackage
 import com.theoplayernielsen.ReactTHEOplayerNielsenPackage
-import com.theoplayeryospace.ReactTHEOplayerYospacePackage
+//import com.theoplayeryospace.ReactTHEOplayerYospacePackage
 
 class MainApplication : Application(), ReactApplication {
   override val reactNativeHost: ReactNativeHost =
@@ -22,10 +23,11 @@ class MainApplication : Application(), ReactApplication {
       override fun getPackages(): List<ReactPackage> =
         PackageList(this).packages.apply {
           // Packages that cannot be autolinked yet can be added manually here, for example:
+          add(ReactTHEOplayerBitmovinPackage())
           add(ReactTHEOplayerComscorePackage())
           add(ReactTHEOplayerConvivaPackage())
           add(ReactTHEOplayerNielsenPackage())
-          add(ReactTHEOplayerYospacePackage())
+//          add(ReactTHEOplayerYospacePackage())
         }
 
       override fun getJSMainModuleName(): String = "index"
