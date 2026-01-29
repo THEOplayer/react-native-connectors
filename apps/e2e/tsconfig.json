@@ -3,30 +3,15 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@theoplayer/react-native-analytics-adobe": [
-        "../../adobe/src/index"
-      ],
-      "@theoplayer/react-native-analytics-adobe-edge": [
-        "../../adobe-edge/src/index"
-      ],
-      "@theoplayer/react-native-analytics-comscore": [
-        "../../comscore/src/index"
-      ],
-      "@theoplayer/react-native-analytics-conviva": [
-        "../../conviva/src/index"
-      ],
-      "@theoplayer/react-native-analytics-nielsen": [
-        "../../nielsen/src/index"
-      ],
-      "@theoplayer/react-native-yospace": [
-        "../../yospace/src/index"
-      ],
-      "@theoplayer/react-native-adscript": [
-        "../../adscript/src/index"
-      ],
-      "@theoplayer/react-native-gemius": [
-        "../../gemius/src/index"
-      ]
+      "@theoplayer/react-native-analytics-adobe": ["../../adobe/src/index"],
+      "@theoplayer/react-native-analytics-adobe-edge": ["../../adobe-edge/src/index"],
+      "@theoplayer/react-native-analytics-bitmovin": ["../../bitmovin/src/index"],
+      "@theoplayer/react-native-analytics-comscore": ["../../comscore/src/index"],
+      "@theoplayer/react-native-analytics-conviva": ["../../conviva/src/index"],
+      "@theoplayer/react-native-analytics-nielsen": ["../../nielsen/src/index"],
+      "@theoplayer/react-native-yospace": ["../../yospace/src/index"],
+      "@theoplayer/react-native-adscript": ["../../adscript/src/index"],
+      "@theoplayer/react-native-gemius": ["../../gemius/src/index"]
     }
   }
 }

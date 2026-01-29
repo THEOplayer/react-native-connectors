@@ -14,14 +14,16 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@theoplayer/react-native-ui": "^0.18.0",
+    "@theoplayer/react-native-ui": "^0.21.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "npm:react-native-tvos@^0.79.0-0",
+    "react-native-config": "^1.6.1",
     "react-native-device-info": "^10.14.0",
+    "react-native-safe-area-context": "^5.6.2",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "^15.11.2",
-    "react-native-theoplayer": "^10",
+    "react-native-theoplayer": "^10.8.0",
     "react-native-web": "^0.20.0",
     "react-native-web-image-loader": "^0.1.1"
   },
@@ -55,16 +57,8 @@
     "webpack-dev-server": "^5.2.1"
   },
   "overrides": {
-    "react-native-google-cast": {
-      "react-native": "$react-native"
-    },
-    "@miblanchard/react-native-slider": {
-      "react-native": "$react-native"
-    },
-    "cavy": {
-      "react": "$react",
-      "react-native": "$react-native"
-    }
+    "react": "$react",
+    "react-native": "$react-native"
   },
   "engines": {
     "node": ">=18"

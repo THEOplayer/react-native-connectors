@@ -1,1 +1,4 @@
-console.error('This app can only be used with cavy-cli');
+import { AppRegistry } from 'react-native';
+import App from './src/App';
+
+AppRegistry.registerComponent('ReactNativeTHEOplayerE2E', () => App);
