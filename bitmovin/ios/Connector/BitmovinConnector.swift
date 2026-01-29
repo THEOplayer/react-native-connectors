@@ -14,7 +14,8 @@ class BitmovinConnector {
         let config: AnalyticsConfig = BitmovinAdapter.parseConfig(bitmovinConfig)
         let metadata: DefaultMetadata = BitmovinAdapter.parseDefaultMetadata(defaultMetadata)
         self.theoplayerCollector = THEOplayerCollector.THEOplayerCollectorFactory.create(config: config, defaultMetadata: metadata)
-        log("Initialized Bitmovin Connector with config: \(config) and default metadata: \(metadata)")
+        log("Initialized Bitmovin Connector with config: \(bitmovinConfig) and default metadata: \(defaultMetadata ?? [:])")
+        self.theoplayerCollector.attach(to: player)
     }
     
     func updateSourceMetadata(_ metadata: [String:Any]) -> Void {
