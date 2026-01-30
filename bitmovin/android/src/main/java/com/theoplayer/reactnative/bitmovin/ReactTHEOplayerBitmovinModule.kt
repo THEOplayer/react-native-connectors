@@ -43,13 +43,14 @@ class ReactTHEOplayerBitmovinModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun updateCustomData(tag: Int, customData: ReadableMap) {
-    bitmovinConnectors[tag]?.customData = BitmovinAdapter.parseCustomData(customData)
+    // TODO: resolve threading issue first
+    //bitmovinConnectors[tag]?.customData = BitmovinAdapter.parseCustomData(customData)
   }
 
   @ReactMethod
   fun programChange(tag: Int, sourceMetadata: ReadableMap) {
-    val t = "NYI"
-//    bitmovinConnectors[tag]?.programChange(BitmovinAdapter.parseSourceMetadata(sourceMetadata))
+    // NYI
+    //bitmovinConnectors[tag]?.programChange(BitmovinAdapter.parseSourceMetadata(sourceMetadata))
   }
 
   @ReactMethod
