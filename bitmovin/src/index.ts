@@ -3,5 +3,5 @@ export * from './api/AnalyticsConfig';
 export * from './api/CustomData';
 export * from './api/SourceMetadata';
 export * from './api/DefaultMetadata';
-export { useBitmovin } from './api/hooks/useBitmovin';
+export * from './api/hooks/useBitmovin';
 export { sdkVersions } from './internal/version/Version';

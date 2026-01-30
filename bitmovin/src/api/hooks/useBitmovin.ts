@@ -3,7 +3,7 @@ import { RefObject, useEffect, useRef } from 'react';
 import { AnalyticsConfig, BitmovinConnector } from '@theoplayer/react-native-analytics-bitmovin';
 import { DefaultMetadata } from '../DefaultMetadata';
 
-type InitBitmovin = (player: THEOplayer | undefined, defaultMetadata?: DefaultMetadata) => void;
+export type InitBitmovin = (player: THEOplayer | undefined, defaultMetadata?: DefaultMetadata) => void;
 
 export function useBitmovin(config: AnalyticsConfig): [RefObject<BitmovinConnector | undefined>, InitBitmovin] {
   const connector = useRef<BitmovinConnector | undefined>(undefined);
