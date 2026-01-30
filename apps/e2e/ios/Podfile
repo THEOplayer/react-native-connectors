@@ -32,7 +32,6 @@ target 'ReactNativeTHEOplayer' do
   pod 'react-native-theoplayer-conviva', :path => '../../../conviva'
   pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
   pod 'react-native-theoplayer-adobe', :path => '../../../adobe'
-  pod 'react-native-theoplayer-adobe-edge', :path => '../../../adobe-edge'
   pod 'react-native-theoplayer-bitmovin', :path => '../../../bitmovin'
 
   google_cast_redirect
@@ -50,7 +49,6 @@ target 'ReactNativeTHEOplayer-tvOS' do
   pod 'react-native-theoplayer-conviva', :path => '../../../conviva'
   pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
   pod 'react-native-theoplayer-adobe', :path => '../../../adobe'
-  pod 'react-native-theoplayer-adobe-edge', :path => '../../../adobe-edge'
   pod 'react-native-theoplayer-bitmovin', :path => '../../../bitmovin'
 
 end
