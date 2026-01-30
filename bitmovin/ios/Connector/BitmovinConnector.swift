@@ -5,22 +5,22 @@
 import Foundation
 import THEOplayerSDK
 import CoreCollector
-import THEOplayerCollector
+// TODO: import THEOplayerCollector     // Update when THEOplayerCollector module is available through cocoapods.
 
 class BitmovinConnector {
-    private let theoplayerCollector: THEOplayerCollector.THEOplayerCollectorApi
+    // TODO: private let theoplayerCollector: THEOplayerCollector.THEOplayerCollectorApi
     
     init(player: THEOplayer, bitmovinConfig: [String:Any], defaultMetadata: [String:Any]? = nil) {
         let config: AnalyticsConfig = BitmovinAdapter.parseConfig(bitmovinConfig)
         let metadata: DefaultMetadata = BitmovinAdapter.parseDefaultMetadata(defaultMetadata)
-        self.theoplayerCollector = THEOplayerCollector.THEOplayerCollectorFactory.create(config: config, defaultMetadata: metadata)
-        log("Initialized Bitmovin Connector with config: \(bitmovinConfig) and default metadata: \(defaultMetadata ?? [:])")
-        self.theoplayerCollector.attach(to: player)
+        // TODO: self.theoplayerCollector = THEOplayerCollector.THEOplayerCollectorFactory.create(config: config, defaultMetadata: metadata)
+        // TODO: self.theoplayerCollector.attach(to: player)
+        log("TODO: Initialized Bitmovin Connector with config: \(bitmovinConfig) and default metadata: \(defaultMetadata ?? [:])")
     }
     
     func updateSourceMetadata(_ sourceMetadata: [String:Any]) -> Void {
-        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
-        log("Updated source metadata: \(sourceMetadata)")
+        // TODO: self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
+        log("TODO: Updated source metadata: \(sourceMetadata)")
     }
     
     func programChange(_ sourceMetadata: [String:Any]) -> Void {
@@ -30,8 +30,8 @@ class BitmovinConnector {
     }
     
     func updateCustomMetadata(_ customData: [String:Any]) -> Void {
-        self.theoplayerCollector.customData = BitmovinAdapter.parseCustomData(customData)
-        log("Updated custom data: \(customData)")
+        // TODO: self.theoplayerCollector.customData = BitmovinAdapter.parseCustomData(customData)
+        log("TODO: Updated custom data: \(customData)")
     }
     
     func sendCustomDataEvent(_ customData: [String:Any]) -> Void {
