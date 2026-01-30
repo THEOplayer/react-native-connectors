@@ -6,8 +6,7 @@ const packages = [
   'react',
   'react-native',
   'react-native-theoplayer',
-  '@babel/runtime',
-  'react-native-device-info'
+  '@babel/runtime'
 ];
 
 const connectors = [
@@ -35,6 +34,7 @@ const connectors = [
 const config = {
   projectRoot: __dirname,
   watchFolders: [
+	path.resolve(root, 'node_modules'),
     ...connectors.map(cn => path.resolve(root, cn)),
   ],
   resolver: {
