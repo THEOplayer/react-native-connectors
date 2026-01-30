@@ -47,8 +47,8 @@
     "type": "git",
     "url": "git@github.com:THEOplayer/react-native-connectors.git"
   },
-  "author": "THEO Technologies",
-  "license": "SEE LICENSE AT https://www.theoplayer.com/terms",
+  "author": "Dolby Laboratories, Inc.",
+  "license": "BSD-3-Clause-Clear",
   "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/adobe-edge#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

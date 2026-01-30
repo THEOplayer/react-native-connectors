@@ -39,7 +39,7 @@ Pod::Spec.new do |spec|
 
   spec.homepage     = 'https://github.com/THEOplayer/iOS-Connector'
   spec.license      = { :type => 'MIT', :file => 'LICENSE' }
-  spec.author       = "THEO technologies"
+  spec.author       = "Dolby Laboratories, Inc."
   spec.source       = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => spec.version.to_s }
 
   spec.source_files  = "Classes", "Classes/**/*.{h,m}"

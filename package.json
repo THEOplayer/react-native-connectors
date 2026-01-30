@@ -4,8 +4,8 @@
   "description": "",
   "private": true,
   "keywords": [],
-  "author": "THEO Technologies NV",
-  "license": "MIT",
+  "author": "Dolby Laboratories, Inc.",
+  "license": "BSD-3-Clause-Clear",
   "workspaces": [
     "agama",
     "adobe",
