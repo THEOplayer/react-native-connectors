@@ -16,8 +16,10 @@ include ':react-native-theoplayer-analytics-conviva'
 project(':react-native-theoplayer-analytics-conviva').projectDir = new File(rootProject.projectDir, '../../../conviva/android')
 include ':react-native-theoplayer-analytics-nielsen'
 project(':react-native-theoplayer-analytics-nielsen').projectDir = new File(rootProject.projectDir, '../../../nielsen/android')
-include ':react-native-theoplayer-yospace'
-project(':react-native-theoplayer-yospace').projectDir = new File(rootProject.projectDir, '../../../yospace/android')
+include ':react-native-theoplayer-analytics-bitmovin'
+project(':react-native-theoplayer-analytics-bitmovin').projectDir = new File(rootProject.projectDir, '../../../bitmovin/android')
+//include ':react-native-theoplayer-yospace'
+//project(':react-native-theoplayer-yospace').projectDir = new File(rootProject.projectDir, '../../../yospace/android')
 // include ':react-native-theoplayer-analytics-adscript'
 // project(':react-native-theoplayer-analytics-adscript').projectDir = new File(rootProject.projectDir, '../../../adscript/android')
 // include ':react-native-theoplayer-analytics-gemius'
