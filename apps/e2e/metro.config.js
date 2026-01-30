@@ -6,7 +6,8 @@ const packages = [
   'react',
   'react-native',
   'react-native-theoplayer',
-  '@babel/runtime'
+  '@babel/runtime',
+  'react-native-device-info'
 ];
 
 const connectors = [
