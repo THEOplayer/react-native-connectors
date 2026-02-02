@@ -50,5 +50,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           # see https://github.com/changesets/changesets/issues/1152#issuecomment-3190884868
-          NPM_TOKEN:  ${{ secrets.NPM_TEMP_TOKEN }}
+          NPM_TOKEN: ''
           NPM_CONFIG_PROVENANCE: true
