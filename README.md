@@ -1,6 +1,6 @@
 # THEOplayer React Native Connectors
 
-This repository is maintained by [THEO Technologies](https://www.theoplayer.com/) and provides a collection of
+This repository is maintained by [Dolby Laboratories, Inc.](https://optiview.dolby.com/) and provides a collection of
 connectors for [`react-native-theoplayer`](https://github.com/THEOplayer/react-native-theoplayer),
 the official THEOplayer React Native video player.
 
