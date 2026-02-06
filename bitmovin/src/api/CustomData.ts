@@ -11,6 +11,14 @@
  * Additional customData fields can be activated, up to 50 in total. These additional fields may incur a cost depending on the type of data stored.
  * Please reach out to us via the support form in the dashboard if you'd like more information.
  *
+ * @example
+ * ```ts
+ *  const customData: CustomData = {
+ *   customData1: 'customData1 value',
+ *   customData2: 'customData2 value',
+ *  };
+ * ```
+ *
  * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics}
  */
 export interface CustomData {
