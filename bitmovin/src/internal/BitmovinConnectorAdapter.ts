@@ -1,5 +1,5 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 import { AnalyticsConfig } from '../api/AnalyticsConfig';
 import { SourceMetadata } from '../api/SourceMetadata';
 import { CustomData } from '../api/CustomData';

@@ -3,27 +3,27 @@ import { AnalyticsConfig } from '../api/AnalyticsConfig';
 import { ChromelessPlayer } from 'theoplayer';
 import { CustomData, SourceMetadata } from '@theoplayer/react-native-analytics-bitmovin';
 import { DefaultMetadata } from '../api/DefaultMetadata';
+import { CustomDataValues, THEOplayerAdapter } from 'bitmovin-analytics';
+import { buildWebConfigFromDefaultMetadata, buildWebConfigFromSourceMetadata, buildWebSourceMetadata } from './web/BitmovinAdapterWeb';
 
 export class BitmovinConnectorAdapter {
-  // private integration: TheoCollector;
+  private readonly integration: THEOplayerAdapter;
 
   constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
-    // this.integration = new TheoCollector(config, player.nativeHandle as ChromelessPlayer);
-    // if (defaultMetadata) {
-    //   this.integration.defaultMetadata = defaultMetadata;
-    // }
+    const webConfig = buildWebConfigFromDefaultMetadata(config, defaultMetadata);
+    this.integration = new THEOplayerAdapter(webConfig, player.nativeHandle as ChromelessPlayer);
   }
 
   updateSourceMetadata(sourceMetadata: SourceMetadata): void {
-    // this.integration.sourceMetadata = sourceMetadata;
+    this.integration.sourceChange(buildWebConfigFromSourceMetadata(sourceMetadata));
   }
 
   updateCustomData(customData: CustomData): void {
-    // Not supported in web SDK
+    this.integration.setCustomData(customData as CustomDataValues);
   }
 
   programChange(sourceMetadata: SourceMetadata): void {
-    // NYI
+    this.integration.programChange(buildWebSourceMetadata(sourceMetadata));
   }
 
   sendCustomDataEvent(customData: CustomData): void {
@@ -31,6 +31,6 @@ export class BitmovinConnectorAdapter {
   }
 
   destroy() {
-    // Nothing to do.
+    console.log('Destroying Bitmovin Analytics Connector');
   }
 }
