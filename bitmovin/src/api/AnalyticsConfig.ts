@@ -64,4 +64,76 @@ export interface AnalyticsConfig {
    * Initial source metadata to be associated with the playback session.
    */
   sourceMetadata?: SourceMetadata;
+
+  /**
+   * The device type.
+   * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
+   *
+   * @platform web
+   */
+  deviceType?: string;
+
+  /**
+   * The device class.
+   * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
+   *
+   * @platform web
+   */
+  deviceClass?: 'Console' | 'Desktop' | 'Other' | 'Phone' | 'STB' | 'Tablet' | 'TV' | 'Wearable';
+
+  /**
+   * Player name.
+   * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
+   *
+   * @platform web
+   */
+  player?: string;
+
+  /**
+   * UUID that is persisted across play sessions
+   * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
+   *
+   * @platform web
+   */
+  userId?: string;
+
+  /**
+   * Enable or disable the analytics collector.
+   *
+   * @platform web
+   */
+  enabled?: boolean;
+
+  /**
+   * Very similar to randomizeUserId if this is true we save a random UUID in a cookie for cross-referencing sessions.
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
+   *
+   * @platform web
+   * @defaultValue `true
+   */
+  cookiesEnabled?: boolean;
+
+  /**
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
+   *
+   * @platform web
+   */
+  cookiesDomain?: string;
+
+  /**
+   * Set cookies `max-age` attribute.
+   *
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
+   *
+   * @platform web
+   * @defaultValue `1 year`
+   */
+  cookiesMaxAge?: number;
+
+  /**
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
+   *
+   * @platform web
+   */
+  origin?: string;
 }

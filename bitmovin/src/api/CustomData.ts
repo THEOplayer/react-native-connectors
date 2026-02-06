@@ -22,5 +22,15 @@
  * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics}
  */
 export interface CustomData {
+  /**
+   * The customData fields using 1-based indexing, e.g. customData1, customData2, ..., customData50.
+   */
   [key: `customData${number}`]: string | undefined;
+
+  /**
+   * For testing purposes, Bitmovin Analytics provides an Experiment field to differentiate between testing groups.
+   * A popular application for this data field is to use it for testing a new player version, before rolling it out to all your viewers.
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-metadata-fields}
+   */
+  experimentName?: string;
 }
