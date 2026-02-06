@@ -38,8 +38,8 @@ const defaultMetadata: DefaultMetadata = {
   cdnProvider: 'akamai',
   customUserId: 'custom-user-id-1234',
   customData: {
-    customData0: 'value0',
-    customData1: 'value1'
+    customData1: 'value1',
+    customData2: 'value2'
   }
 };
 
