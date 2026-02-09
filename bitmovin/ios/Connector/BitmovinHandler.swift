@@ -28,7 +28,7 @@ class BitmovinHandler {
     }
     
     func programChange(_ sourceMetadata: [String:Any]) -> Void {
-        let newSourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
+        let newSourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata: sourceMetadata)
         self.theoplayerCollector.programChange(newSourceMetadata: newSourceMetadata)
         log("Notified program change with new source metadata: \(sourceMetadata)")
     }
@@ -49,18 +49,19 @@ class BitmovinHandler {
         log("Bitmovin Connector destroyed.")
     }
     
+    // MARK: - event handling
     private func onSourceChange(event: SourceChangeEvent) {
-        guard let player = self.player else { return }
+        guard let player = self.player, let source = player.source else { return }
         log("Received SOURCE_CHANGE event from THEOplayer")
         
         self.theoplayerCollector.detach()
         log("Player detached from collector.")
         
-        if let sourceMetadata = self.currentSourceMetadata {
-            self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata)
-            self.currentSourceMetadata = nil
-            log("SourceMetadata updated on collector.")
-        }
+        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(
+            sourceMetadata: self.currentSourceMetadata,
+            extractedSourceMetadata: source.metadata?.metadataKeys)
+        self.currentSourceMetadata = nil
+        log("SourceMetadata updated on collector.")
         
         self.theoplayerCollector.attach(to: player)
         log("Player attached to collector.")
@@ -71,7 +72,7 @@ class BitmovinHandler {
         guard let player = self.player else { return }
         self.sourceChangeListener = player.addEventListener(type: PlayerEventTypes.SOURCE_CHANGE, listener: self.onSourceChange)
     }
-
+    
     private func detachListeners() {
         guard let player = self.player else { return }
         if let sourceChangeListener = self.sourceChangeListener {
