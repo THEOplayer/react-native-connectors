@@ -14,7 +14,7 @@ func log(_ text: String) {
 class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
     @objc var bridge: RCTBridge!
     
-    var connectors = [NSNumber: BitmovinConnector]()
+    var connectors = [NSNumber: BitmovinHandler]()
     
     static func moduleName() -> String! {
         return "BitmovinModule"
@@ -33,7 +33,7 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
             if let player = theView?.player,
                let config = bitmovinConfig as? [String:Any] {
                 let metadata = defaultMetadata as? [String:Any]
-                let connector = BitmovinConnector(player: player, bitmovinConfig: config, defaultMetadata: metadata)
+                let connector = BitmovinHandler(player: player, bitmovinConfig: config, defaultMetadata: metadata)
                 self.connectors[node] = connector
                 log("added connector to view \(node)")
             } else {
