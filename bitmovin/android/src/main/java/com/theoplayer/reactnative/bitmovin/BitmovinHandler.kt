@@ -53,7 +53,7 @@ class BitmovinHandler(
     // Detach player before setting new SourceMetadata.
     collector.detachPlayer()
     /**
-     * Merge the current source metadata with the new metadata from the playe source, if available.
+     * Merge the current source metadata with the new metadata from the player source, if available.
      * Prioritize the player source's metadata.
      */
     mergeSourceMetadata(currentSourceMetadata, player.source?.metadata)?.let {

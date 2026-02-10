@@ -6,6 +6,8 @@ import { DefaultMetadata } from '../api/DefaultMetadata';
 import { CustomDataValues, THEOplayerAdapter } from 'bitmovin-analytics';
 import { buildWebConfigFromDefaultMetadata, buildWebConfigFromSourceMetadata, buildWebSourceMetadata } from './web/BitmovinAdapterWeb';
 
+const BITMOVIN_ANALYTICS_AUGMENTED_MARKER = '__bitmovinAnalyticsHasBeenSetup';
+
 export class BitmovinConnectorAdapter {
   private readonly integration: THEOplayerAdapter;
 
@@ -31,6 +33,14 @@ export class BitmovinConnectorAdapter {
   }
 
   destroy() {
-    console.log('Destroying Bitmovin Analytics Connector');
+    /**
+     * We can safely disable the BITMOVIN_ANALYTICS_AUGMENTED_MARKER here to avoid duplicate connectors being attached to the same player instance,
+     * because we know either the collector or both player and collector were destroyed here.
+     * This is needed because when using <StrictMode> in React, mount effects will trigger twice in development mode.
+     */
+    const container = document.querySelector('.theoplayer-container');
+    if (container) {
+      container[BITMOVIN_ANALYTICS_AUGMENTED_MARKER] = false;
+    }
   }
 }
