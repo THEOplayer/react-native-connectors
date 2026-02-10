@@ -43,16 +43,27 @@ class BitmovinAdapter {
             ssaiEngagementTrackingEnabled: config[BTMVN_PROP_SSAI_ENGAGEMENT_TRACKING_ENABLED] as? Bool ?? false,
             errorTransformerCallback: nil
         )
-	}
+    }
     
-    class func parseSourceMetadata(_ sourceMetadata: [String:Any]) -> SourceMetadata {
+    class func parseSourceMetadata(sourceMetadata: [String:Any]?, extractedSourceMetadata: [String:Any]? = nil) -> SourceMetadata {
+        let videoId = (extractedSourceMetadata?[BTMVN_PROP_VIDEO_ID] as? String) ?? (sourceMetadata?[BTMVN_PROP_VIDEO_ID] as? String)
+        let title = (extractedSourceMetadata?[BTMVN_PROP_TITLE] as? String) ?? (sourceMetadata?[BTMVN_PROP_TITLE] as? String)
+        let path = (extractedSourceMetadata?[BTMVN_PROP_PATH] as? String) ?? sourceMetadata?[BTMVN_PROP_PATH] as? String
+        let isLive = (extractedSourceMetadata?[BTMVN_PROP_IS_LIVE] as? Bool) ?? sourceMetadata?[BTMVN_PROP_IS_LIVE] as? Bool
+        let cdnProvider = (extractedSourceMetadata?[BTMVN_PROP_CDN_PROVIDER] as? String) ?? sourceMetadata?[BTMVN_PROP_CDN_PROVIDER] as? String
+        
+        var customData = extractedSourceMetadata?[BTMVN_PROP_CUSTOM_DATA] as? [String:Any] ?? [:]
+        if let sourceMetadataCustomData = sourceMetadata?[BTMVN_PROP_CUSTOM_DATA] as? [String:Any] {
+            customData.merge(sourceMetadataCustomData) { (current, _) in current }
+        }
+        
         return SourceMetadata(
-            videoId: sourceMetadata[BTMVN_PROP_VIDEO_ID] as? String,
-            title: sourceMetadata[BTMVN_PROP_TITLE] as? String,
-            path: sourceMetadata[BTMVN_PROP_PATH] as? String,
-            isLive: sourceMetadata[BTMVN_PROP_IS_LIVE] as? Bool,
-            cdnProvider: sourceMetadata[BTMVN_PROP_CDN_PROVIDER] as? String,
-            customData: BitmovinAdapter.parseCustomData(sourceMetadata[BTMVN_PROP_CUSTOM_DATA] as? [String:Any])
+            videoId: videoId,
+            title: title,
+            path: path,
+            isLive: isLive,
+            cdnProvider: cdnProvider,
+            customData: BitmovinAdapter.parseCustomData(customData)
         )
     }
     

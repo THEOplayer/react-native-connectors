@@ -4,11 +4,17 @@ A Bitmovin analytics connector for `@theoplayer/react-native`.
 
 ## Installation
 
+Using npm:
 ```sh
 npm install @theoplayer/react-native-analytics-bitmovin
 ```
-
 [//]: # (npm install @theoplayer/react-native-analytics-bitmovin)
+
+Using yarn:
+```sh
+yarn add @theoplayer/react-native-analytics-bitmovin
+```
+[//]: # (yarn add @theoplayer/react-native-analytics-bitmovin)
 
 ## Usage
 
@@ -19,7 +25,10 @@ Create the connector using the `useBitmovin` hook with the initial configuration
 Once the player is ready, initialize the connector by calling the `initBitmovin` function with the `THEOplayer`
 instance and the **default metadata**, which contains properties that do not change during the session.
 
-Finally, when the player source is set, update the **source metadata** by calling the `updateSourceMetadata` function.
+Finally, before the player source is set, update first the **source metadata** by calling the `updateSourceMetadata` function.
+
+> **IMPORTANT:** Call `updateSourceMetadata` before setting the player source, otherwise the source metadata will
+> not be included in the analytics events.
 
 ```tsx
 import {
@@ -38,8 +47,8 @@ const defaultMetadata: DefaultMetadata = {
   cdnProvider: 'akamai',
   customUserId: 'custom-user-id-1234',
   customData: {
-    customData0: 'value0',
-    customData1: 'value1'
+    customData1: 'value1',
+    customData2: 'value2'
   }
 };
 
@@ -61,10 +70,12 @@ const App = () => {
   const onPlayerReady = (player: THEOplayer) => {
     // Initialize connector with player & default metadata.
     initBitmovin(player, defaultMetadata);
-    player.source = {/*...*/}
 
     // Update source metadata.
     bitmovin.updateSourceMetadata(sourceMetadata);
+
+    // Set player source after updating source metadata.
+    player.source = {/*...*/}
   }
 
   return (<THEOplayerView config={playerConfig} onPlayerReady={onPlayerReady}/>);

@@ -1,5 +1,6 @@
 package com.theoplayer.reactnative.bitmovin
 
+import android.util.Log
 import com.bitmovin.analytics.api.AnalyticsConfig
 import com.bitmovin.analytics.api.CustomData
 import com.bitmovin.analytics.api.DefaultMetadata
@@ -7,6 +8,7 @@ import com.bitmovin.analytics.api.LogLevel
 import com.bitmovin.analytics.api.RetryPolicy
 import com.bitmovin.analytics.api.SourceMetadata
 import com.facebook.react.bridge.ReadableMap
+import org.json.JSONObject
 
 private const val PROP_LICENSE_KEY = "licenseKey"
 private const val PROP_AD_TRACKING_DISABLED = "adTrackingDisabled"
@@ -24,6 +26,8 @@ private const val PROP_CUSTOM_DATA = "customData"
 private const val PROP_CUSTOM_USER_ID = "customUserId"
 
 object BitmovinAdapter {
+
+  private const val TAG = "BitmovinAdapter"
 
   /**
    * Create an AnalyticsConfig object.
@@ -94,7 +98,8 @@ object BitmovinAdapter {
    *
    * https://developer.bitmovin.com/playback/docs/setup-analytics-android-v3
    */
-  fun parseDefaultMetadata(metadata: ReadableMap): DefaultMetadata {
+  fun parseDefaultMetadata(metadata: ReadableMap?): DefaultMetadata? {
+    if (metadata == null) return null
     return DefaultMetadata.Builder()
       .apply {
         if (metadata.hasKey(PROP_CDN_PROVIDER)) {
@@ -115,11 +120,35 @@ object BitmovinAdapter {
    *
    * https://developer.bitmovin.com/playback/docs/configuration-analytics
    */
-  fun parseCustomData(data: ReadableMap?): CustomData {
-    return CustomData.Builder().apply {
+  fun parseCustomData(data: ReadableMap?, buildUpon: CustomData.Builder? = null): CustomData {
+    return buildCustomData({ key -> data?.getString(key) }, buildUpon)
+  }
+
+  /**
+   * Create a CustomData object.
+   *
+   * https://developer.bitmovin.com/playback/docs/configuration-analytics
+   */
+  fun parseCustomDataFromJSON(
+    json: JSONObject?,
+    buildUpon: CustomData.Builder? = null
+  ): CustomData {
+    return buildCustomData({ key -> json?.opt(key) }, buildUpon)
+  }
+
+  fun buildCustomData(
+    getValue: (String) -> Any?,
+    buildUpon: CustomData.Builder? = null
+  ): CustomData {
+    return (buildUpon ?: CustomData.Builder()).apply {
       for (i in 1..50) {
         val method = CustomData.Builder::class.java.getMethod("setCustomData$i", String::class.java)
-        method.invoke(this, data?.getString("${PROP_CUSTOM_DATA}$i"))
+        val value = getValue("${PROP_CUSTOM_DATA}$i")
+        if (value is String) {
+          method.invoke(this, value)
+        } else if (value != null) {
+          Log.w(TAG, "CustomData${i} is not a String: $value")
+        }
       }
     }.build()
   }

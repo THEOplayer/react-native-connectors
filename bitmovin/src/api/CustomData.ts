@@ -11,8 +11,26 @@
  * Additional customData fields can be activated, up to 50 in total. These additional fields may incur a cost depending on the type of data stored.
  * Please reach out to us via the support form in the dashboard if you'd like more information.
  *
+ * @example
+ * ```ts
+ *  const customData: CustomData = {
+ *   customData1: 'customData1 value',
+ *   customData2: 'customData2 value',
+ *  };
+ * ```
+ *
  * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics}
  */
 export interface CustomData {
+  /**
+   * The customData fields using 1-based indexing, e.g. customData1, customData2, ..., customData50.
+   */
   [key: `customData${number}`]: string | undefined;
+
+  /**
+   * For testing purposes, Bitmovin Analytics provides an Experiment field to differentiate between testing groups.
+   * A popular application for this data field is to use it for testing a new player version, before rolling it out to all your viewers.
+   * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-metadata-fields}
+   */
+  experimentName?: string;
 }
