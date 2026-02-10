@@ -1,6 +1,6 @@
 {
   "name": "@theoplayer/react-native-analytics-bitmovin",
-  "version": "1.0.0-alpha.10",
+  "version": "1.0.0-alpha.11",
   "description": "Bitmovin analytics connector for @theoplayer/react-native",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
