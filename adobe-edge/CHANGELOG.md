@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.1.0
+
+### ✨ Features
+
+- Changed license to BSD 3-Cause Clear. See [LICENSE](./LICENSE) file for more information.
+
 ## 1.0.0
 
 ### 💥 Breaking Changes

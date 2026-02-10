@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.11.0
+
+### ✨ Features
+
+- Changed license to BSD 3-Cause Clear. See [LICENSE](./LICENSE) file for more information.
+
 ## 1.10.0
 
 ### ✨ Features
