@@ -51,15 +51,13 @@ class BitmovinHandler {
     
     // MARK: - event handling
     private func onSourceChange(event: SourceChangeEvent) {
-        guard let player = self.player, let source = player.source else { return }
+        guard let player = self.player/*, let source = player.source*/ else { return }
         log("Received SOURCE_CHANGE event from THEOplayer")
         
         self.theoplayerCollector.detach()
         log("Player detached from collector.")
         
-        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(
-            sourceMetadata: self.currentSourceMetadata,
-            extractedSourceMetadata: source.metadata?.metadataKeys)
+        self.theoplayerCollector.sourceMetadata = BitmovinAdapter.parseSourceMetadata(sourceMetadata: self.currentSourceMetadata/*, extractedSourceMetadata: source.metadata?.metadataKeys*/)
         self.currentSourceMetadata = nil
         log("SourceMetadata updated on collector.")
         
