@@ -52,17 +52,26 @@ class BitmovinHandler(
     Log.d("BitmovinConnector", "Handling source change event")
     // Detach player before setting new SourceMetadata.
     collector.detachPlayer()
+
+    /**
+     * !! Do not merge source metadata on source change, as the Bitmovin Web collector does not
+     * support this yet.
+     */
     /**
      * Merge the current source metadata with the new metadata from the player source, if available.
      * Prioritize the player source's metadata.
      */
-    mergeSourceMetadata(currentSourceMetadata, player.source?.metadata)?.let {
+//    mergeSourceMetadata(currentSourceMetadata, player.source?.metadata)?.let {
+//      collector.sourceMetadata = it
+//    }
+    currentSourceMetadata?.let {
       collector.sourceMetadata = it
     }
     currentSourceMetadata = null
     collector.attachPlayer(player)
   }
 
+  @Suppress("unused")
   private fun mergeSourceMetadata(
     sourceMetadata: SourceMetadata?, metadata: MetadataDescription?
   ): SourceMetadata? {
