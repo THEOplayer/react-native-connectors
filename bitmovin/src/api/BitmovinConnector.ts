@@ -21,6 +21,10 @@ export class BitmovinConnector {
 
   /**
    * Set or update metadata for the current source.
+   *
+   * **IMPORTANT:** Call this method before setting a new source on the player,
+   * otherwise the metadata will not be associated with the correct source.
+   *
    * @param sourceMetadata contains the key value pairs with data.
    */
   updateSourceMetadata(sourceMetadata: SourceMetadata): void {
