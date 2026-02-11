@@ -1,5 +1,11 @@
 # @theoplayer/react-native-engage
 
+## 0.6.0
+
+### ✨ Features
+
+- Changed license to BSD 3-Cause Clear. See [LICENSE](./LICENSE) file for more information.
+
 ## 0.5.0
 
 ### ✨ Features

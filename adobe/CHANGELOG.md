@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.15.0
+
+### ✨ Features
+
+- Changed license to BSD 3-Cause Clear. See [LICENSE](./LICENSE) file for more information.
+
 ## 1.14.3
 
 ### 🐛 Issues

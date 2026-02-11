@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.13.0
+
+### ✨ Features
+
+- Changed license to BSD 3-Cause Clear. See [LICENSE](./LICENSE) file for more information.
+
 ## 1.12.0
 
 ### ✨ Features
