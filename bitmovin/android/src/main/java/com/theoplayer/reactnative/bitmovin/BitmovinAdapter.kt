@@ -106,7 +106,7 @@ object BitmovinAdapter {
           setCdnProvider(metadata.getString(PROP_CDN_PROVIDER) ?: "")
         }
         if (metadata.hasKey(PROP_CUSTOM_USER_ID)) {
-          setCdnProvider(metadata.getString(PROP_CUSTOM_USER_ID) ?: "")
+          setCustomUserId(metadata.getString(PROP_CUSTOM_USER_ID) ?: "")
         }
         if (metadata.hasKey(PROP_CUSTOM_DATA)) {
           setCustomData(parseCustomData(metadata.getMap(PROP_CUSTOM_DATA)))
