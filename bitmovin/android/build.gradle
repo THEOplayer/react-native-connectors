@@ -78,7 +78,7 @@ rootProject.allprojects {
 // The Bitmovin connector requires at least THEOplayer SDK v10.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 11.0.0)')
 def kotlin_version = safeExtGet("THEOplayerBitmovin_kotlinVersion", "2.2.10")
-def bitmovin_version = safeExtGet("THEOplayerBitmovin_bitmovinVersion", "3.23.0-alpha3")
+def bitmovin_version = safeExtGet("THEOplayerBitmovin_bitmovinVersion", "3.23.0")
 
 // By default, take the connector version that aligns with the THEOplayer SDK version.
 def theoplayer_bitmovin_connector_version = safeExtGet('THEOplayerBitmovin_connectorVersion', theoplayer_sdk_version)
