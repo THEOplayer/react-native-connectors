@@ -80,8 +80,9 @@ class BitmovinAdapter {
     }
     
     class func parseCustomData(_ customData: [String:Any]?) -> CustomData {
-        var values = Array<String?>(repeating: nil, count: 50)
-        for i in 1...50 {
+        var values = Array<String?>(repeating: nil, count: 100)
+        // Note: output CustomData uses 1-based keys
+        for i in 1...100 {
             let key = "customData\(i)"
             if let value = customData?[key] as? String {
                 values[i - 1] = value
@@ -89,58 +90,27 @@ class BitmovinAdapter {
         }
         
         return CustomData(
-            customData1: values[0],
-            customData2: values[1],
-            customData3: values[2],
-            customData4: values[3],
-            customData5: values[4],
-            customData6: values[5],
-            customData7: values[6],
-            customData8: values[7],
-            customData9: values[8],
-            customData10: values[9],
-            customData11: values[10],
-            customData12: values[11],
-            customData13: values[12],
-            customData14: values[13],
-            customData15: values[14],
-            customData16: values[15],
-            customData17: values[16],
-            customData18: values[17],
-            customData19: values[18],
-            customData20: values[19],
-            customData21: values[20],
-            customData22: values[21],
-            customData23: values[22],
-            customData24: values[23],
-            customData25: values[24],
-            customData26: values[25],
-            customData27: values[26],
-            customData28: values[27],
-            customData29: values[28],
-            customData30: values[29],
-            customData31: values[30],
-            customData32: values[31],
-            customData33: values[32],
-            customData34: values[33],
-            customData35: values[34],
-            customData36: values[35],
-            customData37: values[36],
-            customData38: values[37],
-            customData39: values[38],
-            customData40: values[39],
-            customData41: values[40],
-            customData42: values[41],
-            customData43: values[42],
-            customData44: values[43],
-            customData45: values[44],
-            customData46: values[45],
-            customData47: values[46],
-            customData48: values[47],
-            customData49: values[48],
-            customData50: values[49]
+            customData1:  values[0],  customData2:  values[1],  customData3:  values[2],  customData4:  values[3],  customData5:  values[4],
+            customData6:  values[5],  customData7:  values[6],  customData8:  values[7],  customData9:  values[8],  customData10: values[9],
+            customData11: values[10], customData12: values[11], customData13: values[12], customData14: values[13], customData15: values[14],
+            customData16: values[15], customData17: values[16], customData18: values[17], customData19: values[18], customData20: values[19],
+            customData21: values[20], customData22: values[21], customData23: values[22], customData24: values[23], customData25: values[24],
+            customData26: values[25], customData27: values[26], customData28: values[27], customData29: values[28], customData30: values[29],
+            customData31: values[30], customData32: values[31], customData33: values[32], customData34: values[33], customData35: values[34],
+            customData36: values[35], customData37: values[36], customData38: values[37], customData39: values[38], customData40: values[39],
+            customData41: values[40], customData42: values[41], customData43: values[42], customData44: values[43], customData45: values[44],
+            customData46: values[45], customData47: values[46], customData48: values[47], customData49: values[48], customData50: values[49],
+            customData51: values[50], customData52: values[51], customData53: values[52], customData54: values[53], customData55: values[54],
+            customData56: values[55], customData57: values[56], customData58: values[57], customData59: values[58], customData60: values[69],
+            customData61: values[60], customData62: values[61], customData63: values[62], customData64: values[63], customData65: values[64],
+            customData66: values[65], customData67: values[66], customData68: values[67], customData69: values[68], customData70: values[79],
+            customData71: values[70], customData72: values[71], customData73: values[72], customData74: values[73], customData75: values[74],
+            customData76: values[75], customData77: values[76], customData78: values[77], customData79: values[78], customData80: values[89],
+            customData81: values[80], customData82: values[81], customData83: values[82], customData84: values[83], customData85: values[84],
+            customData86: values[85], customData87: values[86], customData88: values[87], customData89: values[88], customData90: values[99],
+            customData91: values[90], customData92: values[91], customData93: values[92], customData94: values[93], customData95: values[94],
+            customData96: values[95], customData97: values[96], customData98: values[97], customData99: values[98], customData100: values[99])
             // ¯\_(ツ)_/¯
-        )
     }
     
 }
