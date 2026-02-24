@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.0.0
+
+### ✨ Features
+
+- Updated Android Bitmovin player SDK dependency to version range `[3.24.0, 4.0.0)`.
+- Changed `customData` to allow up to 100 custom fields.
+
 ## 1.0.0-alpha.12
 
 ### 🐛 Issues
