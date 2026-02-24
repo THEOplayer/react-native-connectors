@@ -32,7 +32,7 @@
 
 ## 1.8.0
 
-### ✨ Features
+### 📦 Dependency Updates
 
 - Updated iOS Mux dependency to v0.13.
 
