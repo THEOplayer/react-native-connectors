@@ -141,11 +141,17 @@ object BitmovinAdapter {
     buildUpon: CustomData.Builder? = null
   ): CustomData {
     return (buildUpon ?: CustomData.Builder()).apply {
-      for (i in 1..50) {
-        val method = CustomData.Builder::class.java.getMethod("setCustomData$i", String::class.java)
+      for (i in 1..100) {
         val value = getValue("${PROP_CUSTOM_DATA}$i")
         if (value is String) {
-          method.invoke(this, value)
+          try {
+            val method = CustomData.Builder::class.java.getMethod("setCustomData$i", String::class.java)
+            method.invoke(this, value)
+          } catch (e: NoSuchMethodException) {
+            Log.w(TAG, "CustomData$i setter does not exist")
+          } catch (e: Exception) {
+            Log.w(TAG, "CustomData$i setter error: ${e.message}")
+          }
         } else if (value != null) {
           Log.w(TAG, "CustomData${i} is not a String: $value")
         }
