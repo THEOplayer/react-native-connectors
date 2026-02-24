@@ -2,11 +2,10 @@
 
 ## 1.0.0
 
-### 🐛 Issues
+### ✨ Features
 
-- Updated Android Bitmovin player SDK dependency to version range [3.24.0, 4.0.0).
-- Allowed up to 100 custom data fields on Android.
-- Add 50 more CustomData fields
+- Updated Android Bitmovin player SDK dependency to version range `[3.24.0, 4.0.0)`.
+- Changed `customData` to allow up to 100 custom fields.
 
 ## 1.0.0-alpha.12
 
