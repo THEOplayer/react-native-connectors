@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.0.1
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the updateCustomData method was not correctly bridged.
+
 ## 1.0.0
 
 ### ✨ Features
