@@ -62,9 +62,9 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
         }
     }
     
-    @objc(updateCustomMetadata:customData:)
-    func updateCustomMetadata(_ node: NSNumber, customData: NSDictionary) {
-        log("updateCustomMetadata triggered.")
+    @objc(updateCustomData:customData:)
+    func updateCustomData(_ node: NSNumber, customData: NSDictionary) {
+        log("updateCustomData triggered.")
         DispatchQueue.main.async {
             if let customMetadata = customData as? [String:Any] {
                 self.connectors[node]?.updateCustomMetadata(customMetadata)

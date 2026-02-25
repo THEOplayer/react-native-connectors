@@ -13,7 +13,7 @@ RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
 
 RCT_EXTERN_METHOD(updateSourceMetadata:(nonnull NSNumber *)node sourceMetadata:(nonnull NSDictionary *)sourceMetadata)
 
-RCT_EXTERN_METHOD(updateCustomMetadata:(nonnull NSNumber *)node customData:(nonnull NSDictionary *)customData)
+RCT_EXTERN_METHOD(updateCustomData:(nonnull NSNumber *)node customData:(nonnull NSDictionary *)customData)
 
 RCT_EXTERN_METHOD(programChange:(nonnull NSNumber *)node sourceMetadata:(nonnull NSDictionary *)sourceMetadata)
 
