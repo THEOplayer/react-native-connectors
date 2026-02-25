@@ -33,6 +33,7 @@ export class BitmovinConnector {
 
   /**
    * Set or update custom data for the current session.
+   * This method allows you to change the value of a customData field during a session. The method can be called multiple times during a session.
    * @param customData
    */
   updateCustomData(customData: CustomData): void {
@@ -49,6 +50,7 @@ export class BitmovinConnector {
 
   /**
    * Sends a custom data event with the provided custom data.
+   * This method allows you to change the value of a customData field temporarily for one sample.
    * @param customData
    */
   sendCustomDataEvent(customData: CustomData): void {
