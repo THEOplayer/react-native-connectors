@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe
 
+## 1.15.1
+
+### 🐛 Issues
+
+- Fixed an issue where heart-beat requests could continue after destroying a session on Web.
+
 ## 1.15.0
 
 ### ✨ Features
