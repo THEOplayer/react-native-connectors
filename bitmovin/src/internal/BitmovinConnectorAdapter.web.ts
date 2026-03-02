@@ -29,7 +29,7 @@ export class BitmovinConnectorAdapter {
   }
 
   sendCustomDataEvent(customData: CustomData): void {
-    // Not supported in web SDK
+    this.integration.setCustomDataOnce(customData);
   }
 
   destroy() {

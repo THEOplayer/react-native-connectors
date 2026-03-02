@@ -82,6 +82,6 @@
     ]
   },
   "dependencies": {
-    "bitmovin-analytics": "^2.50.0-beta.1"
+    "bitmovin-analytics": "^2.51.0"
   }
 }
