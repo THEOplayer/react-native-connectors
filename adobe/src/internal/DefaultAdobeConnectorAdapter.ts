@@ -466,6 +466,7 @@ export class DefaultAdobeConnectorAdapter implements AdobeConnectorAdapter {
 
   async destroy(): Promise<void> {
     await this.maybeEndSession();
+    this.reset();
     this.removeEventListeners();
   }
 
