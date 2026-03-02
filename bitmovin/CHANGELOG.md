@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.1.0
+
+### ✨ Features
+
+- Added `sendCustomDataEvent` for Web.
+- Upgraded Bitmovin Web SDK to GA release v2.51.
+
 ## 1.0.1
 
 ### 🐛 Issues
