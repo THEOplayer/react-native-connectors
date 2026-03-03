@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.2.0
+
+### ✨ Features
+
+- Updated `updateCustomData` to merge incoming `customData` with the existing data on iOS and Android.
+
 ## 1.1.0
 
 ### ✨ Features
