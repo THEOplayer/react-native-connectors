@@ -34,7 +34,7 @@ class BitmovinHandler {
     }
     
     func updateCustomMetadata(_ customData: [String:Any]) -> Void {
-        self.theoplayerCollector.customData = BitmovinAdapter.parseCustomData(customData)
+        self.theoplayerCollector.customData = BitmovinAdapter.mergeCustomData(existingCustomData: self.theoplayerCollector.customData, newCustomData: BitmovinAdapter.parseCustomData(customData))
         log("Updated custom data: \(customData)")
     }
     
