@@ -71,8 +71,8 @@ export default function App() {
 
   const onBitmovinUpdateCustomData = () => {
     bitmovin.current?.updateCustomData({
-      customData0: 'customData0 value',
-      customData1: 'customData1 value',
+      customData1: 'updated customData1 value',
+      customData2: 'updated customData2 value',
     });
   };
 
@@ -96,8 +96,18 @@ export default function App() {
     player.muted = true;
     player.autoplay = true;
 
-    player.source = SOURCES[0].source;
-
+    const newSource = SOURCES[0].source;
+    bitmovin.current?.updateSourceMetadata({
+      title: newSource.metadata?.title ?? 'Title N/A',
+      customData: {
+        customData1: 'initial customData1 value',
+        customData2: 'initial customData2 value',
+        customData3: 'initial customData3 value',
+        customData4: 'initial customData4 value',
+        customData5: 'initial customData5 value',
+      },
+    });
+    player.source = newSource;
     player.backgroundAudioConfiguration = { enabled: true };
     player.pipConfiguration = { startsAutomatically: true };
   };

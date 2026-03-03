@@ -7,6 +7,7 @@ import com.bitmovin.analytics.api.CustomData
 import com.bitmovin.analytics.api.DefaultMetadata
 import com.bitmovin.analytics.api.SourceMetadata
 import com.bitmovin.analytics.theoplayer.api.ITHEOplayerCollector
+import com.bitmovin.analytics.utils.ApiV3Utils.mergeCustomData
 import com.theoplayer.android.api.event.EventListener
 import com.theoplayer.android.api.event.player.PlayerEventTypes
 import com.theoplayer.android.api.event.player.SourceChangeEvent
@@ -37,7 +38,8 @@ class BitmovinHandler(
   var customData: CustomData
     get() = collector.customData
     set(value) {
-      collector.customData = value
+      // Merge the new custom data with the existing custom data, prioritizing the new values.
+      collector.customData = mergeCustomData( value, collector.customData)
     }
 
   fun programChange(sourceMetadata: SourceMetadata) {

@@ -84,7 +84,8 @@ const App = () => {
 
 ### Dynamically updating custom data
 
-The connector allows updating the **custom data** at any time during the playback session:
+The connector allows updating the **custom data** at any time during the playback session, which will cause the new
+custom data to be merged with the existing custom data and included in all subsequent analytics events:
 
 ```tsx
 bitmovin.updateCustomData({
