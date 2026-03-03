@@ -21,6 +21,7 @@ export class BitmovinConnectorAdapter {
   }
 
   updateCustomData(customData: CustomData): void {
+    // Any new customData values will be merged with the existing ones, so only the fields that are included in the customData parameter will be updated.
     this.integration.setCustomData(customData as CustomDataValues);
   }
 
