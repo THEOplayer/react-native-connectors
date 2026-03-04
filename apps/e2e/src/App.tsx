@@ -28,11 +28,8 @@ import { PlayerConfiguration, PlayerEventType, THEOplayer, THEOplayerView } from
 import { Platform, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import Config from 'react-native-config';
-import {useConviva} from "@theoplayer/react-native-analytics-conviva";
-import {convivaConfig} from "./constants/conviva.config";
-import {convivaMetadata} from "./constants/conviva.metadata";
-import { useBitmovin } from '@theoplayer/react-native-analytics-bitmovin';
-import { bitmovinConfig, bitmovinDefaultMetadata } from './constants/bitmovin.config';
+import { useConvivaConnector } from './connectors/conviva';
+import { useBitmovinConnector, bitmovinDefaultMetadata } from './connectors/bitmovin';
 import { BackgroundAudioSubMenu } from './components/menu/BackgroundAudioSubMenu';
 import { PiPSubMenu } from './components/menu/PipSubMenu';
 import { AutoPlaySubMenu } from './components/menu/AutoPlaySubMenu';
@@ -40,6 +37,7 @@ import { RenderingTargetSubMenu } from './components/menu/RenderingTargetSubMenu
 import { SourceMenuButton, SOURCES } from './components/menu/SourceMenuButton';
 import { ConnectorSubMenu } from './components/menu/ConnectorSubMenu';
 import { ConnectorsMenuButton } from './components/menu/ConnectorMenu';
+import { useAdobeEdgeConnector } from './connectors/adobe-edge';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -60,27 +58,16 @@ export default function App() {
   const [player, setPlayer] = useState<THEOplayer | undefined>(undefined);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const [, initConviva] = useConviva(convivaMetadata, convivaConfig);
-  const [bitmovin, initBitmovin] = useBitmovin(bitmovinConfig);
-
-  const onBitmovinProgramChange = () => {
-    bitmovin.current?.programChange({
-      title: 'New title',
-    });
-  };
-
-  const onBitmovinUpdateCustomData = () => {
-    bitmovin.current?.updateCustomData({
-      customData1: 'updated customData1 value',
-      customData2: 'updated customData2 value',
-    });
-  };
+  const { initConviva } = useConvivaConnector();
+  const { bitmovin, initBitmovin, onProgramChange: onBitmovinProgramChange, onUpdateCustomData: onBitmovinUpdateCustomData } = useBitmovinConnector();
+  const { adobeEdge, initAdobeEdge } = useAdobeEdgeConnector();
 
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
 
-    initConviva(player);
+    initAdobeEdge(player);
     initBitmovin(player, bitmovinDefaultMetadata);
+    initConviva(player);
 
     // optional debug logs
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, console.log);
