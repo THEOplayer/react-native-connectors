@@ -34,7 +34,8 @@
     "manifest": "node manifest.js > src/manifest.json",
     "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
-    "generate-types": "openapi-typescript src/internal/web/media-edge-0.1.json -o src/internal/web/MediaEdge.d.ts"
+    "generate-types": "openapi-typescript src/internal/web/media-edge-0.1.json -o src/internal/web/MediaEdge.d.ts",
+    "test": "jest"
   },
   "keywords": [
     "react-native",
@@ -88,6 +89,9 @@
     "openapi-fetch": "^0.9.8"
   },
   "devDependencies": {
-    "metro-react-native-babel-preset": "^0.77.0"
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "metro-react-native-babel-preset": "^0.77.0",
+    "ts-jest": "^29.4.6"
   }
 }
