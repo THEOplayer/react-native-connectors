@@ -62,6 +62,14 @@ export default function App() {
   const { bitmovin, initBitmovin, onProgramChange: onBitmovinProgramChange, onUpdateCustomData: onBitmovinUpdateCustomData } = useBitmovinConnector();
   const { adobeEdge, initAdobeEdge } = useAdobeEdgeConnector();
 
+  const onSourceChange = () => {
+    console.log('onSourceChange');
+    adobeEdge.current?.updateMetadata({
+      key1: 'value1',
+      key2: 'value2',
+    });
+  }
+
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
 
@@ -70,7 +78,7 @@ export default function App() {
     initConviva(player);
 
     // optional debug logs
-    player.addEventListener(PlayerEventType.SOURCE_CHANGE, console.log);
+    player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
     player.addEventListener(PlayerEventType.LOADED_DATA, console.log);
     player.addEventListener(PlayerEventType.LOADED_METADATA, console.log);
     player.addEventListener(PlayerEventType.READYSTATE_CHANGE, console.log);

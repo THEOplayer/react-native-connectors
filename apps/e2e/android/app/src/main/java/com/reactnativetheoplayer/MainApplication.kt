@@ -11,6 +11,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.theoplayer.reactnative.adobe.edge.ReactTHEOplayerAdobeEdgePackage
 import com.theoplayer.reactnative.bitmovin.ReactTHEOplayerBitmovinPackage
 import com.theoplayercomscore.ReactTHEOplayerComscorePackage
 import com.theoplayerconviva.ReactTHEOplayerConvivaPackage
@@ -27,6 +28,7 @@ class MainApplication : Application(), ReactApplication {
           add(ReactTHEOplayerComscorePackage())
           add(ReactTHEOplayerConvivaPackage())
           add(ReactTHEOplayerNielsenPackage())
+          add(ReactTHEOplayerAdobeEdgePackage())
 //          add(ReactTHEOplayerYospacePackage())
         }
 
