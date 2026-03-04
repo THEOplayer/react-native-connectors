@@ -36,7 +36,7 @@ export function sanitiseNumber(v?: number): number {
   if (v === undefined || v === null || Number.isNaN(v)) {
     return 0;
   }
-  return v;
+  return Math.trunc(v);
 }
 
 export function isValidDuration(v: number | undefined): boolean {
