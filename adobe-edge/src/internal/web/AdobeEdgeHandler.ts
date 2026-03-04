@@ -310,7 +310,6 @@ class AdobeEdgeHandler {
         Math.trunc(chapterCue.endTime),
         Math.trunc(chapterCue.endTime - chapterCue.startTime),
       ),
-      this._customMetadata,
     );
     this._currentChapter = chapterCue;
   };
@@ -350,7 +349,6 @@ class AdobeEdgeHandler {
     this.queueOrSendEvent(
       EventType.adStart,
       this._media?.createAdObject(PROP_NA, PROP_NA, this._adPodPosition, event.ad.duration ? Math.trunc(event.ad.duration) : 0),
-      this._customMetadata,
     );
     this._adPodPosition++;
   };
@@ -420,6 +418,9 @@ class AdobeEdgeHandler {
       this._customMetadata,
     );
 
+    // Clear used custom metadata after starting the session to avoid accidentally reusing it for the next session.
+    this._customMetadata = {};
+
     this._sessionInProgress = true;
 
     // Post any queued events now that the session has started.
@@ -466,7 +467,6 @@ class AdobeEdgeHandler {
     this._adPodPosition = 1;
     this._sessionInProgress = false;
     this._currentChapter = undefined;
-    this._customMetadata = {};
   }
 
   destroy() {
