@@ -4,10 +4,16 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# Cancel in-progress runs on the same PR to avoid wasting runner minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: macos-14
     strategy:
+      fail-fast: false
       matrix:
         xcode_version: [ '16.1.0' ]
         newArchEnabled: [ 1 ]
@@ -41,9 +47,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: apps/e2e/ios/Pods
-          key: pods-${{ runner.os }}-${{ hashFiles('Podfile.lock') }}-${{ matrix.newArchEnabled }}
+          key: pods-${{ runner.os }}-${{ matrix.platform }}-${{ matrix.newArchEnabled }}-${{ hashFiles('apps/e2e/ios/Podfile.lock') }}
           restore-keys: |
-            pods-${{ runner.os }}-
+            pods-${{ runner.os }}-${{ matrix.platform }}-${{ matrix.newArchEnabled }}-
 
       - name: Run npm install
         run: |
@@ -57,19 +63,18 @@ jobs:
         run: npm test
 
       - name: Install & update e2e app with latest react-native-theoplayer
-        run: |
-          cd apps/e2e
-          npm update react-native-theoplayer
-          npm ci
+        working-directory: apps/e2e
+        run: npm install react-native-theoplayer@latest
 
       - name: Install Ruby dependencies
         working-directory: apps/e2e
-        run: bundle install
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install
 
       - name: Run pod install & update dependencies
         working-directory: apps/e2e/ios
-        run: |
-          RCT_NEW_ARCH_ENABLED=${{ matrix.newArchEnabled }} bundle exec pod update
+        run: RCT_NEW_ARCH_ENABLED=${{ matrix.newArchEnabled }} bundle exec pod update
 
       - name: Start iOS simulator
         uses: futureware-tech/simulator-action@v4
@@ -85,4 +90,7 @@ jobs:
       - name: Summarize results
         working-directory: apps/e2e
         if: always()
-        run: cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+        run: |
+          if [ -f cavy_results.md ]; then
+            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          fi

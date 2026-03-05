@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NDK_VERSION: 29.0.14033849
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,9 +44,7 @@ jobs:
           cache: 'npm'
 
       - name: Run npm install
-        run: |
-          npm i -g corepack
-          npm ci --workspaces --include-workspace-root
+        run: npm ci --workspaces --include-workspace-root
 
       - name: Build workspaces
         run: npm run build
@@ -84,6 +85,17 @@ jobs:
           disable-animations: true
           script: echo "Generated AVD snapshot for caching."
 
+      - name: Cache NDK
+        uses: actions/cache@v4
+        id: ndk-cache
+        with:
+          path: /usr/local/lib/android/sdk/ndk/${{ env.NDK_VERSION }}
+          key: ndk-${{ env.NDK_VERSION }}
+
+      - name: Install NDK
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;${{ env.NDK_VERSION }}"
+
       - name: Configure gradle.properties
         working-directory: apps/e2e/android
         run: |
@@ -110,4 +122,8 @@ jobs:
       - name: Summarize results
         working-directory: apps/e2e
         if: always()
-        run: cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+        run: |
+          if [ -f cavy_results.md ]; then
+            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          fi
+

@@ -1,5 +1,6 @@
 name: Build Web on PRs
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,21 +10,31 @@ on:
     types: [opened, reopened, synchronize]
     paths-ignore:
       - '**.md'
+
+# Cancel in-progress runs on the same PR to avoid wasting runner minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Setup Node.js 20
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
+
       - name: Install dependencies
         run: npm ci --workspaces --include-workspace-root
+
       - name: Build
         run: npm run build
+
       - name: Test
         run: npm test
