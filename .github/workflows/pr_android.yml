@@ -4,14 +4,23 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+# Cancel in-progress runs on the same PR to avoid wasting runner minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NDK_VERSION: 29.0.14033849
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         api-level: [ 34 ]
         newArchEnabled: [ true ]
-    name: Build for API Level ${{ matrix.api-level }} using ${{matrix.newArchEnabled  == true && 'New' || 'Old' }} Architecture
+    name: Build for API Level ${{ matrix.api-level }} using ${{matrix.newArchEnabled == true && 'New' || 'Old' }} Architecture
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,7 +30,9 @@ jobs:
         with:
           java-version: 17
           distribution: adopt
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
@@ -33,9 +44,7 @@ jobs:
           cache: 'npm'
 
       - name: Run npm install
-        run: |
-          npm i -g corepack
-          npm ci --workspaces --include-workspace-root
+        run: npm ci --workspaces --include-workspace-root
 
       - name: Build workspaces
         run: npm run build
@@ -44,19 +53,14 @@ jobs:
         run: npm test
 
       - name: Install & update e2e app with latest react-native-theoplayer
-        run: |
-          cd apps/e2e
-          npm update react-native-theoplayer
-          npm ci
+        working-directory: apps/e2e
+        run: npm install react-native-theoplayer@latest
 
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
 
       - name: AVD cache
         uses: actions/cache@v4
@@ -68,7 +72,7 @@ jobs:
           key: avd-${{ matrix.api-level }}
 
       - name: Create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true' #check previous step output
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -81,18 +85,25 @@ jobs:
           disable-animations: true
           script: echo "Generated AVD snapshot for caching."
 
-      - name: Modify gradle.properties with repository secrets
+      - name: Cache NDK
+        uses: actions/cache@v4
+        id: ndk-cache
+        with:
+          path: /usr/local/lib/android/sdk/ndk/${{ env.NDK_VERSION }}
+          key: ndk-${{ env.NDK_VERSION }}
+
+      - name: Install NDK
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;${{ env.NDK_VERSION }}"
+
+      - name: Configure gradle.properties
         working-directory: apps/e2e/android
         run: |
           echo "YOSPACE_USERNAME=${{ secrets.YOSPACE_USERNAME }}" >> ./gradle.properties
           echo "YOSPACE_PASSWORD=${{ secrets.YOSPACE_PASSWORD }}" >> ./gradle.properties
-
-      - name: Modify gradle.properties for newArchEnabled
-        working-directory: apps/e2e/android
-        run: |
-          # Modify or add the newArchEnabled property in gradle.properties
-          echo "newArchEnabled=${{ matrix.newArchEnabled }}" >> ./gradle.properties
-          cat ./gradle.properties
+          echo "newArchEnabled=${{ matrix.newArchEnabled }}"       >> ./gradle.properties
+          # Only build the x86_64 ABI needed by the CI emulator.
+          echo "reactNativeArchitectures=x86_64"                   >> ./gradle.properties
 
       - name: Run e2e tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -102,10 +113,17 @@ jobs:
           arch: x86_64
           cores: 2
           ram-size: 3072M
-          force-avd-creation: true
+          force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            npm run test:e2e:android
-            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          script: npm run test:e2e:android
           working-directory: apps/e2e
+
+      - name: Summarize results
+        working-directory: apps/e2e
+        if: always()
+        run: |
+          if [ -f cavy_results.md ]; then
+            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          fi
+

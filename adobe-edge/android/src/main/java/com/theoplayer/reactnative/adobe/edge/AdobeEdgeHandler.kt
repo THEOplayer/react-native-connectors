@@ -374,7 +374,6 @@ class AdobeEdgeHandler(
         chapterCue.endTime.toInt(),
         (chapterCue.endTime - chapterCue.startTime).toInt()
       ),
-      customMetadata
     )
     currentChapter = chapterCue
   }
@@ -428,7 +427,6 @@ class AdobeEdgeHandler(
         adPodPosition,
         (event.ad as? LinearAd)?.duration ?: 0
       ),
-      customMetadata
     )
     adPodPosition++
   }
@@ -504,6 +502,9 @@ class AdobeEdgeHandler(
       customMetadata
     )
 
+    // Clear used custom metadata after starting the session to avoid accidentally reusing it for the next session.
+    customMetadata.clear()
+
     sessionInProgress = true
 
     if (eventQueue.isNotEmpty()) {
@@ -534,7 +535,6 @@ class AdobeEdgeHandler(
     isPlayingAd = false
     sessionInProgress = false
     currentChapter = null
-    customMetadata = mutableMapOf()
   }
 
   fun destroy() {

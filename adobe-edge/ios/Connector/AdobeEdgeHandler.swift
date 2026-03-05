@@ -427,6 +427,10 @@ class AdobeEdgeHandler {
             mediaType: MediaType.Video
         ) {
             self.tracker.trackSessionStart(info: mediaObject, metadata: self.customMetadata)
+
+            // Clear used custom metadata after starting the session to avoid accidentally reusing it for the next session.
+            self.customMetadata.removeAll()
+
             self.sessionInProgress = true
             self.logDebug("maybeStartSession - STARTED")
             
@@ -486,7 +490,6 @@ class AdobeEdgeHandler {
         self.sessionInProgress = false
         self.currentChapter = nil
         self.eventQueue.removeAll()
-        self.customMetadata.removeAll()
     }
     
     func destroy() -> Void {
