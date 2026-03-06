@@ -1,5 +1,12 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.1.1
+
+### 🐛 Issues
+
+- Fixed an issue on Web where the `bitRate` property would not be passed as an integer value.
+- Fixed an issue where the metadata set with `updateMetadata` would not be passed when starting a session.
+
 ## 1.1.0
 
 ### ✨ Features

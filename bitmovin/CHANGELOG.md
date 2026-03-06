@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.3.0
+
+### ✨ Features
+
+- Relax iOS Bitmovin collector dependency lock to major versions
+
 ## 1.2.0
 
 ### ✨ Features
