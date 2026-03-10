@@ -31,7 +31,8 @@
     "react-native-svg": "^15.11.2",
     "react-native-theoplayer": "^10.8.0",
     "react-native-web": "^0.20.0",
-    "react-native-web-image-loader": "^0.1.1"
+    "react-native-web-image-loader": "^0.1.1",
+    "theoplayer": "^10.11.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",

@@ -3,7 +3,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '../..');
 
 // Packages that must always resolve to the app-local node_modules to avoid duplicate instances.
-const packages = ['react', 'react-native', 'react-native-theoplayer', '@babel/runtime'];
+const packages = ['react', 'react-native', 'react-native-theoplayer', '@babel/runtime', 'theoplayer'];
 
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
