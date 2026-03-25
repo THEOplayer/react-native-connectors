@@ -10,6 +10,7 @@
   "excludePrivate": true,
   "excludeExternals": true,
   "excludeInternal": true,
+  "highlightLanguages": ["typescript", "javascript", "json", "ruby"],
   "externalDocumentation": {
     "react-native-theoplayer": {
       "dtsPath": "~/lib/typescript/index.d.ts",
