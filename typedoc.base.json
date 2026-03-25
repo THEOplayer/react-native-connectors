@@ -6,8 +6,8 @@
     "typedoc-plugin-mdn-links"
   ],
   "navigationLinks": {
-    "Docs": "https://www.theoplayer.com/docs/",
-    "THEOplayer.com": "https://www.theoplayer.com/"
+    "Docs": "https://optiview.dolby.com/docs/theoplayer/react-native/",
+    "Dolby OptiView": "https://optiview.dolby.com/"
   },
   "githubPages": true,
   "excludePrivate": true,
