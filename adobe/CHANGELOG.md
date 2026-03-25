@@ -99,11 +99,9 @@
 
 - Dropped usage of the NativeModules import to make the connector ready for the new architecture
 
-### 🐛 Issues
+### 📦 Dependency Updates
 
-- ### 📦 Dependency Updates
-
-  react-native-device-info@>=10.0.0 <14.0.0
+- Updated dependency `react-native-device-info` to version `>=10.0.0 <14.0.0`.
 
 ## 1.6.0
 

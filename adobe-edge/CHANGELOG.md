@@ -51,11 +51,9 @@
 
 ## 0.3.1
 
-### 🐛 Issues
+### 📦 Dependency Updates
 
-- ### 📦 Dependency Updates
-
-  react-native-device-info@>=10.0.0 <14.0.0
+- Updated dependency `react-native-device-info` to version `>=10.0.0 <14.0.0`.
 
 ## 0.3.0
 
