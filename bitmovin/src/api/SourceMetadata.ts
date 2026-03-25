@@ -29,7 +29,7 @@ export interface SourceMetadata {
   /**
    * Breadcrumb path to show where in the app the user is.
    *
-   * @platform ios, android
+   * Only available on iOS and Android.
    */
   path?: string;
 

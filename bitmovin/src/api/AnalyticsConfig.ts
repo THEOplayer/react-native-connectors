@@ -23,7 +23,7 @@ export interface AnalyticsConfig {
   /**
    * Flag to disable ClientSide Ad tracking. It doesn't affect server side ads.
    *
-   * @platform ios, android
+   * Only available on iOS and Android.
    * @defaultValue `false`
    */
   adTrackingDisabled?: boolean;
@@ -33,7 +33,7 @@ export interface AnalyticsConfig {
    * This is a premium feature and also needs to be requested through the account.
    * SSAI Audience Info is not affected by this.
    *
-   * @platform ios, android
+   * Only available on iOS and Android.
    * @defaultValue `false`
    */
   ssaiEngagementTrackingEnabled?: boolean;
@@ -43,7 +43,7 @@ export interface AnalyticsConfig {
    * saved as a random UUID on the system. This allows you to connect sessions happening on the same device.
    * If true we use a randomly generated UUID on every session. If users of your platform don't want to be tracked we recommend to set this to true.
    *
-   * @platform ios, android
+   * Only available on iOS and Android.
    * @defaultValue `false`
    */
   randomizeUserId?: boolean;
@@ -69,7 +69,7 @@ export interface AnalyticsConfig {
    * The device type.
    * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
    *
-   * @platform web
+   * Only available on Web.
    */
   deviceType?: string;
 
@@ -77,7 +77,7 @@ export interface AnalyticsConfig {
    * The device class.
    * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
    *
-   * @platform web
+   * Only available on Web.
    */
   deviceClass?: 'Console' | 'Desktop' | 'Other' | 'Phone' | 'STB' | 'Tablet' | 'TV' | 'Wearable';
 
@@ -85,7 +85,7 @@ export interface AnalyticsConfig {
    * Player name.
    * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
    *
-   * @platform web
+   * Only available on Web.
    */
   player?: string;
 
@@ -93,14 +93,14 @@ export interface AnalyticsConfig {
    * UUID that is persisted across play sessions
    * {@link https://developer.bitmovin.com/playback/docs/analytics-api-fields}
    *
-   * @platform web
+   * Only available on Web.
    */
   userId?: string;
 
   /**
    * Enable or disable the analytics collector.
    *
-   * @platform web
+   * Only available on Web.
    */
   enabled?: boolean;
 
@@ -108,7 +108,7 @@ export interface AnalyticsConfig {
    * Very similar to randomizeUserId if this is true we save a random UUID in a cookie for cross-referencing sessions.
    * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
    *
-   * @platform web
+   * Only available on Web.
    * @defaultValue `true`
    */
   cookiesEnabled?: boolean;
@@ -116,7 +116,7 @@ export interface AnalyticsConfig {
   /**
    * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
    *
-   * @platform web
+   * Only available on Web.
    */
   cookiesDomain?: string;
 
@@ -125,7 +125,7 @@ export interface AnalyticsConfig {
    *
    * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
    *
-   * @platform web
+   * Only available on Web.
    * @defaultValue `1 year`
    */
   cookiesMaxAge?: number;
@@ -133,7 +133,7 @@ export interface AnalyticsConfig {
   /**
    * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
    *
-   * @platform web
+   * Only available on Web.
    */
   origin?: string;
 }
