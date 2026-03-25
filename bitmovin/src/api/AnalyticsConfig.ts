@@ -109,7 +109,7 @@ export interface AnalyticsConfig {
    * {@link https://developer.bitmovin.com/playback/docs/configuration-analytics#optional-configuration}
    *
    * @platform web
-   * @defaultValue `true
+   * @defaultValue `true`
    */
   cookiesEnabled?: boolean;
 
