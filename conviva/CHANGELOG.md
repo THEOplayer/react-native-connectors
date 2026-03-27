@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.13.1
+
+### 🐛 Issues
+
+- Fixed an issue on iOS where the native ios connector version was locked to 10.8 patch updates.
+
 ## 1.13.0
 
 ### ✨ Features
