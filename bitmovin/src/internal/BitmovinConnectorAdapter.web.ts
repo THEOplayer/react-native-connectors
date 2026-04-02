@@ -5,32 +5,40 @@ import { CustomData, SourceMetadata } from '@theoplayer/react-native-analytics-b
 import { DefaultMetadata } from '../api/DefaultMetadata';
 import { CustomDataValues, THEOplayerAdapter } from 'bitmovin-analytics';
 import { buildWebConfigFromDefaultMetadata, buildWebConfigFromSourceMetadata, buildWebSourceMetadata } from './web/BitmovinAdapterWeb';
+import { SsaiApi } from '../api/SsaiApi';
+import { BitmovinSsaiAdapterWeb } from './web/BitmovinSsaiAdapterWeb';
 
 const BITMOVIN_ANALYTICS_AUGMENTED_MARKER = '__bitmovinAnalyticsHasBeenSetup';
 
 export class BitmovinConnectorAdapter {
-  private readonly integration: THEOplayerAdapter;
+  private readonly _integration: THEOplayerAdapter;
+  private readonly _ssai: BitmovinSsaiAdapterWeb;
 
   constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
     const webConfig = buildWebConfigFromDefaultMetadata(config, defaultMetadata);
-    this.integration = new THEOplayerAdapter(webConfig, player.nativeHandle as ChromelessPlayer);
+    this._integration = new THEOplayerAdapter(webConfig, player.nativeHandle as ChromelessPlayer);
+    this._ssai = new BitmovinSsaiAdapterWeb(this._integration.ssai);
   }
 
   updateSourceMetadata(sourceMetadata: SourceMetadata): void {
-    this.integration.sourceChange(buildWebConfigFromSourceMetadata(sourceMetadata));
+    this._integration.sourceChange(buildWebConfigFromSourceMetadata(sourceMetadata));
   }
 
   updateCustomData(customData: CustomData): void {
     // Any new customData values will be merged with the existing ones, so only the fields that are included in the customData parameter will be updated.
-    this.integration.setCustomData(customData as CustomDataValues);
+    this._integration.setCustomData(customData as CustomDataValues);
   }
 
   programChange(sourceMetadata: SourceMetadata): void {
-    this.integration.programChange(buildWebSourceMetadata(sourceMetadata));
+    this._integration.programChange(buildWebSourceMetadata(sourceMetadata));
   }
 
   sendCustomDataEvent(customData: CustomData): void {
-    this.integration.setCustomDataOnce(customData);
+    this._integration.setCustomDataOnce(customData);
+  }
+
+  get ssai(): SsaiApi {
+    return this._integration.ssai;
   }
 
   destroy() {

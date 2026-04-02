@@ -4,17 +4,21 @@ import { AnalyticsConfig } from '../api/AnalyticsConfig';
 import { SourceMetadata } from '../api/SourceMetadata';
 import { CustomData } from '../api/CustomData';
 import { DefaultMetadata } from '../api/DefaultMetadata';
+import { SsaiApi } from '../api/SsaiApi';
+import { BitmovinSsaiAdapter } from './native/BitmovinSsaiAdapterNative';
 
 const TAG = 'BitmovinConnector';
 const ERROR_MSG = 'BitmovinConnectorAdapter Error';
 
 export class BitmovinConnectorAdapter {
-  private readonly nativeHandle: NativeHandleType;
+  private readonly _nativeHandle: NativeHandleType;
+  private readonly _ssai: BitmovinSsaiAdapter;
 
   constructor(player: THEOplayer, config: AnalyticsConfig, defaultMetadata?: DefaultMetadata) {
     try {
-      this.nativeHandle = player.nativeHandle || -1;
-      NativeModules.BitmovinModule.initialize(this.nativeHandle, config, defaultMetadata);
+      this._nativeHandle = player.nativeHandle || -1;
+      this._ssai = new BitmovinSsaiAdapter(this._nativeHandle);
+      NativeModules.BitmovinModule.initialize(this._nativeHandle, config, defaultMetadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -22,7 +26,7 @@ export class BitmovinConnectorAdapter {
 
   updateSourceMetadata(sourceMetadata: SourceMetadata): void {
     try {
-      NativeModules.BitmovinModule.updateSourceMetadata(this.nativeHandle, sourceMetadata);
+      NativeModules.BitmovinModule.updateSourceMetadata(this._nativeHandle, sourceMetadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -30,7 +34,7 @@ export class BitmovinConnectorAdapter {
 
   updateCustomData(customData: CustomData): void {
     try {
-      NativeModules.BitmovinModule.updateCustomData(this.nativeHandle, customData);
+      NativeModules.BitmovinModule.updateCustomData(this._nativeHandle, customData);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -38,7 +42,7 @@ export class BitmovinConnectorAdapter {
 
   programChange(sourceMetadata: SourceMetadata): void {
     try {
-      NativeModules.BitmovinModule.programChange(this.nativeHandle, sourceMetadata);
+      NativeModules.BitmovinModule.programChange(this._nativeHandle, sourceMetadata);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
@@ -46,15 +50,19 @@ export class BitmovinConnectorAdapter {
 
   sendCustomDataEvent(customData: CustomData): void {
     try {
-      NativeModules.BitmovinModule.sendCustomDataEvent(this.nativeHandle, customData);
+      NativeModules.BitmovinModule.sendCustomDataEvent(this._nativeHandle, customData);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
   }
 
+  get ssai(): SsaiApi {
+    return this._ssai;
+  }
+
   destroy(): void {
     try {
-      NativeModules.BitmovinModule.destroy(this.nativeHandle);
+      NativeModules.BitmovinModule.destroy(this._nativeHandle);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }

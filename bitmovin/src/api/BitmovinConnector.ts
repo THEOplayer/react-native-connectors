@@ -4,6 +4,7 @@ import { AnalyticsConfig } from './AnalyticsConfig';
 import { SourceMetadata } from './SourceMetadata';
 import { CustomData } from './CustomData';
 import { DefaultMetadata } from './DefaultMetadata';
+import { SsaiApi } from './SsaiApi';
 
 export class BitmovinConnector {
   private connectorAdapter: BitmovinConnectorAdapter;
@@ -56,6 +57,13 @@ export class BitmovinConnector {
    */
   sendCustomDataEvent(customData: CustomData): void {
     this.connectorAdapter.sendCustomDataEvent(customData);
+  }
+
+  /**
+   * Provides access to the SSAI API for externally tracking ads in server-side ad insertion scenarios.
+   */
+  get ssai(): SsaiApi {
+    return this.connectorAdapter.ssai;
   }
 
   /**
