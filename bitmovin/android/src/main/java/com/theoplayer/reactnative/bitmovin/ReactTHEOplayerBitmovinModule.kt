@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+
 package com.theoplayer.reactnative.bitmovin
 
 import com.facebook.react.bridge.*
@@ -16,6 +17,8 @@ class ReactTHEOplayerBitmovinModule(val context: ReactApplicationContext) :
   override fun getName(): String {
     return TAG
   }
+
+  // region Public API
 
   @ReactMethod
   fun initialize(tag: Int, config: ReadableMap, defaultMetadata: ReadableMap?) {
@@ -67,4 +70,45 @@ class ReactTHEOplayerBitmovinModule(val context: ReactApplicationContext) :
       bitmovinConnectors[tag]?.destroy()
     }
   }
+
+  // endregion
+
+  // region Ssai API
+
+  @ReactMethod
+  fun adBreakStart(tag: Int, adBreakMetadata: ReadableMap?) {
+    context.runOnUiQueueThread {
+      bitmovinConnectors[tag]?.ssai?.adBreakStart(
+        BitmovinAdapter.parseSsaiAdBreakMetadata(
+          adBreakMetadata
+        )
+      )
+    }
+  }
+
+  @ReactMethod
+  fun adStart(tag: Int, adMetadata: ReadableMap?) {
+    context.runOnUiQueueThread {
+      bitmovinConnectors[tag]?.ssai?.adStart(BitmovinAdapter.parseSsaiAdMetadata(adMetadata))
+    }
+  }
+
+  @ReactMethod
+  fun adQuartileFinished(tag: Int, adQuartile: String, adQuartileMetadata: ReadableMap?) {
+    context.runOnUiQueueThread {
+      bitmovinConnectors[tag]?.ssai?.adQuartileFinished(
+        BitmovinAdapter.parseAdQuartile(adQuartile),
+        BitmovinAdapter.parseAdQuartileMetadata(adQuartileMetadata)
+      )
+    }
+  }
+
+  @ReactMethod
+  fun adBreakEnd(tag: Int, adBreakMetadata: ReadableMap?) {
+    context.runOnUiQueueThread {
+      bitmovinConnectors[tag]?.ssai?.adBreakEnd()
+    }
+  }
+
+  // endregion
 }

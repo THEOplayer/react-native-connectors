@@ -6,6 +6,7 @@ import com.bitmovin.analytics.api.AnalyticsConfig
 import com.bitmovin.analytics.api.CustomData
 import com.bitmovin.analytics.api.DefaultMetadata
 import com.bitmovin.analytics.api.SourceMetadata
+import com.bitmovin.analytics.api.ssai.SsaiApi
 import com.bitmovin.analytics.theoplayer.api.ITHEOplayerCollector
 import com.bitmovin.analytics.utils.ApiV3Utils.mergeCustomData
 import com.theoplayer.android.api.event.EventListener
@@ -34,6 +35,8 @@ class BitmovinHandler(
       collector.defaultMetadata = it
     }
   }
+
+  val ssai = collector.ssai
 
   var customData: CustomData
     get() = collector.customData

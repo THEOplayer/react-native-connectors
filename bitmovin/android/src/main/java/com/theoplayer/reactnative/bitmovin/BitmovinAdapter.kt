@@ -7,6 +7,11 @@ import com.bitmovin.analytics.api.DefaultMetadata
 import com.bitmovin.analytics.api.LogLevel
 import com.bitmovin.analytics.api.RetryPolicy
 import com.bitmovin.analytics.api.SourceMetadata
+import com.bitmovin.analytics.api.ssai.SsaiAdBreakMetadata
+import com.bitmovin.analytics.api.ssai.SsaiAdMetadata
+import com.bitmovin.analytics.api.ssai.SsaiAdPosition
+import com.bitmovin.analytics.api.ssai.SsaiAdQuartile
+import com.bitmovin.analytics.api.ssai.SsaiAdQuartileMetadata
 import com.facebook.react.bridge.ReadableMap
 import org.json.JSONObject
 
@@ -24,6 +29,10 @@ private const val PROP_PATH = "path"
 private const val PROP_IS_LIVE = "isLive"
 private const val PROP_CUSTOM_DATA = "customData"
 private const val PROP_CUSTOM_USER_ID = "customUserId"
+private const val PROP_SSAI_AD_POSITION = "adPosition"
+private const val PROP_SSAI_AD_ID = "adId"
+private const val PROP_SSAI_AD_SYSTEM = "adSystem"
+private const val PROP_SSAI_FAILED_BEACON_URL = "failedBeaconUrl"
 
 object BitmovinAdapter {
 
@@ -145,7 +154,8 @@ object BitmovinAdapter {
         val value = getValue("${PROP_CUSTOM_DATA}$i")
         if (value is String) {
           try {
-            val method = CustomData.Builder::class.java.getMethod("setCustomData$i", String::class.java)
+            val method =
+              CustomData.Builder::class.java.getMethod("setCustomData$i", String::class.java)
             method.invoke(this, value)
           } catch (e: NoSuchMethodException) {
             Log.w(TAG, "CustomData$i setter does not exist")
@@ -157,5 +167,51 @@ object BitmovinAdapter {
         }
       }
     }.build()
+  }
+
+  fun parseSsaiAdPosition(position: String?): SsaiAdPosition {
+    return when (position) {
+      "preroll" -> SsaiAdPosition.PREROLL
+      "midroll" -> SsaiAdPosition.MIDROLL
+      "postroll" -> SsaiAdPosition.POSTROLL
+      else -> {
+        Log.w(TAG, "Unknown ad position: $position, defaulting to preroll")
+        SsaiAdPosition.PREROLL
+      }
+    }
+  }
+
+  fun parseSsaiAdBreakMetadata(data: ReadableMap?): SsaiAdBreakMetadata? {
+    if (data == null) return null
+    return SsaiAdBreakMetadata(parseSsaiAdPosition(data.getString(PROP_SSAI_AD_POSITION)))
+  }
+
+  fun parseSsaiAdMetadata(data: ReadableMap?): SsaiAdMetadata? {
+    if (data == null) return null
+    return SsaiAdMetadata(
+      adId = data.getString(PROP_SSAI_AD_ID),
+      adSystem = data.getString(PROP_SSAI_AD_SYSTEM),
+      customData = if (data.hasKey(PROP_CUSTOM_DATA)) parseCustomData(data.getMap(PROP_CUSTOM_DATA)) else null
+    )
+  }
+
+  fun parseAdQuartile(data: String): SsaiAdQuartile {
+    return when (data) {
+      "first" -> SsaiAdQuartile.FIRST
+      "midpoint" -> SsaiAdQuartile.MIDPOINT
+      "third" -> SsaiAdQuartile.THIRD
+      "completed" -> SsaiAdQuartile.COMPLETED
+      else -> {
+        Log.w(TAG, "Unknown ad quartile: $data, defaulting to completed")
+        SsaiAdQuartile.COMPLETED
+      }
+    }
+  }
+
+  fun parseAdQuartileMetadata(data: ReadableMap?): SsaiAdQuartileMetadata? {
+    if (data == null) return null
+    return SsaiAdQuartileMetadata(
+      failedBeaconUrl = data.getString(PROP_SSAI_FAILED_BEACON_URL)
+    )
   }
 }
