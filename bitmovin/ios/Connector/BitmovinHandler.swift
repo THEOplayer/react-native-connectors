@@ -49,6 +49,32 @@ class BitmovinHandler {
         log("Bitmovin Connector destroyed.")
     }
     
+    // MARK: SSAI part
+    
+    func reportAdBreakStart(adBreakMetadata: [String:Any]) -> Void {
+        let newAdBreakMetadata = BitmovinAdapter.parseSSAIAdBreakMetadata(adBreakMetadata)
+        self.theoplayerCollector.ssai.adBreakStart(adBreakMetadata: newAdBreakMetadata)
+        log("[SSAI] adBreakStart reported, with adBreakMetadata: \(adBreakMetadata)")
+    }
+    
+    func reportAdStart(adMetadata: [String:Any]) -> Void {
+        let newAdMetadata = BitmovinAdapter.parseSSAIAdMetadata(adMetadata)
+        self.theoplayerCollector.ssai.adStart(adMetadata: newAdMetadata)
+        log("[SSAI] adStart reported, with adMetadata: \(adMetadata)")
+    }
+    
+    func reportQuartileFinished(adQuartile: String, adQuartileMetadata: [String:Any]) -> Void {
+        let quartile = BitmovinAdapter.parseAdQuartile(adQuartile)
+        let newAdQuartileMetadata = BitmovinAdapter.parseSSAIAdQuartileMetadata(adQuartileMetadata)
+        self.theoplayerCollector.ssai.adQuartileFinished(adQuartile: quartile, adQuartileMetadata: newAdQuartileMetadata)
+        log("[SSAI] adQuartileFinished (\(adQuartile)) reported, with adQuartileMetadata: \(adQuartileMetadata)")
+    }
+    
+    func reportAdBreakEnd() -> Void {
+        self.theoplayerCollector.ssai.adBreakEnd()
+        log("[SSAI] adBreakEnd reported.")
+    }
+    
     // MARK: - event handling
     private func onSourceChange(event: SourceChangeEvent) {
         guard let player = self.player/*, let source = player.source*/ else { return }
