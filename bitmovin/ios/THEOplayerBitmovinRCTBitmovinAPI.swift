@@ -90,4 +90,38 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
             self.connectors.removeValue(forKey: node)
         }
     }
+    
+    // MARK: SSAI
+    
+    @objc(adBreakStart:adBreakMetadata:)
+    func adBreakStart(_ node: NSNumber, adBreakMetadata: NSDictionary) {
+        log("adBreakStart triggered.")
+        DispatchQueue.main.async {
+            
+        }
+    }
+    
+    @objc(adStart:adBreakMetadata:)
+    func adStart(_ node: NSNumber, adMetadata: NSDictionary) {
+        log("adStart triggered.")
+        DispatchQueue.main.async {
+            
+        }
+    }
+    
+    @objc(adQuartileFinished:adQuartile:adQuartileMetadata:)
+    func adQuartileFinished(_ node: NSNumber, adQuartile: NSString, adQuartileMetadata: NSDictionary) {
+        log("adQuartileFinished triggered.")
+        DispatchQueue.main.async {
+            
+        }
+    }
+    
+    @objc(adBreakEnd:)
+    func adBreakEnd(_ node: NSNumber) {
+        log("adBreakEnd triggered.")
+        DispatchQueue.main.async {
+            
+        }
+    }
 }
