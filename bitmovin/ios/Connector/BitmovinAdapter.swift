@@ -20,6 +20,11 @@ let BTMVN_PROP_TITLE: String = "title"
 let BTMVN_PROP_PATH: String = "path"
 let BTMVN_PROP_IS_LIVE: String = "isLive"
 
+let BTMVN_SSAI_AD_POSITION: String = "adPosition"
+let BTMVN_SSAI_AD_ID: String = "adId"
+let BTMVN_SSAI_AD_SYSTEM: String = "adSystem"
+let BTMVN_SSAI_FAILED_BEACON_URL: String = "failedBeaconUrl"
+
 let BTMVN_RETRY_POLICY_SHORT_TERM: String = "SHORT_TERM"
 let BTMVN_RETRY_POLICY_LONG_TERM: String = "LONG_TERM"
 
@@ -218,4 +223,69 @@ class BitmovinAdapter {
         )
     }
     
+    // MARK: SSAI Metadata Parsing
+    
+    class func parseSSAIAdBreakMetadata(_ adBreakMetadata: [String:Any]?) -> SsaiAdBreakMetadata {
+        guard let metadata = adBreakMetadata else {
+            return SsaiAdBreakMetadata(adPosition: nil)
+        }
+        
+        return SsaiAdBreakMetadata(
+            adPosition: BitmovinAdapter.parseSsaiAdPosition(metadata[BTMVN_SSAI_AD_POSITION] as? String)
+        )
+    }
+    
+    class func parseSSAIAdMetadata(_ adMetadata: [String:Any]?) -> SsaiAdMetadata {
+        guard let metadata = adMetadata else {
+            return SsaiAdMetadata(adId: nil, adSystem: nil, customData: nil)
+        }
+        
+        return SsaiAdMetadata(
+            adId: metadata[BTMVN_SSAI_AD_ID] as? String,
+            adSystem: metadata[BTMVN_SSAI_AD_SYSTEM] as? String,
+            customData: BitmovinAdapter.parseCustomData(metadata[BTMVN_PROP_CUSTOM_DATA] as? [String:Any])
+        )
+    }
+    
+    class func parseSSAIAdQuartileMetadata(_ adQuartileMetadata: [String:Any]?) -> SsaiAdQuartileMetadata {
+        guard let metadata = adQuartileMetadata else {
+            return SsaiAdQuartileMetadata(failedBeaconUrl: nil)
+        }
+        
+        return SsaiAdQuartileMetadata(
+            failedBeaconUrl: metadata[BTMVN_SSAI_FAILED_BEACON_URL] as? String,
+        )
+    }
+    
+    // MARK: conversion methods
+    
+    class func parseSsaiAdPosition(_ position: String?) -> AdPosition {
+        switch position {
+        case "preroll":
+            return .preroll
+        case "midroll":
+            return .midroll
+        case "postroll":
+            return .postroll
+        default:
+            // Unknown ad position, defaulting to preroll
+            return .preroll
+        }
+    }
+    
+    class func parseAdQuartile(_ quartile: String) -> SsaiAdQuartile {
+        switch quartile {
+        case "first":
+            return .first
+        case "midpoint":
+            return .midpoint
+        case "third":
+            return .third
+        case "completed":
+            return .completed
+        default:
+            // Unknown ad quartile, defaulting to completed
+            return .completed
+        }
+    }
 }
