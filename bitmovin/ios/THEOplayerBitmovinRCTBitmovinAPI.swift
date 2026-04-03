@@ -97,15 +97,19 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
     func adBreakStart(_ node: NSNumber, adBreakMetadata: NSDictionary) {
         log("adBreakStart triggered.")
         DispatchQueue.main.async {
-            
+            if let metadata = adBreakMetadata as? [String:Any] {
+                self.connectors[node]?.reportAdBreakStart(adBreakMetadata: metadata)
+            }
         }
     }
     
-    @objc(adStart:adBreakMetadata:)
+    @objc(adStart:adMetadata:)
     func adStart(_ node: NSNumber, adMetadata: NSDictionary) {
         log("adStart triggered.")
         DispatchQueue.main.async {
-            
+            if let metadata = adMetadata as? [String:Any] {
+                self.connectors[node]?.reportAdStart(adMetadata: metadata)
+            }
         }
     }
     
@@ -113,7 +117,10 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
     func adQuartileFinished(_ node: NSNumber, adQuartile: NSString, adQuartileMetadata: NSDictionary) {
         log("adQuartileFinished triggered.")
         DispatchQueue.main.async {
-            
+            if let quartile = adQuartile as String?,
+               let metadata = adQuartileMetadata as? [String:Any] {
+                self.connectors[node]?.reportQuartileFinished(adQuartile: quartile, adQuartileMetadata: metadata)
+            }
         }
     }
     
@@ -121,7 +128,7 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
     func adBreakEnd(_ node: NSNumber) {
         log("adBreakEnd triggered.")
         DispatchQueue.main.async {
-            
+            self.connectors[node]?.reportAdBreakEnd()
         }
     }
 }
