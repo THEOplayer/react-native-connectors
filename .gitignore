@@ -72,3 +72,5 @@ manifest.json
 apps/e2e/cavy_results.md
 apps/e2e/ios/Pods
 apps/e2e/.env
+apps/e2e/ios/.xcode.env
+apps/e2e/ios/.xcode.env.local
