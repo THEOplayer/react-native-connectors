@@ -15,7 +15,13 @@ const rootNodeModulesBlockList = packages.map(
   (pkg) => new RegExp(`^${escapeRegExp(path.join(root, 'node_modules', pkg))}(/.*)?$`)
 );
 
-const connectors = [
+const dataConnectors = [
+  'drm',
+  'yospace',
+  'clientside-ad-beaconing'
+];
+
+const analyticsConnectors = [
   'adobe',
   'adobe-edge',
   'adscript',
@@ -23,13 +29,13 @@ const connectors = [
   'bitmovin',
   'comscore',
   'conviva',
-  'drm',
   'gemius',
   'mux',
   'nielsen',
-  'yospace',
   'youbora',
 ];
+
+const allConnectors = [...dataConnectors, ...analyticsConnectors]
 
 /**
  * Metro configuration
@@ -39,7 +45,7 @@ const connectors = [
  */
 const config = {
   projectRoot: __dirname,
-  watchFolders: [path.resolve(root, 'node_modules'), ...connectors.map((cn) => path.resolve(root, cn))],
+  watchFolders: [path.resolve(root, 'node_modules'), ...allConnectors.map((cn) => path.resolve(root, cn))],
   resolver: {
     /**
      * Metro does not resolve dependencies across multiple node_modules folders by default.
@@ -48,7 +54,8 @@ const config = {
      */
     extraNodeModules: {
       ...Object.fromEntries(packages.map((pkg) => [pkg, path.join(__dirname, 'node_modules', pkg)])),
-      ...Object.fromEntries(connectors.map((cn) => [`@theoplayer/react-native-analytics-${cn}`, path.join(root, cn)])),
+      ...Object.fromEntries(dataConnectors.map((cn) => [`@theoplayer/react-native-${cn}`, path.join(root, cn)])),
+	  ...Object.fromEntries(analyticsConnectors.map((cn) => [`@theoplayer/react-native-analytics-${cn}`, path.join(root, cn)])),
     },
     /**
      * Block critical singleton packages from resolving out of root/node_modules.
