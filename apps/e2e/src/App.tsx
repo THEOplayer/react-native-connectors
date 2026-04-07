@@ -38,6 +38,7 @@ import { SourceMenuButton, SOURCES } from './components/menu/SourceMenuButton';
 import { ConnectorSubMenu } from './components/menu/ConnectorSubMenu';
 import { ConnectorsMenuButton } from './components/menu/ConnectorMenu';
 import { useAdobeEdgeConnector } from './connectors/adobe-edge';
+import { useClientsideAdBeaconing } from '@theoplayer/react-native-clientside-ad-beaconing';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -69,6 +70,7 @@ export default function App() {
       key2: 'value2',
     });
   }
+  const [, initClientsideAdBeaconingConnector] =   useClientsideAdBeaconing();
 
   const onPlayerReady = (player: THEOplayer) => {
     setPlayer(player);
@@ -76,6 +78,7 @@ export default function App() {
     initAdobeEdge(player);
     initBitmovin(player, bitmovinDefaultMetadata);
     initConviva(player);
+    initClientsideAdBeaconingConnector(player);
 
     // optional debug logs
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);

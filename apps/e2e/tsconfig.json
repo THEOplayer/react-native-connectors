@@ -11,7 +11,8 @@
       "@theoplayer/react-native-analytics-nielsen": ["../../nielsen/src/index"],
       "@theoplayer/react-native-yospace": ["../../yospace/src/index"],
       "@theoplayer/react-native-adscript": ["../../adscript/src/index"],
-      "@theoplayer/react-native-gemius": ["../../gemius/src/index"]
+      "@theoplayer/react-native-gemius": ["../../gemius/src/index"],
+	  "@theoplayer/react-native-clientside-ad-beaconing": ["../../clientside-ad-beaconing/src/index"]
     }
   }
 }
