@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-gemius
 
+## 1.4.0
+
+### ✨ Features
+
+- Added support for THEOplayer v11 and React Native THEOplayer v11.
+
 ## 1.3.0
 
 ### ✨ Features
