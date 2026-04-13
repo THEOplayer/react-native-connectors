@@ -72,7 +72,7 @@ repositories {
 }
 
 // The Mux connector requires at least THEOplayer SDK v10.0.0
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 11.0.0)')
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 12.0.0)')
 def kotlin_version = safeExtGet("THEOplayerMux_kotlinVersion", "2.2.10")
 def mux_version = safeExtGet('THEOplayerMux_muxVersion', '[0.7.0, 0.8.0)')
 def mux_core_version = safeExtGet('Mux_muxVersion', '8.4.1')

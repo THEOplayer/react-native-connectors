@@ -61,7 +61,7 @@
 
 ### ✨ Features
 
-- Add support for THEOplayer v10 and React Native THEOplayer v10.
+- Added support for THEOplayer v10 and React Native THEOplayer v10.
 
 ## 1.11.0
 

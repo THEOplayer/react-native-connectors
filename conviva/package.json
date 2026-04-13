@@ -59,8 +59,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10",
-    "theoplayer": "^7 || ^8 || ^9 || ^10"
+    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10 || ^11",
+    "theoplayer": "^7 || ^8 || ^9 || ^10 || ^11"
   },
   "peerDependenciesMeta": {
     "theoplayer": {
