@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.2.0
+
+### ✨ Features
+
+- Added support for THEOplayer v11 and React Native THEOplayer v11.
+
 ## 1.1.1
 
 ### 🐛 Issues

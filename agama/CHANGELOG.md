@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-agama
 
+## 1.12.0
+
+### ✨ Features
+
+- Added support for THEOplayer v11 and React Native THEOplayer v11.
+
 ## 1.11.0
 
 ### ✨ Features

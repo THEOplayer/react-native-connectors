@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.14.0
+
+### ✨ Features
+
+- Added support for THEOplayer v11 and React Native THEOplayer v11.
+
 ## 1.13.0
 
 ### ✨ Features
