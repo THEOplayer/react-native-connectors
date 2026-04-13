@@ -1,6 +1,6 @@
 buildscript {
   // Buildscript is evaluated before everything else so we can't use getExtOrDefault
-  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '1.9.10'
+  def kotlin_version = rootProject.ext.has("kotlinVersion") ? rootProject.ext.get("kotlinVersion") : '2.2.10'
 
   repositories {
     google()
@@ -8,7 +8,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:7.2.2"
+    classpath "com.android.tools.build:gradle:8.12.3"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
@@ -18,8 +18,10 @@ def isNewArchitectureEnabled() {
   return rootProject.hasProperty("newArchEnabled") && rootProject.getProperty("newArchEnabled") == "true"
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+plugins {
+  id 'com.android.library'
+  id 'kotlin-android'
+}
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
@@ -31,11 +33,11 @@ def safeExtGet(prop, fallback) {
 
 android {
   namespace = "com.theoplayer.reactnative.adobe.edge"
-  compileSdkVersion safeExtGet("THEOplayerAdobeEdge_compileSdkVersion", 35)
+  compileSdkVersion safeExtGet("THEOplayerAdobeEdge_compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("THEOplayerAdobeEdge_minSdkVersion", 21)
-    targetSdkVersion safeExtGet("THEOplayerAdobeEdge_targetSdkVersion", 35)
+    targetSdkVersion safeExtGet("THEOplayerAdobeEdge_targetSdkVersion", 36)
     buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     versionCode 1
     versionName "1.0"
@@ -68,7 +70,7 @@ repositories {
 
 // The Adobe connector requires at least THEOplayer SDK v9.0.0.
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[9.0.0, 12.0.0)')
-def kotlin_version = safeExtGet("THEOplayerAdobeEdge_kotlinVersion", "1.9.10")
+def kotlin_version = safeExtGet("THEOplayerAdobeEdge_kotlinVersion", "2.2.10")
 def gsonVersion = safeExtGet('gsonVersion', '2.13.1')
 
 dependencies {
