@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.4.1
+
+### 🐛 Issues
+
+- Fixed an issue on Android where R8 would obfuscate `setCustomData` methods of the Bitmovin collector API.
+
 ## 1.4.0
 
 ### ✨ Features
