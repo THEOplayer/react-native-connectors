@@ -31,6 +31,7 @@ export class CastLabsFairplayContentProtectionIntegration implements ContentProt
       this.contentProtectionConfiguration.fairplay?.certificateURL ?? CastLabsFairplayContentProtectionIntegration.DEFAULT_CERTIFICATE_URL;
     request.headers = {
       ...request.headers,
+      'x-dt-custom-data': this.customData!
     };
     return request;
   }
