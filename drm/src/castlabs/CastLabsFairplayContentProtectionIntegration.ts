@@ -10,7 +10,7 @@ import {
 
 export class CastLabsFairplayContentProtectionIntegration implements ContentProtectionIntegration {
   static readonly DEFAULT_CERTIFICATE_URL = 'https://lic.drmtoday.com/license-server-fairplay/cert/';
-  static readonly DEFAULT_LICENSE_URL = 'https://lic.staging.drmtoday.com/license-server-fairplay/cert/';
+  static readonly DEFAULT_LICENSE_URL = 'https://lic.staging.drmtoday.com/license-server-fairplay/';
 
   private readonly contentProtectionConfiguration: CastLabsDrmConfiguration;
   private contentId: string | undefined = undefined;
