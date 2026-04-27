@@ -43,10 +43,11 @@ class ReactTHEOplayerAgamaModule(private val reactContext: ReactApplicationConte
       view?.player?.let { player ->
         interceptor = object : AgamaInterceptor() {
           override suspend fun onResponse(response: InterceptableHTTPResponse) {
-            if (response.request.type == RequestType.SEGMENT) {
-              onSegmentResponse(response)
-            } else if (response.request.type == RequestType.MANIFEST) {
-              onManifestResponse(response)
+            when (response.request.type) {
+              RequestType.SEGMENT -> onSegmentResponse(response)
+              RequestType.MANIFEST -> onManifestResponse(response)
+              else -> { /*ignore*/
+              }
             }
           }
         }.also {
@@ -85,25 +86,26 @@ class ReactTHEOplayerAgamaModule(private val reactContext: ReactApplicationConte
   }
 
   fun onSegmentResponse(response: InterceptableHTTPResponse) {
-    response.onBody { body ->
-      val mediaType = mediaTypeToString(response.request.mediaType)
-      val contentLength = body.size.toDouble()
-      if (debug) {
-        Log.d(
-          TAG, "onSegmentResponse - " +
-            "url(${response.url}) " +
-            "mediaType($mediaType) " +
-            "status(${response.status}) " +
-            "bytes(${contentLength.toLong()}) "
-        )
-      }
-      sendEvent(reactContext, EVENT_SEGMENT_RESPONSE, Arguments.createMap().apply {
-        putInt(PROP_STATUS, response.status)
-        putString(PROP_MEDIA_TYPE, mediaType)
-        putDouble(PROP_TOTAL_BYTES_LOADED, contentLength)
-      })
-      body
+    val mediaType = mediaTypeToString(response.request.mediaType)
+    val contentLength = response.headers.entries.firstOrNull {
+      it.key.equals("Content-Length", ignoreCase = true)
+    }?.value?.toDoubleOrNull() ?: 0.0
+
+    if (debug) {
+      Log.d(
+        TAG, "onSegmentResponse - " +
+          "url(${response.url}) " +
+          "mediaType($mediaType) " +
+          "status(${response.status}) " +
+          "bytes(${contentLength.toLong()}) "
+      )
     }
+    sendEvent(reactContext, EVENT_SEGMENT_RESPONSE, Arguments.createMap().apply {
+      putInt(PROP_STATUS, response.status)
+      putString(PROP_MEDIA_TYPE, mediaType)
+      putDouble(PROP_TOTAL_BYTES_LOADED, contentLength)
+    })
+
   }
 
   private fun mediaTypeToString(mediaType: RequestMediaType): String {
