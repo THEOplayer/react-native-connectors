@@ -19,7 +19,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
-    "@theoplayer/react-native-ui": "^0.21.3",
+    "@theoplayer/react-native-ui": "^0.23.1",
     "dotenv": "^17.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -29,10 +29,10 @@
     "react-native-safe-area-context": "^5.6.2",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "^15.11.2",
-    "react-native-theoplayer": "^10.8.0",
+    "react-native-theoplayer": "^11.0.0",
     "react-native-web": "^0.20.0",
     "react-native-web-image-loader": "^0.1.1",
-    "theoplayer": "^10.11.1"
+    "theoplayer": "^11.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",
