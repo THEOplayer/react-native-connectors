@@ -2,7 +2,7 @@ name: Build Android on PRs
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, ready_for_review]
 
 # Cancel in-progress runs on the same PR to avoid wasting runner minutes.
 concurrency:
@@ -14,13 +14,13 @@ env:
 
 jobs:
   build:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         api-level: [ 34 ]
-        newArchEnabled: [ true ]
-    name: Build for API Level ${{ matrix.api-level }} using ${{matrix.newArchEnabled == true && 'New' || 'Old' }} Architecture
+    name: Build for API Level ${{ matrix.api-level }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
         run: |
           echo "YOSPACE_USERNAME=${{ secrets.YOSPACE_USERNAME }}" >> ./gradle.properties
           echo "YOSPACE_PASSWORD=${{ secrets.YOSPACE_PASSWORD }}" >> ./gradle.properties
-          echo "newArchEnabled=${{ matrix.newArchEnabled }}"       >> ./gradle.properties
+          echo "newArchEnabled=true" >> ./gradle.properties
           # Only build the x86_64 ABI needed by the CI emulator.
           echo "reactNativeArchitectures=x86_64"                   >> ./gradle.properties
 

@@ -2,7 +2,7 @@ name: Build iOS on PRs
 on:
   workflow_dispatch:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, ready_for_review]
 
 # Cancel in-progress runs on the same PR to avoid wasting runner minutes.
 concurrency:
@@ -17,9 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         xcode_version: [ '26.2.0' ]
-        newArchEnabled: [ 1 ]
         platform: [iOS, tvOS]
-    name: Build for ${{ matrix.platform }} using XCode version ${{ matrix.xcode_version }} and ${{matrix.newArchEnabled  == 1 && 'New' || 'Old' }} Architecture
+    name: Build for ${{ matrix.platform }} using XCode version ${{ matrix.xcode_version }}
 
     steps:
       - name: Checkout repository
@@ -48,9 +47,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: apps/e2e/ios/Pods
-          key: pods-${{ runner.os }}-${{ matrix.platform }}-${{ matrix.newArchEnabled }}-${{ hashFiles('apps/e2e/ios/Podfile.lock') }}
+          key: pods-${{ runner.os }}-${{ hashFiles('apps/e2e/ios/Podfile.lock') }}
           restore-keys: |
-            pods-${{ runner.os }}-${{ matrix.platform }}-${{ matrix.newArchEnabled }}-
+            pods-${{ runner.os }}-
 
       - name: Run npm install
         run: |
