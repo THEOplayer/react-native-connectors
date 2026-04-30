@@ -21,9 +21,9 @@
   "dependencies": {
     "@theoplayer/react-native-ui": "^0.23.1",
     "dotenv": "^17.2.3",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-native": "npm:react-native-tvos@^0.79.0-0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "npm:react-native-tvos@^0.84.1-0",
     "react-native-config": "^1.6.1",
     "react-native-device-info": "^14.0.4",
     "react-native-safe-area-context": "^5.6.2",
@@ -41,13 +41,13 @@
     "@react-native-community/cli": "20.1.2",
     "@react-native-community/cli-platform-android": "20.1.2",
     "@react-native-community/cli-platform-ios": "20.1.2",
-    "@react-native/babel-preset": "0.79.0",
-    "@react-native/eslint-config": "0.79.0",
-    "@react-native/metro-config": "0.79.0",
-    "@react-native/typescript-config": "0.79.0",
+    "@react-native/babel-preset": "0.84.1",
+    "@react-native/eslint-config": "0.84.1",
+    "@react-native/metro-config": "0.84.1",
+    "@react-native/typescript-config": "0.84.1",
     "@types/cavy": "^3.2.9",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "babel-loader": "^8.4.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "babel-plugin-react-native-web": "^0.17.7",
@@ -59,7 +59,7 @@
     "node-polyfill-webpack-plugin": "^4.1.0",
     "patch-package": "^8.0.1",
     "react-native-svg-web": "^1.0.9",
-    "typescript": "5.1.6",
+    "typescript": "5.4.5",
     "webpack": "^5.105.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
@@ -69,6 +69,6 @@
     "react-native": "$react-native"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22.11.0"
   }
 }
