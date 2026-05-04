@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [ 34 ]
+        api-level: [ 36 ]
     name: Build for API Level ${{ matrix.api-level }}
     steps:
       - name: Checkout repository
