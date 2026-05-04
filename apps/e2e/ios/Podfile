@@ -33,7 +33,7 @@ target 'ReactNativeTHEOplayer' do
   pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
   pod 'react-native-theoplayer-adobe', :path => '../../../adobe'
   pod 'react-native-theoplayer-bitmovin', :path => '../../../bitmovin'
-  pod 'react-native-clientside-ad-beaconing', :path => '../../../clientside-ad-beaconing'
+  pod 'react-native-mediakind-ssai', :path => '../../../mediakind-ssai'
 
   google_cast_redirect
 
@@ -51,7 +51,7 @@ target 'ReactNativeTHEOplayer-tvOS' do
   pod 'react-native-theoplayer-nielsen', :path => '../../../nielsen'
   pod 'react-native-theoplayer-adobe', :path => '../../../adobe'
   pod 'react-native-theoplayer-bitmovin', :path => '../../../bitmovin'
-  pod 'react-native-clientside-ad-beaconing', :path => '../../../clientside-ad-beaconing'
+  pod 'react-native-mediakind-ssai', :path => '../../../mediakind-ssai'
 
 end
 

@@ -18,7 +18,7 @@ const rootNodeModulesBlockList = packages.map(
 const dataConnectors = [
   'drm',
   'yospace',
-  'clientside-ad-beaconing'
+  'mediakind-ssai'
 ];
 
 const analyticsConnectors = [

@@ -20,7 +20,8 @@
     "nielsen",
     "yospace",
     "youbora",
-    "gemius"
+    "gemius",
+    "mediakind-ssai"
   ],
   "scripts": {
     "changeset:version": "changeset version && node .changeset/post-process.js",
