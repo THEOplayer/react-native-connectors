@@ -10,7 +10,7 @@ import {
 
 export class CastLabsFairplayContentProtectionIntegration implements ContentProtectionIntegration {
   static readonly DEFAULT_CERTIFICATE_URL = 'https://lic.drmtoday.com/license-server-fairplay/cert/';
-  static readonly DEFAULT_LICENSE_URL = 'https://lic.staging.drmtoday.com/license-server-fairplay/cert/';
+  static readonly DEFAULT_LICENSE_URL = 'https://lic.staging.drmtoday.com/license-server-fairplay/';
 
   private readonly contentProtectionConfiguration: CastLabsDrmConfiguration;
   private contentId: string | undefined = undefined;
@@ -31,20 +31,35 @@ export class CastLabsFairplayContentProtectionIntegration implements ContentProt
       this.contentProtectionConfiguration.fairplay?.certificateURL ?? CastLabsFairplayContentProtectionIntegration.DEFAULT_CERTIFICATE_URL;
     request.headers = {
       ...request.headers,
+      'x-dt-custom-data': this.customData!
     };
     return request;
   }
 
   onLicenseRequest(request: LicenseRequest): MaybeAsync<Partial<LicenseRequest> | BufferSource> {
-    request.url =
+    const isOffline = this.contentProtectionConfiguration.fairplay?.licenseType === 'persistent';
+
+    let licenseUrl =
       this.contentProtectionConfiguration.fairplay?.licenseAcquisitionURL ?? CastLabsFairplayContentProtectionIntegration.DEFAULT_LICENSE_URL;
+
+    // Add offline parameter for persistent license / caching support
+    if (isOffline) {
+      const urlSeparator = licenseUrl.includes('?') ? '&' : '?';
+      licenseUrl = `${licenseUrl}${urlSeparator}offline=true`;
+    }
+
+    request.url = licenseUrl;
     request.headers = {
       ...request.headers,
       'x-dt-custom-data': this.customData!,
       'x-dt-auth-token': this.contentProtectionConfiguration.integrationParameters.token ?? '',
       'content-type': 'application/x-www-form-urlencoded',
     };
-    const body = `spc=${encodeURIComponent(fromUint8ArrayToBase64String(request.body!))}&${encodeURIComponent(this.contentId!)}`;
+    const spcEncoded = encodeURIComponent(fromUint8ArrayToBase64String(request.body!));
+    let body = `spc=${spcEncoded}&${encodeURIComponent(this.contentId!)}`;
+    if (isOffline) {
+      body += '&offline=true';
+    }
     request.body = fromStringToUint8Array(body);
 
     return request;
