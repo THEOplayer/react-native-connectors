@@ -63,5 +63,6 @@ the following connectors, readily available to be used by `react-native-theoplay
 | Axinom                       | &check;     | &cross;     | &check;  |
 | CastLabs                     | &check;     | &check;     | &check;  |
 | PallyCon                     | &cross;     | &cross;     | &check;  |
+| MediaKind                    | &check; (*) | &check; (*) | &check;  |
 
 (*) No connector is needed for these DRM vendors; it is handled by the player's default DRM flow.
