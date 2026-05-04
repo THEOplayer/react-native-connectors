@@ -1,5 +1,6 @@
 package com.reactnativetheoplayer
 
+import android.app.PictureInPictureUiState
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -54,5 +55,22 @@ open class MainActivity : ReactActivity() {
     val intent = Intent("onPictureInPictureModeChanged")
     intent.putExtra("isInPictureInPictureMode", isInPictureInPictureMode)
     this.sendBroadcast(intent)
+  }
+
+  /**
+   * Called by the system when the activity is in PiP and has state changes. Compare to
+   * onPictureInPictureModeChanged, which is only called when PiP mode changes (meaning, enters
+   * or exits PiP), this can be called at any time while the activity is in PiP mode.
+   */
+  override fun onPictureInPictureUiStateChanged(pipState: PictureInPictureUiState) {
+    super.onPictureInPictureUiStateChanged(pipState)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM &&
+      pipState.isTransitioningToPip
+    ) {
+      Intent("onPictureInPictureModeChanged").also {
+        it.putExtra("isTransitioningToPip", true)
+        sendBroadcast(it)
+      }
+    }
   }
 }
