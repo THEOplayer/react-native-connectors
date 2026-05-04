@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-agama
 
+## 1.12.1
+
+### 🐛 Issues
+
+- Fixed an issue where the measuring network interceptor would cause ABR to break and make the player stall during play-out.
+
 ## 1.12.0
 
 ### ✨ Features
