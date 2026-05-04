@@ -3,7 +3,7 @@ import type { DRMConfiguration } from 'react-native-theoplayer';
 /**
  * The identifier of the MediaKind integration.
  */
-export type MediaKindIntegrationID = 'customMediaKindDrm';
+export type MediaKindIntegrationID = 'mediakind';
 
 /**
  * Describes the configuration of the MediaKind DRM integration.
