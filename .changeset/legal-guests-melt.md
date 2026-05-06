@@ -1,5 +1,5 @@
 ---
-'@theoplayer/react-native-drm': major
+'@theoplayer/react-native-drm': minor
 ---
 
-Added Fairplay integration for MediaKind DRM
+Added integration for MediaKind DRM.
