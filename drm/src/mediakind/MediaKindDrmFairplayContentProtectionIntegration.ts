@@ -50,7 +50,7 @@ export class MediaKindDrmFairplayContentProtectionIntegration implements Content
       MediaKindDrmFairplayContentProtectionIntegration.DEFAULT_LICENSE_URL,
     );
     if (request.body !== null) {
-      let spc = fromUint8ArrayToBase64String(request.body);
+      const spc = fromUint8ArrayToBase64String(request.body);
       request.body = fromStringToUint8Array(spc);
     }
     return request;
