@@ -1,5 +1,11 @@
 # @theoplayer/react-native-drm
 
+## 1.13.0
+
+### ✨ Features
+
+- Added integration for MediaKind DRM.
+
 ## 1.12.0
 
 ### ✨ Features
