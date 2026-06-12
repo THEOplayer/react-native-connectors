@@ -1,6 +1,6 @@
 # THEOplayer React-Native Yospace Connector
 
-A Yospace connector for `@theoplayer/react-native`.
+A Yospace Server-Side Ad Insertion (SSAI) connector for `@theoplayer/react-native`.
 The connector only supports Android platforms for now.
 
 ## Installation
