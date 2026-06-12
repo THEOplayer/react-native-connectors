@@ -3,9 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@theoplayer/react-native-analytics-adobe-edge": [
-        "./src/index"
-      ]
+      "@theoplayer/react-native-analytics-adobe-edge": ["./src/index"],
+      "@adobe/alloy": ["../node_modules/@adobe/alloy/dist/types/browser/src/index.d.ts"]
     }
   }
 }
