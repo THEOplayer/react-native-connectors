@@ -85,7 +85,7 @@
     ]
   },
   "dependencies": {
-    "@adobe/alloy": "^2.30.0",
+    "@adobe/alloy": "^2.34.1",
     "openapi-fetch": "^0.9.8"
   },
   "devDependencies": {
