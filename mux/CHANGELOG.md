@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.13.1
+
+### 🐛 Issues
+
+- - Bumped Mux SDK version to v0.8.0 to support OptiView player SDK v11.
+
 ## 1.13.0
 
 ### ✨ Features
