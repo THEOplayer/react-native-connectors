@@ -32,7 +32,7 @@
     "react-native-theoplayer": "^11.0.0",
     "react-native-web": "^0.20.0",
     "react-native-web-image-loader": "^0.1.1",
-    "theoplayer": "^11.0.0"
+    "theoplayer": "^11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",
@@ -50,6 +50,7 @@
     "@types/react-dom": "^19.2.0",
     "babel-loader": "^8.4.1",
     "babel-plugin-module-resolver": "^5.0.2",
+    "babel-plugin-react-compiler": "^1.0.0",
     "babel-plugin-react-native-web": "^0.17.7",
     "cavy": "^4.0.2",
     "cavy-cli": "^3.0.0",

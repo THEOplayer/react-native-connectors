@@ -81,9 +81,6 @@ def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 12.0.0)')
 def kotlin_version = safeExtGet("THEOplayerBitmovin_kotlinVersion", "2.2.10")
 def bitmovin_version = safeExtGet("THEOplayerBitmovin_bitmovinVersion", "[3.24.0, 4.0.0)")
 
-// By default, take the connector version that aligns with the THEOplayer SDK version.
-def theoplayer_bitmovin_connector_version = safeExtGet('THEOplayerBitmovin_connectorVersion', theoplayer_sdk_version)
-
 dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin

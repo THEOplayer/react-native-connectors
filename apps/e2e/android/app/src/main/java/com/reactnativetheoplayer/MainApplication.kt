@@ -12,8 +12,8 @@ import com.theoplayer.reactnative.bitmovin.ReactTHEOplayerBitmovinPackage
 import com.theoplayercomscore.ReactTHEOplayerComscorePackage
 import com.theoplayerconviva.ReactTHEOplayerConvivaPackage
 import com.theoplayernielsen.ReactTHEOplayerNielsenPackage
+import com.theoplayermux.ReactTHEOplayerMuxPackage
 //import com.theoplayeryospace.ReactTHEOplayerYospacePackage
-
 class MainApplication : Application(), ReactApplication {
   override val reactHost: ReactHost by lazy {
     getDefaultReactHost(
@@ -27,6 +27,7 @@ class MainApplication : Application(), ReactApplication {
             add(ReactTHEOplayerNielsenPackage())
             add(ReactTHEOplayerAdobePackage())
             add(ReactTHEOplayerAdobeEdgePackage())
+            add(ReactTHEOplayerMuxPackage())
             // add(ReactTHEOplayerYospacePackage())
           },
     )

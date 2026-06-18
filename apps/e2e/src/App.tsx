@@ -38,6 +38,7 @@ import { SourceMenuButton, SOURCES } from './components/menu/SourceMenuButton';
 import { ConnectorSubMenu } from './components/menu/ConnectorSubMenu';
 import { ConnectorsMenuButton } from './components/menu/ConnectorMenu';
 import { useAdobeEdgeConnector } from './connectors/adobe-edge';
+import { muxOptions, useMuxConnector } from './connectors/mux';
 
 const playerConfig: PlayerConfiguration = {
   // Get your THEOplayer license from https://portal.theoplayer.com/
@@ -61,6 +62,7 @@ export default function App() {
   const { initConviva } = useConvivaConnector();
   const { bitmovin, initBitmovin, onProgramChange: onBitmovinProgramChange, onUpdateCustomData: onBitmovinUpdateCustomData } = useBitmovinConnector();
   const { adobeEdge, initAdobeEdge } = useAdobeEdgeConnector();
+  const { initMux } = useMuxConnector();
 
   const onSourceChange = () => {
     console.log('onSourceChange');
@@ -76,6 +78,7 @@ export default function App() {
     initAdobeEdge(player);
     initBitmovin(player, bitmovinDefaultMetadata);
     initConviva(player);
+    initMux(player, muxOptions);
 
     // optional debug logs
     player.addEventListener(PlayerEventType.SOURCE_CHANGE, onSourceChange);
