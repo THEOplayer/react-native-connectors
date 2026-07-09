@@ -108,3 +108,12 @@ bitmovin.programChange({
   }
 });
 ```
+
+### Getting the current impression ID
+
+The current impression ID can be retrieved asynchronously. The promise resolves to `undefined` when
+there is no active impression or analytics session:
+
+```tsx
+const impressionId = await bitmovin.getImpressionId();
+```

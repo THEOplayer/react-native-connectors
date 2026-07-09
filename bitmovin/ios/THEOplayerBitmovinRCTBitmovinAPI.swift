@@ -81,6 +81,14 @@ class THEOplayerBitmovinRCTBitmovinAPI: NSObject, RCTBridgeModule {
             }
         }
     }
+
+    @objc(getImpressionId:resolver:rejecter:)
+    func getImpressionId(_ node: NSNumber, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        log("getImpressionId triggered.")
+        DispatchQueue.main.async {
+            resolve(self.connectors[node]?.impressionId)
+        }
+    }
     
     @objc(destroy:)
     func destroy(_ node: NSNumber) -> Void {

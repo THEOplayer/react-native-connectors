@@ -42,6 +42,10 @@ class BitmovinHandler {
         self.theoplayerCollector.sendCustomDataEvent(with: BitmovinAdapter.parseCustomData(customData))
         log("Custom data event send with custom data: \(customData)")
     }
+
+    var impressionId: String? {
+        return self.theoplayerCollector.impressionId
+    }
     
     func destroy() -> Void {
         self.detachListeners()

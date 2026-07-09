@@ -33,6 +33,10 @@ export class BitmovinConnectorAdapter {
     this.integration.setCustomDataOnce(customData);
   }
 
+  getImpressionId(): Promise<string | undefined> {
+    return Promise.resolve(this.integration.getCurrentImpressionId());
+  }
+
   destroy() {
     /**
      * We can safely disable the BITMOVIN_ANALYTICS_AUGMENTED_MARKER here to avoid duplicate connectors being attached to the same player instance,
