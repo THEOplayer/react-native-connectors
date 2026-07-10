@@ -6,6 +6,13 @@ let testPlayer: THEOplayer | undefined = undefined;
 let testPlayerId: number = 0;
 
 /**
+ * Reset the test player reference so that getTestPlayer waits for a fresh instance.
+ */
+export const resetTestPlayer = () => {
+  testPlayer = undefined;
+};
+
+/**
  * Wait until the player is ready.
  *
  * @param timeout Delay after rejecting the player.
