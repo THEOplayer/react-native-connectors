@@ -49,7 +49,7 @@ index 1cdeb38..4dc4d37 100644
  
 +  sendMessage(data) {
 +    if (this.websocketReady()) {
-+      testData = { event: 'message', data };
++      const testData = { event: 'message', data };
 +      this.sendData(testData);
 +    }
 +  }
