@@ -44,16 +44,21 @@ export const getTestPlayer = async (timeout = 5000, poll = 200): Promise<THEOpla
 
 export const TestableTHEOplayerView = (props: THEOplayerViewProps) => {
   const generateTestHook = useCavy();
+  const playerIdRef = React.useRef<number | undefined>(undefined);
+
   const onPlayerReady = useCallback((player: THEOplayer) => {
     testPlayerId++;
+    playerIdRef.current = testPlayerId;
     testPlayer = player;
     console.debug(`[onPlayerReady] id: ${testPlayerId}`);
     props.onPlayerReady?.(player);
   }, []);
 
   const onPlayerDestroy = useCallback(() => {
-    console.debug(`[onPlayerDestroy] id: ${testPlayerId}`);
-    testPlayer = undefined;
+    console.debug(`[onPlayerDestroy] id: ${playerIdRef.current}`);
+    if (playerIdRef.current === testPlayerId) {
+      testPlayer = undefined;
+    }
   }, []);
 
   return <THEOplayerView ref={generateTestHook('Scene.THEOplayerView')} {...props} onPlayerReady={onPlayerReady} onPlayerDestroy={onPlayerDestroy} />;
