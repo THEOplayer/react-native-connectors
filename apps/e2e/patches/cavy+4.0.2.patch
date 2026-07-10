@@ -1,24 +1,29 @@
 diff --git a/node_modules/cavy/src/Reporter.js b/node_modules/cavy/src/Reporter.js
-index 1cdeb38..24ae1f7 100644
+index 1cdeb38..4dc4d37 100644
 --- a/node_modules/cavy/src/Reporter.js
 +++ b/node_modules/cavy/src/Reporter.js
-@@ -9,7 +9,31 @@ export default class Reporter {
+@@ -8,8 +8,36 @@ export default class Reporter {
+ 
    // Internal: Creates a websocket connection to the cavy-cli server.
    onStart() {
-     const url = 'ws://127.0.0.1:8082/';
-+    console.debug('Creating websocket');
-     this.ws = new WebSocket(url);
-+    this.ws.onerror = console.error
-+    this.ws.onopen = () => {
-+      console.debug('Successfully opened websocket');
-+    }
-+    this.ws.onclose = () => {
-+      console.debug('Closing websocket');
-+    }
-+
 +    this.overrideConsole('log');
 +    this.overrideConsole('debug');
 +    this.overrideConsole('warn');
++
+     const url = 'ws://127.0.0.1:8082/';
++    console.debug('Creating websocket');
+     this.ws = new WebSocket(url);
++    this.ws.onerror = console.error;
++    this.ws.onclose = () => {
++      console.debug('Closing websocket');
++    };
++
++    return new Promise((resolve) => {
++      this.ws.onopen = () => {
++        console.debug('Successfully opened websocket');
++        resolve();
++      };
++    });
 +  }
 +
 +  overrideConsole(fn) {
@@ -34,7 +39,7 @@ index 1cdeb38..24ae1f7 100644
    }
  
    // Internal: Send a single test result to cavy-cli over the websocket connection.
-@@ -20,6 +44,13 @@ export default class Reporter {
+@@ -20,6 +48,13 @@ export default class Reporter {
      }
    }
  
@@ -48,7 +53,7 @@ index 1cdeb38..24ae1f7 100644
    // Internal: Send report to cavy-cli over the websocket connection.
    onFinish(report) {
      if (this.websocketReady()) {
-@@ -34,7 +65,6 @@ export default class Reporter {
+@@ -34,11 +69,10 @@ export default class Reporter {
        console.log(message);
      }
    }
@@ -56,6 +61,11 @@ index 1cdeb38..24ae1f7 100644
    // Private: Determines whether data can be sent over the websocket.
    websocketReady() {
      // WebSocket.readyState 1 means the web socket connection is OPEN.
+-    return this.ws.readyState == 1;
++    return this.ws && this.ws.readyState == 1;
+   }
+ 
+   // Private: Sends data over the websocket and console logs any errors.
 diff --git a/node_modules/cavy/src/TestRunner.js b/node_modules/cavy/src/TestRunner.js
 index 40552bf..0af9639 100644
 --- a/node_modules/cavy/src/TestRunner.js
@@ -70,10 +80,10 @@ index 40552bf..0af9639 100644
  
        this.results.push({
 diff --git a/node_modules/cavy/src/Tester.js b/node_modules/cavy/src/Tester.js
-index c61e31a..8d222ae 100644
+index c61e31a..82c6650 100644
 --- a/node_modules/cavy/src/Tester.js
 +++ b/node_modules/cavy/src/Tester.js
-@@ -57,20 +57,8 @@ export default class Tester extends Component {
+@@ -57,28 +57,16 @@ export default class Tester extends Component {
        key: Math.random()
      };
      this.testHookStore = props.store;
@@ -95,4 +105,15 @@ index c61e31a..8d222ae 100644
 +    this.reporter = new reporterClass;
    }
  
-   componentDidMount() {
+-  componentDidMount() {
+-    this.runTests();
++  async componentDidMount() {
+     if (!(this.reporter instanceof Function)
+       && this.reporter.type == 'realtime' ) {
+-      this.reporter.onStart();
++      await this.reporter.onStart();
+     }
++    this.runTests();
+   }
+ 
+   // Run all test suites.
