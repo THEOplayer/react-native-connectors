@@ -62,6 +62,13 @@ class ReactTHEOplayerBitmovinModule(val context: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun getImpressionId(tag: Int, promise: Promise) {
+    context.runOnUiQueueThread {
+      promise.resolve(bitmovinConnectors[tag]?.impressionId)
+    }
+  }
+
+  @ReactMethod
   fun destroy(tag: Int) {
     context.runOnUiQueueThread {
       bitmovinConnectors[tag]?.destroy()

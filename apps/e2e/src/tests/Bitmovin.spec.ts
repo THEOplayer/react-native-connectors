@@ -36,7 +36,7 @@ export default function (spec: TestScope) {
           },
         });
       },
-      () => {
+      async () => {
         connector.updateCustomData({
           customData0: 'newValue0',
           customData1: 'newValue1',
@@ -48,6 +48,7 @@ export default function (spec: TestScope) {
             customData10: 'newValue10',
           },
         });
+        await connector.getImpressionId();
       },
       () => {
         connector.destroy();

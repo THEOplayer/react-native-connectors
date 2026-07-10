@@ -42,6 +42,9 @@ class BitmovinHandler(
       collector.customData = mergeCustomData( value, collector.customData)
     }
 
+  val impressionId: String?
+    get() = collector.impressionId
+
   fun programChange(sourceMetadata: SourceMetadata) {
     collector.programChange(sourceMetadata)
   }

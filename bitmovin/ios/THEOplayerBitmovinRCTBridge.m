@@ -19,6 +19,10 @@ RCT_EXTERN_METHOD(programChange:(nonnull NSNumber *)node sourceMetadata:(nonnull
 
 RCT_EXTERN_METHOD(sendCustomDataEvent:(nonnull NSNumber *)node customData:(nonnull NSDictionary *)customData)
 
+RCT_EXTERN_METHOD(getImpressionId:(nonnull NSNumber *)node
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 
 @end

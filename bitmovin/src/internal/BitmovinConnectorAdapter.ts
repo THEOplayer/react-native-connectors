@@ -52,6 +52,18 @@ export class BitmovinConnectorAdapter {
     }
   }
 
+  getImpressionId(): Promise<string | undefined> {
+    try {
+      return Promise.resolve(NativeModules.BitmovinModule.getImpressionId(this.nativeHandle)).catch((error: unknown) => {
+        console.error(TAG, `${ERROR_MSG}: ${error}`);
+        return undefined;
+      });
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+      return Promise.resolve(undefined);
+    }
+  }
+
   destroy(): void {
     try {
       NativeModules.BitmovinModule.destroy(this.nativeHandle);

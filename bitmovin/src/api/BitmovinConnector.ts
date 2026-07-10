@@ -59,6 +59,15 @@ export class BitmovinConnector {
   }
 
   /**
+   * Returns the impression ID of the current analytics session.
+   *
+   * Resolves to `undefined` when there is no active impression or session.
+   */
+  getImpressionId(): Promise<string | undefined> {
+    return this.connectorAdapter.getImpressionId();
+  }
+
+  /**
    * Stops video and ad analytics and closes all sessions.
    */
   destroy(): void {
