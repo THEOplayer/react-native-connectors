@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-bitmovin
 
+## 1.5.0
+
+### ✨ Features
+
+- Added a getter for the current Bitmovin `impressionId`.
+
 ## 1.4.1
 
 ### 🐛 Issues
