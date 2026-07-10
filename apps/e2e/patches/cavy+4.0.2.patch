@@ -13,7 +13,7 @@ index 1cdeb38..4dc4d37 100644
      const url = 'ws://127.0.0.1:8082/';
 +    console.debug('Creating websocket');
      this.ws = new WebSocket(url);
-+    this.ws.onerror = console.error;
+     this.ws = new WebSocket(url);
 +    this.ws.onclose = () => {
 +      console.debug('Closing websocket');
 +    };
