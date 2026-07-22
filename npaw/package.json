@@ -41,8 +41,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "npaw-plugin-react-native": "^7.3.33",
-    "npaw-plugin-adapters": "^7.3.33"
+    "npaw-plugin-react-native": "^7.3.33"
   },
   "peerDependencies": {
     "react": "*",

@@ -1,6 +1,6 @@
 # THEOplayer React Native NPAW Connector
 
-A JavaScript-only NPAW analytics connector for `@theoplayer/react-native`.
+An NPAW analytics connector for `@theoplayer/react-native` that works across iOS, Android, and web.
 
 ## Installation
 
