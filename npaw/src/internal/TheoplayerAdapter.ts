@@ -124,7 +124,6 @@ export class TheoplayerAdapter {
       this.reference(PlayerEventType.SEEKED, this.onSeeked),
       this.reference(PlayerEventType.TIME_UPDATE, this.onTimeUpdate),
       this.reference(PlayerEventType.SOURCE_CHANGE, this.onSourceChange),
-      this.reference(PlayerEventType.CURRENT_SOURCE_CHANGE, this.onSourceChange),
       this.reference(PlayerEventType.ENDED, this.onEnded),
       this.reference(PlayerEventType.ERROR, this.onError),
     ];
