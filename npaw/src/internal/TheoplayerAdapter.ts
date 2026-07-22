@@ -16,22 +16,6 @@ interface NpawPlaybackFlags {
   reset(): void;
 }
 
-interface NpawVideoAdapterBase {
-  fireStart(params?: object, triggeredEvent?: string): void;
-  fireJoin(params?: object, triggeredEvent?: string): void;
-  firePause(params?: object, triggeredEvent?: string): void;
-  fireResume(params?: object, triggeredEvent?: string): void;
-  fireBufferBegin(params?: object, convertFromSeek?: boolean, triggeredEvent?: string): void;
-  fireBufferEnd(params?: object, triggeredEvent?: string): void;
-  fireStop(params?: object, triggeredEvent?: string): void;
-  fireError(code?: string | object, msg?: string, metadata?: object, level?: string, triggeredEvent?: string): void;
-  fireSeekBegin(params?: object, convertFromBuffer?: boolean, triggeredEvent?: string): void;
-  fireSeekEnd(params?: object, triggeredEvent?: string): void;
-  getNpawUtils(): {
-    buildRenditionString(width?: number, height?: number, bitrate?: number): string;
-  };
-}
-
 type PlayerEvent = PlayerEventMap[PlayerEventType];
 type PlayerListener = EventListener<PlayerEvent>;
 type PlayerReference = {
@@ -39,22 +23,28 @@ type PlayerReference = {
   listener: PlayerListener;
 };
 
-export class TheoplayerAdapter implements NpawVideoAdapterBase {
+export class TheoplayerAdapter {
+  /**
+   * Provided at runtime by NPAW's base video adapter; declared for typing only.
+   * Implementations are copied onto the instance during registerAdapterFromClass.
+   */
   protected player!: THEOplayer;
   protected flags!: NpawPlaybackFlags;
   protected references!: PlayerReference[];
 
-  fireStart!: NpawVideoAdapterBase['fireStart'];
-  fireJoin!: NpawVideoAdapterBase['fireJoin'];
-  firePause!: NpawVideoAdapterBase['firePause'];
-  fireResume!: NpawVideoAdapterBase['fireResume'];
-  fireBufferBegin!: NpawVideoAdapterBase['fireBufferBegin'];
-  fireBufferEnd!: NpawVideoAdapterBase['fireBufferEnd'];
-  fireStop!: NpawVideoAdapterBase['fireStop'];
-  fireError!: NpawVideoAdapterBase['fireError'];
-  fireSeekBegin!: NpawVideoAdapterBase['fireSeekBegin'];
-  fireSeekEnd!: NpawVideoAdapterBase['fireSeekEnd'];
-  getNpawUtils!: NpawVideoAdapterBase['getNpawUtils'];
+  protected fireStart!: (params?: object, triggeredEvent?: string) => void;
+  protected fireJoin!: (params?: object, triggeredEvent?: string) => void;
+  protected firePause!: (params?: object, triggeredEvent?: string) => void;
+  protected fireResume!: (params?: object, triggeredEvent?: string) => void;
+  protected fireBufferBegin!: (params?: object, convertFromSeek?: boolean, triggeredEvent?: string) => void;
+  protected fireBufferEnd!: (params?: object, triggeredEvent?: string) => void;
+  protected fireStop!: (params?: object, triggeredEvent?: string) => void;
+  protected fireError!: (code?: string | object, msg?: string, metadata?: object, level?: string, triggeredEvent?: string) => void;
+  protected fireSeekBegin!: (params?: object, convertFromBuffer?: boolean, triggeredEvent?: string) => void;
+  protected fireSeekEnd!: (params?: object, triggeredEvent?: string) => void;
+  protected getNpawUtils!: () => {
+    buildRenditionString(width?: number, height?: number, bitrate?: number): string;
+  };
 
   private lastPlayhead?: number;
 
