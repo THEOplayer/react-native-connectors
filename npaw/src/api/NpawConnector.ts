@@ -37,6 +37,16 @@ export class NpawConnector {
   }
 
   /**
+   * Sets or updates NPAW analytics options for the current video.
+   *
+   * @param options Analytics options, such as `content.title` or `content.metadata`.
+   * @param videoKey Optional NPAW video key.
+   */
+  setVideoOptions(options: NpawAnalyticsOptions, videoKey?: string): void {
+    this.connectorAdapter.setVideoOptions(options, videoKey);
+  }
+
+  /**
    * Stops video and ad analytics and closes all sessions.
    *
    * @public

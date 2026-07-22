@@ -5,6 +5,8 @@ import {
   isVideoQuality,
   type PlayerEventMap,
   PlayerEventType,
+  TextTrackKind,
+  TextTrackMode,
   type THEOplayer,
   type VideoQuality,
 } from 'react-native-theoplayer';
@@ -73,6 +75,14 @@ export class TheoplayerAdapter {
     const sources = this.player.source?.sources;
     const source = Array.isArray(sources) ? sources[0] : sources;
     return source?.src;
+  }
+
+  getSubtitles(): string | undefined {
+    const track = this.player?.textTracks?.find(
+      (textTrack) =>
+        textTrack.mode === TextTrackMode.showing && (textTrack.kind === TextTrackKind.subtitles || textTrack.kind === TextTrackKind.captions),
+    );
+    return track?.language || track?.label || undefined;
   }
 
   getRendition(): string | undefined {

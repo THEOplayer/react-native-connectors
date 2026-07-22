@@ -1,5 +1,6 @@
 import type { THEOplayer } from 'react-native-theoplayer';
 import NpawPlugin from 'npaw-plugin-react-native';
+import type { NpawAnalyticsOptions } from '../api/NpawConnector';
 import type { NpawConnectorConfig } from '../api/NpawConnector';
 import type { LogLevel } from '../api/LogLevel';
 import { TheoplayerAdapter } from './TheoplayerAdapter';
@@ -23,6 +24,14 @@ export class NpawConnectorAdapter {
   setLogLevel(level: LogLevel) {
     try {
       this.plugin?.setLogLevel(level);
+    } catch (error: unknown) {
+      console.error(TAG, `${ERROR_MSG}: ${error}`);
+    }
+  }
+
+  setVideoOptions(options: NpawAnalyticsOptions, videoKey?: string): void {
+    try {
+      this.plugin?.setVideoOptions(options, videoKey);
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }
