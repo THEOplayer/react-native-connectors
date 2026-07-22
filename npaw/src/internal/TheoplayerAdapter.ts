@@ -68,7 +68,7 @@ export class TheoplayerAdapter {
   }
 
   getIsLive(): boolean {
-    return !Number.isFinite(this.player.duration);
+    return this.player.duration === Infinity;
   }
 
   getResource(): string | undefined {
