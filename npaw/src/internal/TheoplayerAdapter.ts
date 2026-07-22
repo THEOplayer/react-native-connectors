@@ -85,6 +85,11 @@ export class TheoplayerAdapter {
     return track?.language || track?.label || undefined;
   }
 
+  getVideoLanguage(): string | undefined {
+    const track = this.player?.audioTracks?.find((audioTrack) => audioTrack.enabled);
+    return track?.language || track?.label || undefined;
+  }
+
   getRendition(): string | undefined {
     const quality = this.getActiveQuality();
     if (!quality || !isVideoQuality(quality)) {
