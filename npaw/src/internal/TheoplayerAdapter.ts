@@ -1,10 +1,12 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {
-  PlayerEventType,
   type EventListener,
+  isVideoQuality,
   type PlayerEventMap,
+  PlayerEventType,
   type THEOplayer,
   type VideoQuality,
-  isVideoQuality,
 } from 'react-native-theoplayer';
 
 interface NpawPlaybackFlags {
@@ -181,8 +183,8 @@ export class TheoplayerAdapter {
   }
 
   private onTimeUpdate(event: PlayerEvent): void {
-    const currentTime = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime : this.player.currentTime;
-    this.lastPlayhead = currentTime;
+
+    this.lastPlayhead = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime : this.player.currentTime;
     if (!this.flags.isStarted && this.lastPlayhead > 0) {
       this.fireStart({}, 'onTimeUpdate');
       this.fireJoin({}, 'onTimeUpdate');
