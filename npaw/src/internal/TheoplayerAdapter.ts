@@ -108,17 +108,17 @@ export class TheoplayerAdapter implements NpawVideoAdapterBase {
 
   registerListeners(): void {
     this.references = [
-      this.reference(PlayerEventType.PLAY, this.playListener),
-      this.reference(PlayerEventType.PLAYING, this.playingListener),
-      this.reference(PlayerEventType.PAUSE, this.pauseListener),
-      this.reference(PlayerEventType.WAITING, this.waitingListener),
-      this.reference(PlayerEventType.SEEKING, this.seekingListener),
-      this.reference(PlayerEventType.SEEKED, this.seekedListener),
-      this.reference(PlayerEventType.TIME_UPDATE, this.timeUpdateListener),
-      this.reference(PlayerEventType.SOURCE_CHANGE, this.sourceChangeListener),
-      this.reference(PlayerEventType.CURRENT_SOURCE_CHANGE, this.sourceChangeListener),
-      this.reference(PlayerEventType.ENDED, this.endedListener),
-      this.reference(PlayerEventType.ERROR, this.errorListener),
+      this.reference(PlayerEventType.PLAY, this.onPlay),
+      this.reference(PlayerEventType.PLAYING, this.onPlaying),
+      this.reference(PlayerEventType.PAUSE, this.onPause),
+      this.reference(PlayerEventType.WAITING, this.onWaiting),
+      this.reference(PlayerEventType.SEEKING, this.onSeeking),
+      this.reference(PlayerEventType.SEEKED, this.onSeeked),
+      this.reference(PlayerEventType.TIME_UPDATE, this.onTimeUpdate),
+      this.reference(PlayerEventType.SOURCE_CHANGE, this.onSourceChange),
+      this.reference(PlayerEventType.CURRENT_SOURCE_CHANGE, this.onSourceChange),
+      this.reference(PlayerEventType.ENDED, this.onEnded),
+      this.reference(PlayerEventType.ERROR, this.onError),
     ];
 
     for (const reference of this.references) {
@@ -144,88 +144,88 @@ export class TheoplayerAdapter implements NpawVideoAdapterBase {
     return this.player.videoTracks.find((track) => track.enabled && isVideoQuality(track.activeQuality))?.activeQuality as VideoQuality | undefined;
   }
 
-  private playListener(): void {
+  private onPlay(): void {
     if (!this.flags.isStarted) {
-      this.fireStart({}, 'playListener');
+      this.fireStart({}, 'onPlay');
     }
   }
 
-  private playingListener(): void {
+  private onPlaying(): void {
     if (this.flags.isSeeking && !this.flags.isPaused) {
-      this.fireSeekEnd({}, 'playingListener');
+      this.fireSeekEnd({}, 'onPlaying');
     }
     if (this.flags.isBuffering && !this.flags.isPaused) {
-      this.fireBufferEnd({}, 'playingListener');
+      this.fireBufferEnd({}, 'onPlaying');
     }
-    this.fireResume({}, 'playingListener');
+    this.fireResume({}, 'onPlaying');
     if (!this.flags.isStarted) {
-      this.fireStart({}, 'playingListener');
+      this.fireStart({}, 'onPlaying');
     }
     if (!this.flags.isJoined) {
-      this.fireJoin({}, 'playingListener');
+      this.fireJoin({}, 'onPlaying');
     }
   }
 
-  private pauseListener(): void {
+  private onPause(): void {
     if (!this.flags.isSeeking) {
-      this.firePause({}, 'pauseListener');
+      this.firePause({}, 'onPause');
     }
   }
 
-  private waitingListener(): void {
+  private onWaiting(): void {
     if (!this.flags.isPaused && !this.flags.isSeeking) {
-      this.fireBufferBegin({}, false, 'waitingListener');
+      this.fireBufferBegin({}, false, 'onWaiting');
     }
   }
 
-  private seekingListener(): void {
+  private onSeeking(): void {
     if (!this.flags.isSeeking) {
-      this.fireSeekBegin({}, false, 'seekingListener');
+      this.fireSeekBegin({}, false, 'onSeeking');
     }
   }
 
-  private seekedListener(): void {
+  private onSeeked(): void {
     if (this.flags.isSeeking) {
-      this.fireSeekEnd({}, 'seekedListener');
+      this.fireSeekEnd({}, 'onSeeked');
     }
   }
 
-  private timeUpdateListener(event: PlayerEvent): void {
+  private onTimeUpdate(event: PlayerEvent): void {
     const currentTime = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime : this.player.currentTime;
     this.lastPlayhead = currentTime;
     if (!this.flags.isStarted && this.lastPlayhead > 0) {
-      this.fireStart({}, 'timeUpdateListener');
-      this.fireJoin({}, 'timeUpdateListener');
+      this.fireStart({}, 'onTimeUpdate');
+      this.fireJoin({}, 'onTimeUpdate');
     }
     if (!this.flags.isPaused) {
-      this.fireSeekEnd({}, 'timeUpdateListener');
-      this.fireBufferEnd({}, 'timeUpdateListener');
+      this.fireSeekEnd({}, 'onTimeUpdate');
+      this.fireBufferEnd({}, 'onTimeUpdate');
     }
   }
 
-  private sourceChangeListener(): void {
+  private onSourceChange(): void {
     if (this.flags.isStarted) {
-      this.fireStop({}, 'sourceChangeListener');
+      this.fireStop({}, 'onSourceChange');
     }
     this.flags.reset();
     this.lastPlayhead = undefined;
   }
 
-  private endedListener(): void {
+  private onEnded(): void {
     if (this.flags.isStarted) {
-      this.fireStop({}, 'endedListener');
+      this.fireStop({}, 'onEnded');
     }
   }
 
-  private errorListener(event: PlayerEvent): void {
+  private onError(event: PlayerEvent): void {
     if ('error' in event) {
       const error = event.error;
       if (typeof error === 'string') {
-        this.fireError('GENERIC_ERROR', error, undefined, undefined, 'errorListener');
+        this.fireError('GENERIC_ERROR', error, undefined, undefined, 'onError');
       } else if (typeof error === 'object' && error !== null && 'errorCode' in error && 'errorMessage' in error) {
-        this.fireError(String(error.errorCode), String(error.errorMessage), undefined, undefined, 'errorListener');
+        this.fireError(String(error.errorCode), String(error.errorMessage), undefined, undefined, 'onError');
       } else {
-        this.fireError('GENERIC_ERROR', String(error), undefined, undefined, 'errorListener');
+        this.fireError('GENERIC_ERROR', String(error), undefined, undefined, 'onError');
       }
     }
   }
