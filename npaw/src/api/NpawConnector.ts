@@ -47,6 +47,15 @@ export class NpawConnector {
   }
 
   /**
+   * Sets or updates global NPAW analytics options.
+   *
+   * @param options Global analytics options.
+   */
+  setAnalyticsOptions(options: NpawAnalyticsOptions): void {
+    this.connectorAdapter.setAnalyticsOptions(options);
+  }
+
+  /**
    * Stops video and ad analytics and closes all sessions.
    *
    * @public
