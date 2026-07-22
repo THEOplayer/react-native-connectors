@@ -8,6 +8,7 @@ import {
   type THEOplayer,
   type VideoQuality,
 } from 'react-native-theoplayer';
+import manifest from '../manifest.json';
 
 interface NpawPlaybackFlags {
   isStarted: boolean;
@@ -90,12 +91,12 @@ export class TheoplayerAdapter {
     return 'THEOplayer';
   }
 
-  getPlayerVersion(): string {
-    return this.player.version.version;
+  getPlayerVersion(): string | undefined {
+    return this.player?.version?.version;
   }
 
   getVersion(): string {
-    return this.getPlayerVersion();
+    return `${manifest.version}-react-native-theoplayerclass`;
   }
 
   registerListeners(): void {
@@ -183,7 +184,6 @@ export class TheoplayerAdapter {
   }
 
   private onTimeUpdate(event: PlayerEvent): void {
-
     this.lastPlayhead = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime : this.player.currentTime;
     if (!this.flags.isStarted && this.lastPlayhead > 0) {
       this.fireStart({}, 'onTimeUpdate');
