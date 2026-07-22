@@ -49,13 +49,14 @@ export class TheoplayerAdsAdapter {
 
   getPosition(): 'pre' | 'mid' | 'post' | undefined {
     const timeOffset = this.currentAdBreak?.timeOffset;
+    const duration = this.player?.duration;
     if (timeOffset == null) {
       return undefined;
     }
     if (timeOffset === 0) {
       return 'pre';
     }
-    if (timeOffset < 0 || (Number.isFinite(this.player?.duration) && timeOffset >= this.player.duration)) {
+    if (timeOffset < 0 || (Number.isFinite(duration) && timeOffset >= duration / 1000)) {
       return 'post';
     }
     return 'mid';

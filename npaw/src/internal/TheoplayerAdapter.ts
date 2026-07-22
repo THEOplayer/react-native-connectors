@@ -55,7 +55,7 @@ export class TheoplayerAdapter {
 
   getPlayhead(): number | undefined {
     try {
-      this.lastPlayhead = this.player.currentTime;
+      this.lastPlayhead = this.player.currentTime / 1000;
       return this.lastPlayhead;
     } catch {
       return undefined;
@@ -64,7 +64,7 @@ export class TheoplayerAdapter {
 
   getDuration(): number | undefined {
     const duration = this.player.duration;
-    return Number.isFinite(duration) ? duration : undefined;
+    return Number.isFinite(duration) ? duration / 1000 : undefined;
   }
 
   getIsLive(): boolean {
@@ -199,7 +199,7 @@ export class TheoplayerAdapter {
   }
 
   private onTimeUpdate(event: PlayerEvent): void {
-    this.lastPlayhead = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime : this.player.currentTime;
+    this.lastPlayhead = 'currentTime' in event && typeof event.currentTime === 'number' ? event.currentTime / 1000 : this.player.currentTime / 1000;
     if (!this.flags.isStarted && this.lastPlayhead > 0) {
       this.fireStart({}, 'onTimeUpdate');
       this.fireJoin({}, 'onTimeUpdate');
