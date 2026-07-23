@@ -11,9 +11,7 @@ function escapeRegExp(str) {
 
 // Block these packages from being resolved out of root/node_modules.
 // They are already explicitly mapped to the app-local copies via extraNodeModules.
-const rootNodeModulesBlockList = packages.map(
-  (pkg) => new RegExp(`^${escapeRegExp(path.join(root, 'node_modules', pkg))}(/.*)?$`)
-);
+const rootNodeModulesBlockList = packages.map((pkg) => new RegExp(`^${escapeRegExp(path.join(root, 'node_modules', pkg))}(/.*)?$`));
 
 const connectors = [
   'adobe',
@@ -27,6 +25,7 @@ const connectors = [
   'gemius',
   'mux',
   'nielsen',
+  'npaw',
   'yospace',
   'youbora',
 ];

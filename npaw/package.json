@@ -1,0 +1,75 @@
+{
+  "name": "@theoplayer/react-native-analytics-npaw",
+  "version": "1.0.0",
+  "description": "NPAW analytics connector for @theoplayer/react-native",
+  "main": "lib/commonjs/index",
+  "module": "lib/module/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
+  "source": "src/index",
+  "files": [
+    "src",
+    "lib",
+    "*.tgz",
+    "CHANGELOG.md",
+    "!lib/typescript/example",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
+  ],
+  "scripts": {
+    "typescript": "tsc --noEmit",
+    "build": "bob build",
+    "manifest": "node manifest.js > src/manifest.json",
+    "prepare": "npm run manifest && npm run build",
+    "clean": "rimraf lib"
+  },
+  "keywords": [
+    "react-native",
+    "THEOplayer",
+    "npaw"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:THEOplayer/react-native-connectors.git"
+  },
+  "author": "Dolby Laboratories, Inc.",
+  "license": "BSD-3-Clause-Clear",
+  "homepage": "https://github.com/THEOplayer/react-native-connectors/tree/main/npaw#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "npaw-plugin-react-native": "^7.3.33"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-theoplayer": "^7 || ^8 || ^9 || ^10 || ^11",
+    "theoplayer": "^7 || ^8 || ^9 || ^10 || ^11"
+  },
+  "peerDependenciesMeta": {
+    "theoplayer": {
+      "optional": true
+    }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}

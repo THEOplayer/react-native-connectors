@@ -10,6 +10,7 @@
       "@theoplayer/react-native-analytics-conviva": ["../../conviva/src/index"],
       "@theoplayer/react-native-analytics-mux": ["../../mux/src/index"],
       "@theoplayer/react-native-analytics-nielsen": ["../../nielsen/src/index"],
+      "@theoplayer/react-native-analytics-npaw": ["../../npaw/src/index"],
       "@theoplayer/react-native-yospace": ["../../yospace/src/index"],
       "@theoplayer/react-native-adscript": ["../../adscript/src/index"],
       "@theoplayer/react-native-gemius": ["../../gemius/src/index"]
