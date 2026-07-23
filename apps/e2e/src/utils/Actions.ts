@@ -11,7 +11,7 @@ import {
   StringKeyOf,
   THEOplayer,
 } from 'react-native-theoplayer';
-import { getTestPlayer } from '../components/TestableTHEOplayerView';
+import { getTestPlayer, resetTestPlayer } from '../components/TestableTHEOplayerView';
 import { logPlayerBuffer } from './PlayerUtils';
 
 export interface TestOptions {
@@ -23,6 +23,7 @@ export const defaultTestOptions: TestOptions = {
 };
 
 export async function preparePlayerWithSource(source: SourceDescription, autoplay: boolean = true): Promise<THEOplayer> {
+  resetTestPlayer();
   const player = await getTestPlayer();
   let startUpPromise: Promise<Event<PlayerEventType>[]>;
   if (autoplay) {

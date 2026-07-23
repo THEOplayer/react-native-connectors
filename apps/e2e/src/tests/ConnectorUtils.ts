@@ -1,6 +1,6 @@
 import { TestScope } from 'cavy';
 import hls from '../res/hls.json';
-import { getTestPlayer } from '../components/TestableTHEOplayerView';
+import { getTestPlayer, resetTestPlayer } from '../components/TestableTHEOplayerView';
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
 import { waitForPlayerEventTypes } from '../utils/Actions';
 
@@ -9,6 +9,7 @@ const NoOpPlayerFn: PlayerFn = (_player: THEOplayer) => {};
 
 export function testConnector(spec: TestScope, onCreate: PlayerFn, onUseAPI: PlayerFn, onDestroy: PlayerFn) {
   spec.it('successfully creates the connector, connects to the player, uses API, and cleans up and destroys.', async function () {
+    resetTestPlayer();
     const player = await getTestPlayer();
 
     // Create connector.
