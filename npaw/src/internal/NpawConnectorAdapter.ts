@@ -49,6 +49,9 @@ export class NpawConnectorAdapter {
 
   destroy(): void {
     try {
+      // NPAW's removeAdapter only disposes the adapter; end any in-progress view first.
+      this.plugin?.getAdsAdapter()?.fireStop();
+      this.plugin?.getAdapter()?.fireStop();
       this.plugin?.removeAdapter();
       this.plugin?.removeAdsAdapter();
       this.plugin?.destroy();

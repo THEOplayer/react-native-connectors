@@ -7,6 +7,7 @@ import {
   PlayerEventType,
   TextTrackKind,
   TextTrackMode,
+  type SourceDescription,
   type THEOplayer,
   type VideoQuality,
 } from 'react-native-theoplayer';
@@ -52,6 +53,7 @@ export class TheoplayerAdapter {
   };
 
   private lastPlayhead?: number;
+  private currentSource?: SourceDescription;
 
   getPlayhead(): number | undefined {
     try {
@@ -127,6 +129,7 @@ export class TheoplayerAdapter {
       this.reference(PlayerEventType.ENDED, this.onEnded),
       this.reference(PlayerEventType.ERROR, this.onError),
     ];
+    this.currentSource = this.player.source;
 
     for (const reference of this.references) {
       this.player.addEventListener(reference.type, reference.listener);
@@ -138,6 +141,7 @@ export class TheoplayerAdapter {
       this.player.removeEventListener(reference.type, reference.listener);
     }
     this.references = [];
+    this.currentSource = undefined;
   }
 
   private reference(type: PlayerEventType, listener: PlayerListener): PlayerReference {
@@ -210,6 +214,11 @@ export class TheoplayerAdapter {
   }
 
   private onSourceChange(): void {
+    const source = this.player.source;
+    if (source === this.currentSource) {
+      return;
+    }
+    this.currentSource = source;
     if (this.flags.isStarted) {
       this.fireStop({}, 'onSourceChange');
     }
