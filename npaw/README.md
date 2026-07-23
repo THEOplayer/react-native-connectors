@@ -6,6 +6,8 @@ This connector is JavaScript-only and works across iOS, Android and web through 
 `react-native-theoplayer` player, using only the `npaw-plugin-react-native` plugin — no native
 iOS/Android modules are required.
 
+> **Note:** This connector targets **NPAW v7+** (it depends on `npaw-plugin-react-native` `^7.3.x`).
+
 ## Installation
 
 ```sh
