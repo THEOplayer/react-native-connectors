@@ -78,8 +78,8 @@ repositories {
   mavenCentral()
 }
 
-// The Yospace connector requires at least THEOplayer SDK v7.6.0.
-def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[7.6.0, 12.0.0)')
+// The Yospace connector requires at least THEOplayer SDK v10.0.0.
+def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 12.0.0)')
 def kotlin_version = safeExtGet("THEOplayerYospace_kotlinVersion", "2.2.10")
 def yospace_version = safeExtGet('yospaceVersion', '3.6.7')
 
@@ -92,7 +92,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation "com.theoplayer.android-connector:yospace:$theoplayer_sdk_version"
+  implementation "com.theoplayer.android-connector:yospace:$theoplayer_yospace_connector_version"
   implementation("com.yospace:admanagement-sdk") {
     version {
       strictly("[3.6, 4.0)")
