@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.15.0
+
+### ✨ Features
+
+- - Restricted the supported OptiView (THEOplayer) player versions to v10 and v11. On Android, the default `THEOplayer_sdk` version range is now `[10.0.0, 12.0.0)` for every connector.
+
+### 🐛 Issues
+
+- - Bumped the default Conviva Core SDK version on Android to v4.0.51.
+
 ## 1.14.0
 
 ### ✨ Features
