@@ -562,13 +562,15 @@ class AdobeEdgeHandler {
     } else {
       // Give up: drop queued events and stay idle, so a later sourcechange or
       // stopAndStartNewSession can start a fresh session. Until then, events are
+    } else {
+      // Give up: drop queued events and stay idle, so a later sourcechange or
+      // stopAndStartNewSession can start a fresh session. Until then, events are
       // dropped instead of queued to avoid unbounded queue growth.
       this.logDebug('retryStartSession - giving up');
       this._sessionStarting = false;
       this._sessionStartAbandoned = true;
       this._eventQueue = [];
-      // Hand the unused metadata snapshot back, so a later session start still reports it.
-      // Metadata set in the meantime takes precedence.
+      // Restore the unused metadata snapshot so a later session start can still report it.
       this._customMetadata = { ...sessionMetadata, ...this._customMetadata };
     }
   }
