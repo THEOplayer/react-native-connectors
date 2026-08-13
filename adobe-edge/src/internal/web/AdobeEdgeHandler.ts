@@ -74,6 +74,9 @@ class AdobeEdgeHandler {
   /** Whether a session start request is in flight (including retries) */
   private _sessionStarting = false;
 
+  /** Whether session start was abandoned after exhausting all retries; events are dropped until a new start is attempted */
+  private _sessionStartAbandoned = false;
+
   /** Incremented on every session start/reset, used to invalidate in-flight starts */
   private _sessionGeneration = 0;
   private _sessionStartRetryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -247,7 +250,7 @@ class AdobeEdgeHandler {
     const extendedInfo = { ...info, [PROP_PLAYHEAD]: sanitisePlayhead(this._player.currentTime, this._player.duration) };
     if (this._sessionInProgress) {
       this.sendEvent(type, extendedInfo, metadata);
-    } else {
+    } else if (!this._sessionStartAbandoned) {
       this._eventQueue.push({ type, info: extendedInfo, metadata });
     }
   }
@@ -452,6 +455,7 @@ class AdobeEdgeHandler {
     }
     const generation = ++this._sessionGeneration;
     this._sessionStarting = true;
+    this._sessionStartAbandoned = false;
 
     // Allow overriding metadata with custom metadata set via updateMetadata().
     const mergedMetadata = {
@@ -518,9 +522,11 @@ class AdobeEdgeHandler {
       }, delay);
     } else {
       // Give up: drop queued events and stay idle, so a later sourcechange or
-      // stopAndStartNewSession can start a fresh session.
+      // stopAndStartNewSession can start a fresh session. Until then, events are
+      // dropped instead of queued to avoid unbounded queue growth.
       this.logDebug('retryStartSession - giving up');
       this._sessionStarting = false;
+      this._sessionStartAbandoned = true;
       this._eventQueue = [];
     }
   }
@@ -560,6 +566,7 @@ class AdobeEdgeHandler {
     // Invalidate any in-flight session start and cancel pending retries.
     this._sessionGeneration++;
     this._sessionStarting = false;
+    this._sessionStartAbandoned = false;
     if (this._sessionStartRetryTimer) {
       clearTimeout(this._sessionStartRetryTimer);
       this._sessionStartRetryTimer = undefined;
