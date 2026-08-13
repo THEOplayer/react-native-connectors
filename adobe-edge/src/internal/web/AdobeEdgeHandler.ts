@@ -562,9 +562,6 @@ class AdobeEdgeHandler {
     } else {
       // Give up: drop queued events and stay idle, so a later sourcechange or
       // stopAndStartNewSession can start a fresh session. Until then, events are
-    } else {
-      // Give up: drop queued events and stay idle, so a later sourcechange or
-      // stopAndStartNewSession can start a fresh session. Until then, events are
       // dropped instead of queued to avoid unbounded queue growth.
       this.logDebug('retryStartSession - giving up');
       this._sessionStarting = false;
