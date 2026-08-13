@@ -465,9 +465,12 @@ class AdobeEdgeHandler {
     this._sessionStartAbandoned = false;
 
     // Take a snapshot of the custom metadata on the first attempt, so retries report the same metadata.
-    const customMetadata = sessionMetadata ?? this._customMetadata;
-    // Clear used custom metadata to avoid accidentally reusing it for the next session.
-    this._customMetadata = {};
+    let customMetadata = sessionMetadata;
+    if (customMetadata === undefined) {
+      customMetadata = this._customMetadata;
+      // Clear used custom metadata to avoid accidentally reusing it for the next session.
+      this._customMetadata = {};
+    }
 
     // Allow overriding metadata with custom metadata set via updateMetadata().
     const mergedMetadata = {
