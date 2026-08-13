@@ -27,6 +27,16 @@ const PROP_ERROR_ID = 'errorId';
 const PROP_NA = 'NA';
 
 /**
+ * Number of times a session start is attempted before giving up.
+ */
+const MAX_SESSION_START_ATTEMPTS = 3;
+
+/**
+ * Base delay between session start attempts. Doubles with every attempt.
+ */
+const SESSION_START_RETRY_DELAY_MS = 1000;
+
+/**
  * Alloy globally stores clients by name. We are allowed create clients with the same config only once.
  */
 interface ClientDescription {
@@ -60,6 +70,13 @@ class AdobeEdgeHandler {
 
   /** Whether we are in a current session or not */
   private _sessionInProgress = false;
+
+  /** Whether a session start request is in flight (including retries) */
+  private _sessionStarting = false;
+
+  /** Incremented on every session start/reset, used to invalidate in-flight starts */
+  private _sessionGeneration = 0;
+  private _sessionStartRetryTimer: ReturnType<typeof setTimeout> | undefined;
   private _adBreakPodIndex = 0;
   private _adPodPosition = 1;
   private _customMetadata: EventMetadata = {};
@@ -115,6 +132,9 @@ class AdobeEdgeHandler {
     this._alloyClient('getMediaAnalyticsTracker', {}).then((result: any) => {
       this._media = result;
       this._tracker = this._media?.getInstance();
+
+      // The player may have dispatched loadedmetadata before the tracker was ready.
+      this.maybeStartSession();
     });
 
     this.setDebug(debugEnabled || false);
@@ -192,29 +212,35 @@ class AdobeEdgeHandler {
   }
 
   private sendEvent(eventType: EventType, info: EventInfo, metadata: EventMetadata) {
+    if (eventType === EventType.updatePlayhead) {
+      this._tracker?.updatePlayhead(info[PROP_PLAYHEAD]);
+      return;
+    }
+    let result: Promise<any> | undefined;
     switch (eventType) {
-      case EventType.updatePlayhead:
-        this._tracker?.updatePlayhead(info[PROP_PLAYHEAD]);
-        break;
       case EventType.error:
-        this._tracker?.trackError(info[PROP_ERROR_ID] || PROP_NA);
+        result = this._tracker?.trackError(info[PROP_ERROR_ID] || PROP_NA);
         break;
       case EventType.sessionComplete:
-        this._tracker?.trackComplete();
+        result = this._tracker?.trackComplete();
         break;
       case EventType.sessionEnd:
-        this._tracker?.trackSessionEnd();
+        result = this._tracker?.trackSessionEnd();
         break;
       case EventType.play:
-        this._tracker?.trackPlay();
+        result = this._tracker?.trackPlay();
         break;
       case EventType.pauseStart:
-        this._tracker?.trackPause();
+        result = this._tracker?.trackPause();
         break;
       default:
-        this._tracker?.trackEvent(eventType, info, metadata);
+        result = this._tracker?.trackEvent(eventType, info, metadata);
         break;
     }
+    // Tracker methods return promises; catch rejections to avoid unhandled promise rejections.
+    Promise.resolve(result).catch((error: unknown) => {
+      this.logDebug(`sendEvent(${eventType}) failed`, error);
+    });
   }
 
   private queueOrSendEvent(type: EventType, info: EventInfo = {}, metadata: EventMetadata = {}) {
@@ -387,8 +413,8 @@ class AdobeEdgeHandler {
       `isPlayingAd: ${isPlayingAd}`,
     );
 
-    if (this._sessionInProgress) {
-      this.logDebug('maybeStartSession - NOT started: already in progress');
+    if (this._sessionInProgress || this._sessionStarting) {
+      this.logDebug('maybeStartSession - NOT started: already in progress or starting');
       return;
     }
 
@@ -402,18 +428,43 @@ class AdobeEdgeHandler {
       return;
     }
 
+    if (!this._tracker || !this._media) {
+      // The tracker is acquired asynchronously; maybeStartSession is retried once it resolves.
+      this.logDebug('maybeStartSession - NOT started: media tracker not yet available');
+      return;
+    }
+
+    this.startSession(mediaLength, 0);
+  }
+
+  /**
+   * Start a new media session on the edge network.
+   *
+   * The session is only marked as 'in progress' once the edge network confirms it
+   * (i.e. the returned promise resolves with a sessionId). Until then, events keep
+   * queueing. If the session start fails, it is retried a limited number of times.
+   */
+  private startSession(mediaLength: number, attempt: number) {
+    const tracker = this._tracker;
+    const media = this._media;
+    if (!tracker || !media) {
+      return;
+    }
+    const generation = ++this._sessionGeneration;
+    this._sessionStarting = true;
+
     // Allow overriding metadata with custom metadata set via updateMetadata().
     const mergedMetadata = {
       ...this._player?.source?.metadata,
       ...this._customMetadata,
     };
-    this._tracker?.trackSessionStart(
-      this._media?.createMediaObject(
+    const sessionStartPromise = tracker.trackSessionStart(
+      media.createMediaObject(
         mergedMetadata.friendlyName || mergedMetadata.title || PROP_NA,
         mergedMetadata.name || mergedMetadata.id || PROP_NA,
         mediaLength,
         this.getContentType(),
-        this._media.MediaType.Video,
+        media.MediaType.Video,
       ),
       this._customMetadata,
     );
@@ -421,13 +472,57 @@ class AdobeEdgeHandler {
     // Clear used custom metadata after starting the session to avoid accidentally reusing it for the next session.
     this._customMetadata = {};
 
-    this._sessionInProgress = true;
+    Promise.resolve(sessionStartPromise)
+      .then((result?: { sessionId?: string }) => {
+        if (generation !== this._sessionGeneration) {
+          // The session was ended or superseded while the start request was in flight.
+          // Only close the confirmed session if no newer session owns the tracker.
+          if (result?.sessionId && !this._sessionStarting && !this._sessionInProgress) {
+            this.sendEvent(EventType.sessionEnd, {}, {});
+          }
+          return;
+        }
+        if (result?.sessionId) {
+          this._sessionStarting = false;
+          this._sessionInProgress = true;
 
-    // Post any queued events now that the session has started.
-    this._eventQueue.forEach((event) => this.sendEvent(event.type, event.info, event.metadata));
-    this._eventQueue = [];
+          // Post any queued events now that the session has started.
+          this._eventQueue.forEach((event) => this.sendEvent(event.type, event.info, event.metadata));
+          this._eventQueue = [];
 
-    this.logDebug('maybeStartSession - started');
+          this.logDebug('startSession - started');
+        } else {
+          this.logDebug('startSession - no sessionId in response');
+          this.retryStartSession(generation, mediaLength, attempt);
+        }
+      })
+      .catch((error: unknown) => {
+        if (generation !== this._sessionGeneration) {
+          return;
+        }
+        this.logDebug('startSession - failed', error);
+        this.retryStartSession(generation, mediaLength, attempt);
+      });
+  }
+
+  private retryStartSession(generation: number, mediaLength: number, attempt: number) {
+    if (attempt + 1 < MAX_SESSION_START_ATTEMPTS) {
+      const delay = SESSION_START_RETRY_DELAY_MS * 2 ** attempt;
+      this.logDebug(`retryStartSession - retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_SESSION_START_ATTEMPTS})`);
+      this._sessionStartRetryTimer = setTimeout(() => {
+        this._sessionStartRetryTimer = undefined;
+        if (generation !== this._sessionGeneration) {
+          return;
+        }
+        this.startSession(mediaLength, attempt + 1);
+      }, delay);
+    } else {
+      // Give up: drop queued events and stay idle, so a later sourcechange or
+      // stopAndStartNewSession can start a fresh session.
+      this.logDebug('retryStartSession - giving up');
+      this._sessionStarting = false;
+      this._eventQueue = [];
+    }
   }
 
   private onLoadedMetadata = () => {
@@ -462,6 +557,13 @@ class AdobeEdgeHandler {
 
   reset() {
     this.logDebug('reset');
+    // Invalidate any in-flight session start and cancel pending retries.
+    this._sessionGeneration++;
+    this._sessionStarting = false;
+    if (this._sessionStartRetryTimer) {
+      clearTimeout(this._sessionStartRetryTimer);
+      this._sessionStartRetryTimer = undefined;
+    }
     this._eventQueue = [];
     this._adBreakPodIndex = 0;
     this._adPodPosition = 1;
