@@ -77,6 +77,9 @@ class AdobeEdgeHandler {
   /** Whether session start was abandoned after exhausting all retries; events are dropped until a new start is attempted */
   private _sessionStartAbandoned = false;
 
+  /** Whether playback ended while a session start was still in flight; the confirmed session is completed before it is ended */
+  private _completeOnConfirm = false;
+
   /** Incremented on every session start/reset, used to invalidate in-flight starts */
   private _sessionGeneration = 0;
   private _sessionStartRetryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -287,7 +290,11 @@ class AdobeEdgeHandler {
   private handleEnded = () => {
     this.logDebug('onEnded');
     this.queueOrSendEvent(EventType.sessionComplete);
+    // The session may still be starting, in which case the queued completion is dropped by reset().
+    // Remember it so the session is completed once the edge network confirms it.
+    const completeOnConfirm = this._sessionStarting && !this._sessionInProgress;
     this.reset();
+    this._completeOnConfirm = completeOnConfirm;
   };
 
   private handleSourceChange = () => {
@@ -447,7 +454,7 @@ class AdobeEdgeHandler {
    * (i.e. the returned promise resolves with a sessionId). Until then, events keep
    * queueing. If the session start fails, it is retried a limited number of times.
    */
-  private startSession(mediaLength: number, attempt: number) {
+  private startSession(mediaLength: number, attempt: number, sessionMetadata?: EventMetadata) {
     const tracker = this._tracker;
     const media = this._media;
     if (!tracker || !media) {
@@ -457,10 +464,15 @@ class AdobeEdgeHandler {
     this._sessionStarting = true;
     this._sessionStartAbandoned = false;
 
+    // Take a snapshot of the custom metadata on the first attempt, so retries report the same metadata.
+    const customMetadata = sessionMetadata ?? this._customMetadata;
+    // Clear used custom metadata to avoid accidentally reusing it for the next session.
+    this._customMetadata = {};
+
     // Allow overriding metadata with custom metadata set via updateMetadata().
     const mergedMetadata = {
       ...this._player?.source?.metadata,
-      ...this._customMetadata,
+      ...customMetadata,
     };
     const sessionStartPromise = tracker.trackSessionStart(
       media.createMediaObject(
@@ -470,11 +482,8 @@ class AdobeEdgeHandler {
         this.getContentType(),
         media.MediaType.Video,
       ),
-      this._customMetadata,
+      customMetadata,
     );
-
-    // Clear used custom metadata after starting the session to avoid accidentally reusing it for the next session.
-    this._customMetadata = {};
 
     Promise.resolve(sessionStartPromise)
       .then((result?: { sessionId?: string }) => {
@@ -482,6 +491,10 @@ class AdobeEdgeHandler {
           // The session was ended or superseded while the start request was in flight.
           // Only close the confirmed session if no newer session owns the tracker.
           if (result?.sessionId && !this._sessionStarting && !this._sessionInProgress) {
+            if (this._completeOnConfirm) {
+              this._completeOnConfirm = false;
+              this.sendEvent(EventType.sessionComplete, {}, {});
+            }
             this.sendEvent(EventType.sessionEnd, {}, {});
           }
           return;
@@ -497,7 +510,7 @@ class AdobeEdgeHandler {
           this.logDebug('startSession - started');
         } else {
           this.logDebug('startSession - no sessionId in response');
-          this.retryStartSession(generation, mediaLength, attempt);
+          this.retryStartSession(generation, mediaLength, attempt, customMetadata);
         }
       })
       .catch((error: unknown) => {
@@ -505,11 +518,11 @@ class AdobeEdgeHandler {
           return;
         }
         this.logDebug('startSession - failed', error);
-        this.retryStartSession(generation, mediaLength, attempt);
+        this.retryStartSession(generation, mediaLength, attempt, customMetadata);
       });
   }
 
-  private retryStartSession(generation: number, mediaLength: number, attempt: number) {
+  private retryStartSession(generation: number, mediaLength: number, attempt: number, sessionMetadata: EventMetadata) {
     if (attempt + 1 < MAX_SESSION_START_ATTEMPTS) {
       const delay = SESSION_START_RETRY_DELAY_MS * 2 ** attempt;
       this.logDebug(`retryStartSession - retrying in ${delay}ms (attempt ${attempt + 2}/${MAX_SESSION_START_ATTEMPTS})`);
@@ -518,7 +531,7 @@ class AdobeEdgeHandler {
         if (generation !== this._sessionGeneration) {
           return;
         }
-        this.startSession(mediaLength, attempt + 1);
+        this.startSession(mediaLength, attempt + 1, sessionMetadata);
       }, delay);
     } else {
       // Give up: drop queued events and stay idle, so a later sourcechange or
@@ -567,6 +580,7 @@ class AdobeEdgeHandler {
     this._sessionGeneration++;
     this._sessionStarting = false;
     this._sessionStartAbandoned = false;
+    this._completeOnConfirm = false;
     if (this._sessionStartRetryTimer) {
       clearTimeout(this._sessionStartRetryTimer);
       this._sessionStartRetryTimer = undefined;

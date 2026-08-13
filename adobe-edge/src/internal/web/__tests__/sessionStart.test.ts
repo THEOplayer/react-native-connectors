@@ -194,6 +194,44 @@ describe('AdobeEdgeHandler – session start', () => {
     }
   });
 
+  it('reports the custom metadata on retried session starts', async () => {
+    jest.useFakeTimers();
+    mockTrackSessionStart.mockResolvedValueOnce({}).mockResolvedValue({ sessionId: 'session-4' });
+    const handler = createHandler();
+    handler.updateMetadata({ friendlyName: 'Custom Title', name: 'custom-name', season: '2' } as any);
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+
+    await jest.advanceTimersByTimeAsync(1000);
+    expect(mockTrackSessionStart).toHaveBeenCalledTimes(2);
+
+    const retryCall = mockTrackSessionStart.mock.calls[1] as unknown as unknown[];
+    expect(retryCall[1]).toEqual({ friendlyName: 'Custom Title', name: 'custom-name', season: '2' });
+    const retryMediaObject = mockMedia.createMediaObject.mock.calls[1] as unknown as unknown[];
+    expect(retryMediaObject[0]).toBe('Custom Title');
+    expect(retryMediaObject[1]).toBe('custom-name');
+  });
+
+  it('completes a session that was confirmed after playback ended', async () => {
+    const start = deferred<{ sessionId?: string }>();
+    mockTrackSessionStart.mockReturnValue(start.promise);
+    createHandler();
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    expect(mockTrackSessionStart).toHaveBeenCalledTimes(1);
+
+    // Playback ends before the edge network confirms the session.
+    player.emit('ended');
+
+    start.resolve({ sessionId: 'late-session' });
+    await flushMicrotasks();
+    expect(mockTracker.trackComplete).toHaveBeenCalledTimes(1);
+    expect(mockTracker.trackSessionEnd).toHaveBeenCalledTimes(1);
+  });
+
   it('closes a session that was confirmed after a sourcechange ended it', async () => {
     const start = deferred<{ sessionId?: string }>();
     mockTrackSessionStart.mockReturnValue(start.promise);
