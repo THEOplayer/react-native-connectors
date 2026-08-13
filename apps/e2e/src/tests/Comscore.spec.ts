@@ -1,4 +1,4 @@
-import {TestScope} from 'cavy';
+import {TestScope} from 'react-native-cavynext';
 import {
   ComscoreConfiguration,
   ComscoreConnector,
