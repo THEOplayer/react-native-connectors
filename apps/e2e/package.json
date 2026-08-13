@@ -8,6 +8,7 @@
     "test:e2e:android": "npx cavynext run-android --terminal bash --mode release",
     "test:e2e:ios": "npx cavynext run-ios --terminal bash --scheme ReactNativeTHEOplayer",
     "test:e2e:tvos": "npx cavynext run-ios --terminal bash --scheme ReactNativeTHEOplayer-tvOS",
+    "test:e2e:web": "npx cavynext run-web --boot-timeout 10 --buildCmd \"npx webpack serve --mode development --config web/webpack.config.js\"",
     "android": "npx react-native run-android",
     "android-release": "npx react-native run-android --mode release",
     "ios": "npx react-native run-ios",
