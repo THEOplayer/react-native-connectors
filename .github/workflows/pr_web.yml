@@ -38,3 +38,40 @@ jobs:
 
       - name: Test
         run: npm test
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --workspaces --include-workspace-root
+
+      - name: Build workspaces
+        run: npm run build
+
+      - name: Install & update e2e app with latest react-native-theoplayer
+        working-directory: apps/e2e
+        run: npm install react-native-theoplayer@latest
+
+      - name: Run e2e tests
+        working-directory: apps/e2e
+        env:
+          E2E_HEADLESS: 'true'
+        run: npm run test:e2e:web -- --markdown
+
+      - name: Summarize results
+        working-directory: apps/e2e
+        if: always()
+        run: |
+          if [ -f cavynext_results.md ]; then
+            cat cavynext_results.md >> $GITHUB_STEP_SUMMARY
+          fi
