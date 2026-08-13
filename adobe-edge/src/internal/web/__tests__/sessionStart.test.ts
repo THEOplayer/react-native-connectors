@@ -250,6 +250,27 @@ describe('AdobeEdgeHandler – session start', () => {
     expect(retryMediaObject[1]).toBe('custom-name');
   });
 
+  it('reports the custom metadata again after an abandoned session start', async () => {
+    jest.useFakeTimers();
+    mockTrackSessionStart.mockResolvedValue({});
+    const handler = createHandler();
+    handler.updateMetadata({ friendlyName: 'Custom Title', name: 'custom-name' } as any);
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    await jest.advanceTimersByTimeAsync(10_000);
+    expect(mockTrackSessionStart).toHaveBeenCalledTimes(3);
+
+    // A new session start after giving up must still report the metadata.
+    mockTrackSessionStart.mockResolvedValue({ sessionId: 'session-6' });
+    player.emit('sourcechange');
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+
+    const newCall = mockTrackSessionStart.mock.calls[3] as unknown as unknown[];
+    expect(newCall[1]).toEqual({ friendlyName: 'Custom Title', name: 'custom-name' });
+  });
+
   it('completes a session that was confirmed after playback ended', async () => {
     const start = deferred<{ sessionId?: string }>();
     mockTrackSessionStart.mockReturnValue(start.promise);

@@ -567,6 +567,9 @@ class AdobeEdgeHandler {
       this._sessionStarting = false;
       this._sessionStartAbandoned = true;
       this._eventQueue = [];
+      // Hand the unused metadata snapshot back, so a later session start still reports it.
+      // Metadata set in the meantime takes precedence.
+      this._customMetadata = { ...sessionMetadata, ...this._customMetadata };
     }
   }
 
