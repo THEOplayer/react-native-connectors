@@ -116,14 +116,14 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: npm run test:e2e:android
+          script: npm run test:e2e:android -- --markdown
           working-directory: apps/e2e
 
       - name: Summarize results
         working-directory: apps/e2e
         if: always()
         run: |
-          if [ -f cavy_results.md ]; then
-            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          if [ -f cavynext_results.md ]; then
+            cat cavynext_results.md >> $GITHUB_STEP_SUMMARY
           fi
 

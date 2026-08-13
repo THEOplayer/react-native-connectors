@@ -1,15 +1,15 @@
-import { TestScope } from 'cavy';
+import { TestScope } from 'react-native-cavynext';
 import hls from '../res/hls.json';
-import { getTestPlayer } from '../components/TestableTHEOplayerView';
 import { PlayerEventType, THEOplayer } from 'react-native-theoplayer';
-import { waitForPlayerEventTypes } from '../utils/Actions';
+import { getTestPlayer, waitForPlayerEventTypes } from '../utils/Actions';
+import { Log } from '../utils/Log';
 
 type PlayerFn = (player: THEOplayer) => Promise<void> | void;
 const NoOpPlayerFn: PlayerFn = (_player: THEOplayer) => {};
 
 export function testConnector(spec: TestScope, onCreate: PlayerFn, onUseAPI: PlayerFn, onDestroy: PlayerFn) {
   spec.it('successfully creates the connector, connects to the player, uses API, and cleans up and destroys.', async function () {
-    const player = await getTestPlayer();
+    const player = await getTestPlayer(spec);
 
     // Create connector.
     await onCreate(player);
@@ -25,11 +25,11 @@ export function testConnector(spec: TestScope, onCreate: PlayerFn, onUseAPI: Pla
     // Use connector API
     if (onUseAPI !== NoOpPlayerFn) {
       await onUseAPI(player);
-      console.debug(`[testConnector] Successfully used the connector API.`);
+      Log.debug(`[testConnector] Successfully used the connector API.`);
     }
 
     // Clean-up and destroy connector.
     await onDestroy(player);
-    console.debug(`[testConnector] Successfully destroyed to the connector.`);
+    Log.debug(`[testConnector] Successfully destroyed the connector.`);
   });
 }

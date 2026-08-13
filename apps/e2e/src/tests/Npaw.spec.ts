@@ -1,4 +1,4 @@
-import { TestScope } from 'cavy';
+import { TestScope } from 'react-native-cavynext';
 import { LogLevel, NpawConnector } from '@theoplayer/react-native-analytics-npaw';
 import { THEOplayer } from 'react-native-theoplayer';
 import { testConnector } from './ConnectorUtils';

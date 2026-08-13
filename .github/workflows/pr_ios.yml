@@ -85,12 +85,12 @@ jobs:
 
       - name: Run e2e tests
         working-directory: apps/e2e
-        run: npm run test:e2e:${{ matrix.platform == 'iOS' && 'ios' || 'tvos' }}
+        run: npm run test:e2e:${{ matrix.platform == 'iOS' && 'ios' || 'tvos' }} -- --markdown
 
       - name: Summarize results
         working-directory: apps/e2e
         if: always()
         run: |
-          if [ -f cavy_results.md ]; then
-            cat cavy_results.md >> $GITHUB_STEP_SUMMARY
+          if [ -f cavynext_results.md ]; then
+            cat cavynext_results.md >> $GITHUB_STEP_SUMMARY
           fi

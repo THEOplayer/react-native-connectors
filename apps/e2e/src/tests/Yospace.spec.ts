@@ -1,4 +1,4 @@
-import { TestScope } from 'cavy';
+import { TestScope } from 'react-native-cavynext';
 import { YospaceConnector } from '@theoplayer/react-native-yospace';
 import { testConnector } from './ConnectorUtils';
 import { THEOplayer } from 'react-native-theoplayer';

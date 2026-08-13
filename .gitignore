@@ -69,6 +69,10 @@ lib/
 # TypeDoc
 /api
 manifest.json
-apps/e2e/cavy_results.md
+apps/e2e/cavynext_results.md
+apps/e2e/cavynext_results.json
+apps/e2e/cavynext_results.xml
+# Backup made by the cavynext CLI while the test entry point is swapped in.
+apps/e2e/index.notest.js
 apps/e2e/ios/Pods
 apps/e2e/.env

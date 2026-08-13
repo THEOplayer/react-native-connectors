@@ -1,4 +1,4 @@
-import {TestScope} from 'cavy';
+import {TestScope} from 'react-native-cavynext';
 import {NielsenConnector} from '@theoplayer/react-native-analytics-nielsen';
 import {testConnector} from "./ConnectorUtils";
 import {THEOplayer} from "react-native-theoplayer";
