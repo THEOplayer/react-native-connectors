@@ -232,6 +232,25 @@ describe('AdobeEdgeHandler – session start', () => {
     expect(mockTracker.trackSessionEnd).toHaveBeenCalledTimes(1);
   });
 
+  it('caps the number of events queued while the session start is in flight', async () => {
+    const start = deferred<{ sessionId?: string }>();
+    mockTrackSessionStart.mockReturnValue(start.promise);
+    createHandler();
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    for (let i = 0; i < 600; i++) {
+      emitQualityChanged(i);
+    }
+
+    start.resolve({ sessionId: 'session-5' });
+    await flushMicrotasks();
+
+    // Only the 500 most recent events are kept, the oldest ones are dropped.
+    expect(mockTrackEvent).toHaveBeenCalledTimes(500);
+    expect((mockTrackEvent.mock.calls[0][1] as any).qoeDataDetails.bitrate).toBe(100);
+  });
+
   it('closes a session that was confirmed after a sourcechange ended it', async () => {
     const start = deferred<{ sessionId?: string }>();
     mockTrackSessionStart.mockReturnValue(start.promise);

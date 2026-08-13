@@ -37,6 +37,11 @@ const MAX_SESSION_START_ATTEMPTS = 3;
 const SESSION_START_RETRY_DELAY_MS = 1000;
 
 /**
+ * Maximum number of events queued while waiting for a session start to be confirmed. The oldest events are dropped first.
+ */
+const MAX_EVENT_QUEUE_SIZE = 500;
+
+/**
  * Alloy globally stores clients by name. We are allowed create clients with the same config only once.
  */
 interface ClientDescription {
@@ -254,6 +259,9 @@ class AdobeEdgeHandler {
     if (this._sessionInProgress) {
       this.sendEvent(type, extendedInfo, metadata);
     } else if (!this._sessionStartAbandoned) {
+      if (this._eventQueue.length >= MAX_EVENT_QUEUE_SIZE) {
+        this._eventQueue.shift();
+      }
       this._eventQueue.push({ type, info: extendedInfo, metadata });
     }
   }
