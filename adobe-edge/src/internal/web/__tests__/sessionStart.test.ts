@@ -171,6 +171,42 @@ describe('AdobeEdgeHandler – session start', () => {
     expect(mockTrackSessionStart).toHaveBeenCalledTimes(1);
   });
 
+  it('does not start a session when the media tracker resolves after destroy', async () => {
+    const trackerDeferred = deferred<any>();
+    mockAlloyClient.mockImplementation((command: string) => {
+      if (command === 'getMediaAnalyticsTracker') return trackerDeferred.promise;
+      return Promise.resolve();
+    });
+    const handler = createHandler();
+
+    player.emit('loadedmetadata');
+    handler.destroy();
+
+    trackerDeferred.resolve(mockMedia);
+    await flushMicrotasks();
+    expect(mockTrackSessionStart).not.toHaveBeenCalled();
+  });
+
+  it('catches a rejected media tracker promise', async () => {
+    const onUnhandled = jest.fn();
+    process.on('unhandledRejection', onUnhandled);
+    try {
+      mockAlloyClient.mockImplementation((command: string): any => {
+        if (command === 'getMediaAnalyticsTracker') return Promise.reject(new Error('tracker unavailable'));
+        return Promise.resolve();
+      });
+      createHandler();
+      await flushMicrotasks();
+
+      player.emit('loadedmetadata');
+      await flushMicrotasks();
+      expect(mockTrackSessionStart).not.toHaveBeenCalled();
+      expect(onUnhandled).not.toHaveBeenCalled();
+    } finally {
+      process.off('unhandledRejection', onUnhandled);
+    }
+  });
+
   it('catches tracker event rejections instead of causing unhandled rejections', async () => {
     const onUnhandled = jest.fn();
     process.on('unhandledRejection', onUnhandled);

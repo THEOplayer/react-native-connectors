@@ -85,6 +85,9 @@ class AdobeEdgeHandler {
   /** Whether playback ended while a session start was still in flight; the confirmed session is completed before it is ended */
   private _completeOnConfirm = false;
 
+  /** Whether the handler was destroyed; no new sessions are started afterwards */
+  private _destroyed = false;
+
   /** Incremented on every session start/reset, used to invalidate in-flight starts */
   private _sessionGeneration = 0;
   private _sessionStartRetryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -140,13 +143,20 @@ class AdobeEdgeHandler {
      * Acquire Media Analytics APIs & tracker.
      * https://experienceleague.adobe.com/en/docs/experience-platform/collection/js/commands/getmediaanalyticstracker
      */
-    this._alloyClient('getMediaAnalyticsTracker', {}).then((result: any) => {
-      this._media = result;
-      this._tracker = this._media?.getInstance();
+    this._alloyClient('getMediaAnalyticsTracker', {})
+      .then((result: any) => {
+        if (this._destroyed) {
+          return;
+        }
+        this._media = result;
+        this._tracker = this._media?.getInstance();
 
-      // The player may have dispatched loadedmetadata before the tracker was ready.
-      this.maybeStartSession();
-    });
+        // The player may have dispatched loadedmetadata before the tracker was ready.
+        this.maybeStartSession();
+      })
+      .catch((error: unknown) => {
+        this.logDebug('getMediaAnalyticsTracker failed', error);
+      });
 
     this.setDebug(debugEnabled || false);
   }
@@ -431,6 +441,11 @@ class AdobeEdgeHandler {
       `isPlayingAd: ${isPlayingAd}`,
     );
 
+    if (this._destroyed) {
+      this.logDebug('maybeStartSession - NOT started: handler destroyed');
+      return;
+    }
+
     if (this._sessionInProgress || this._sessionStarting) {
       this.logDebug('maybeStartSession - NOT started: already in progress or starting');
       return;
@@ -606,6 +621,7 @@ class AdobeEdgeHandler {
   destroy() {
     this.maybeEndSession();
     this.removeEventListeners();
+    this._destroyed = true;
   }
 
   setDebug(debug: boolean) {
