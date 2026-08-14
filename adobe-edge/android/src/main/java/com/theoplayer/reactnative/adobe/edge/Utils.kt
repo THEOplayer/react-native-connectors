@@ -10,6 +10,12 @@ fun sanitiseContentLength(mediaLength: Double?): Int {
   return if (mediaLength == Double.POSITIVE_INFINITY) { 86400 } else mediaLength?.toInt() ?: 0
 }
 
+/**
+ * The Adobe VA Edge API only accepts playhead values in the range [0, 86400] seconds.
+ * Values outside this range are rejected with a 400 Bad Request.
+ */
+private const val MAX_PLAYHEAD_SEC = 86400
+
 fun sanitisePlayhead(playhead: Double?, mediaLength: Double?): Int {
   if (playhead == null || mediaLength == null) {
     return 0
@@ -21,7 +27,9 @@ fun sanitisePlayhead(playhead: Double?, mediaLength: Double?): Int {
       60 * (calendar.get(Calendar.MINUTE) +
       60 * calendar.get(Calendar.HOUR_OF_DAY))
   }
-  return playhead.toInt()
+  // Clamp to the range accepted by the Adobe VA Edge API. Some platforms report the playhead of
+  // a live stream as an absolute presentation timestamp, which far exceeds the accepted range.
+  return playhead.toInt().coerceIn(0, MAX_PLAYHEAD_SEC)
 }
 
 fun isValidDuration(v: Double?): Boolean {
