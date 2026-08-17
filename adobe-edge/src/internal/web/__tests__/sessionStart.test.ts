@@ -5,7 +5,7 @@ jest.mock('@adobe/alloy', () => ({
 
 import { AdobeEdgeHandler } from '../AdobeEdgeHandler';
 import { AdobeEdgeWebConfig } from '../../../api/AdobeEdgeWebConfig';
-import { mockAlloyClient, mockMedia, mockTracker, mockTrackEvent, mockTrackSessionStart, setupAlloyMocks } from './mocks/alloy';
+import { createMockTracker, mockAlloyClient, mockMedia, mockTracker, mockTrackEvent, mockTrackSessionStart, setupAlloyMocks } from './mocks/alloy';
 import { makePlayer } from './mocks/player';
 
 // ---------------------------------------------------------------------------
@@ -330,5 +330,42 @@ describe('AdobeEdgeHandler – session start', () => {
     emitQualityChanged();
     await flushMicrotasks();
     expect(mockTrackEvent).not.toHaveBeenCalled();
+  });
+
+  it('closes a late-confirmed session on its own tracker when a new session already started', async () => {
+    // Each session gets its own tracker instance, as alloy's media.getInstance() does.
+    const trackers = [createMockTracker(), createMockTracker()];
+    mockMedia.getInstance.mockImplementation((() => trackers.shift() ?? createMockTracker()) as any);
+    const [trackerA, trackerB] = trackers;
+    const startA = deferred<{ sessionId?: string }>();
+    trackerA.trackSessionStart.mockReturnValue(startA.promise);
+    createHandler();
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    expect(trackerA.trackSessionStart).toHaveBeenCalledTimes(1);
+
+    // The viewer switches source before the first session start is confirmed, and the new source
+    // already starts a second session.
+    player.emit('sourcechange');
+    player.source = { metadata: { title: 'Second Title' } };
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+    expect(trackerB.trackSessionStart).toHaveBeenCalledTimes(1);
+
+    // The first session is confirmed afterwards: it must be ended on its own tracker, leaving the
+    // second session untouched.
+    startA.resolve({ sessionId: 'orphan-session' });
+    await flushMicrotasks();
+    expect(trackerA.trackSessionEnd).toHaveBeenCalledTimes(1);
+    expect(trackerA.destroy).toHaveBeenCalledTimes(1);
+    expect(trackerB.trackSessionEnd).not.toHaveBeenCalled();
+    expect(trackerB.destroy).not.toHaveBeenCalled();
+
+    // Events keep going to the second session.
+    emitQualityChanged();
+    await flushMicrotasks();
+    expect(trackerB.trackEvent).toHaveBeenCalledTimes(1);
+    expect(trackerA.trackEvent).not.toHaveBeenCalled();
   });
 });

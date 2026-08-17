@@ -19,6 +19,28 @@ export const mockTrackEvent = jest.fn((..._args: unknown[]) => Promise.resolve({
 export const mockUpdatePlayhead = jest.fn();
 export const mockTrackSessionStart = jest.fn(() => Promise.resolve<{ sessionId?: string }>({ sessionId: 'test-session-id' }));
 
+export type MockTracker = ReturnType<typeof createMockTracker>;
+
+/**
+ * Create an independent tracker mock, as `media.getInstance()` does for every session.
+ * Use it to give each session its own tracker:
+ * `mockMedia.getInstance.mockImplementation(() => createMockTracker())`.
+ */
+export function createMockTracker() {
+  return {
+    trackSessionStart: jest.fn((..._args: unknown[]): any => Promise.resolve({ sessionId: 'test-session-id' })),
+    trackPlay: jest.fn((): any => Promise.resolve({})),
+    trackPause: jest.fn((): any => Promise.resolve({})),
+    trackSessionEnd: jest.fn((): any => Promise.resolve({})),
+    trackComplete: jest.fn((): any => Promise.resolve({})),
+    trackError: jest.fn((..._args: unknown[]): any => Promise.resolve({})),
+    trackEvent: jest.fn((..._args: unknown[]): any => Promise.resolve({})),
+    updatePlayhead: jest.fn(),
+    updateQoEObject: jest.fn(),
+    destroy: jest.fn(),
+  };
+}
+
 export const mockTracker = {
   trackSessionStart: mockTrackSessionStart,
   trackPlay: jest.fn(() => Promise.resolve({})),

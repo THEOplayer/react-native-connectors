@@ -100,6 +100,8 @@ class AdobeEdgeHandler {
   private _debug = false;
   private readonly _alloyClient: AlloyClient | undefined;
   private _media: Media | undefined;
+
+  /** Tracker of the session that is currently starting or in progress. Each session gets its own instance. */
   private _tracker: MediaTracker | undefined;
 
   constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig, customIdentityMap?: AdobeIdentityMap) {
@@ -149,7 +151,6 @@ class AdobeEdgeHandler {
           return;
         }
         this._media = result;
-        this._tracker = this._media?.getInstance();
 
         // The player may have dispatched loadedmetadata before the tracker was ready.
         this.maybeStartSession();
@@ -232,30 +233,30 @@ class AdobeEdgeHandler {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  private sendEvent(eventType: EventType, info: EventInfo, metadata: EventMetadata) {
+  private sendEvent(eventType: EventType, info: EventInfo, metadata: EventMetadata, tracker: MediaTracker | undefined = this._tracker) {
     if (eventType === EventType.updatePlayhead) {
-      this._tracker?.updatePlayhead(info[PROP_PLAYHEAD]);
+      tracker?.updatePlayhead(info[PROP_PLAYHEAD]);
       return;
     }
     let result: Promise<any> | undefined;
     switch (eventType) {
       case EventType.error:
-        result = this._tracker?.trackError(info[PROP_ERROR_ID] || PROP_NA);
+        result = tracker?.trackError(info[PROP_ERROR_ID] || PROP_NA);
         break;
       case EventType.sessionComplete:
-        result = this._tracker?.trackComplete();
+        result = tracker?.trackComplete();
         break;
       case EventType.sessionEnd:
-        result = this._tracker?.trackSessionEnd();
+        result = tracker?.trackSessionEnd();
         break;
       case EventType.play:
-        result = this._tracker?.trackPlay();
+        result = tracker?.trackPlay();
         break;
       case EventType.pauseStart:
-        result = this._tracker?.trackPause();
+        result = tracker?.trackPause();
         break;
       default:
-        result = this._tracker?.trackEvent(eventType, info, metadata);
+        result = tracker?.trackEvent(eventType, info, metadata);
         break;
     }
     // Tracker methods return promises; catch rejections to avoid unhandled promise rejections.
@@ -461,8 +462,8 @@ class AdobeEdgeHandler {
       return;
     }
 
-    if (!this._tracker || !this._media) {
-      // The tracker is acquired asynchronously; maybeStartSession is retried once it resolves.
+    if (!this._media) {
+      // The media APIs are acquired asynchronously; maybeStartSession is retried once they resolve.
       this.logDebug('maybeStartSession - NOT started: media tracker not yet available');
       return;
     }
@@ -476,13 +477,17 @@ class AdobeEdgeHandler {
    * The session is only marked as 'in progress' once the edge network confirms it
    * (i.e. the returned promise resolves with a sessionId). Until then, events keep
    * queueing. If the session start fails, it is retried a limited number of times.
+   *
+   * Every attempt uses its own tracker instance, so a session whose start is confirmed after it was
+   * superseded can still be ended without touching the session that replaced it.
    */
   private startSession(mediaLength: number, attempt: number, sessionMetadata?: EventMetadata) {
-    const tracker = this._tracker;
     const media = this._media;
-    if (!tracker || !media) {
+    if (!media) {
       return;
     }
+    const tracker = media.getInstance();
+    this._tracker = tracker;
     const generation = ++this._sessionGeneration;
     this._sessionStarting = true;
     this._sessionStartAbandoned = false;
@@ -514,15 +519,16 @@ class AdobeEdgeHandler {
     Promise.resolve(sessionStartPromise)
       .then((result?: { sessionId?: string }) => {
         if (generation !== this._sessionGeneration) {
-          // The session was ended or superseded while the start request was in flight.
-          // Only close the confirmed session if no newer session owns the tracker.
-          if (result?.sessionId && !this._sessionStarting && !this._sessionInProgress) {
+          // The session was ended or superseded while the start request was in flight. Close it on its
+          // own tracker, so it is not left open on the edge network.
+          if (result?.sessionId) {
             if (this._completeOnConfirm) {
               this._completeOnConfirm = false;
-              this.sendEvent(EventType.sessionComplete, {}, {});
+              this.sendEvent(EventType.sessionComplete, {}, {}, tracker);
             }
-            this.sendEvent(EventType.sessionEnd, {}, {});
+            this.sendEvent(EventType.sessionEnd, {}, {}, tracker);
           }
+          this.discardTracker(tracker);
           return;
         }
         if (result?.sessionId) {
@@ -536,16 +542,28 @@ class AdobeEdgeHandler {
           this.logDebug('startSession - started');
         } else {
           this.logDebug('startSession - no sessionId in response');
+          this.discardTracker(tracker);
           this.retryStartSession(generation, mediaLength, attempt, customMetadata);
         }
       })
       .catch((error: unknown) => {
+        this.discardTracker(tracker);
         if (generation !== this._sessionGeneration) {
           return;
         }
         this.logDebug('startSession - failed', error);
         this.retryStartSession(generation, mediaLength, attempt, customMetadata);
       });
+  }
+
+  /**
+   * Destroy a tracker instance that will not be used again, and forget it if it is still the current one.
+   */
+  private discardTracker(tracker: MediaTracker) {
+    if (this._tracker === tracker) {
+      this._tracker = undefined;
+    }
+    tracker.destroy();
   }
 
   private retryStartSession(generation: number, mediaLength: number, attempt: number, sessionMetadata: EventMetadata) {
@@ -605,6 +623,7 @@ class AdobeEdgeHandler {
   reset() {
     this.logDebug('reset');
     // Invalidate any in-flight session start and cancel pending retries.
+    const wasStarting = this._sessionStarting;
     this._sessionGeneration++;
     this._sessionStarting = false;
     this._sessionStartAbandoned = false;
@@ -612,6 +631,13 @@ class AdobeEdgeHandler {
     if (this._sessionStartRetryTimer) {
       clearTimeout(this._sessionStartRetryTimer);
       this._sessionStartRetryTimer = undefined;
+    }
+    if (this._tracker) {
+      // A start that is still in flight owns its tracker: it needs it to end the session once confirmed.
+      if (!wasStarting) {
+        this._tracker.destroy();
+      }
+      this._tracker = undefined;
     }
     this._eventQueue = [];
     this._adBreakPodIndex = 0;
