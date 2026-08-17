@@ -15,16 +15,39 @@ export const mockCreateQoEObject = jest.fn((bitrate: number, droppedFrames: numb
   timeToStart: startupTime,
 }));
 
-export const mockTrackEvent = jest.fn();
+export const mockTrackEvent = jest.fn((..._args: unknown[]) => Promise.resolve({}));
 export const mockUpdatePlayhead = jest.fn();
+export const mockTrackSessionStart = jest.fn(() => Promise.resolve<{ sessionId?: string }>({ sessionId: 'test-session-id' }));
+
+export type MockTracker = ReturnType<typeof createMockTracker>;
+
+/**
+ * Create an independent tracker mock, as `media.getInstance()` does for every session.
+ * Use it to give each session its own tracker:
+ * `mockMedia.getInstance.mockImplementation(() => createMockTracker())`.
+ */
+export function createMockTracker() {
+  return {
+    trackSessionStart: jest.fn((..._args: unknown[]): any => Promise.resolve({ sessionId: 'test-session-id' })),
+    trackPlay: jest.fn((): any => Promise.resolve({})),
+    trackPause: jest.fn((): any => Promise.resolve({})),
+    trackSessionEnd: jest.fn((): any => Promise.resolve({})),
+    trackComplete: jest.fn((): any => Promise.resolve({})),
+    trackError: jest.fn((..._args: unknown[]): any => Promise.resolve({})),
+    trackEvent: jest.fn((..._args: unknown[]): any => Promise.resolve({})),
+    updatePlayhead: jest.fn(),
+    updateQoEObject: jest.fn(),
+    destroy: jest.fn(),
+  };
+}
 
 export const mockTracker = {
-  trackSessionStart: jest.fn(),
-  trackPlay: jest.fn(),
-  trackPause: jest.fn(),
-  trackSessionEnd: jest.fn(),
-  trackComplete: jest.fn(),
-  trackError: jest.fn(),
+  trackSessionStart: mockTrackSessionStart,
+  trackPlay: jest.fn(() => Promise.resolve({})),
+  trackPause: jest.fn(() => Promise.resolve({})),
+  trackSessionEnd: jest.fn(() => Promise.resolve({})),
+  trackComplete: jest.fn(() => Promise.resolve({})),
+  trackError: jest.fn(() => Promise.resolve({})),
   trackEvent: mockTrackEvent,
   updatePlayhead: mockUpdatePlayhead,
   updateQoEObject: jest.fn(),
@@ -67,6 +90,13 @@ export function setupAlloyMocks() {
     if (command === 'getMediaAnalyticsTracker') return Promise.resolve(mockMedia);
     return Promise.resolve();
   });
+  mockTrackSessionStart.mockResolvedValue({ sessionId: 'test-session-id' });
+  mockTrackEvent.mockResolvedValue({});
+  mockTracker.trackPlay.mockResolvedValue({});
+  mockTracker.trackPause.mockResolvedValue({});
+  mockTracker.trackSessionEnd.mockResolvedValue({});
+  mockTracker.trackComplete.mockResolvedValue({});
+  mockTracker.trackError.mockResolvedValue({});
   mockCreateQoEObject.mockImplementation((bitrate: number, droppedFrames: number, fps: number, startupTime: number) => ({
     bitrate,
     droppedFrames,
