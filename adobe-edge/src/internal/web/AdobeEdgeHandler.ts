@@ -104,6 +104,9 @@ class AdobeEdgeHandler {
   /** Tracker of the session that is currently starting or in progress. Each session gets its own instance. */
   private _tracker: MediaTracker | undefined;
 
+  /** Resolves once the events sent on the current tracker were dispatched, so it is not destroyed too early. */
+  private _pendingEvents: Promise<unknown> = Promise.resolve();
+
   constructor(player: ChromelessPlayer, config: AdobeEdgeWebConfig, customIdentityMap?: AdobeIdentityMap) {
     this._player = player;
     this._customIdentityMap = customIdentityMap;
@@ -233,10 +236,20 @@ class AdobeEdgeHandler {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  private sendEvent(eventType: EventType, info: EventInfo, metadata: EventMetadata, tracker: MediaTracker | undefined = this._tracker) {
+  /**
+   * Send an event on the given tracker, defaulting to the tracker of the current session.
+   *
+   * @returns a promise that resolves once the event was dispatched (or failed).
+   */
+  private sendEvent(
+    eventType: EventType,
+    info: EventInfo,
+    metadata: EventMetadata,
+    tracker: MediaTracker | undefined = this._tracker,
+  ): Promise<unknown> {
     if (eventType === EventType.updatePlayhead) {
       tracker?.updatePlayhead(info[PROP_PLAYHEAD]);
-      return;
+      return Promise.resolve();
     }
     let result: Promise<any> | undefined;
     switch (eventType) {
@@ -260,9 +273,13 @@ class AdobeEdgeHandler {
         break;
     }
     // Tracker methods return promises; catch rejections to avoid unhandled promise rejections.
-    Promise.resolve(result).catch((error: unknown) => {
+    const dispatched = Promise.resolve(result).catch((error: unknown) => {
       this.logDebug(`sendEvent(${eventType}) failed`, error);
     });
+    if (tracker === this._tracker) {
+      this._pendingEvents = this._pendingEvents.then(() => dispatched);
+    }
+    return dispatched;
   }
 
   private queueOrSendEvent(type: EventType, info: EventInfo = {}, metadata: EventMetadata = {}) {
@@ -488,6 +505,7 @@ class AdobeEdgeHandler {
     }
     const tracker = media.getInstance();
     this._tracker = tracker;
+    this._pendingEvents = Promise.resolve();
     const generation = ++this._sessionGeneration;
     this._sessionStarting = true;
     this._sessionStartAbandoned = false;
@@ -521,14 +539,15 @@ class AdobeEdgeHandler {
         if (generation !== this._sessionGeneration) {
           // The session was ended or superseded while the start request was in flight. Close it on its
           // own tracker, so it is not left open on the edge network.
+          let closed: Promise<unknown> = Promise.resolve();
           if (result?.sessionId) {
             if (this._completeOnConfirm) {
               this._completeOnConfirm = false;
-              this.sendEvent(EventType.sessionComplete, {}, {}, tracker);
+              closed = this.sendEvent(EventType.sessionComplete, {}, {}, tracker);
             }
-            this.sendEvent(EventType.sessionEnd, {}, {}, tracker);
+            closed = closed.then(() => this.sendEvent(EventType.sessionEnd, {}, {}, tracker));
           }
-          this.discardTracker(tracker);
+          this.discardTracker(tracker, closed);
           return;
         }
         if (result?.sessionId) {
@@ -558,12 +577,16 @@ class AdobeEdgeHandler {
 
   /**
    * Destroy a tracker instance that will not be used again, and forget it if it is still the current one.
+   *
+   * Destroying resets the tracker's internal state, which pending events still need to build their
+   * payload, so it is postponed until those events were dispatched.
    */
-  private discardTracker(tracker: MediaTracker) {
+  private discardTracker(tracker: MediaTracker, pendingEvents: Promise<unknown> = Promise.resolve()) {
     if (this._tracker === tracker) {
       this._tracker = undefined;
+      this._pendingEvents = Promise.resolve();
     }
-    tracker.destroy();
+    pendingEvents.then(() => tracker.destroy()).catch(() => tracker.destroy());
   }
 
   private retryStartSession(generation: number, mediaLength: number, attempt: number, sessionMetadata: EventMetadata) {
@@ -634,10 +657,12 @@ class AdobeEdgeHandler {
     }
     if (this._tracker) {
       // A start that is still in flight owns its tracker: it needs it to end the session once confirmed.
-      if (!wasStarting) {
-        this._tracker.destroy();
+      if (wasStarting) {
+        this._tracker = undefined;
+        this._pendingEvents = Promise.resolve();
+      } else {
+        this.discardTracker(this._tracker, this._pendingEvents);
       }
-      this._tracker = undefined;
     }
     this._eventQueue = [];
     this._adBreakPodIndex = 0;

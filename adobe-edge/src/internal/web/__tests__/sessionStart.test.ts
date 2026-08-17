@@ -368,4 +368,26 @@ describe('AdobeEdgeHandler – session start', () => {
     expect(trackerB.trackEvent).toHaveBeenCalledTimes(1);
     expect(trackerA.trackEvent).not.toHaveBeenCalled();
   });
+
+  it('destroys the tracker only after the session end event was dispatched', async () => {
+    const tracker = createMockTracker();
+    mockMedia.getInstance.mockImplementation((() => tracker) as any);
+    const sessionEnd = deferred<unknown>();
+    tracker.trackSessionEnd.mockReturnValue(sessionEnd.promise);
+    createHandler();
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+
+    player.emit('sourcechange');
+    await flushMicrotasks();
+    expect(tracker.trackSessionEnd).toHaveBeenCalledTimes(1);
+    // Destroying resets the tracker state the pending event still needs.
+    expect(tracker.destroy).not.toHaveBeenCalled();
+
+    sessionEnd.resolve({});
+    await flushMicrotasks();
+    expect(tracker.destroy).toHaveBeenCalledTimes(1);
+  });
 });
