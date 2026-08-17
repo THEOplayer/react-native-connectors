@@ -508,11 +508,15 @@ class AdobeEdgeHandler {
         return MediaConstants.StreamType.LIVE
     }
     
+    /// The Adobe VA Edge API only accepts playhead values in the range [0, 86400] seconds.
+    /// Values outside this range are rejected with a 400 Bad Request.
+    private static let maxPlayheadSec: Double = 86400
+
     private func sanitisePlayhead(playhead: Double?, mediaLength: Double?) -> Int {
-        guard let playhead = playhead, let mediaLength = mediaLength else {
+        guard let playhead = playhead, let mediaLength = mediaLength, !playhead.isNaN else {
             return 0
         }
-        
+
         if mediaLength == Double.infinity {
             // If content is live, the playhead must be the current second of the day.
             let now = Date()
@@ -524,8 +528,10 @@ class AdobeEdgeHandler {
 
             return seconds
         }
-        
-        return Int(playhead)
+
+        // Clamp to the range accepted by the Adobe VA Edge API. Some platforms report the playhead
+        // of a live stream as an absolute presentation timestamp, which far exceeds the accepted range.
+        return Int(min(Self.maxPlayheadSec, max(0, playhead)))
     }
     
     private func sanitiseContentLength(_ mediaLength: Double?) -> Int {
