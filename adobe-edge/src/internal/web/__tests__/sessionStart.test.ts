@@ -369,6 +369,61 @@ describe('AdobeEdgeHandler – session start', () => {
     expect(trackerA.trackEvent).not.toHaveBeenCalled();
   });
 
+  it('retries when the session start throws synchronously', async () => {
+    jest.useFakeTimers();
+    mockTrackSessionStart.mockImplementationOnce(() => {
+      throw new Error('alloy blew up');
+    });
+    createHandler();
+    await flushMicrotasks();
+
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+    expect(mockTrackSessionStart).toHaveBeenCalledTimes(1);
+
+    // The handler is not stuck in 'starting': the start is retried and can succeed.
+    await jest.advanceTimersByTimeAsync(1000);
+    expect(mockTrackSessionStart).toHaveBeenCalledTimes(2);
+
+    emitQualityChanged();
+    await flushMicrotasks();
+    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it('completes only the session whose playback ended, not another late-confirmed one', async () => {
+    // Each session gets its own tracker instance, as alloy's media.getInstance() does.
+    const trackers = [createMockTracker(), createMockTracker()];
+    mockMedia.getInstance.mockImplementation((() => trackers.shift() ?? createMockTracker()) as any);
+    const [trackerA, trackerB] = trackers;
+    const startA = deferred<{ sessionId?: string }>();
+    const startB = deferred<{ sessionId?: string }>();
+    trackerA.trackSessionStart.mockReturnValue(startA.promise);
+    trackerB.trackSessionStart.mockReturnValue(startB.promise);
+    createHandler();
+    await flushMicrotasks();
+
+    // Session A is superseded by a new source before it is confirmed: it never finished playback.
+    player.emit('loadedmetadata');
+    player.emit('sourcechange');
+    player.source = { metadata: { title: 'Second Title' } };
+    player.emit('loadedmetadata');
+    await flushMicrotasks();
+    expect(trackerB.trackSessionStart).toHaveBeenCalledTimes(1);
+
+    // Playback of session B reaches the end while its start is still in flight.
+    player.emit('ended');
+
+    startA.resolve({ sessionId: 'session-a' });
+    await flushMicrotasks();
+    expect(trackerA.trackSessionEnd).toHaveBeenCalledTimes(1);
+    expect(trackerA.trackComplete).not.toHaveBeenCalled();
+
+    startB.resolve({ sessionId: 'session-b' });
+    await flushMicrotasks();
+    expect(trackerB.trackComplete).toHaveBeenCalledTimes(1);
+    expect(trackerB.trackSessionEnd).toHaveBeenCalledTimes(1);
+  });
+
   it('destroys the tracker only after the session end event was dispatched', async () => {
     const tracker = createMockTracker();
     mockMedia.getInstance.mockImplementation((() => tracker) as any);

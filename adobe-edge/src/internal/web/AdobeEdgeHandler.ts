@@ -82,8 +82,8 @@ class AdobeEdgeHandler {
   /** Whether session start was abandoned after exhausting all retries; events are dropped until a new start is attempted */
   private _sessionStartAbandoned = false;
 
-  /** Whether playback ended while a session start was still in flight; the confirmed session is completed before it is ended */
-  private _completeOnConfirm = false;
+  /** Generation of the session whose playback ended while its start was still in flight; it is completed before it is ended */
+  private _completeOnConfirmGeneration: number | undefined;
 
   /** Whether the handler was destroyed; no new sessions are started afterwards */
   private _destroyed = false;
@@ -327,10 +327,10 @@ class AdobeEdgeHandler {
     this.logDebug('onEnded');
     this.queueOrSendEvent(EventType.sessionComplete);
     // The session may still be starting, in which case the queued completion is dropped by reset().
-    // Remember it so the session is completed once the edge network confirms it.
-    const completeOnConfirm = this._sessionStarting && !this._sessionInProgress;
+    // Remember which session it was, so only that one is completed once the edge network confirms it.
+    const completeOnConfirmGeneration = this._sessionStarting && !this._sessionInProgress ? this._sessionGeneration : undefined;
     this.reset();
-    this._completeOnConfirm = completeOnConfirm;
+    this._completeOnConfirmGeneration = completeOnConfirmGeneration;
   };
 
   private handleSourceChange = () => {
@@ -503,7 +503,14 @@ class AdobeEdgeHandler {
     if (!media) {
       return;
     }
-    const tracker = media.getInstance();
+    let tracker: MediaTracker;
+    try {
+      tracker = media.getInstance();
+    } catch (error) {
+      // Leave the handler untouched, so a later loadedmetadata can still start a session.
+      this.logDebug('startSession - could not create a tracker', error);
+      return;
+    }
     this._tracker = tracker;
     this._pendingEvents = Promise.resolve();
     const generation = ++this._sessionGeneration;
@@ -523,16 +530,25 @@ class AdobeEdgeHandler {
       ...this._player?.source?.metadata,
       ...customMetadata,
     };
-    const sessionStartPromise = tracker.trackSessionStart(
-      media.createMediaObject(
-        mergedMetadata.friendlyName || mergedMetadata.title || PROP_NA,
-        mergedMetadata.name || mergedMetadata.id || PROP_NA,
-        mediaLength,
-        this.getContentType(),
-        media.MediaType.Video,
-      ),
-      customMetadata,
-    );
+    let sessionStartPromise: Promise<any> | undefined;
+    try {
+      sessionStartPromise = tracker.trackSessionStart(
+        media.createMediaObject(
+          mergedMetadata.friendlyName || mergedMetadata.title || PROP_NA,
+          mergedMetadata.name || mergedMetadata.id || PROP_NA,
+          mediaLength,
+          this.getContentType(),
+          media.MediaType.Video,
+        ),
+        customMetadata,
+      );
+    } catch (error) {
+      // A synchronous failure must not leave the handler stuck in 'starting' forever.
+      this.logDebug('startSession - failed', error);
+      this.discardTracker(tracker);
+      this.retryStartSession(generation, mediaLength, attempt, customMetadata);
+      return;
+    }
 
     Promise.resolve(sessionStartPromise)
       .then((result?: { sessionId?: string }) => {
@@ -541,8 +557,8 @@ class AdobeEdgeHandler {
           // own tracker, so it is not left open on the edge network.
           let closed: Promise<unknown> = Promise.resolve();
           if (result?.sessionId) {
-            if (this._completeOnConfirm) {
-              this._completeOnConfirm = false;
+            if (this._completeOnConfirmGeneration === generation) {
+              this._completeOnConfirmGeneration = undefined;
               closed = this.sendEvent(EventType.sessionComplete, {}, {}, tracker);
             }
             closed = closed.then(() => this.sendEvent(EventType.sessionEnd, {}, {}, tracker));
@@ -650,7 +666,7 @@ class AdobeEdgeHandler {
     this._sessionGeneration++;
     this._sessionStarting = false;
     this._sessionStartAbandoned = false;
-    this._completeOnConfirm = false;
+    this._completeOnConfirmGeneration = undefined;
     if (this._sessionStartRetryTimer) {
       clearTimeout(this._sessionStartRetryTimer);
       this._sessionStartRetryTimer = undefined;
