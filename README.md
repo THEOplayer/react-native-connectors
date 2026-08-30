@@ -24,6 +24,30 @@ the official THEOplayer React Native video player.
 | Yospace SSAI                                              | [![%40theoplayer/react-native-yospace](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-yospace?label=%40theoplayer/react-native-yospace=)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-yospace)                                               | [`Yospace`](https://github.com/THEOplayer/react-native-connectors/tree/main/yospace)       |
 | Youbora analytics                                         | [![%40theoplayer/react-native-analytics-youbora](https://img.shields.io/npm/v/%40theoplayer%2Freact-native-analytics-youbora?label=%40theoplayer/react-native-analytics-youbora=)](https://www.npmjs.com/package/%40theoplayer%2Freact-native-analytics-youbora)       | [`Youbora`](https://github.com/THEOplayer/react-native-connectors/tree/main/youbora)       |
 
+## Bundling for web with webpack
+
+On web, the connectors delegate to their [web connector](https://github.com/THEOplayer/web-connectors)
+counterpart, which is published as a `"type": "module"` package. webpack therefore treats its bundles
+as strict ES modules, in which `exports`, `module` and `require` do not exist.
+
+React Native apps commonly run `babel-loader` with `@react-native/babel-preset` over their
+dependencies, to compile React Native packages that are published as untranspiled source. That preset
+rewrites `import`/`export` statements to CommonJS, which makes those web connector bundles fail at
+runtime with `Uncaught ReferenceError: exports is not defined`.
+
+Keep the ES module syntax intact and let webpack handle it:
+
+```js
+{
+  loader: 'babel-loader',
+  options: {
+    presets: [['module:@react-native/babel-preset', { disableImportExportTransform: true }]],
+  },
+}
+```
+
+See [`apps/e2e/web/webpack.config.js`](apps/e2e/web/webpack.config.js) for a complete example.
+
 ## License
 
 The contents of this package are subject to the [THEOplayer license](https://www.theoplayer.com/terms).
