@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-gemius
 
+## 1.5.1
+
+### 🐛 Issues
+
+- Fixed a compilation error on iOS with THEOplayer SDK 11, where the `Ad.adBreak` property became optional.
+
 ## 1.5.0
 
 ### ✨ Features

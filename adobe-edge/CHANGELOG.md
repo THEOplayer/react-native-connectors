@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.3.2
+
+### 🐛 Issues
+
+- Upgraded @adobe/alloy dependency to v2.35.0.
+
 ## 1.3.1
 
 ### 🐛 Issues
