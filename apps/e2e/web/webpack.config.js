@@ -76,13 +76,16 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin({
 // /.*@theoplayer\/.*\.js$/ : process all js files from @theoplayer packages to apply the root import alias. This is only needed for this example.
 const babelLoaderConfiguration = {
   test: [/\.tsx?$/, /.*@theoplayer\/.*\.js$/],
-  exclude: [/\.d\.ts$/, /cmcd-connector\.esm\.js$/, /conviva-connector\.esm\.js$/],
+  exclude: [/\.d\.ts$/],
   use: {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
-      // The 'metro-react-native-babel-preset' preset is recommended to match React Native's packager
-      presets: ['module:@react-native/babel-preset'],
+      // The 'metro-react-native-babel-preset' preset is recommended to match React Native's packager.
+      // Leave import/export statements alone: the web connectors are published as `"type": "module"`
+      // packages, so webpack treats their bundles as strict ESM and rewriting them to CommonJS
+      // fails at runtime with "exports is not defined".
+      presets: [['module:@react-native/babel-preset', { disableImportExportTransform: true }]],
       // Re-write paths to import only the modules needed by the app
       plugins: ['react-native-web'],
     },
