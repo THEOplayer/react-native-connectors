@@ -97,13 +97,12 @@ public class GemiusAdapter {
       }
       let computedVolume = welf.player.muted ? -1 : Int(welf.player.volume * 100)
       if let currentAd = welf.currentAd, let id = currentAd.id {
-        let adBreak = currentAd.adBreak
-        let offset = adBreak.timeOffset
+        let offset = currentAd.adBreak?.timeOffset ?? 0
         let adEventData = GSMEventAdData()
         adEventData.adDuration = NSNumber(value: currentAd.duration ?? 0)
         adEventData.autoPlay = welf.player.autoplay ? 1 : 0
         adEventData.adPosition = NSNumber(value: welf.adCount)
-        adEventData.breakSize = NSNumber(value: adBreak.ads.count)
+        adEventData.breakSize = NSNumber(value: currentAd.adBreak?.ads.count ?? 0)
         adEventData.volume = NSNumber(value: computedVolume)
         welf.gsmPlayer.adEvent(.PLAY, forProgram: welf.programId, forAd: id, atOffset: NSNumber(value: offset), with: adEventData)
       } else {
@@ -159,10 +158,9 @@ public class GemiusAdapter {
       let computedVolume = welf.player.muted ? -1 : Int(welf.player.volume * 100)
       let programId = welf.programId
       if let currentAd = welf.currentAd, let id = currentAd.id {
-        let adBreak = currentAd.adBreak
         let adEventData = GSMEventAdData()
         adEventData.volume = NSNumber(value: computedVolume)
-        welf.gsmPlayer.adEvent(.CHANGE_VOL, forProgram: programId, forAd: id, atOffset: NSNumber(value: adBreak.timeOffset), with: adEventData)
+        welf.gsmPlayer.adEvent(.CHANGE_VOL, forProgram: programId, forAd: id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: adEventData)
       } else {
         let programEventData = GSMEventProgramData()
         programEventData.volume = NSNumber(value: computedVolume)
@@ -178,10 +176,9 @@ public class GemiusAdapter {
         let height = welf.player.videoHeight
         let width = welf.player.videoWidth
         if let currentAd = welf.currentAd, let id = currentAd.id {
-          let adBreak = currentAd.adBreak
           let adEventData = GSMEventAdData()
           adEventData.quality = "\(width)x\(height)"
-          welf.gsmPlayer.adEvent(.CHANGE_QUAL, forProgram: programId, forAd: id, atOffset: NSNumber(value: adBreak.timeOffset), with: adEventData)
+          welf.gsmPlayer.adEvent(.CHANGE_QUAL, forProgram: programId, forAd: id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: adEventData)
         } else {
           let programEventData = GSMEventProgramData()
           programEventData.quality = "\(width)x\(height)"
@@ -321,13 +318,12 @@ public class GemiusAdapter {
     }
     let computedVolume = player.muted ? -1 : Int(player.volume * 100)
     if let currentAd = self.currentAd, let id = currentAd.id {
-      let adBreak = currentAd.adBreak
-      let offset = adBreak.timeOffset
+      let offset = currentAd.adBreak?.timeOffset ?? 0
       let adEventData = GSMEventAdData()
       adEventData.adDuration = NSNumber(value: currentAd.duration ?? 0)
       adEventData.autoPlay = self.player.autoplay ? 1 : 0
       adEventData.adPosition = NSNumber(value: self.adCount)
-      adEventData.breakSize = NSNumber(value: adBreak.ads.count)
+      adEventData.breakSize = NSNumber(value: currentAd.adBreak?.ads.count ?? 0)
       adEventData.volume = NSNumber(value: computedVolume)
       self.gsmPlayer.adEvent(.PLAY, forProgram: self.programId, forAd: id, atOffset: NSNumber(value: offset), with: adEventData)
     } else {
@@ -384,7 +380,7 @@ public class GemiusAdapter {
   private func reportBasicEvent(event: GemiusSDK.GSMEventType) {
     guard let programId = self.programId else { return }
     if let currentAd =  self.currentAd {
-      self.gsmPlayer.adEvent(event, forProgram: programId, forAd: currentAd.id, atOffset: NSNumber(value: currentAd.adBreak.timeOffset), with: nil)
+      self.gsmPlayer.adEvent(event, forProgram: programId, forAd: currentAd.id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: nil)
       
     } else {
       self.gsmPlayer.program(event, forProgram: programId, atOffset: NSNumber(value: player.currentTime), with: nil)
