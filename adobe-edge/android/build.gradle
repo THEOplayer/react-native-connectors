@@ -20,7 +20,11 @@ def isNewArchitectureEnabled() {
 
 plugins {
   id 'com.android.library'
-  id 'kotlin-android'
+}
+
+// AGP 9+ built-in Kotlin already registers the 'kotlin' extension.
+if (project.extensions.findByName('kotlin') == null) {
+  apply plugin: 'kotlin-android'
 }
 
 if (isNewArchitectureEnabled()) {
