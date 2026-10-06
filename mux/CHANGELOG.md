@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.14.1
+
+### 🐛 Issues
+
+- Fixed a Gradle configuration failure on Android Gradle Plugin 9, where the connector's explicit `kotlin-android` plugin collided with AGP's built-in Kotlin support and failed with `Cannot add extension with name 'kotlin'`. The plugin is now applied only when nothing has registered the `kotlin` extension yet, so AGP 8 is unaffected.
+
 ## 1.14.0
 
 ### ✨ Features
