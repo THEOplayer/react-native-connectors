@@ -76,7 +76,9 @@ repositories {
 def theoplayer_sdk_version = safeExtGet('THEOplayer_sdk', '[10.0.0, 12.0.0)')
 
 def kotlin_version = safeExtGet("THEOplayerComscore_kotlinVersion", "2.2.10")
-def comscore_version = safeExtGet("THEOplayerComscore_comscoreVersion", "6.+")
+// Cap at 6.15.x: comscore 6.16.0 declares minCompileSdk=37, which exceeds the compileSdk
+// supported by current Android Gradle plugin versions.
+def comscore_version = safeExtGet("THEOplayerComscore_comscoreVersion", "6.15.+")
 
 dependencies {
   // For < 0.71, this will be from the local maven repo
