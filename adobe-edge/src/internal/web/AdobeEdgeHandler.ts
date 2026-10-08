@@ -40,6 +40,8 @@ const SESSION_START_RETRY_DELAY_MS = 1000;
  * Maximum number of events queued while waiting for a session start to be confirmed. The oldest events are dropped first.
  */
 const MAX_EVENT_QUEUE_SIZE = 500;
+const MAX_RESUME_GAP_MS = 9 * 60 * 1000;
+const MAX_SESSION_AGE_MS = (24 * 60 - 1) * 60 * 1000;
 
 /**
  * Alloy globally stores clients by name. We are allowed create clients with the same config only once.
@@ -100,6 +102,12 @@ class AdobeEdgeHandler {
   private _debug = false;
   private readonly _alloyClient: AlloyClient | undefined;
   private _media: Media | undefined;
+  private _lastActivityAt = Date.now();
+  private _suspendedAt = typeof document !== 'undefined' && document.visibilityState === 'hidden' ? Date.now() : undefined;
+  private _sessionStartedAt: number | undefined;
+  private _sessionMetadata: EventMetadata = {};
+  private _resumePending = false;
+  private _retiredTrackers = new WeakSet<MediaTracker>();
 
   /** Tracker of the session that is currently starting or in progress. Each session gets its own instance. */
   private _tracker: MediaTracker | undefined;
@@ -211,6 +219,13 @@ class AdobeEdgeHandler {
     this._player.ads?.addEventListener('adend', this.handleAdEnd);
     this._player.ads?.addEventListener('adskip', this.handleAdSkip);
     window.addEventListener('beforeunload', this.onBeforeUnload);
+    window.addEventListener('pagehide', this.onSuspend);
+    window.addEventListener('pageshow', this.onResume);
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
+      document.addEventListener('freeze', this.onSuspend);
+      document.addEventListener('resume', this.onResume);
+    }
   }
 
   private removeEventListeners() {
@@ -234,6 +249,13 @@ class AdobeEdgeHandler {
     this._player.ads?.removeEventListener('adend', this.handleAdEnd);
     this._player.ads?.removeEventListener('adskip', this.handleAdSkip);
     window.removeEventListener('beforeunload', this.onBeforeUnload);
+    window.removeEventListener('pagehide', this.onSuspend);
+    window.removeEventListener('pageshow', this.onResume);
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('visibilitychange', this.onVisibilityChange);
+      document.removeEventListener('freeze', this.onSuspend);
+      document.removeEventListener('resume', this.onResume);
+    }
   }
 
   /**
@@ -283,6 +305,18 @@ class AdobeEdgeHandler {
   }
 
   private queueOrSendEvent(type: EventType, info: EventInfo = {}, metadata: EventMetadata = {}) {
+    this.checkSessionFreshness();
+    if (this._destroyed || this._suspendedAt !== undefined) {
+      return;
+    }
+    if (this._resumePending) {
+      if (type === EventType.play || type === EventType.updatePlayhead) {
+        this.maybeStartSession();
+      }
+      if (this._resumePending || type === EventType.play) {
+        return;
+      }
+    }
     const extendedInfo = { ...info, [PROP_PLAYHEAD]: sanitisePlayhead(this._player.currentTime, this._player.duration) };
     if (this._sessionInProgress) {
       this.sendEvent(type, extendedInfo, metadata);
@@ -293,6 +327,71 @@ class AdobeEdgeHandler {
       this._eventQueue.push({ type, info: extendedInfo, metadata });
     }
   }
+
+  private checkSessionFreshness() {
+    const now = Date.now();
+    const lastActivity = this._suspendedAt ?? this._lastActivityAt;
+    if (
+      this._sessionStartedAt !== undefined &&
+      (now < lastActivity || now - lastActivity >= MAX_RESUME_GAP_MS || now - this._sessionStartedAt >= MAX_SESSION_AGE_MS)
+    ) {
+      this.retireSession();
+    }
+    if (this._suspendedAt === undefined) {
+      this._lastActivityAt = now;
+    }
+  }
+
+  private retireSession() {
+    const metadata = this._sessionMetadata;
+    if (this._tracker) {
+      this._retiredTrackers.add(this._tracker);
+      this._tracker.destroy();
+      this._tracker = undefined;
+      this._pendingEvents = Promise.resolve();
+    }
+    this.reset();
+    this._sessionMetadata = metadata;
+    this._resumePending = true;
+  }
+
+  private flushQueuedEvents() {
+    if (this._suspendedAt !== undefined || !this._sessionInProgress) {
+      return;
+    }
+    const events = this._eventQueue;
+    this._eventQueue = [];
+    events.forEach((event) => this.sendEvent(event.type, event.info, event.metadata));
+  }
+
+  private onSuspend = () => {
+    this._suspendedAt ??= Date.now();
+  };
+
+  private onResume = () => {
+    if (this._destroyed || (typeof document !== 'undefined' && document.visibilityState === 'hidden')) {
+      return;
+    }
+    const wasSuspended = this._suspendedAt !== undefined;
+    this.checkSessionFreshness();
+    this._suspendedAt = undefined;
+    this._lastActivityAt = Date.now();
+    if (this._resumePending) {
+      this.maybeStartSession();
+    } else if (wasSuspended && this._sessionInProgress) {
+      this.flushQueuedEvents();
+      this.queueOrSendEvent(EventType.updatePlayhead);
+      this.queueOrSendEvent(this._player.paused ? EventType.pauseStart : EventType.play);
+    }
+  };
+
+  private onVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      this.onSuspend();
+    } else {
+      this.onResume();
+    }
+  };
 
   private handlePlaying = () => {
     this.logDebug('onPlaying');
@@ -446,6 +545,16 @@ class AdobeEdgeHandler {
    * @private
    */
   private maybeStartSession(mediaLengthSec?: number) {
+    this.checkSessionFreshness();
+    if (this._suspendedAt !== undefined) {
+      if (!this._sessionInProgress && !this._sessionStarting) {
+        this._resumePending = true;
+      }
+      return;
+    }
+    if (this._player.ended || (this._resumePending && this._player.paused)) {
+      return;
+    }
     const mediaLength = this.getContentLength(mediaLengthSec);
     const hasValidSource = this._player.source !== undefined;
     const hasValidDuration = isValidDuration(mediaLength);
@@ -485,7 +594,12 @@ class AdobeEdgeHandler {
       return;
     }
 
+    const resuming = this._resumePending;
     this.startSession(mediaLength, 0);
+    if (resuming && this._sessionStarting) {
+      this.queueOrSendEvent(EventType.updatePlayhead);
+      this.queueOrSendEvent(EventType.play);
+    }
   }
 
   /**
@@ -516,14 +630,19 @@ class AdobeEdgeHandler {
     const generation = ++this._sessionGeneration;
     this._sessionStarting = true;
     this._sessionStartAbandoned = false;
+    this._sessionStartedAt = Date.now();
+    this._lastActivityAt = this._sessionStartedAt;
 
     // Take a snapshot of the custom metadata on the first attempt, so retries report the same metadata.
     let customMetadata = sessionMetadata;
     if (customMetadata === undefined) {
-      customMetadata = this._customMetadata;
+      customMetadata = { ...(this._resumePending ? this._sessionMetadata : {}), ...this._customMetadata };
       // Clear used custom metadata to avoid accidentally reusing it for the next session.
       this._customMetadata = {};
     }
+
+    this._sessionMetadata = { ...customMetadata };
+    this._resumePending = false;
 
     // Allow overriding metadata with custom metadata set via updateMetadata().
     const mergedMetadata = {
@@ -552,6 +671,9 @@ class AdobeEdgeHandler {
 
     Promise.resolve(sessionStartPromise)
       .then((result?: { sessionId?: string }) => {
+        if (this._retiredTrackers.has(tracker)) {
+          return;
+        }
         if (generation !== this._sessionGeneration) {
           // The session was ended or superseded while the start request was in flight. Close it on its
           // own tracker, so it is not left open on the edge network.
@@ -570,9 +692,14 @@ class AdobeEdgeHandler {
           this._sessionStarting = false;
           this._sessionInProgress = true;
 
+          this.checkSessionFreshness();
+          if (generation !== this._sessionGeneration) {
+            this.maybeStartSession();
+            return;
+          }
+
           // Post any queued events now that the session has started.
-          this._eventQueue.forEach((event) => this.sendEvent(event.type, event.info, event.metadata));
-          this._eventQueue = [];
+          this.flushQueuedEvents();
 
           this.logDebug('startSession - started');
         } else {
@@ -582,6 +709,9 @@ class AdobeEdgeHandler {
         }
       })
       .catch((error: unknown) => {
+        if (this._retiredTrackers.has(tracker)) {
+          return;
+        }
         this.discardTracker(tracker);
         if (generation !== this._sessionGeneration) {
           return;
@@ -612,6 +742,15 @@ class AdobeEdgeHandler {
       this._sessionStartRetryTimer = setTimeout(() => {
         this._sessionStartRetryTimer = undefined;
         if (generation !== this._sessionGeneration) {
+          return;
+        }
+        if (this._suspendedAt !== undefined) {
+          this.retireSession();
+          return;
+        }
+        this.checkSessionFreshness();
+        if (generation !== this._sessionGeneration) {
+          this.maybeStartSession();
           return;
         }
         this.startSession(mediaLength, attempt + 1, sessionMetadata);
@@ -661,6 +800,10 @@ class AdobeEdgeHandler {
 
   reset() {
     this.logDebug('reset');
+    this._sessionStartedAt = undefined;
+    this._sessionMetadata = {};
+    this._resumePending = false;
+    this._lastActivityAt = Date.now();
     // Invalidate any in-flight session start and cancel pending retries.
     const wasStarting = this._sessionStarting;
     this._sessionGeneration++;
