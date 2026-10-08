@@ -126,6 +126,10 @@ Third-party SDK behaviour is best verified against the pinned dependency in `nod
 `node_modules/@adobe/alloy/dist/alloy.js`) rather than from memory — vendor docs and the shipped
 implementation do diverge.
 
+The Adobe Edge web resume guard must ship with Alloy's timer-cleanup fix: an unpatched legacy
+tracker's `destroy()` does not cancel automatic pings. Connector unit tests mock Alloy, so passing
+these tests does not verify SDK timer cleanup. Validate the actual SDK lifecycle before release.
+
 ## PRs
 
 - Reference the customer-visible symptom, not just the code change, and include the changeset.
