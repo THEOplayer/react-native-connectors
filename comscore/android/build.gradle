@@ -67,9 +67,6 @@ repositories {
   // Local Maven repo
   maven { url("local") }
   maven { url "https://maven.theoplayer.com/releases" }
-  maven {
-    url "https://comscore.bintray.com/Analytics"
-  }
 }
 
 // The Comscore connector requires at least THEOplayer SDK v10.0.0.
