@@ -110,6 +110,8 @@ class ReactTHEOplayerAdobeModule(context: ReactApplicationContext) :
    */
   @ReactMethod
   fun destroy(tag: Int) {
-    adobeConnectors[tag]?.destroy()
+    reactApplicationContext.runOnUiQueueThread {
+      adobeConnectors.remove(tag)?.destroy()
+    }
   }
 }

@@ -71,7 +71,7 @@ class ReactTHEOplayerBitmovinModule(val context: ReactApplicationContext) :
   @ReactMethod
   fun destroy(tag: Int) {
     context.runOnUiQueueThread {
-      bitmovinConnectors[tag]?.destroy()
+      bitmovinConnectors.remove(tag)?.destroy()
     }
   }
 }

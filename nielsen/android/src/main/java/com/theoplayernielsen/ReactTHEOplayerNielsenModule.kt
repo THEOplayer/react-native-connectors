@@ -40,6 +40,8 @@ class ReactTHEOplayerNielsenModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun destroy(tag: Int) {
-    nielsenConnectors[tag]?.destroy()
+    reactApplicationContext.runOnUiQueueThread {
+      nielsenConnectors.remove(tag)?.destroy()
+    }
   }
 }
