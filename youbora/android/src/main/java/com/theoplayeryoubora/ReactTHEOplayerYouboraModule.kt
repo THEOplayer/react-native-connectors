@@ -96,6 +96,8 @@ class ReactTHEOplayerYouboraModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun destroy(tag: Int) {
-    youboraPlugin[tag]?.disable()
+    reactApplicationContext.runOnUiQueueThread {
+      youboraPlugin.remove(tag)?.disable()
+    }
   }
 }
