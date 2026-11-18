@@ -98,9 +98,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     func destroy(_ node: NSNumber) -> Void {
         log("destroy triggered.")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node] {
-                connector.destroy()
-            }
+            self.connectors.removeValue(forKey: node)?.destroy()
         }
     }
     
