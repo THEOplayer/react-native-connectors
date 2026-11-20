@@ -60,7 +60,7 @@ jobs:
         run: npm run build
 
       - name: Check connector SPM manifest paths
-        run: npm test --workspace=conviva
+        run: npm test --workspace=conviva --workspace=comscore
 
       - name: Run documentation tests
         run: npm test
