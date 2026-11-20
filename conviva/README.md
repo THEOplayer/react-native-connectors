@@ -10,6 +10,33 @@ npm install @theoplayer/react-native-analytics-conviva
 
 [//]: # (npm install @theoplayer/react-native-analytics-conviva)
 
+### Apple Native Dependencies
+
+With CocoaPods, keep the normal autolinking setup and run `pod install` after
+installing the npm package.
+
+With SPM, using React Native 0.88's experimental integration tooling:
+
+1. Complete the base player's SPM setup: disable iOS autolinking for
+   `react-native-theoplayer`, add its installed npm folder to the app target in
+   Xcode, and select the player's desired traits.
+2. Leave autolinking **enabled** for `@theoplayer/react-native-analytics-conviva`.
+3. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector supplies its own `Package.swift` and RN package registration.
+Do not add it manually in Xcode or select a Conviva trait on the base player.
+SwiftPM selects the native Conviva connector and Conviva SDK automatically and
+shares compatible player and connector package versions with the base player.
+Other analytics connector products are not selected by this package.
+
+This setup requires a base player release with SPM support, Swift tools 6.1 or
+later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-conviva`
+and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
+`<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
+custom native directory layouts need separate validation.
+
 ## Usage
 
 ### Configuring the connector

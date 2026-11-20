@@ -44,9 +44,9 @@ Gotchas worth knowing before you claim "tests pass":
 
 - **The root `npm test` is a documentation check, not a test suite.** It fails on typedoc warnings
   (e.g. an exported symbol that is not documented or not reachable from `src/index.ts`).
-- **Unit tests exist in only some packages.** At the time of writing, `adobe-edge` is the only
-  workspace with a `test` script (`jest.config.js` + `src/**/__tests__`). Adding tests to other
-  connectors is welcome; copy the `adobe-edge` setup.
+- **Tests are package-specific.** `adobe-edge` uses Jest (`jest.config.js` + `src/**/__tests__`).
+  Conviva checks SPM manifest paths with their package-level `npm test`
+  on macOS and skip on other platforms. Use `adobe-edge` as the reference for new JavaScript unit suites.
 - **`npm run prettier` at the root is currently red on pre-existing files** under `comscore/`,
   `drm/` and `engage/`. Do not reformat those as a side effect of an unrelated change; only ensure
   the files you touched are formatted (the commit hook does this for staged files via
@@ -62,6 +62,7 @@ Gotchas worth knowing before you claim "tests pass":
 - `pr_android.yml` / `pr_ios.yml`: install, build, docs check, then build the `apps/e2e` app against
   `react-native-theoplayer@latest` and run the CavyNext e2e suite on an emulator/simulator
   (Android API 36; iOS + tvOS on Xcode 26.2). These are skipped for draft PRs.
+- `pr_ios.yml` also runs the connector SPM manifest path checks; its e2e app still uses CocoaPods.
 - `release.yml` (on `main`): changesets action opens/updates a "Release" PR or publishes to npm.
 
 Consequence for agents: green CI does **not** mean the package's unit tests or typecheck passed. Run

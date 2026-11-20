@@ -16,6 +16,7 @@
     "*.podspec",
     "*.tgz",
     "CHANGELOG.md",
+    "Package.swift",
     "!lib/typescript/example",
     "!ios/build",
     "!android/build",
@@ -29,11 +30,15 @@
     "!**/.*"
   ],
   "scripts": {
+    "test": "node --test scripts/package-swift.test.js",
     "typescript": "tsc --noEmit",
     "build": "bob build",
     "manifest": "node manifest.js > src/manifest.json",
     "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
+  },
+  "swiftpmConfig": {
+    "name": "ReactNativeTHEOplayerConviva"
   },
   "keywords": [
     "react-native",
