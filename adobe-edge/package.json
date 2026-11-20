@@ -16,6 +16,8 @@
     "*.podspec",
     "*.tgz",
     "CHANGELOG.md",
+    "Package.swift",
+    "patches",
     "!lib/typescript/example",
     "!ios/build",
     "!android/build",
@@ -35,7 +37,11 @@
     "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
     "generate-types": "openapi-typescript src/internal/web/media-edge-0.1.json -o src/internal/web/MediaEdge.d.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:spm": "node --test scripts/package-swift.test.js"
+  },
+  "swiftpmConfig": {
+    "name": "ReactNativeTHEOplayerAdobeEdge"
   },
   "keywords": [
     "react-native",

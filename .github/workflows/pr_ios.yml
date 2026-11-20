@@ -60,7 +60,9 @@ jobs:
         run: npm run build
 
       - name: Check connector SPM manifest paths
-        run: npm test --workspace=conviva --workspace=comscore --workspace=nielsen --workspace=adobe
+        run: |
+          npm test --workspace=conviva --workspace=comscore --workspace=nielsen --workspace=adobe
+          npm run test:spm --workspace=adobe-edge
 
       - name: Run documentation tests
         run: npm test
