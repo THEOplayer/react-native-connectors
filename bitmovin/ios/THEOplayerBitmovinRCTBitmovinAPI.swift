@@ -1,7 +1,12 @@
 
 import Foundation
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
 import THEOplayerSDK
 
 func log(_ text: String) {
