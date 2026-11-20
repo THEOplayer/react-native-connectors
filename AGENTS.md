@@ -45,7 +45,7 @@ Gotchas worth knowing before you claim "tests pass":
 - **The root `npm test` is a documentation check, not a test suite.** It fails on typedoc warnings
   (e.g. an exported symbol that is not documented or not reachable from `src/index.ts`).
 - **Tests are package-specific.** `adobe-edge` uses Jest (`jest.config.js` + `src/**/__tests__`).
-  Conviva and Comscore check SPM manifest paths with their package-level `npm test`
+  Conviva, Comscore, and Nielsen check SPM manifest paths with their package-level `npm test`
   on macOS and skip on other platforms. Use `adobe-edge` as the reference for new JavaScript unit suites.
 - **`npm run prettier` at the root is currently red on pre-existing files** under `comscore/`,
   `drm/` and `engage/`. Do not reformat those as a side effect of an unrelated change; only ensure
