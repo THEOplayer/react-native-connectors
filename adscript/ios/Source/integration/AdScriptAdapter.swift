@@ -216,7 +216,9 @@ public class AdScriptAdapter {
             }
 //            _ = currentAdMetadata.set(key: .asmea, value: "TODO")
             _ = currentAdMetadata.set(key: .attribute, value: .commercial)
-            _ = currentAdMetadata.set(key: .type, value: self.getAdType(offset: ad.adBreak.timeOffset))
+            if let adBreak = ad.adBreak {
+                _ = currentAdMetadata.set(key: .type, value: self.getAdType(offset: adBreak.timeOffset))
+            }
             if let duration = ad.duration {
                 _ = currentAdMetadata.set(key: .length, value: duration)
             }

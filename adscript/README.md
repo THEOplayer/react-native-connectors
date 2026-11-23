@@ -28,6 +28,8 @@ adScriptSdkDir=./app/libs/
 
 On Apple platforms, the connector requires downloading the private `AdScriptAPIClient` archive.
 
+#### CocoaPods
+
 Create a `Frameworks` folder in your app's `ios` folder, copy the Adscript SDK XCFramework in it
 and add this `AdScriptApiClient.podspec` file inside, which describes the structure and metadata of Adscript's CocoaPod:
 
@@ -47,13 +49,15 @@ Pod::Spec.new do |spec|
 end
 ```
 
-To enable IDFA (Identifier for Advertisers), replace the framework reference:
+Choose the IDFA (Identifier for Advertisers) or no-IDFA SDK using the vendor's
+download options, not by renaming a framework. The framework reference must
+match the archive's actual filename:
 
 ```
 spec.ios.vendored_frameworks = "AdScriptApiClient.xcframework"
 ```
 
-with
+For an archive containing `AdScriptApiClient_withidfa.xcframework`, use:
 
 ```
 spec.ios.vendored_frameworks = "AdScriptApiClient_withidfa.xcframework"
@@ -64,6 +68,69 @@ Finally, include the AdScript SDK as dependency in your app's `Podfile`:
 ```ruby
   pod 'AdScriptApiClient', :path => 'Frameworks/'
 ```
+
+#### Swift Package Manager
+
+SPM is supported on iOS and tvOS using React Native 0.88's experimental
+integration tooling. Packaging was validated with the vendor's 1.4.0 archive:
+iOS/tvOS simulator and unsigned device builds, framework linkage, and native
+module availability. Analytics reporting was not initialized.
+
+The connector ships its own `Package.swift` and RN package registration, but
+does **not** ship or download the private vendor SDK. Instead, the app owns a
+small local Swift package that wraps the XCFramework, replacing the local pod
+setup described above:
+
+```text
+<app>/ios/Frameworks/AdScriptSDK/
+  Package.swift
+  AdScriptApiClient.xcframework/
+```
+
+After installing the connector's npm package:
+
+1. Complete the base player's SPM setup: disable iOS autolinking for
+   `react-native-theoplayer`, add its installed npm folder to the app target in
+   Xcode, and select the player's desired traits.
+2. Copy the SDK-package template from the installed connector, running these
+   commands from the app root:
+
+   ```sh
+   mkdir -p ios/Frameworks/AdScriptSDK
+   cp node_modules/@theoplayer/react-native-analytics-adscript/spm/AdScriptSDK/Package.swift \
+     ios/Frameworks/AdScriptSDK/Package.swift
+   ```
+
+3. Place the vendor's `AdScriptApiClient.xcframework` beside that manifest.
+   Keep the private SDK out of public repositories and published npm archives.
+4. Leave autolinking **enabled** for
+   `@theoplayer/react-native-analytics-adscript`, then run
+   `npx --no-install react-native spm sync` and build the Xcode project.
+
+Prepare the local SDK package **before** resolving packages or building.
+No local podspec, `spm scaffold` step, manual AdScript Xcode reference, or
+additional player trait is needed. The connector references the local
+`AdScriptSDK` package automatically and resolves Swift Collections through SPM.
+
+Choose the desired IDFA/no-IDFA variant through the vendor. Filenames alone do
+not establish which variant an archive contains. If the supplied XCFramework
+has a different name, such as `AdScriptApiClient_withidfa.xcframework`, update
+only the binary target's `path` in the app-owned `Package.swift` to match. Keep
+the product and target name `AdScriptApiClient`, and use a binary exporting that
+module with the required platform/architecture slices. Do not link both
+variants together.
+
+The tested 1.4.0 archive uses `AdScriptApiClient.xcframework` and references
+Apple's advertising-ID APIs; a separate no-IDFA archive has not been validated.
+
+This setup requires Swift tools 6.1 or later, an SPM-enabled base-player build,
+and deployment targets of iOS 16 or tvOS 15.1 or later, subject to the supplied
+SDK's own requirements. It assumes the connector is installed at
+`<app>/node_modules/@theoplayer/react-native-analytics-adscript`, the player at
+`<app>/node_modules/react-native-theoplayer`, RN's React package at
+`<app>/ios/build/xcframeworks`, and the vendor wrapper at the path shown above.
+Source-checkout links, hoisted dependencies, and custom native directory layouts
+need separate validation.
 
 ## Usage
 

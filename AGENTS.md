@@ -52,6 +52,8 @@ Gotchas worth knowing before you claim "tests pass":
   Keep the setup requirement in Adobe's README until compatible upstream SPM support replaces it.
 - Adobe Edge keeps its Jest suite under `npm test`; `npm run test:spm --workspace=adobe-edge`
   checks its SPM manifest and the same device-info compatibility patch, also shipped in `adobe-edge/patches/`.
+- AdScript's `npm test --workspace=adscript` checks manifest paths and the app-owned SDK package template.
+  Native builds additionally require the private XCFramework under `<app>/ios/Frameworks/AdScriptSDK`; metadata tests do not validate that binary.
 - **`npm run prettier` at the root is currently red on pre-existing files** under `comscore/`,
   `drm/` and `engage/`. Do not reformat those as a side effect of an unrelated change; only ensure
   the files you touched are formatted (the commit hook does this for staged files via
