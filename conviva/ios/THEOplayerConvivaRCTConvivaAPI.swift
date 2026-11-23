@@ -33,7 +33,7 @@ class THEOplayerConvivaRCTConvivaAPI: NSObject, RCTBridgeModule {
             log(convivaConfig.debugDescription)
             if let view = self.view(for: node), let player = view.player {
                 let configuration = ConvivaConfiguration(
-                    customerKey: convivaConfig["customerKey"] as! String,
+                    customerKey: convivaConfig["customerKey"] as? String ?? "",
                     gatewayURL: convivaConfig["gatewayUrl"] as? String,
                     logLevel: .LOGLEVEL_FUNC
                 )

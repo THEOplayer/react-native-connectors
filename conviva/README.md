@@ -70,6 +70,10 @@ const App = () => {
 }
 ```
 
+On iOS and tvOS, a missing or incorrectly typed `customerKey` no longer causes a
+Swift type-cast crash. A valid customer key remains required for successful
+analytics initialization and reporting.
+
 The `convivaMetada` object contains key-value pairs that are passed directly to the Conviva SDK.
 Most media related properties, such as its streamURL, duration or whether it is a live or vod
 stream, are passed by the connector itself.
