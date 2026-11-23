@@ -1,6 +1,6 @@
 # THEOplayer React-Native Mux Connector
 
-A Mux analytics connector for `@theoplayer/react-native`, supporting Web, iOS and Android.
+A Mux analytics connector for `@theoplayer/react-native`, supporting Web, iOS, Android, and tvOS through SPM.
 
 ## Installation
 
@@ -9,6 +9,36 @@ npm install @theoplayer/react-native-analytics-mux
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-mux)
+
+### Apple Native Dependencies
+
+With CocoaPods on iOS, keep normal autolinking and run `pod install` after
+installing the npm package. The connector and vendor pod declarations remain
+iOS-only; use SPM for tvOS.
+
+With SPM on iOS and tvOS, using React Native 0.88's experimental integration
+tooling:
+
+1. Complete the base player's SPM setup: disable iOS autolinking for
+   `react-native-theoplayer`, add its installed npm folder to the app target in
+   Xcode, and select the player's desired traits.
+2. Leave autolinking **enabled** for `@theoplayer/react-native-analytics-mux`.
+3. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector includes its own `Package.swift` and RN package registration.
+No `spm scaffold` step, dependency patch, manual Mux Xcode reference, or Mux
+trait is required. It shares the installed base player and resolves the vendor
+`MuxStatsTHEOplayer` (0.15.0 or newer, below 1.0) and `MuxCore` (5.4.0 or newer,
+below 6.0) products.
+
+Use an SPM-enabled base-player archive; older player archives without a manifest
+cannot be used with this setup. It requires Swift tools 6.1 or later and
+deployment targets of iOS 16 or tvOS 15.1 or later. The supported layout places
+the connector at `<app>/node_modules/@theoplayer/react-native-analytics-mux`,
+the base player at `<app>/node_modules/react-native-theoplayer`, and RN's React
+package at `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted
+dependencies, and custom native directory layouts need separate validation.
 
 ## Usage
 

@@ -45,7 +45,7 @@ Gotchas worth knowing before you claim "tests pass":
 - **The root `npm test` is a documentation check, not a test suite.** It fails on typedoc warnings
   (e.g. an exported symbol that is not documented or not reachable from `src/index.ts`).
 - **Tests are package-specific.** `adobe-edge` uses Jest (`jest.config.js` + `src/**/__tests__`).
-  Conviva, Comscore, Nielsen, Adobe, and Bitmovin check SPM manifest paths with their package-level `npm test`
+  Conviva, Comscore, Nielsen, Adobe, Bitmovin, and Mux check SPM manifest paths with their package-level `npm test`
   on macOS and skip on other platforms. Use `adobe-edge` as the reference for new JavaScript unit suites.
 - **Adobe SPM has a peer-dependency workaround.** `adobe/patches/` ships a packaging-only
   patch for `react-native-device-info@14.1.1`; SPM apps must apply it via `patch-package`.
