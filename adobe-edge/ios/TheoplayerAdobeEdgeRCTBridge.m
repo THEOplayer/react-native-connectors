@@ -9,7 +9,7 @@
 
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   config:(NSDictionary)config
-                  customIdentityMap:(NSDictionary *)customIdentityMap)
+                  customIdentityMap:(nullable NSDictionary *)customIdentityMap)
 
 RCT_EXTERN_METHOD(setDebug:(nonnull NSNumber *)node
                   debug:(BOOL)debug)
@@ -24,7 +24,7 @@ RCT_EXTERN_METHOD(setError:(nonnull NSNumber *)node
                   errorId:(NSString *)errorId)
 
 RCT_EXTERN_METHOD(stopAndStartNewSession:(nonnull NSNumber *)node
-                  customMetadataDetails:(NSDictionary *)customMetadataDetails)
+                  customMetadataDetails:(nullable NSDictionary *)customMetadataDetails)
 
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 
