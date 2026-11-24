@@ -26,7 +26,7 @@ RCT_EXTERN_METHOD(setError:(nonnull NSNumber *)node
                   metadata:(NSDictionary)metadata)
 
 RCT_EXTERN_METHOD(stopAndStartNewSession:(nonnull NSNumber *)node
-                  metadata:(NSDictionary)metadata)
+                  metadata:(nullable NSDictionary *)metadata)
 
 RCT_EXTERN_METHOD(destroy:(nonnull NSNumber *)node)
 
