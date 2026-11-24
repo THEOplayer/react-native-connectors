@@ -33,7 +33,7 @@ public class GemiusAdapter {
   
   private var addVideoTrackEventListener: EventListener?
   private var removeVideoTrackEventListener: EventListener?
-  private var videoQualityChangedEventListeners: [ObjectIdentifier: (track: Track, listener: EventListener)] = [:]
+  private var videoQualityChangedEventListeners: [Int: (track: Track, listener: EventListener)] = [:]
   
   private var adBreakBeginListener: EventListener?
   private var adBeginListener: EventListener?
@@ -245,7 +245,7 @@ public class GemiusAdapter {
   }
   
   private func addVideoQualityListener(_ track: Track) {
-    let key = ObjectIdentifier(track)
+    let key = track.uid
     guard videoQualityChangedEventListeners[key] == nil else { return }
     let listener = track.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { [weak self] _ in
       self?.reportVideoQualityChange()
@@ -254,7 +254,7 @@ public class GemiusAdapter {
   }
 
   private func removeVideoQualityListener(_ track: Track) {
-    if let observation = videoQualityChangedEventListeners.removeValue(forKey: ObjectIdentifier(track)) {
+    if let observation = videoQualityChangedEventListeners.removeValue(forKey: track.uid) {
       observation.track.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: observation.listener)
     }
   }

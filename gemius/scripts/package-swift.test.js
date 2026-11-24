@@ -24,6 +24,8 @@ final class EventListener {
     init(_ invoke: @escaping () -> Void) { self.invoke = invoke }
 }
 final class Track {
+    let uid: Int
+    init(uid: Int) { self.uid = uid }
     var listeners: [ObjectIdentifier: EventListener] = [:]
     func addEventListener(type: String, listener: @escaping (Int) -> Void) -> EventListener {
         let token = EventListener { listener(0) }
@@ -36,13 +38,13 @@ final class Track {
     func emit() { Array(listeners.values).forEach { $0.invoke() } }
 }
 final class Adapter {
-    private var videoQualityChangedEventListeners: [ObjectIdentifier: (track: Track, listener: EventListener)] = [:]
+    private var videoQualityChangedEventListeners: [Int: (track: Track, listener: EventListener)] = [:]
     var reports = 0
     func reportVideoQualityChange() { reports += 1 }
     ${methods}
 }
-let first = Track()
-let second = Track()
+let first = Track(uid: 1)
+let second = Track(uid: 2)
 let adapter = Adapter()
 adapter.addVideoQualityListener(first)
 adapter.addVideoQualityListener(first)
@@ -51,7 +53,7 @@ precondition(first.listeners.count == 1 && second.listeners.count == 1)
 first.emit()
 second.emit()
 precondition(adapter.reports == 2)
-adapter.removeVideoQualityListener(first)
+adapter.removeVideoQualityListener(Track(uid: first.uid))
 first.emit()
 second.emit()
 precondition(first.listeners.isEmpty && second.listeners.count == 1 && adapter.reports == 3)
@@ -60,7 +62,7 @@ adapter.removeVideoQualityListeners()
 second.emit()
 precondition(second.listeners.isEmpty && adapter.reports == 3)
 
-let retainedTrack = Track()
+let retainedTrack = Track(uid: 3)
 var transient: Adapter? = Adapter()
 weak var releasedAdapter = transient
 transient?.addVideoQualityListener(retainedTrack)
