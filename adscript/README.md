@@ -87,7 +87,7 @@ setup described above:
 After installing the connector's npm package:
 
 1. Complete the base player's
-   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/main/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
 2. Copy the SDK-package template from the installed connector, running these
    commands from the app root:
 

@@ -69,7 +69,7 @@ Finally, include the Gemius SDK as dependency in your app's `Podfile`:
 With Swift Package Manager (SPM) on iOS and tvOS:
 
 1. Complete the base player's
-   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/main/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
 2. Leave autolinking **enabled** for
    `@theoplayer/react-native-analytics-gemius`.
 3. Run `npx --no-install react-native spm sync` from the app root, then build and
