@@ -45,13 +45,14 @@ Gotchas worth knowing before you claim "tests pass":
 - **The root `npm test` is a documentation check, not a test suite.** It fails on typedoc warnings
   (e.g. an exported symbol that is not documented or not reachable from `src/index.ts`).
 - **Tests are package-specific.** `adobe-edge` uses Jest (`jest.config.js` + `src/**/__tests__`).
-  Conviva, Comscore, Nielsen, Adobe, Bitmovin, and Mux check SPM manifest paths with their package-level `npm test`
+  Conviva, Comscore, Nielsen, Adobe, Bitmovin, Mux, and Gemius check SPM manifest paths with their package-level `npm test`
   on macOS and skip on other platforms. Use `adobe-edge` as the reference for new JavaScript unit suites.
 - **Adobe SPM has a peer-dependency workaround.** `adobe/patches/` ships a packaging-only
   patch for `react-native-device-info@14.1.1`; SPM apps must apply it via `patch-package`.
   Keep the setup requirement in Adobe's README until compatible upstream SPM support replaces it.
 - Adobe Edge keeps its Jest suite under `npm test`; `npm run test:spm --workspace=adobe-edge`
   checks its SPM manifest and the same device-info compatibility patch, also shipped in `adobe-edge/patches/`.
+- Mux's `npm run test:bridge --workspace=mux` runs its native-adapter Jest tests, also in Apple CI.
 - AdScript's `npm test --workspace=adscript` checks manifest paths and the app-owned SDK package template.
   Native builds additionally require the private XCFramework under `<app>/ios/Frameworks/AdScriptSDK`; metadata tests do not validate that binary.
 - **`npm run prettier` at the root is currently red on pre-existing files** under `comscore/`,
