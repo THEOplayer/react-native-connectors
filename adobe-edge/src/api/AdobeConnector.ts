@@ -89,9 +89,9 @@ export class AdobeConnector {
    * This can be used to manually mark the start of a new session during a live stream,
    * for example when a new program starts.
    *
-   * @param customMetadataDetails media details information.
+   * @param customMetadataDetails optional media details information for the new session.
    */
-  stopAndStartNewSession(customMetadataDetails: AdobeMetadata): void {
+  stopAndStartNewSession(customMetadataDetails?: AdobeMetadata): void {
     void this.connectorAdapter?.stopAndStartNewSession(customMetadataDetails);
   }
 
