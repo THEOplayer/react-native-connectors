@@ -29,7 +29,7 @@ the npm packages.
 With Swift Package Manager (SPM) on iOS and tvOS:
 
 1. Complete the base player's
-   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/6b98ad9f1e1ed786861bc73d15fb43c895ec3ba0/doc/creating-minimal-app.md#compatible-player-package).
 2. Leave autolinking **enabled** for this connector and its
    `react-native-device-info` peer dependency.
 3. Ensure the app's `react-native-device-info` dependency supports SPM; see the note below.
