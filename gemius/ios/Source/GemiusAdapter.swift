@@ -33,7 +33,7 @@ public class GemiusAdapter {
   
   private var addVideoTrackEventListener: EventListener?
   private var removeVideoTrackEventListener: EventListener?
-  private var videoQualityChangedEventListener: EventListener?
+  private var videoQualityChangedEventListeners: [ObjectIdentifier: (track: Track, listener: EventListener)] = [:]
   
   private var adBreakBeginListener: EventListener?
   private var adBeginListener: EventListener?
@@ -171,29 +171,10 @@ public class GemiusAdapter {
     })
     
     self.addVideoTrackEventListener = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.ADD_TRACK, listener: { [weak self] event in
-      guard let welf: GemiusAdapter = self else { return }
-      let videoTrack = event.track
-      welf.videoQualityChangedEventListener =  videoTrack.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { [weak self] event in
-        let programId = welf.programId
-        let height = welf.player.videoHeight
-        let width = welf.player.videoWidth
-        if let currentAd = welf.currentAd, let id = currentAd.id {
-          let adEventData = GSMEventAdData()
-          adEventData.quality = "\(width)x\(height)"
-          welf.gsmPlayer.adEvent(.CHANGE_QUAL, forProgram: programId, forAd: id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: adEventData)
-        } else {
-          let programEventData = GSMEventProgramData()
-          programEventData.quality = "\(width)x\(height)"
-          welf.gsmPlayer.program(.CHANGE_QUAL, forProgram: programId, atOffset: NSNumber(value: welf.player.currentTime), with: programEventData)
-        }
-      }
+      self?.addVideoQualityListener(event.track)
     })
     self.removeVideoTrackEventListener = player.videoTracks.addEventListener(type: VideoTrackListEventTypes.REMOVE_TRACK, listener: { [weak self] event in
-      guard let welf: GemiusAdapter = self else { return }
-      let videoTrack = event.track
-      if let videoQualityChangedEventListener: THEOplayerSDK.EventListener = welf.videoQualityChangedEventListener {
-        videoTrack.removeEventListener(type: THEOplayerSDK.MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: videoQualityChangedEventListener)
-      }
+      self?.removeVideoQualityListener(event.track)
     })
     
     if (hasAdIntegration()) {
@@ -263,7 +244,44 @@ public class GemiusAdapter {
     }
   }
   
+  private func addVideoQualityListener(_ track: Track) {
+    let key = ObjectIdentifier(track)
+    guard videoQualityChangedEventListeners[key] == nil else { return }
+    let listener = track.addEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED) { [weak self] _ in
+      self?.reportVideoQualityChange()
+    }
+    videoQualityChangedEventListeners[key] = (track, listener)
+  }
+
+  private func removeVideoQualityListener(_ track: Track) {
+    if let observation = videoQualityChangedEventListeners.removeValue(forKey: ObjectIdentifier(track)) {
+      observation.track.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: observation.listener)
+    }
+  }
+
+  private func removeVideoQualityListeners() {
+    for observation in videoQualityChangedEventListeners.values {
+      observation.track.removeEventListener(type: MediaTrackEventTypes.ACTIVE_QUALITY_CHANGED, listener: observation.listener)
+    }
+    videoQualityChangedEventListeners.removeAll()
+  }
+
+  private func reportVideoQualityChange() {
+    let height = player.videoHeight
+    let width = player.videoWidth
+    if let currentAd = currentAd, let id = currentAd.id {
+      let adEventData = GSMEventAdData()
+      adEventData.quality = "\(width)x\(height)"
+      gsmPlayer.adEvent(.CHANGE_QUAL, forProgram: programId, forAd: id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: adEventData)
+    } else {
+      let programEventData = GSMEventProgramData()
+      programEventData.quality = "\(width)x\(height)"
+      gsmPlayer.program(.CHANGE_QUAL, forProgram: programId, atOffset: NSNumber(value: player.currentTime), with: programEventData)
+    }
+  }
+
   private func removeEventListeners() {
+    removeVideoQualityListeners()
     if let sourceChangeEventListener: THEOplayerSDK.EventListener = self.sourceChangeEventListener {
       self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.SOURCE_CHANGE, listener: sourceChangeEventListener)
     }
@@ -292,19 +310,19 @@ public class GemiusAdapter {
       self.player.removeEventListener(type: THEOplayerSDK.PlayerEventTypes.VOLUME_CHANGE, listener: volumeChangeEventListener)
     }
     if let adBreakBeginListener: THEOplayerSDK.EventListener = self.adBreakBeginListener {
-      self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
+      self.player.ads.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_BEGIN, listener: adBreakBeginListener)
     }
     if let adBeginListener: THEOplayerSDK.EventListener = self.adBeginListener {
-      self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: adBeginListener)
+      self.player.ads.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BEGIN, listener: adBeginListener)
     }
     if let adEndListener: THEOplayerSDK.EventListener = self.adEndListener {
-      self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: adEndListener)
+      self.player.ads.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_END, listener: adEndListener)
     }
     if let adSkipListener: THEOplayerSDK.EventListener = self.adSkipListener {
-      self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: adSkipListener)
+      self.player.ads.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_SKIP, listener: adSkipListener)
     }
     if let adBreakEndedListener: THEOplayerSDK.EventListener = self.adBreakEndedListener {
-      self.player.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: adBreakEndedListener)
+      self.player.ads.removeEventListener(type: THEOplayerSDK.AdsEventTypes.AD_BREAK_END, listener: adBreakEndedListener)
     }
     if let addVideoTrackEventListener: THEOplayerSDK.EventListener = self.addVideoTrackEventListener {
       self.player.videoTracks.removeEventListener(type: THEOplayerSDK.VideoTrackListEventTypes.ADD_TRACK, listener: addVideoTrackEventListener)
