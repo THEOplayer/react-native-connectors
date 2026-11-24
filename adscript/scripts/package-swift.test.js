@@ -11,6 +11,46 @@ function dumpPackage(location) {
   return JSON.parse(result.stdout);
 }
 
+test('Apple ad classification handles live, unknown, and out-of-range durations', { skip: process.platform !== 'darwin' }, (t) => {
+  // Exercise the shipped Swift method without requiring the private vendor SDK.
+  const source = fs.readFileSync(path.join(__dirname, '../ios/Source/integration/AdScriptAdapter.swift'), 'utf8');
+  const start = source.indexOf('    private func getAdType(');
+  const end = source.indexOf('    private func buildAdMetadata(', start);
+  assert.ok(start >= 0 && end > start);
+  const method = source.slice(start, end).replace('private func', 'func');
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'adscript-ad-type-test-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const fixture = path.join(root, 'main.swift');
+  fs.writeFileSync(
+    fixture,
+    `import Foundation
+enum AdScriptDataValueType { case preroll, midroll, postroll }
+struct Player { let duration: Double? }
+struct Adapter {
+    let player: Player
+    ${method}
+}
+let cases: [(Int, Double?, AdScriptDataValueType)] = [
+    (0, .infinity, .preroll),
+    (-1, .infinity, .postroll),
+    (120, .infinity, .midroll),
+    (120, -.infinity, .midroll),
+    (120, .nan, .midroll),
+    (120, .greatestFiniteMagnitude, .midroll),
+    (120, nil, .midroll),
+    (119, 120.9, .midroll),
+    (120, 120.9, .postroll),
+    (121, 120.9, .postroll)
+]
+for (offset, duration, expected) in cases {
+    precondition(Adapter(player: Player(duration: duration)).getAdType(offset: offset) == expected)
+}
+`,
+  );
+  const result = spawnSync('swift', [fixture], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+});
+
 test('content metadata has matching dictionary types in the exported bridge and Swift implementation', () => {
   const bridge = fs.readFileSync(path.join(__dirname, '../ios/THEOplayerAdScriptRCTBridge.m'), 'utf8');
   const swift = fs.readFileSync(path.join(__dirname, '../ios/THEOplayerAdScriptRCTAdScriptAPI.swift'), 'utf8');

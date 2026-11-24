@@ -197,7 +197,7 @@ public class AdScriptAdapter {
             return .preroll
         } else if (offset == -1) {
             return .postroll
-        } else if let duration = player.duration, offset >= Int(floor(duration)) {
+        } else if let duration = player.duration, duration.isFinite, Double(offset) >= floor(duration) {
             return .postroll
         } else {
             return .midroll
