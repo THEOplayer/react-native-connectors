@@ -33,8 +33,10 @@ THEOplayerGemius_gemiusVersion=2.0.8
 
 ### iOS & tvOS
 
-On Apple platforms, the connector requires downloading the private `GemiusSDK_iOS` archive, which contains
-a multiplatform binary platform module for both iOS and tvOS.
+#### CocoaPods
+
+With the existing CocoaPods setup, supply the vendor's Apple SDK archive,
+containing the iOS and tvOS XCFrameworks.
 
 Create a `Frameworks` folder in your app's `ios` folder, copy the Gemius SDK XCFrameworks in it
 and add this `GemiusSDK.podspec` file inside, which describes the structure and metadata of Gemius's CocoaPod:
@@ -61,6 +63,40 @@ Finally, include the Gemius SDK as dependency in your app's `Podfile`:
 ```ruby
   pod 'GemiusSDK', :path => 'Frameworks/'
 ```
+
+#### Swift Package Manager
+
+With SPM on iOS and tvOS, using React Native 0.88's experimental integration
+tooling:
+
+1. Complete the base player's SPM setup: disable iOS autolinking for
+   `react-native-theoplayer`, add its installed npm folder to the app target in
+   Xcode, and select the player's desired traits.
+2. Leave autolinking **enabled** for
+   `@theoplayer/react-native-analytics-gemius`.
+3. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector includes its own `Package.swift` and RN package registration.
+No `spm scaffold` step, dependency patch, local SDK wrapper, manual Gemius Xcode
+reference, or additional player trait is required. Unlike the local CocoaPods
+setup above, SPM downloads the official vendor packages automatically:
+
+- [Gemius iOS SDK](https://github.com/gemius/gemiussdk-spm-ios), product `GemiusSDK`.
+- [Gemius tvOS SDK](https://github.com/gemius/gemiussdk-spm-tvos), product `GemiusSDKtvOS`.
+
+Both packages use version 2.5.0 or newer, below 3.0. The connector links only the
+product matching the build platform and imports its corresponding native
+module. The JavaScript configuration and reporting API are unchanged.
+
+Use an SPM-enabled base-player archive; older player archives without a manifest
+cannot be used with this setup. It requires Swift tools 6.1 or later and
+deployment targets of iOS 16 or tvOS 15.1 or later, subject to vendor SDK
+requirements. The supported layout places the connector at
+`<app>/node_modules/@theoplayer/react-native-analytics-gemius`, the base player at
+`<app>/node_modules/react-native-theoplayer`, and RN's React package at
+`<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
+custom native directory layouts need separate validation.
 
 ## Usage
 

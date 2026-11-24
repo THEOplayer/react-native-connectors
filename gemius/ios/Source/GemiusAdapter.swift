@@ -1,5 +1,7 @@
 import THEOplayerSDK
-#if canImport(GemiusSDK)
+#if os(tvOS) && canImport(GemiusSDKtvOS)
+import GemiusSDKtvOS
+#else
 import GemiusSDK
 #endif
 
@@ -10,10 +12,10 @@ public class GemiusAdapter {
   private let player: THEOplayer
   private let configuration: GemiusConfiguration
   private var gsmPlayer: GSMPlayer
-  private let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)?
+  private let adProcessor: ((THEOplayerSDK.Ad) -> GSMAdData)?
   
   private var programId: String?
-  private var programData: GemiusSDK.GSMProgramData?
+  private var programData: GSMProgramData?
   
   private var partCount = 1
   private var adCount = 1
@@ -39,20 +41,20 @@ public class GemiusAdapter {
   private var adSkipListener: EventListener?
   private var adBreakEndedListener: EventListener?
   
-  public init(configuration: GemiusConfiguration, player: THEOplayer, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
+  public init(configuration: GemiusConfiguration, player: THEOplayer, adProcessor: ((THEOplayerSDK.Ad) -> GSMAdData)? = nil) {
     self.player = player
     self.configuration = configuration
     self.adProcessor = adProcessor
-    let playerData = GemiusSDK.GSMPlayerData()
+    let playerData = GSMPlayerData()
     playerData.resolution = "\(player.frame.width)x\(player.frame.height)"
     if (player.muted) {
       playerData.volume = -1
     } else {
       playerData.volume = NSNumber(value: player.volume * 100)
     }
-    GemiusSDK.GEMConfig.sharedInstance().loggingEnabled = configuration.debug
-    GemiusSDK.GEMConfig.sharedInstance().setAppInfo(configuration.applicationName, version: configuration.applicationVersion)
-    self.gsmPlayer = GemiusSDK.GSMPlayer(id: "THEOplayer", withHost: configuration.hitCollectorHost, withGemiusID: configuration.gemiusId, with: playerData)
+    GEMConfig.sharedInstance().loggingEnabled = configuration.debug
+    GEMConfig.sharedInstance().setAppInfo(configuration.applicationName, version: configuration.applicationVersion)
+    self.gsmPlayer = GSMPlayer(id: "THEOplayer", withHost: configuration.hitCollectorHost, withGemiusID: configuration.gemiusId, with: playerData)
     
     addEventListeners()
   }
@@ -65,7 +67,7 @@ public class GemiusAdapter {
     removeEventListeners()
   }
   
-  public func update(programId: String, programData: GemiusSDK.GSMProgramData) {
+  public func update(programId: String, programData: GSMProgramData) {
     self.programId = programId
     self.programData = programData
   }
@@ -356,11 +358,11 @@ public class GemiusAdapter {
     return hasAdIntegration
   }
   
-  private func buildAdData(ad: THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData {
+  private func buildAdData(ad: THEOplayerSDK.Ad) -> GSMAdData {
     if let adProcessor = self.adProcessor {
       return adProcessor(ad)
     }
-    let adData = GemiusSDK.GSMAdData()
+    let adData = GSMAdData()
     if [AdIntegrationKind.google_ima, AdIntegrationKind.google_dai].contains(ad.integration),
        let imaAd = ad as? GoogleImaAd {
       adData.name = imaAd.creativeId
@@ -377,7 +379,7 @@ public class GemiusAdapter {
     return adData
   }
   
-  private func reportBasicEvent(event: GemiusSDK.GSMEventType) {
+  private func reportBasicEvent(event: GSMEventType) {
     guard let programId = self.programId else { return }
     if let currentAd =  self.currentAd {
       self.gsmPlayer.adEvent(event, forProgram: programId, forAd: currentAd.id, atOffset: NSNumber(value: currentAd.adBreak?.timeOffset ?? 0), with: nil)
