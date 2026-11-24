@@ -11,6 +11,15 @@ function dumpPackage(location) {
   return JSON.parse(result.stdout);
 }
 
+test('content metadata has matching dictionary types in the exported bridge and Swift implementation', () => {
+  const bridge = fs.readFileSync(path.join(__dirname, '../ios/THEOplayerAdScriptRCTBridge.m'), 'utf8');
+  const swift = fs.readFileSync(path.join(__dirname, '../ios/THEOplayerAdScriptRCTAdScriptAPI.swift'), 'utf8');
+  const exportedType = bridge.match(/contentMetadata:\(nonnull (\w+) \*\)/)?.[1];
+  const implementationType = swift.match(/contentMetadata: (\w+)/)?.[1];
+  assert.ok(exportedType);
+  assert.equal(exportedType, implementationType);
+});
+
 test('SPM shares the player, React, and app-owned AdScript SDK from the npm location and RN alias', { skip: process.platform !== 'darwin' }, (t) => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'adscript-spm-path-test-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
