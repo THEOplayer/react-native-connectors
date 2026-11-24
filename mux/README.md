@@ -89,7 +89,8 @@ each program as a view on its own.
 An example of this is a live stream that streams multiple programs back to back.
 
 For this purpose, the `changeProgram` method can signal the start of a new program and pass
-updated metadata to the connector.
+updated metadata to the connector on Android and Web. `changeProgram` is not supported
+on iOS or tvOS; on those platforms it does not start a new view or update metadata.
 
 ```typescript
 mux.current?.changeProgram({

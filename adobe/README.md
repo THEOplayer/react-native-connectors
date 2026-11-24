@@ -44,8 +44,8 @@ custom native directory layouts need separate validation.
 
 #### Device-Info SPM Setup
 
-The app is responsible for the SPM setup of its `react-native-device-info` peer
-dependency. As an optional aid, this package includes a
+The app must provide an SPM-compatible setup for its `react-native-device-info`
+peer dependency. As an optional aid, this package includes a
 [packaging-only patch for 14.1.1](patches/react-native-device-info+14.1.1.patch),
 which can be applied with `patch-package`. The patch is specific to that version;
 other versions may need a different setup. CocoaPods users do not need it.
