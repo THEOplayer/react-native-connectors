@@ -38,7 +38,7 @@ class THEOplayerComscoreRCTComscoreAPI: NSObject, RCTBridgeModule {
                     userConsent: self.mapUserConsent(userConsent: ComscoreConfig["userConsent"] as! String),
                     usagePropertiesAutoUpdateMode: self.mapUsagePropertiesAutoUpdateMode(usagePropertiesAutoUpdateMode: ComscoreConfig["usagePropertiesAutoUpdateMode"] as? String ?? "foregroundOnly"),
                     adIdProcessor: nil,
-                    debug: ComscoreConfig["debug"] as! Bool
+                    debug: ComscoreConfig["debug"] as? Bool ?? false
                 )
                 let connector = ComscoreConnector(
                     configuration: configuration,
