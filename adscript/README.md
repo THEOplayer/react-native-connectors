@@ -71,10 +71,7 @@ Finally, include the AdScript SDK as dependency in your app's `Podfile`:
 
 #### Swift Package Manager
 
-SPM is supported on iOS and tvOS using React Native 0.88's experimental
-integration tooling. Packaging was validated with the vendor's 1.4.0 archive:
-iOS/tvOS simulator and unsigned device builds, framework linkage, and native
-module availability. Analytics reporting was not initialized.
+SPM is supported on iOS and tvOS with an app-supplied vendor SDK.
 
 The connector ships its own `Package.swift` and RN package registration, but
 does **not** ship or download the private vendor SDK. Instead, the app owns a
@@ -89,9 +86,8 @@ setup described above:
 
 After installing the connector's npm package:
 
-1. Complete the base player's SPM setup: disable iOS autolinking for
-   `react-native-theoplayer`, add its installed npm folder to the app target in
-   Xcode, and select the player's desired traits.
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/main/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
 2. Copy the SDK-package template from the installed connector, running these
    commands from the app root:
 
@@ -108,8 +104,8 @@ After installing the connector's npm package:
    `npx --no-install react-native spm sync` and build the Xcode project.
 
 Prepare the local SDK package **before** resolving packages or building.
-No local podspec, `spm scaffold` step, manual AdScript Xcode reference, or
-additional player trait is needed. The connector references the local
+No local podspec, `spm scaffold` step, or manual AdScript Xcode reference is
+needed. The connector references the local
 `AdScriptSDK` package automatically and resolves Swift Collections through SPM.
 
 Choose the desired IDFA/no-IDFA variant through the vendor. Filenames alone do

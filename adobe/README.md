@@ -19,27 +19,21 @@ npm install \
 With CocoaPods, keep normal autolinking and run `pod install` after installing
 the npm packages.
 
-With SPM, using React Native 0.88's experimental integration tooling:
+With Swift Package Manager (SPM) on iOS and tvOS:
 
-1. Complete the base player's SPM setup: disable iOS autolinking for
-   `react-native-theoplayer`, add its installed npm folder to the app target in
-   Xcode, and select the player's desired traits.
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/main/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
 2. Leave autolinking **enabled** for this connector and its
    `react-native-device-info` peer dependency.
-3. Apply the temporary device-info compatibility patch described below.
+3. Ensure the app's `react-native-device-info` dependency supports SPM; see the note below.
 4. Run `npx --no-install react-native spm sync` from the app root, then build and
    run the Xcode project.
 
 The Adobe connector itself supplies its own `Package.swift` and RN package
 registration; no `spm scaffold` step is needed for this connector.
-Do not add it manually in Xcode or select an Adobe trait on the base player.
+Do not add the connector manually in Xcode.
 Its native Media Collection connector is implemented in this package; no
 separate Adobe vendor SDK or `iOS-Connector` product is required.
-
-The separate `react-native-device-info` peer does not ship built-in SPM support
-as of version 15.0.2. The compatibility patch below supplies the missing
-packaging for version 14.1.1. Applying the shipped patch replaces the need to
-run `spm scaffold` yourself.
 
 This setup requires a base player release with SPM support, Swift tools 6.1 or
 later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
@@ -48,35 +42,13 @@ and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
 `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
 custom native directory layouts need separate validation.
 
-#### Required Temporary Device-Info SPM Patch
+#### Device-Info SPM Setup
 
-The supplied patch is validated specifically for **14.1.1**, which satisfies
-this connector's declared 14.x peer dependency. Pin the peer to that version
-and apply the compatibility patch shipped with this connector; do not apply
-this version-specific patch to 15.x. It adds only SPM packaging, including the
-peer's existing privacy manifest; it does not change device-info's native
-implementation.
-
-From the app root, after installing this connector:
-
-```sh
-npm install --save-exact react-native-device-info@14.1.1
-npm install --save-dev patch-package
-mkdir -p patches
-cp node_modules/@theoplayer/react-native-analytics-adobe/patches/react-native-device-info+14.1.1.patch patches/
-npx patch-package --error-on-fail
-```
-
-Add `"postinstall": "patch-package --error-on-fail"` to the app's npm scripts,
-or append that command to an existing postinstall script. Commit the app's
-patch, package manifest, and lockfile so a fresh install reapplies it. Then run
-RN SPM sync as described above.
-
-This is an additional setup requirement for Adobe, unlike connectors whose
-dependencies already provide SPM support. Revisit the patch and version pin
-when a compatible upstream device-info release ships SPM support. Do not
-disable device-info autolinking to bypass the requirement. CocoaPods users
-do not need this patch.
+The app is responsible for the SPM setup of its `react-native-device-info` peer
+dependency. As an optional aid, this package includes a
+[packaging-only patch for 14.1.1](patches/react-native-device-info+14.1.1.patch),
+which can be applied with `patch-package`. The patch is specific to that version;
+other versions may need a different setup. CocoaPods users do not need it.
 
 ## Usage
 

@@ -15,17 +15,16 @@ npm install @theoplayer/react-native-analytics-nielsen
 With CocoaPods, keep normal autolinking and run `pod install` after installing
 the npm package.
 
-With SPM, using React Native 0.88's experimental integration tooling:
+With Swift Package Manager (SPM) on iOS and tvOS:
 
-1. Complete the base player's SPM setup: disable iOS autolinking for
-   `react-native-theoplayer`, add its installed npm folder to the app target in
-   Xcode, and select the player's desired traits.
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/main/doc/creating-minimal-app.md#getting-started-on-ios-and-tvos).
 2. Leave autolinking **enabled** for `@theoplayer/react-native-analytics-nielsen`.
 3. Run `npx --no-install react-native spm sync` from the app root, then build and
    run the Xcode project.
 
 The connector supplies its own `Package.swift` and RN package registration.
-Do not add it manually in Xcode or select a Nielsen trait on the base player.
+Do not add the connector manually in Xcode.
 SwiftPM selects the native Nielsen connector and vendor SDK automatically,
 sharing compatible player and connector package versions with other packages.
 The vendor XCFramework supplies `NielsenAppApi.framework` on iOS and
