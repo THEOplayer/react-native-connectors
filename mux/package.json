@@ -35,7 +35,8 @@
     "manifest": "node manifest.js > src/manifest.json",
     "prepare": "npm run manifest && npm run build",
     "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
-    "test": "node --test scripts/package-swift.test.js"
+    "test": "node --test scripts/package-swift.test.js",
+    "test:bridge": "jest"
   },
   "swiftpmConfig": {
     "name": "ReactNativeTHEOplayerMux"
