@@ -85,7 +85,9 @@ No `spm scaffold` step, dependency patch, local SDK wrapper, or manual Gemius
 Xcode reference is required. Unlike the local CocoaPods
 setup above, SPM downloads the official
 [Gemius iOS SDK](https://github.com/gemius/gemiussdk-spm-ios) package automatically,
-using product `GemiusSDK` at version 2.5.0 or newer, below 3.0.
+using product `GemiusSDK` at version 2.5.0 or newer, below 3.0. SwiftPM also resolves the
+[Gemius tvOS SDK](https://github.com/gemius/gemiussdk-spm-tvos) package declared by the
+manifest, but iOS builds link only `GemiusSDK`.
 The JavaScript configuration and reporting API are unchanged.
 
 Use an SPM-enabled base-player archive; older player archives without a manifest
