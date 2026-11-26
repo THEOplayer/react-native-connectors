@@ -19,7 +19,12 @@ npm install \
 With CocoaPods, keep normal autolinking and run `pod install` after installing
 the npm packages.
 
-With Swift Package Manager (SPM) on iOS and tvOS:
+SPM is currently supported on iOS for apps using standard React Native. Apps that
+use `react-native-tvos`, including all tvOS apps, should keep using CocoaPods
+until the fork supports React Native's SPM tooling; see the base player's
+[known limitation](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#known-limitation-react-native-tvos).
+
+With Swift Package Manager (SPM) on iOS:
 
 1. Complete the base player's
    [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/6b98ad9f1e1ed786861bc73d15fb43c895ec3ba0/doc/creating-minimal-app.md#compatible-player-package).
@@ -36,7 +41,7 @@ Its native Media Collection connector is implemented in this package; no
 separate Adobe vendor SDK or `iOS-Connector` product is required.
 
 This setup requires a base player release with SPM support, Swift tools 6.1 or
-later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+later, and an iOS deployment target of 16 or later. It assumes normal
 npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-adobe`
 and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
 `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and

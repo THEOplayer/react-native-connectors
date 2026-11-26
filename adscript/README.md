@@ -45,22 +45,25 @@ Pod::Spec.new do |spec|
   spec.source       = { :git => 'https://github.com/THEOplayer/iOS-Connector.git', :tag => spec.version.to_s }
 
   spec.source_files  = "Classes", "Classes/**/*.{h,m}"
-  spec.ios.vendored_frameworks = "AdScriptApiClient.xcframework"
+  spec.vendored_frameworks = "AdScriptApiClient.xcframework"
 end
 ```
+
+The platform-neutral `vendored_frameworks` setting makes the SDK available to both iOS and tvOS
+app targets; the XCFramework must contain the slices for each platform you build.
 
 Choose the IDFA (Identifier for Advertisers) or no-IDFA SDK using the vendor's
 download options, not by renaming a framework. The framework reference must
 match the archive's actual filename:
 
 ```
-spec.ios.vendored_frameworks = "AdScriptApiClient.xcframework"
+spec.vendored_frameworks = "AdScriptApiClient.xcframework"
 ```
 
 For an archive containing `AdScriptApiClient_withidfa.xcframework`, use:
 
 ```
-spec.ios.vendored_frameworks = "AdScriptApiClient_withidfa.xcframework"
+spec.vendored_frameworks = "AdScriptApiClient_withidfa.xcframework"
 ```
 
 Finally, include the AdScript SDK as dependency in your app's `Podfile`:
@@ -71,7 +74,12 @@ Finally, include the AdScript SDK as dependency in your app's `Podfile`:
 
 #### Swift Package Manager
 
-SPM is supported on iOS and tvOS with an app-supplied vendor SDK.
+SPM is supported on iOS with an app-supplied vendor SDK.
+
+SPM is currently supported on iOS for apps using standard React Native. Apps that
+use `react-native-tvos`, including all tvOS apps, should keep using CocoaPods
+until the fork supports React Native's SPM tooling; see the base player's
+[known limitation](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#known-limitation-react-native-tvos).
 
 The connector ships its own `Package.swift` and RN package registration, but
 does **not** ship or download the private vendor SDK. Instead, the app owns a
@@ -120,7 +128,7 @@ The tested 1.4.0 archive uses `AdScriptApiClient.xcframework` and references
 Apple's advertising-ID APIs; a separate no-IDFA archive has not been validated.
 
 This setup requires Swift tools 6.1 or later, an SPM-enabled base-player build,
-and deployment targets of iOS 16 or tvOS 15.1 or later, subject to the supplied
+and an iOS deployment target of 16 or later, subject to the supplied
 SDK's own requirements. It assumes the connector is installed at
 `<app>/node_modules/@theoplayer/react-native-analytics-adscript`, the player at
 `<app>/node_modules/react-native-theoplayer`, RN's React package at
