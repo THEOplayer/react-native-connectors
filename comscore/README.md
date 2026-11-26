@@ -10,6 +10,31 @@ npm install @theoplayer/react-native-analytics-comscore
 
 [//]: # 'npm install @theoplayer/react-native-analytics-comscore'
 
+### Apple Native Dependencies
+
+With CocoaPods, keep normal autolinking and run `pod install` after installing
+the npm package.
+
+With Swift Package Manager (SPM) on iOS and tvOS:
+
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/6b98ad9f1e1ed786861bc73d15fb43c895ec3ba0/doc/creating-minimal-app.md#compatible-player-package).
+2. Leave autolinking **enabled** for `@theoplayer/react-native-analytics-comscore`.
+3. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector supplies its own `Package.swift` and RN package registration.
+Do not add the connector manually in Xcode.
+SwiftPM selects the native Comscore connector and vendor SDK automatically,
+sharing compatible player and connector package versions with other packages.
+
+This setup requires a base player release with SPM support, Swift tools 6.1 or
+later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-comscore`
+and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
+`<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
+custom native directory layouts need separate validation.
+
 ## Usage
 
 ### Configuring the connector

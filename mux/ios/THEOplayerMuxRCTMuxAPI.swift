@@ -1,7 +1,12 @@
 
 import Foundation
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
 import THEOplayerSDK
 import MuxCore
 import MuxStatsTHEOplayer
@@ -108,7 +113,7 @@ class THEOplayerMuxRCTMuxAPI: NSObject, RCTBridgeModule {
     func notifyError(_ node: NSNumber, code: NSNumber, message: NSString, context: NSString) -> Void {
         log("[Mux] notifyError triggered.")
         DispatchQueue.main.async {
-            MUXSDKStatsTHEOplayer.dispatchError(name: "ReactNativeTHEOplayer", code: code.stringValue, message: message as String)
+            MUXSDKStatsTHEOplayer.dispatchError(name: self.buildPlayerName(node), code: code.stringValue, message: message as String)
         }
     }
     

@@ -1,0 +1,82 @@
+diff --git a/node_modules/react-native-device-info/Package.swift b/node_modules/react-native-device-info/Package.swift
+new file mode 100644
+index 0000000..8e22f4e
+--- /dev/null
++++ b/node_modules/react-native-device-info/Package.swift
+@@ -0,0 +1,50 @@
++// swift-tools-version: 6.1
++import Foundation
++import PackageDescription
++
++// Resolve RN's generated alias back to the installed, unscoped npm package.
++let packageDirectory = URL(fileURLWithPath: Context.packageDirectory).resolvingSymlinksInPath()
++let reactNativePath = packageDirectory.appendingPathComponent("../../ios/build/xcframeworks").standardizedFileURL.path
++
++let package = Package(
++    name: "RNDeviceInfo",
++    platforms: [.iOS("16.0"), .tvOS("15.1")],
++    products: [
++        .library(name: "RNDeviceInfo", targets: ["RNDeviceInfo"]),
++    ],
++    dependencies: [
++        .package(name: "ReactNative", path: reactNativePath),
++    ],
++    targets: [
++        .target(
++            name: "RNDeviceInfo",
++            dependencies: [
++                .product(name: "ReactHeaders", package: "ReactNative"),
++                .product(name: "ReactNativeHeaders", package: "ReactNative"),
++                .product(name: "ReactNativeDependenciesHeaders", package: "ReactNative"),
++            ],
++            path: ".",
++            sources: [
++                "ios/RNDeviceInfo/DeviceUID.h",
++                "ios/RNDeviceInfo/DeviceUID.m",
++                "ios/RNDeviceInfo/EnvironmentUtil.h",
++                "ios/RNDeviceInfo/EnvironmentUtil.m",
++                "ios/RNDeviceInfo/RNDeviceInfo.h",
++                "ios/RNDeviceInfo/RNDeviceInfo.m",
++            ],
++            resources: [.copy("ios/PrivacyInfo.xcprivacy")],
++            publicHeadersPath: "ios/RNDeviceInfo",
++            cSettings: [
++                .headerSearchPath("ios/RNDeviceInfo"),
++                .headerSearchPath("."),
++                .unsafeFlags(["-include", "react-native-spm-prefix.h"]),
++            ],
++            linkerSettings: [
++                .linkedFramework("UIKit"),
++                .linkedFramework("Foundation"),
++                .linkedFramework("CoreGraphics"),
++            ]
++        ),
++    ],
++    cxxLanguageStandard: .cxx20
++)
+diff --git a/node_modules/react-native-device-info/package.json b/node_modules/react-native-device-info/package.json
+index 66f3ad5..67a2868 100644
+--- a/node_modules/react-native-device-info/package.json
++++ b/node_modules/react-native-device-info/package.json
+@@ -134,5 +134,8 @@
+       "module",
+       "typescript"
+     ]
++  },
++  "swiftpmConfig": {
++    "name": "RNDeviceInfo"
+   }
+ }
+diff --git a/node_modules/react-native-device-info/react-native-spm-prefix.h b/node_modules/react-native-device-info/react-native-spm-prefix.h
+new file mode 100644
+index 0000000..9720648
+--- /dev/null
++++ b/node_modules/react-native-device-info/react-native-spm-prefix.h
+@@ -0,0 +1,7 @@
++// Match CocoaPods' default Objective-C prefix imports.
++#ifdef __OBJC__
++#import <Foundation/Foundation.h>
++#if __has_include(<UIKit/UIKit.h>)
++#import <UIKit/UIKit.h>
++#endif
++#endif

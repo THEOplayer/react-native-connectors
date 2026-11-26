@@ -1,7 +1,12 @@
 
 import Foundation
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
 import THEOplayerSDK
 
 @objc(THEOplayerAdobeRCTAdobeAPI)
@@ -77,11 +82,11 @@ class THEOplayerAdobeRCTAdobeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(stopAndStartNewSession:metadata:)
-    func stopAndStartNewSession(_ node: NSNumber, metadata: [String:Any]) -> Void {
+    func stopAndStartNewSession(_ node: NSNumber, metadata: [String:Any]?) -> Void {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
             if let connector = self.connectors[node] {
-                connector.stopAndStartNewSession(AdobeMetadata(from: metadata))
+                connector.stopAndStartNewSession(AdobeMetadata(from: metadata ?? [:]))
             }
         }
     }

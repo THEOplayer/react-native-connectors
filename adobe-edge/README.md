@@ -16,10 +16,47 @@ To set up terminology, in chronological order, media tracking solutions were:
 ## Installation
 
 ```sh
-npm install @theoplayer/react-native-analytics-adobe-edge
+npm install react-native-device-info@^14.0.4 @theoplayer/react-native-analytics-adobe-edge
 ```
 
 [//]: # (npm install @theoplayer/react-native-analytics-adobe)
+
+### Apple Native Dependencies
+
+With CocoaPods, keep normal autolinking and run `pod install` after installing
+the npm packages.
+
+With Swift Package Manager (SPM) on iOS and tvOS:
+
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/6b98ad9f1e1ed786861bc73d15fb43c895ec3ba0/doc/creating-minimal-app.md#compatible-player-package).
+2. Leave autolinking **enabled** for this connector and its
+   `react-native-device-info` peer dependency.
+3. Ensure the app's `react-native-device-info` dependency supports SPM; see the note below.
+4. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector supplies its own `Package.swift` and RN package registration.
+No `spm scaffold` step or manual Adobe Edge Xcode reference is required.
+Its manifest selects Adobe's 5.x `AEPCore`, `AEPServices`,
+`AEPEdge`, `AEPEdgeIdentity`, and `AEPEdgeMedia` products, matching the existing
+CocoaPods SDK major version.
+
+This setup requires a base player release with SPM support, Swift tools 6.1 or
+later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-adobe-edge`
+and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
+`<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
+custom native directory layouts need separate validation.
+
+#### Device-Info SPM Setup
+
+The app must provide an SPM-compatible setup for its `react-native-device-info`
+peer dependency. As an optional aid, this package includes a
+[packaging-only patch for 14.1.1](patches/react-native-device-info+14.1.1.patch),
+which can be applied with `patch-package`. The patch is specific to that version;
+other versions may need a different setup. If the app already uses this patch
+for the Adobe connector, reuse it. CocoaPods users do not need it.
 
 ## Usage
 

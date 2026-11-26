@@ -1,8 +1,17 @@
 import Foundation
 import THEOplayerSDK
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
+#if os(tvOS) && canImport(GemiusSDKtvOS)
+import GemiusSDKtvOS
+#else
 import GemiusSDK
+#endif
 
 @objc(THEOplayerGemiusRCTGemiusAPI)
 class THEOplayerGemiusRCTGemiusAPI: NSObject, RCTBridgeModule {
@@ -58,8 +67,8 @@ class THEOplayerGemiusRCTGemiusAPI: NSObject, RCTBridgeModule {
     }
   }
   
-  private func buildProgramData(_ metadata: NSDictionary) -> GemiusSDK.GSMProgramData {
-    let data = GemiusSDK.GSMProgramData()
+  private func buildProgramData(_ metadata: NSDictionary) -> GSMProgramData {
+    let data = GSMProgramData()
     
     metadata.forEach { key, value in
       guard let key = key as? String else { return }
@@ -121,23 +130,23 @@ class THEOplayerGemiusRCTGemiusAPI: NSObject, RCTBridgeModule {
   }
   
   
-  private func buildProgramType(_ type: NSNumber) -> GemiusSDK.GSMProgramType {
-    return GemiusSDK.GSMProgramType(rawValue: type.intValue) ?? .VIDEO
+  private func buildProgramType(_ type: NSNumber) -> GSMProgramType {
+    return GSMProgramType(rawValue: type.intValue) ?? .VIDEO
   }
   
-  private func buildProgramGenre(_ genre: NSNumber) -> GemiusSDK.GSMProgramGenre {
-    return GemiusSDK.GSMProgramGenre(rawValue: genre.intValue) ?? .undefined
+  private func buildProgramGenre(_ genre: NSNumber) -> GSMProgramGenre {
+    return GSMProgramGenre(rawValue: genre.intValue) ?? .undefined
   }
   
-  private func buildTransmissionType(_ type: NSNumber) -> GemiusSDK.GSMTransmissionType {
-    return GemiusSDK.GSMTransmissionType(rawValue: type.intValue) ?? .undefined
+  private func buildTransmissionType(_ type: NSNumber) -> GSMTransmissionType {
+    return GSMTransmissionType(rawValue: type.intValue) ?? .undefined
   }
   
   @objc(destroy:)
   func destroy(_ node: NSNumber) {
     log("destroy triggered.")
     DispatchQueue.main.async {
-      //      self.connectors[node]?.destroy()
+      self.connectors[node]?.destroy()
       self.connectors.removeValue(forKey: node)
     }
   }

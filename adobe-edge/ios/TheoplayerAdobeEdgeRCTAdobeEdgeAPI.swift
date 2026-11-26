@@ -1,6 +1,11 @@
 import Foundation
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
 import THEOplayerSDK
 
 @objc(THEOplayerAdobeEdgeRCTAdobeEdgeAPI)
@@ -20,7 +25,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(initialize:config:customIdentityMap:)
-    func initialize(_ node: NSNumber, config: NSDictionary, customIdentityMap: NSDictionary) -> Void {
+    func initialize(_ node: NSNumber, config: NSDictionary, customIdentityMap: NSDictionary?) -> Void {
         log("initialize triggered.")
         
         self.debug = config["debugEnabled"] as? Bool ?? false
@@ -84,11 +89,11 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
     }
     
     @objc(stopAndStartNewSession:customMetadataDetails:)
-    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: NSDictionary) -> Void {
+    func stopAndStartNewSession(_ node: NSNumber, customMetadataDetails: NSDictionary?) -> Void {
         log("stopAndStartNewSession triggered")
         DispatchQueue.main.async {
-            if let connector = self.connectors[node],
-               let newMetadata = customMetadataDetails as? [String: Any] {
+            if let connector = self.connectors[node] {
+                let newMetadata = customMetadataDetails as? [String: Any] ?? [:]
                 connector.stopAndStartNewSession(AdobeEdgeUtils.toStringMap(newMetadata))
             }
         }
@@ -101,6 +106,7 @@ class THEOplayerAdobeEdgeRCTAdobeEdgeAPI: NSObject, RCTBridgeModule {
             if let connector = self.connectors[node] {
                 connector.destroy()
             }
+            self.connectors.removeValue(forKey: node)
         }
     }
     

@@ -1,7 +1,12 @@
 import Foundation
 import THEOplayerSDK
 import UIKit
+#if SWIFT_PACKAGE
+import React
+import ReactNativeTHEOplayer
+#else
 import react_native_theoplayer
+#endif
 import AdScriptApiClient
 
 @objc(THEOplayerAdScriptRCTAdScriptAPI)

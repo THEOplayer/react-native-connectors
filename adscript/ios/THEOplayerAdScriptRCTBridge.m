@@ -9,7 +9,7 @@
 
 RCT_EXTERN_METHOD(initialize:(nonnull NSNumber *)node
                   implementationId:(nonnull NSString *)implementationId
-                  contentMetadata:(nonnull NSString *)contentMetadata
+                  contentMetadata:(nonnull NSDictionary *)contentMetadata
                   debug:(BOOL)debug)
 
 RCT_EXTERN_METHOD(updateMetadata:(nonnull NSNumber *)node
