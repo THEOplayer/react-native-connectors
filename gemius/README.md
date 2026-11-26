@@ -83,18 +83,14 @@ With Swift Package Manager (SPM) on iOS:
 The connector includes its own `Package.swift` and RN package registration.
 No `spm scaffold` step, dependency patch, local SDK wrapper, or manual Gemius
 Xcode reference is required. Unlike the local CocoaPods
-setup above, SPM downloads the official vendor packages automatically:
-
-- [Gemius iOS SDK](https://github.com/gemius/gemiussdk-spm-ios), product `GemiusSDK`.
-- [Gemius tvOS SDK](https://github.com/gemius/gemiussdk-spm-tvos), product `GemiusSDKtvOS`.
-
-Both packages use version 2.5.0 or newer, below 3.0. The connector links only the
-product matching the build platform and imports its corresponding native
-module. The JavaScript configuration and reporting API are unchanged.
+setup above, SPM downloads the official
+[Gemius iOS SDK](https://github.com/gemius/gemiussdk-spm-ios) package automatically,
+using product `GemiusSDK` at version 2.5.0 or newer, below 3.0.
+The JavaScript configuration and reporting API are unchanged.
 
 Use an SPM-enabled base-player archive; older player archives without a manifest
 cannot be used with this setup. It requires Swift tools 6.1 or later and
-deployment targets of iOS 16 or tvOS 15.1 or later, subject to vendor SDK
+an iOS deployment target of 16 or later, subject to vendor SDK
 requirements. The supported layout places the connector at
 `<app>/node_modules/@theoplayer/react-native-analytics-gemius`, the base player at
 `<app>/node_modules/react-native-theoplayer`, and RN's React package at

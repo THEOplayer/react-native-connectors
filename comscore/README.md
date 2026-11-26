@@ -34,7 +34,7 @@ SwiftPM selects the native Comscore connector and vendor SDK automatically,
 sharing compatible player and connector package versions with other packages.
 
 This setup requires a base player release with SPM support, Swift tools 6.1 or
-later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+later, and an iOS deployment target of 16 or later. It assumes normal
 npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-comscore`
 and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
 `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and

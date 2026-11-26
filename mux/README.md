@@ -38,7 +38,7 @@ below 6.0) products.
 
 Use an SPM-enabled base-player archive; older player archives without a manifest
 cannot be used with this setup. It requires Swift tools 6.1 or later and
-deployment targets of iOS 16 or tvOS 15.1 or later. The supported layout places
+an iOS deployment target of 16 or later. The supported layout places
 the connector at `<app>/node_modules/@theoplayer/react-native-analytics-mux`,
 the base player at `<app>/node_modules/react-native-theoplayer`, and RN's React
 package at `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted

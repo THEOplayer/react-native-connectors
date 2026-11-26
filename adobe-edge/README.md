@@ -48,7 +48,7 @@ Its manifest selects Adobe's 5.x `AEPCore`, `AEPServices`,
 CocoaPods SDK major version.
 
 This setup requires a base player release with SPM support, Swift tools 6.1 or
-later, and deployment targets of iOS 16 or tvOS 15.1 or later. It assumes normal
+later, and an iOS deployment target of 16 or later. It assumes normal
 npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-adobe-edge`
 and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
 `<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
