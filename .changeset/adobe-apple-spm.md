@@ -2,4 +2,4 @@
 '@theoplayer/react-native-analytics-adobe': minor
 ---
 
-Added Swift Package Manager support for Adobe on iOS and tvOS, with an optional packaging patch for its device-info peer dependency.
+Added Swift Package Manager support for Adobe on iOS, with an optional packaging patch for its device-info peer dependency. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
