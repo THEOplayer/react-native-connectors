@@ -89,6 +89,8 @@ class ReactTHEOplayerAdScriptModule(context: ReactApplicationContext) :
 
   @ReactMethod
   fun destroy(tag: Int) {
-    adscriptConnectors[tag]?.destroy()
+    reactApplicationContext.runOnUiQueueThread {
+      adscriptConnectors.remove(tag)?.destroy()
+    }
   }
 }

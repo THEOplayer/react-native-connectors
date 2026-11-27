@@ -122,5 +122,8 @@ class ReactTHEOplayerGemiusModule(context: ReactApplicationContext) :
   @ReactMethod
   fun destroy(tag: Int) {
 //    gemiusConnectors[tag]?.destroy()
+    reactApplicationContext.runOnUiQueueThread {
+      gemiusConnectors.remove(tag)
+    }
   }
 }
