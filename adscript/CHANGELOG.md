@@ -1,5 +1,19 @@
 # @theoplayer/react-native-analytics-adscript
 
+## 1.6.0
+
+### ✨ Features
+
+- Added Swift Package Manager setup for app-supplied AdScript SDKs on iOS. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+  Fixed Apple SDK compatibility when ad-break metadata is optional.
+
+### 🐛 Issues
+
+- Fixed Apple initialization treating content metadata as a string instead of an object.
+- Fixed an Apple crash when classifying ads in live streams with an infinite duration.
+- Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+
 ## 1.5.1
 
 ### 🐛 Issues

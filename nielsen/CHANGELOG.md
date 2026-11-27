@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-nielsen
 
+## 1.14.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for Nielsen on iOS. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+
 ## 1.13.1
 
 ### 🐛 Issues

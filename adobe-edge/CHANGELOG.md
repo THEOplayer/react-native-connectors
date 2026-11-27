@@ -1,5 +1,16 @@
 # @theoplayer/react-native-analytics-adobe-edge
 
+## 1.4.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for Adobe Edge on iOS, with an optional packaging patch for its device-info peer dependency. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed Apple initialization without an identity map, session restarts without metadata, and retention of destroyed connector instances.
+- Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+
 ## 1.3.4
 
 ### 🐛 Issues

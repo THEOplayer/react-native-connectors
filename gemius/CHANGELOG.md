@@ -1,5 +1,17 @@
 # @theoplayer/react-native-analytics-gemius
 
+## 1.6.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for iOS using the official Gemius SDK packages. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+- Fixed Apple connector teardown not detaching its player event listeners.
+- Fixed Apple quality and ad callbacks remaining registered after connector teardown.
+
 ## 1.5.2
 
 ### 🐛 Issues

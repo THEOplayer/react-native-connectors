@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-mux
 
+## 1.15.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for Mux on iOS. tvOS support through SPM will follow once `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed Apple error reporting targeting the wrong player and warned when requesting unsupported manual presentation changes.
+
 ## 1.14.1
 
 ### 🐛 Issues
