@@ -1,5 +1,7 @@
 import THEOplayerSDK
-#if canImport(GemiusSDK)
+#if os(tvOS) && canImport(GemiusSDKtvOS)
+import GemiusSDKtvOS
+#else
 import GemiusSDK
 #endif
 
@@ -9,9 +11,9 @@ public struct GemiusConfiguration {
   let hitCollectorHost: String
   let gemiusId: String
   let debug: Bool
-  let adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)?
+  let adProcessor: ((THEOplayerSDK.Ad) -> GSMAdData)?
   
-  public init(applicationName: String, applicationVersion: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GemiusSDK.GSMAdData)? = nil) {
+  public init(applicationName: String, applicationVersion: String, hitCollectorHost: String, gemiusId: String, debug: Bool, adProcessor: ((THEOplayerSDK.Ad) -> GSMAdData)? = nil) {
     self.applicationName = applicationName
     self.applicationVersion = applicationVersion
     self.hitCollectorHost = hitCollectorHost
@@ -31,7 +33,7 @@ public struct GemiusConnector {
     self.adapter = GemiusAdapter(configuration: configuration, player: player, adProcessor: configuration.adProcessor)
   }
   
-  public func update(programId: String, programData: GemiusSDK.GSMProgramData) {
+  public func update(programId: String, programData: GSMProgramData) {
     self.adapter.update(programId: programId, programData: programData)
   }
   

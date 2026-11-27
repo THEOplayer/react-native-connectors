@@ -17,6 +17,7 @@
     "*.tgz",
     "CHANGELOG.md",
     "manifest.json",
+    "Package.swift",
     "!lib/typescript/example",
     "!ios/build",
     "!android/build",
@@ -34,7 +35,11 @@
     "build": "npm run manifest && bob build",
     "manifest": "node manifest.js > src/manifest.json",
     "prepare": "npm run manifest && npm run build",
-    "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build"
+    "clean": "rimraf lib android/build example/android/build example/android/app/build example/ios/build",
+    "test": "node --test scripts/package-swift.test.js"
+  },
+  "swiftpmConfig": {
+    "name": "ReactNativeTHEOplayerGemius"
   },
   "keywords": [
     "react-native",

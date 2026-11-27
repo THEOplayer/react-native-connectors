@@ -1,5 +1,5 @@
 import type { NativeHandleType, THEOplayer } from 'react-native-theoplayer';
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import type { MuxOptions } from '../api/MuxOptions';
 import type { MuxData } from '../api/MuxData';
 import type { MuxPresentation } from '../api/MuxConnector';
@@ -36,6 +36,10 @@ export class MuxConnectorAdapter {
   }
 
   changePresentation(presentation: MuxPresentation) {
+    if (Platform.OS === 'ios') {
+      console.warn(TAG, 'changePresentation is not supported on Apple platforms; fullscreen detection is automatic.');
+      return;
+    }
     try {
       NativeModules.MuxModule.changePresentation(this.nativeHandle, presentation);
     } catch (error: unknown) {

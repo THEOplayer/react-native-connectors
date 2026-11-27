@@ -53,6 +53,9 @@ export class MuxConnector {
    *
    * For other uses cases (non-overlaid controls, window decoration via plain Views, etc.) you may need to tell the
    * SDK when the user switches to full-screen.
+   *
+   * @remarks On iOS and tvOS, manual presentation changes are unsupported and log a warning;
+   * the native SDK uses automatic fullscreen detection.
    */
   changePresentation(presentation: MuxPresentation) {
     this.connectorAdapter.changePresentation(presentation);

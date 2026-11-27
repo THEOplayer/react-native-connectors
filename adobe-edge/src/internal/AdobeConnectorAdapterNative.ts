@@ -53,7 +53,7 @@ export class AdobeConnectorAdapterNative implements AdobeConnectorAdapter {
 
   async stopAndStartNewSession(metadata?: AdobeMetadata) {
     try {
-      NativeModules.AdobeEdgeModule.stopAndStartNewSession(this.nativeHandle || -1, metadata ?? []);
+      NativeModules.AdobeEdgeModule.stopAndStartNewSession(this.nativeHandle || -1, metadata ?? {});
     } catch (error: unknown) {
       console.error(TAG, `${ERROR_MSG}: ${error}`);
     }

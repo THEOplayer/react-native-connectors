@@ -16,6 +16,37 @@ yarn add @theoplayer/react-native-analytics-bitmovin
 ```
 [//]: # (yarn add @theoplayer/react-native-analytics-bitmovin)
 
+### Apple Native Dependencies
+
+With CocoaPods, keep normal autolinking and run `pod install` after installing
+the npm package.
+
+SPM is currently supported on iOS for apps using standard React Native. Apps that
+use `react-native-tvos`, including all tvOS apps, should keep using CocoaPods
+until the fork supports React Native's SPM tooling; see the base player's
+[known limitation](https://github.com/THEOplayer/react-native-theoplayer/blob/develop/doc/creating-minimal-app.md#known-limitation-react-native-tvos).
+
+With Swift Package Manager (SPM) on iOS:
+
+1. Complete the base player's
+   [SPM setup](https://github.com/THEOplayer/react-native-theoplayer/blob/6b98ad9f1e1ed786861bc73d15fb43c895ec3ba0/doc/creating-minimal-app.md#compatible-player-package).
+2. Leave autolinking **enabled** for `@theoplayer/react-native-analytics-bitmovin`.
+3. Run `npx --no-install react-native spm sync` from the app root, then build and
+   run the Xcode project.
+
+The connector supplies its own `Package.swift` and RN package registration.
+No `spm scaffold` step, dependency patch, or manual Bitmovin Xcode reference is
+required. Its manifest selects Bitmovin's 3.x
+`THEOplayerCollector` product, which includes `CoreCollector` transitively.
+It does not select Bitmovin's own player or AVFoundation collector products.
+
+This setup requires a base player release with SPM support, Swift tools 6.1 or
+later, and an iOS deployment target of 16 or later. It assumes normal
+npm folders at `<app>/node_modules/@theoplayer/react-native-analytics-bitmovin`
+and `<app>/node_modules/react-native-theoplayer`, with RN's React package at
+`<app>/ios/build/xcframeworks`. Source-checkout links, hoisted dependencies, and
+custom native directory layouts need separate validation.
+
 ## Usage
 
 ### Configuring the connector
