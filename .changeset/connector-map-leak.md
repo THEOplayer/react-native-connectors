@@ -8,4 +8,4 @@
 '@theoplayer/react-native-analytics-youbora': patch
 ---
 
-Fixed a memory leak on Android, and on iOS for Adobe Edge, where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
