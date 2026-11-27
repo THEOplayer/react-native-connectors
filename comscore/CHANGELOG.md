@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-comscore
 
+## 1.16.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for Comscore on iOS. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed Apple initialization crashing when the optional debug setting was omitted.
+
 ## 1.15.3
 
 ### 🐛 Issues

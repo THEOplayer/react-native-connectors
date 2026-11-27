@@ -1,5 +1,15 @@
 # @theoplayer/react-native-analytics-conviva
 
+## 1.16.0
+
+### ✨ Features
+
+- Added Swift Package Manager support for Conviva on iOS. tvOS apps should keep using CocoaPods until `react-native-tvos` supports React Native's SPM tooling.
+
+### 🐛 Issues
+
+- Fixed a Swift type-cast crash on iOS and tvOS when the Conviva customer key was missing or not a string.
+
 ## 1.15.1
 
 ### 🐛 Issues

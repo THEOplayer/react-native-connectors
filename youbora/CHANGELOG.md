@@ -1,5 +1,11 @@
 # @theoplayer/react-native-analytics-youbora
 
+## 1.8.2
+
+### 🐛 Issues
+
+- Fixed a memory leak on Android where a destroyed connector and its player stayed in memory, which happened because the native module never removed the connector from its internal map.
+
 ## 1.8.1
 
 ### 🐛 Issues
